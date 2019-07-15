@@ -10,7 +10,9 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner 'android.test.InstrumentationTestRunner'
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -22,6 +24,10 @@ android {
     aaptOptions {
         //对png进行优化检查
         cruncherEnabled = false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -47,4 +53,8 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.github.gwang74:swtc_wallet:1.0'
+    implementation('com.github.JCCDex:jingtum-lib-java:v1.0', {
+        exclude group: 'ch.qos.logback'
+    })
+    implementation 'com.android.support:multidex:1.0.+'
 }
