@@ -93,6 +93,7 @@
 -keep public class * extends android.app.Fragemnt
 
 -keep class com.fasterxml.jackson.**{*;}
+-dontwarn com.fasterxml.jackson.**
 
 -keep public class [doughnut].R$*{
     public static final int *;
@@ -156,3 +157,18 @@
  -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
      <init>(java.lang.Throwable);
  }
+
+-keep class com.googlecode.openbeans.** { *; }
+-dontwarn com.googlecode.openbeans.**
+-keep class org.apache.harmony.** { *; }
+-dontwarn org.apache.harmony.**
+-keep class org.bouncycastle.jce.** { *; }
+-dontwarn org.bouncycastle.jce.**
+-keep class org.spongycastle.jce.** { *; }
+-dontwarn org.spongycastle.jce.**
+-keep class org.spongycastle.x509.** { *; }
+-dontwarn org.spongycastle.x509.**
+-keep class org.bouncycastle.x509.** { *; }
+-dontwarn org.bouncycastle.x509.**
+-keep class net.i2p.crypto.x509.** { *; }
+-dontwarn net.i2p.crypto.**

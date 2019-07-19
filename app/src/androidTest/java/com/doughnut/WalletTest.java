@@ -5,25 +5,18 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.blink.jtblc.client.bean.AccountTx;
+import com.android.jtblk.client.bean.AccountTx;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -106,7 +99,8 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey);
-        WalletManager.getInstance(appContext).transfer("123456", "jNn89aY84G23onFXupUd7bkMode6aKYMt8", new BigDecimal("0.01"), "钱包工具类：转账单元测试");
+        String res = WalletManager.getInstance(appContext).transfer("123456", "jNn89aY84G23onFXupUd7bkMode6aKYMt8", new BigDecimal("0.01"), "钱包工具类：转账单元测试");
+        Log.v(TAG, res);
     }
 
     @Test
@@ -115,7 +109,16 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey);
         AccountTx bean = WalletManager.getInstance(appContext).getTansferHishory(new Integer("20"));
-        Log.v(TAG, bean.getTransactions().get(0).getHash());
+        Assert.assertEquals(bean.getTransactions().size(), 20);
     }
 
+    @Test
+    public void getBalanceTest() throws Exception {
+        // 导入钱包
+        String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey);
+        String balance = WalletManager.getInstance(appContext).getBalance();
+        Log.v(TAG, balance);
+        Assert.assertNotNull(balance);
+    }
 }

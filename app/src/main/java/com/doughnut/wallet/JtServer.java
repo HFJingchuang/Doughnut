@@ -1,8 +1,8 @@
 package com.doughnut.wallet;
 
-import com.blink.jtblc.client.Remote;
-import com.blink.jtblc.connection.Connection;
-import com.blink.jtblc.connection.ConnectionFactory;
+import com.android.jtblk.client.Remote;
+import com.android.jtblk.connection.Connection;
+import com.android.jtblk.connection.ConnectionFactory;
 
 public class JtServer {
 
