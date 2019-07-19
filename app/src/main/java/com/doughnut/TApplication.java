@@ -3,6 +3,7 @@ package com.doughnut;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
+import android.support.multidex.MultiDex;
 
 import com.doughnut.activity.BaseActivity;
 import com.doughnut.base.BlockChainData;
@@ -48,7 +49,7 @@ public class TApplication extends Application {
 
     public void clearActivity() {
         for (BaseActivity activity : mActivities
-                ) {
+        ) {
             if (!activity.isFinishing()) {
                 activity.finish();
             }
@@ -63,5 +64,6 @@ public class TApplication extends Application {
         } else {
             super.attachBaseContext(base);
         }
+        MultiDex.install(base);
     }
 }

@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doughnut.R;
 import com.doughnut.base.WalletInfoManager;
@@ -19,6 +21,9 @@ import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;
+import com.doughnut.wallet.WalletManager;
+
+import java.math.BigDecimal;
 
 public class SplashActivity extends BaseActivity implements View.OnClickListener {
 
