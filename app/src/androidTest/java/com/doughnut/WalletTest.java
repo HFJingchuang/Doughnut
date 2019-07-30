@@ -101,6 +101,7 @@ public class WalletTest {
         WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey);
         String res = WalletManager.getInstance(appContext).transfer("123456", "jNn89aY84G23onFXupUd7bkMode6aKYMt8", new BigDecimal("0.01"), "钱包工具类：转账单元测试");
         Log.v(TAG, res);
+        Assert.assertNotNull(res);
     }
 
     @Test

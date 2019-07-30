@@ -12,17 +12,36 @@ public class JtServer {
     private static String server = "ws://ts5.jingtum.com:5020";
     // 是否使用本地签名方式提交交易
     private static Boolean local_sign = true;
-    private static Connection conn = ConnectionFactory.getCollection(server);
-    private static Remote remote = new Remote(conn, local_sign);
+    private static Connection conn;
+    private static Remote remote;
+    private static JtServer instance;
 
-    public void changeServer(String server) {
+    private JtServer() {
         if (conn != null) {
             this.conn.close();
-            this.server = server;
-            remote = new Remote(conn, local_sign);
         }
+        conn = ConnectionFactory.getCollection(server);
+        remote = new Remote(conn, local_sign);
     }
 
+    public static JtServer getInstance() {
+        if (instance == null) {
+            instance = new JtServer();
+        }
+        return instance;
+    }
+
+    /**
+     * 切换服务节点
+     *
+     * @param server
+     * @param local_sign
+     */
+    public void changeServer(String server, boolean local_sign) {
+        this.instance = null;
+        this.server = server;
+        this.local_sign = local_sign;
+    }
 
     public Remote getRemote() {
         return remote;

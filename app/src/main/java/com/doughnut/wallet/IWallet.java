@@ -2,6 +2,10 @@ package com.doughnut.wallet;
 
 import android.graphics.Bitmap;
 
+import com.android.jtblk.client.bean.AccountTx;
+
+import java.math.BigDecimal;
+
 public interface IWallet {
 
     boolean createWallet(String password);
@@ -16,4 +20,9 @@ public interface IWallet {
 
     String getPrivateKey(String password);
 
+    String transfer(String password, String to, BigDecimal value, String memo);
+
+    AccountTx getTansferHishory(Integer limit);
+
+    String getBalance();
 }

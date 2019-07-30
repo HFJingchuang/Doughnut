@@ -3,8 +3,6 @@ package com.doughnut.wallet;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-
-import com.android.jtblk.client.Remote;
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.AccountInfo;
@@ -23,7 +21,6 @@ public class WalletManager implements IWallet {
 
     private static WalletManager walletManager = null;
     private static Context mContext;
-    private static Remote remote = new JtServer().getRemote();
 
     private WalletManager() {
     }
@@ -141,6 +138,12 @@ public class WalletManager implements IWallet {
         return false;
     }
 
+    /**
+     * 获取私钥
+     *
+     * @param password
+     * @return
+     */
     @Override
     public String getPrivateKey(String password) {
         try {
@@ -162,6 +165,7 @@ public class WalletManager implements IWallet {
      * @param memo
      * @return
      */
+    @Override
     public String transfer(String password, String to, BigDecimal value, String memo) {
         try {
             AmountInfo amount;
@@ -169,7 +173,7 @@ public class WalletManager implements IWallet {
             amount.setCurrency("SWT");
             amount.setValue(value.toString());
             String from = WalletSp.getInstance(mContext).getAddress();
-            Transaction tx = remote.buildPaymentTx(from, to, amount);
+            Transaction tx = JtServer.getInstance().getRemote().buildPaymentTx(from, to, amount);
             tx.setSecret(getPrivateKey(password));
             List<String> memos = new ArrayList<String>();
             memos.add(memo);
@@ -192,10 +196,11 @@ public class WalletManager implements IWallet {
      * @param limit
      * @return
      */
+    @Override
     public AccountTx getTansferHishory(Integer limit) {
         try {
             String address = WalletSp.getInstance(mContext).getAddress();
-            AccountTx bean = remote.requestAccountTx(address, limit, null);
+            AccountTx bean = JtServer.getInstance().getRemote().requestAccountTx(address, limit, null);
             return bean;
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,10 +213,11 @@ public class WalletManager implements IWallet {
      *
      * @return
      */
+    @Override
     public String getBalance() {
         try {
             String address = WalletSp.getInstance(mContext).getAddress();
-            AccountInfo bean = remote.requestAccountInfo(address, null, null);
+            AccountInfo bean = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
             return bean.getAccountData().getBalance();
         } catch (Exception e) {
             e.printStackTrace();
