@@ -29,14 +29,14 @@ import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 
 
-public class CreateWalletActivity extends BaseActivity implements View.OnClickListener {
+public class CreateNewWalletActivity extends BaseActivity implements View.OnClickListener {
 
     public final static String TAG = "CreateWalletActivity";
     public static final String BLOCK = "BLOCK";
     private static final int REQUEST_CODE = 1005; //选择底层请求码
 
     private TitleBar mTitleBar;
-//    private TextView mTvWalletType;
+    //    private TextView mTvWalletType;
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm, mEdtWalletTips;
     private ImageView mImgServiceTerms;
     private TextView mTvServiceTerms;
@@ -148,7 +148,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
      * 启动Activity
      *
      * @param context
-     * @param block   代币体系
+     * @param block
      */
     public static void navToActivity(Context context, BlockChainData.Block block, int request) {
         if (!(context instanceof BaseActivity)) {
@@ -163,10 +163,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     private boolean paramCheck() {
-//        if (mBlock == null) {
-//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_block), "OK");
-//            return false;
-//        }
 
         String walletName = mEdtWalletName.getText().toString();
         String walletPwd = mEdtWalletPwd.getText().toString();
@@ -201,74 +197,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         }
 
         return true;
-    }
-
-    private void createWallet(final String walletName, final String walletPwd) {
-        setBtnStateToCreating();
-        mWalletUtil.createWallet(walletName, walletPwd, (int) mBlock.hid, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    TLog.d(TAG, "创建钱包成功");
-                    String hash = FileUtil.getStringContent(walletPwd);
-                    String privateKey = extra.getString("privatekey", "");
-                    int walletType = extra.getInt("blockType", -1);
-                    String words = extra.getString("words", "");
-                    String address = extra.getString("address", "");
-                    if (mWalletUtil.isWalletLegal(privateKey, address)) {
-                        recordWallet(walletName, walletType, hash, privateKey, words, mEdtWalletTips.getText().toString(),
-                                extra.getString("address", ""));
-                    } else {
-                        resetBtn();
-                        ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 1");
-                    }
-                } else {
-                    ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 2" + extra.toString());
-                }
-            }
-        });
-    }
-
-    private void recordWallet(final String name, final int walletType, final String hash, final String privateKey,
-                              final String words, String tips, final String address) {
-        long walletID = System.currentTimeMillis();
-        storeWallet(walletID, walletType, name, address, hash, privateKey, words);
-        ToastUtil.toast(CreateWalletActivity.this, getString(R.string.toast_wallet_created));
-        gotoBakup();
-    }
-
-    private void storeWallet(long walletId, int walletType, String walletName, String address, String walletHash, String privatekey, String words) {
-        WalletInfoManager.WData wallet = new WalletInfoManager.WData();
-        wallet.wid = walletId;
-        wallet.wname = walletName;
-        wallet.waddress = address;
-        wallet.whash = walletHash;
-        wallet.wpk = privatekey;
-        wallet.type = walletType;
-        wallet.words = words;
-        WalletInfoManager.getInstance().insertWallet(wallet);
-    }
-
-
-    private void resetBtn() {
-        mBtnConfirm.setText(getString(R.string.btn_create_wallet_done));
-        mBtnConfirm.setEnabled(true);
-    }
-
-    private void setBtnStateToCreating() {
-        mBtnConfirm.setText(getString(R.string.btn_creating_wallet));
-        mBtnConfirm.setEnabled(false);
-    }
-
-
-    private void gotoBakup() {
-        WalletInfoManager.WData walletData = WalletInfoManager.getInstance().getCurrentWallet();
-        if (TextUtils.isEmpty(walletData.words)) {
-            StartBakupActivity.startBakupWalletStartActivity(CreateWalletActivity.this, walletData.waddress, 1);
-        } else {
-            StartBakupActivity.startBakupWalletStartActivity(CreateWalletActivity.this, walletData.waddress, 2);
-        }
-        this.finish();
     }
 
     private void gotoServiceTermPage() {

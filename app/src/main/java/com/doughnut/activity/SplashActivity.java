@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.doughnut.R;
 import com.doughnut.base.WalletInfoManager;
@@ -21,9 +19,6 @@ import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;
-import com.doughnut.wallet.WalletManager;
-
-import java.math.BigDecimal;
 
 public class SplashActivity extends BaseActivity implements View.OnClickListener {
 
@@ -41,9 +36,12 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
+        // 启动页背景图片
         mLayoutSplashBtn = (LinearLayout) findViewById(R.id.layout_splash_btn);
+        // 启动页创建钱包按钮
         mTvCreateWallet = (TextView) findViewById(R.id.tv_create_wallet);
         mTvCreateWallet.setOnClickListener(this);
+        // 启动页导入钱包按钮
         mTvImportWallet = (TextView) findViewById(R.id.tv_import_wallet);
         mTvImportWallet.setOnClickListener(this);
         if (!NetUtil.isNetworkAvailable(this)) {
@@ -68,14 +66,18 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         context.startActivity(intent);
     }
 
+    // 创建钱包按钮点击事件
     private void gotoCreateWallet() {
-        CreateWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
+        CreateNewWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
         this.finish();
     }
 
+    // 导入钱包按钮点击事件
     private void gotoImportWallet() {
-        ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
-        this.finish();
+//        ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
+//        this.finish();
+        Intent intent = new Intent(this, ImportWalletSelectActivity.class);
+        startActivity(intent);
     }
 
     private void checkPermission() {

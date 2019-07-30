@@ -41,10 +41,10 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
                 mWalletData = WalletInfoManager.getInstance().getWData(walletAddress);
             }
         }
-        if (!verifyData()) {
-            this.finish();
-            return;
-        }
+//        if (!verifyData()) {
+//            this.finish();
+//            return;
+//        }
         initView();
     }
 

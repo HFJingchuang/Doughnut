@@ -4,14 +4,15 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.doughnut"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion 23
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        maxSdkVersion 27
+        applicationId = 'com.doughnut'
     }
     buildTypes {
         release {
@@ -31,14 +32,19 @@ android {
         cruncherEnabled = false
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
 allprojects {
     repositories {
+        jcenter()
         maven { url 'https://jitpack.io' }
+        google()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -53,6 +59,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     implementation 'com.mcxiaoke.volley:library:1.0.+'
+    implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.greenrobot:eventbus:3.0.0'
