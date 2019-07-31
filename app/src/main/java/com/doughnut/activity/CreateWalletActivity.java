@@ -49,7 +49,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.doughnut_create_wallet_new);
+        setContentView(R.layout.activity_create_wallet_new);
         if (getIntent().hasExtra(BLOCK)) {
             mBlock = getIntent().getParcelableExtra(BLOCK);
         }

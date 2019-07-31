@@ -40,7 +40,7 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.doughnut_import_wallet_select);
+        setContentView(R.layout.activity_import_wallet_select);
         if (getIntent() != null) {
             mFlag = getIntent().getIntExtra(FROM, 1);
         }

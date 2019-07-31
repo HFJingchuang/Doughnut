@@ -68,8 +68,10 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     // 创建钱包按钮点击事件
     private void gotoCreateWallet() {
-        CreateNewWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
-        this.finish();
+//        CreateNewWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
+//        this.finish();
+        Intent intent = new Intent(this, CreateNewWalletActivity.class);
+        startActivity(intent);
     }
 
     // 导入钱包按钮点击事件

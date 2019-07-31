@@ -31,7 +31,7 @@ import com.doughnut.view.TitleBar;
 
 public class CreateNewWalletActivity extends BaseActivity implements View.OnClickListener {
 
-    public final static String TAG = "CreateWalletActivity";
+    public final static String TAG = "CreateNewWalletActivity";
     public static final String BLOCK = "BLOCK";
     private static final int REQUEST_CODE = 1005; //选择底层请求码
 
@@ -49,7 +49,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.doughnut_create_wallet_new);
+        setContentView(R.layout.activity_create_new_wallet);
         if (getIntent().hasExtra(BLOCK)) {
             mBlock = getIntent().getParcelableExtra(BLOCK);
         }

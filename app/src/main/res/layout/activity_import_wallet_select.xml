@@ -47,6 +47,8 @@
             android:background="@color/split_color" />
     </RelativeLayout>
 
+    <View style="@style/Style.Line" />
+
     <RelativeLayout
         android:id="@+id/select_export_keyStore"
         android:layout_width="match_parent"
@@ -74,6 +76,8 @@
             android:layout_marginRight="15dp"
             android:src="@drawable/ic_user_rightarrow" />
     </RelativeLayout>
+
+    <View style="@style/Style.Line" />
 
     <RelativeLayout
         android:id="@+id/select_export_QRCode"
