@@ -43,7 +43,18 @@ public class JtServer {
         this.local_sign = local_sign;
     }
 
+    /**
+     * 切换服务节点
+     *
+     * @param server
+     */
+    public void changeServer(String server) {
+        this.instance = null;
+        this.server = server;
+    }
+
     public Remote getRemote() {
         return remote;
     }
+
 }
