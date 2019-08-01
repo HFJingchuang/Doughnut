@@ -224,6 +224,17 @@
     <string name="btn_language_zh">简体中文</string>
     <string name="btn_language_en">English</string>
     <string name="title_languages">语言设置</string>
-
-
+    <string name="select_privateKey_import">私钥导入</string>
+    <string name="select_keyStore_import">keyStore导入</string>
+    <string name="select_QR_code_import">二维码图片导入</string>
+    <string name="enter_title_private_key">钱包私钥</string>
+    <string name="enter_hint_private_key">请输入钱包私钥</string>
+    <string name="content_keyStore">keyStore文本内容</string>
+    <string name="select_privateKey_export">导出私钥</string>
+    <string name="select_keyStore_export">导出keyStore</string>
+    <string name="select_QR_code_export">导出二维码图片</string>
+    <string name="enter_title_payment_address">收款地址</string>
+    <string name="enter_hint_payment_address">请输入钱包地址</string>
+    <string name="enter_title_currency_type">币种</string>
+    <string name="enter_hint_currency_type">请选择币种</string>
 </resources>

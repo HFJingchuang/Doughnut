@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f9"
+    android:orientation="vertical">
+
+    <com.doughnut.view.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/select_export_privateKey"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:background="#ffffff"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_select_privateKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:drawableLeft="@drawable/ic_wallet_manage"
+            android:drawablePadding="13dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_privateKey_import"
+            android:textColor="#333333" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_user_rightarrow" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.33dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="50dp"
+            android:background="@color/split_color" />
+    </RelativeLayout>
+
+    <View style="@style/Style.Line" />
+
+    <RelativeLayout
+        android:id="@+id/select_export_keyStore"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffff"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_select_keyStore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:drawableLeft="@drawable/ic_wallet_manage"
+            android:drawablePadding="13dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_keyStore_import"
+            android:textColor="#333333" />select_privateKey_import
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_user_rightarrow" />
+    </RelativeLayout>
+
+    <View style="@style/Style.Line" />
+
+    <RelativeLayout
+        android:id="@+id/select_export_QRCode"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffff"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_transaction_record1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:drawableLeft="@drawable/ic_wallet_manage"
+            android:drawablePadding="13dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_QR_code_import"
+            android:textColor="#333333" />select_privateKey_import
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_user_rightarrow" />
+    </RelativeLayout>
+
+</LinearLayout>

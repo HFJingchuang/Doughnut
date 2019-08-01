@@ -224,5 +224,17 @@
     <string name="btn_language_zh">简体中文</string>
     <string name="btn_language_en">English</string>
     <string name="title_languages">Language Settings</string>
-
+    <string name="select_privateKey_import">Private Key import</string>
+    <string name="select_keyStore_import">keyStore import</string>
+    <string name="select_QR_code_import">QR code import</string>
+    <string name="enter_title_private_key">private key</string>
+    <string name="enter_hint_private_key">Please enter the private key</string>
+    <string name="content_keyStore">KeyStore Text content</string>
+    <string name="select_privateKey_export">Export Private Key</string>
+    <string name="select_keyStore_export">Export keyStore</string>
+    <string name="select_QR_code_export">export QR code</string>
+    <string name="enter_title_payment_address">Payment Address</string>
+    <string name="enter_hint_payment_address">Please enter the wallet address</string>
+    <string name="enter_title_currency_type">Currency type</string>
+    <string name="enter_hint_currency_type">Please select the currency type </string>
 </resources>

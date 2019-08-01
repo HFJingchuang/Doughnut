@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.doughnut.view.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen_content_padding"
+        android:paddingRight="@dimen/dimen_content_padding">
+
+
+        <View style="@style/Style.Line" />
+
+        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+
+            <TextView
+                style="@style/Style.WalletCreateTitle"
+                android:text="@string/enter_title_private_key" />
+
+            <EditText
+                android:id="@+id/edt_wallet_name"
+                style="@style/Style.Edit.WalletCreate"
+                android:hint="@string/enter_hint_private_key" />
+        </LinearLayout>
+
+        <View style="@style/Style.Line" />
+
+        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+
+            <TextView
+                style="@style/Style.WalletCreateTitle"
+                android:text="@string/enter_title_password" />
+
+            <EditText
+                android:id="@+id/edt_wallet_pwd"
+                style="@style/Style.Edit.WalletCreate.Pwd"
+                android:hint="@string/enter_hint_password" />
+        </LinearLayout>
+
+        <View style="@style/Style.Line" />
+
+        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+
+            <TextView
+                style="@style/Style.WalletCreateTitle"
+                android:text="@string/enter_title_verify" />
+
+            <EditText
+                android:id="@+id/edt_wallet_pwd_confirm"
+                style="@style/Style.Edit.WalletCreate.Pwd"
+                android:hint="@string/enter_hint_verify" />
+        </LinearLayout>
+
+        <View style="@style/Style.Line" />
+
+        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Style.WalletCreateTitle"
+                    android:text="@string/enter_title_prompt" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:text="@string/enter_hint_prompt"
+                    android:textSize="@dimen/text_size_11" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/edt_wallet_tips"
+                style="@style/Style.Edit.WalletCreate" />
+        </LinearLayout>
+
+        <View style="@style/Style.Line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_service_terms"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/selector_service_terms" />
+
+            <TextView
+                android:id="@+id/tv_service_terms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_confirm"
+            style="@style/Style.Btn.Theme"
+            android:layout_marginTop="50dp"
+            android:text="@string/btn_create_wallet_done" />
+    </LinearLayout>
+</LinearLayout>
