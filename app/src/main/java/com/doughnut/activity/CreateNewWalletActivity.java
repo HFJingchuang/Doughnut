@@ -99,7 +99,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 //                    String walletName = mEdtWalletName.getText().toString();
 //                    String walletPwd = mEdtWalletPwd.getText().toString();
 //                    createWallet(walletName, walletPwd);
-                    Intent intent = new Intent(this, StartBakupActivity.class);
+                    Intent intent = new Intent(this, BackupStartActivity.class);
                     startActivity(intent);
 
                 }
@@ -187,10 +187,11 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_passwords_unmatch), "OK");
             return false;
         }
-        if (walletPwd.length() < 8) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_short_password), "OK");
-            return false;
-        }
+        // TODO
+//        if (walletPwd.length() < 8) {
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_short_password), "OK");
+//            return false;
+//        }
         if (!readedTerms) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_read_service), "OK");
             return false;
