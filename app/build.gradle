@@ -12,7 +12,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-        maxSdkVersion 27
         applicationId = 'com.doughnut'
     }
     buildTypes {

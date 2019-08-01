@@ -27,6 +27,7 @@ import com.doughnut.utils.TLog;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletManager;
 
 
 public class CreateNewWalletActivity extends BaseActivity implements View.OnClickListener {
@@ -187,11 +188,12 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_passwords_unmatch), "OK");
             return false;
         }
-        // TODO
-//        if (walletPwd.length() < 8) {
-//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_short_password), "OK");
-//            return false;
-//        }
+
+        if (walletPwd.length() < 8) {
+            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_short_password), "OK");
+            return false;
+        }
+
         if (!readedTerms) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_read_service), "OK");
             return false;
