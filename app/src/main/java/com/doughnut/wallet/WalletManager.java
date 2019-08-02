@@ -41,33 +41,40 @@ public class WalletManager implements IWallet {
      * 创建钱包
      *
      * @param password
+     * @param name
      * @return
      */
     @Override
-    public boolean createWallet(String password) {
+    public String createWallet(String password, String name) {
         try {
             Wallet wallet = Wallet.generate();
             KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
-            WalletSp.getInstance(mContext).setAddress(keyStoreFile.getAddress());
-            WalletSp.getInstance(mContext).setKeyStore(keyStoreFile.toString());
-            return true;
+            String address = keyStoreFile.getAddress();
+            WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+            return address;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "";
+    }
+
+    @Override
+    public boolean deleteWallet(String address) {
         return false;
     }
 
     /**
      * 导出二维码图片
      *
+     * @param address
      * @param widthAndHeight
      * @param color
      * @return
      */
     @Override
-    public Bitmap exportWalletWithQR(int widthAndHeight, int color) {
+    public Bitmap exportWalletWithQR(String address, int widthAndHeight, int color) {
         try {
-            String keyStore = WalletSp.getInstance(mContext).getKeyStore();
+            String keyStore = WalletSp.getInstance(mContext, address).getKeyStore();
             Bitmap bitmap = QRGenerator.getQrCodeImage(keyStore, widthAndHeight, color);
             return bitmap;
         } catch (Exception e) {
@@ -81,73 +88,76 @@ public class WalletManager implements IWallet {
      *
      * @param password
      * @param privateKey
+     * @param name
      * @return
      */
     @Override
-    public boolean importWalletWithKey(String password, String privateKey) {
+    public String importWalletWithKey(String password, String privateKey, String name) {
         try {
             if (Wallet.isValidSecret(privateKey)) {
                 Wallet wallet = Wallet.fromSecret(privateKey);
                 KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
-                WalletSp.getInstance(mContext).setAddress(keyStoreFile.getAddress());
-                WalletSp.getInstance(mContext).setKeyStore(keyStoreFile.toString());
-                return true;
+                String address = keyStoreFile.getAddress();
+                WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                return address;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
     }
 
     /**
      * 导入二维码图片
      *
      * @param qrImage
+     * @param name
      * @return
      */
     @Override
-    public boolean importQRImage(Bitmap qrImage) {
+    public String importQRImage(Bitmap qrImage, String name) {
         try {
             String keyStore = QRGenerator.decodeQrImage(qrImage);
-            return importKeysStore(keyStore);
+            return importKeysStore(keyStore, name);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
     }
 
     /**
      * 导入KeyStore
      *
      * @param keyStore
+     * @param name
      * @return
      */
     @Override
-    public boolean importKeysStore(String keyStore) {
+    public String importKeysStore(String keyStore, String name) {
         try {
             KeyStoreFile keyStoreFile = KeyStoreFile.parse(keyStore);
             String address = keyStoreFile.getAddress();
             if (Wallet.isValidAddress(address)) {
-                WalletSp.getInstance(mContext).setAddress(keyStoreFile.getAddress());
-                WalletSp.getInstance(mContext).setKeyStore(keyStoreFile.toString());
-                return true;
+                WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                return address;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
     }
 
     /**
      * 获取私钥
      *
      * @param password
+     * @param address
      * @return
      */
     @Override
-    public String getPrivateKey(String password) {
+    public String getPrivateKey(String password, String address) {
         try {
-            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext).getKeyStore());
+            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext, address).getKeyStore());
             Wallet jtKeyPair = KeyStore.decrypt(password, keyStoreFile);
             return jtKeyPair.getSecret();
         } catch (Exception e) {
@@ -160,21 +170,21 @@ public class WalletManager implements IWallet {
      * 转账
      *
      * @param password
+     * @param from
      * @param to
      * @param value
      * @param memo
      * @return
      */
     @Override
-    public String transfer(String password, String to, BigDecimal value, String memo) {
+    public String transfer(String password, String from, String to, BigDecimal value, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
             amount.setCurrency("SWT");
             amount.setValue(value.toString());
-            String from = WalletSp.getInstance(mContext).getAddress();
             Transaction tx = JtServer.getInstance().getRemote().buildPaymentTx(from, to, amount);
-            tx.setSecret(getPrivateKey(password));
+            tx.setSecret(getPrivateKey(password, from));
             List<String> memos = new ArrayList<String>();
             memos.add(memo);
             tx.addMemo(memos);
@@ -197,9 +207,8 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public AccountTx getTansferHishory(Integer limit) {
+    public AccountTx getTansferHishory(String address, Integer limit) {
         try {
-            String address = WalletSp.getInstance(mContext).getAddress();
             AccountTx bean = JtServer.getInstance().getRemote().requestAccountTx(address, limit, null);
             return bean;
         } catch (Exception e) {
@@ -214,9 +223,8 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public String getBalance() {
+    public String getBalance(String address) {
         try {
-            String address = WalletSp.getInstance(mContext).getAddress();
             AccountInfo bean = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
             return bean.getAccountData().getBalance();
         } catch (Exception e) {

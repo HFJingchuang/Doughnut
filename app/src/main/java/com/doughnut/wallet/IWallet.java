@@ -8,21 +8,23 @@ import java.math.BigDecimal;
 
 public interface IWallet {
 
-    boolean createWallet(String password);
+    String createWallet(String password, String name);
 
-    Bitmap exportWalletWithQR(int widthAndHeight, int color);
+    boolean deleteWallet(String address);
 
-    boolean importWalletWithKey(String password, String privateKey);
+    Bitmap exportWalletWithQR(String address, int widthAndHeight, int color);
 
-    boolean importQRImage(Bitmap qrImage);
+    String importWalletWithKey(String password, String privateKey, String name);
 
-    boolean importKeysStore(String keyStore);
+    String importQRImage(Bitmap qrImage, String name);
 
-    String getPrivateKey(String password);
+    String importKeysStore(String keyStore, String name);
 
-    String transfer(String password, String to, BigDecimal value, String memo);
+    String getPrivateKey(String password, String address);
 
-    AccountTx getTansferHishory(Integer limit);
+    String transfer(String password, String from, String to, BigDecimal value, String memo);
 
-    String getBalance();
+    AccountTx getTansferHishory(String address, Integer limit);
+
+    String getBalance(String address);
 }
