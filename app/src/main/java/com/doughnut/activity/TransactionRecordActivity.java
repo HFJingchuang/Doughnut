@@ -106,7 +106,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
     private void initView() {
 
-        mSwipeRefreshLayout = findViewById(R.id.root_view);
+//        mSwipeRefreshLayout = findViewById(R.id.root_view);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mTitleBar = findViewById(R.id.title_bar);
@@ -122,7 +122,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.setVisibility(View.GONE);
 
-        mRecyclerViewTransactionRecord = findViewById(R.id.recyclerview_transaction_record);
+//        mRecyclerViewTransactionRecord = findViewById(R.id.recyclerview_transaction_record);
         mAdapter = new TransactionRecordAdapter();
         mAdapter.setDataLoadingListener(this);
         mRecyclerViewTransactionRecord.setLayoutManager(new LinearLayoutManager(TransactionRecordActivity.this));

@@ -10,7 +10,7 @@ public interface IWallet {
 
     String createWallet(String password, String name);
 
-    String deleteWallet(String address);
+    void deleteWallet(String address);
 
     Bitmap exportWalletWithQR(String address, int widthAndHeight, int color);
 

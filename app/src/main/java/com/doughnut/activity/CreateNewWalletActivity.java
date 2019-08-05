@@ -149,9 +149,9 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
     private void createWallet(final String walletName, final String walletPwd) {
          WalletManager walletManager =  WalletManager.getInstance(this);
          // 创建钱包
-         walletManager.createWallet(walletPwd);
+         walletManager.createWallet(walletPwd,walletName);
          // 获取钱包私钥
-        walletManager.getPrivateKey(walletPwd);
+        walletManager.getPrivateKey(walletPwd,walletName);
 
 
 
