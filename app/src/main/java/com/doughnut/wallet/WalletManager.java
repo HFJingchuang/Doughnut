@@ -3,8 +3,6 @@ package com.doughnut.wallet;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-
-import com.android.jtblk.client.Remote;
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.AccountInfo;
@@ -23,7 +21,6 @@ public class WalletManager implements IWallet {
 
     private static WalletManager walletManager = null;
     private static Context mContext;
-    private static Remote remote = new JtServer().getRemote();
 
     private WalletManager() {
     }
@@ -44,33 +41,46 @@ public class WalletManager implements IWallet {
      * 创建钱包
      *
      * @param password
+     * @param name
      * @return
      */
     @Override
-    public boolean createWallet(String password) {
+    public String createWallet(String password, String name) {
         try {
             Wallet wallet = Wallet.generate();
             KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
-            WalletSp.getInstance(mContext).setAddress(keyStoreFile.getAddress());
-            WalletSp.getInstance(mContext).setKeyStore(keyStoreFile.toString());
-            return true;
+            String address = keyStoreFile.getAddress();
+            WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+            return address;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
+    }
+
+    /**
+     * 删除钱包，返回一个钱包用于当前显示
+     *
+     * @param address
+     * @return
+     */
+    @Override
+    public String deleteWallet(String address) {
+        return WalletSp.getInstance(mContext, address).delete();
     }
 
     /**
      * 导出二维码图片
      *
+     * @param address
      * @param widthAndHeight
      * @param color
      * @return
      */
     @Override
-    public Bitmap exportWalletWithQR(int widthAndHeight, int color) {
+    public Bitmap exportWalletWithQR(String address, int widthAndHeight, int color) {
         try {
-            String keyStore = WalletSp.getInstance(mContext).getKeyStore();
+            String keyStore = WalletSp.getInstance(mContext, address).getKeyStore();
             Bitmap bitmap = QRGenerator.getQrCodeImage(keyStore, widthAndHeight, color);
             return bitmap;
         } catch (Exception e) {
@@ -84,67 +94,76 @@ public class WalletManager implements IWallet {
      *
      * @param password
      * @param privateKey
+     * @param name
      * @return
      */
     @Override
-    public boolean importWalletWithKey(String password, String privateKey) {
+    public String importWalletWithKey(String password, String privateKey, String name) {
         try {
             if (Wallet.isValidSecret(privateKey)) {
                 Wallet wallet = Wallet.fromSecret(privateKey);
                 KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
-                WalletSp.getInstance(mContext).setAddress(keyStoreFile.getAddress());
-                WalletSp.getInstance(mContext).setKeyStore(keyStoreFile.toString());
-                return true;
+                String address = keyStoreFile.getAddress();
+                WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                return address;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
     }
 
     /**
      * 导入二维码图片
      *
      * @param qrImage
+     * @param name
      * @return
      */
     @Override
-    public boolean importQRImage(Bitmap qrImage) {
+    public String importQRImage(Bitmap qrImage, String name) {
         try {
             String keyStore = QRGenerator.decodeQrImage(qrImage);
-            return importKeysStore(keyStore);
+            return importKeysStore(keyStore, name);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
     }
 
     /**
      * 导入KeyStore
      *
      * @param keyStore
+     * @param name
      * @return
      */
     @Override
-    public boolean importKeysStore(String keyStore) {
+    public String importKeysStore(String keyStore, String name) {
         try {
             KeyStoreFile keyStoreFile = KeyStoreFile.parse(keyStore);
             String address = keyStoreFile.getAddress();
             if (Wallet.isValidAddress(address)) {
-                WalletSp.getInstance(mContext).setAddress(keyStoreFile.getAddress());
-                WalletSp.getInstance(mContext).setKeyStore(keyStoreFile.toString());
-                return true;
+                WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                return address;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "";
     }
 
+    /**
+     * 获取私钥
+     *
+     * @param password
+     * @param address
+     * @return
+     */
     @Override
-    public String getPrivateKey(String password) {
+    public String getPrivateKey(String password, String address) {
         try {
-            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext).getKeyStore());
+            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext, address).getKeyStore());
             Wallet jtKeyPair = KeyStore.decrypt(password, keyStoreFile);
             return jtKeyPair.getSecret();
         } catch (Exception e) {
@@ -157,20 +176,21 @@ public class WalletManager implements IWallet {
      * 转账
      *
      * @param password
+     * @param from
      * @param to
      * @param value
      * @param memo
      * @return
      */
-    public String transfer(String password, String to, BigDecimal value, String memo) {
+    @Override
+    public String transfer(String password, String from, String to, BigDecimal value, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
             amount.setCurrency("SWT");
             amount.setValue(value.toString());
-            String from = WalletSp.getInstance(mContext).getAddress();
-            Transaction tx = remote.buildPaymentTx(from, to, amount);
-            tx.setSecret(getPrivateKey(password));
+            Transaction tx = JtServer.getInstance().getRemote().buildPaymentTx(from, to, amount);
+            tx.setSecret(getPrivateKey(password, from));
             List<String> memos = new ArrayList<String>();
             memos.add(memo);
             tx.addMemo(memos);
@@ -192,10 +212,10 @@ public class WalletManager implements IWallet {
      * @param limit
      * @return
      */
-    public AccountTx getTansferHishory(Integer limit) {
+    @Override
+    public AccountTx getTansferHishory(String address, Integer limit) {
         try {
-            String address = WalletSp.getInstance(mContext).getAddress();
-            AccountTx bean = remote.requestAccountTx(address, limit, null);
+            AccountTx bean = JtServer.getInstance().getRemote().requestAccountTx(address, limit, null);
             return bean;
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,10 +228,10 @@ public class WalletManager implements IWallet {
      *
      * @return
      */
-    public String getBalance() {
+    @Override
+    public String getBalance(String address) {
         try {
-            String address = WalletSp.getInstance(mContext).getAddress();
-            AccountInfo bean = remote.requestAccountInfo(address, null, null);
+            AccountInfo bean = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
             return bean.getAccountData().getBalance();
         } catch (Exception e) {
             e.printStackTrace();

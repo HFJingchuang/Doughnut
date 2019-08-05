@@ -1,5 +1,7 @@
 package com.doughnut;
 
+import com.doughnut.utils.GsonUtil;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,6 +14,7 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        GsonUtil gsonUtil = new GsonUtil("{\"wallets\":[]}");
+        System.out.println(gsonUtil.toString());
     }
 }
