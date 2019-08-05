@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.base.WalletInfoManager;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletManager;
 
 
 public class BackupStartActivity extends BaseActivity implements View.OnClickListener {
@@ -66,7 +67,10 @@ public class BackupStartActivity extends BaseActivity implements View.OnClickLis
 //            BWDInfoActivity.startBakupWalletInfoActivity(BackupStartActivity.this,
 //                    mWalletData.waddress, mType);
 //            this.finish();
-            Intent intent = new Intent(this, BackupInfoActivity.class);
+            WalletManager walletManager =  WalletManager.getInstance(this);
+//             获取钱包私钥
+//            walletManager.getPrivateKey(walletPwd);
+            Intent intent = new Intent(this, WalletManageActivity.class);
             startActivity(intent);
 
         }

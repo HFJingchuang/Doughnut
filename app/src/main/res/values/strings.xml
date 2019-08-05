@@ -205,8 +205,8 @@
     <string name="dialog_btn_backup_now">立即备份</string>
     <string name="content_nothing">空空如也~</string>
     <string name="tip_no_backup">未备份</string>
-    <string name="btn_asset">资产</string>
-    <string name="btn_me">我</string>
+    <string name="btn_asset">钱包</string>
+    <string name="btn_me">我的</string>
     <string name="content_no_page">哎呀，页面跑丢了~</string>
     <string name="btn_scan_it">扫一扫</string>
     <string name="btn_add_wallet">创建钱包</string>
@@ -214,7 +214,7 @@
     <string name="dialog_content_no_wallet">你未创建%1s的钱包，%2s的数字代币只能存放在该体系的钱包中</string>
     <string name="content_all_wallet">全部钱包</string>
     <string name="btn_collect">收款</string>
-    <string name="btn_recent_transactions">最近交易记录</string>
+    <string name="btn_recent_transactions">最近交易记录</string>btn_me
     <string name="enter_title_collect_amount">收款金额</string>
     <string name="enter_hint_collect_amount">请设置收款金额</string>
     <string name="content_asset">我的资产(¥)</string>
@@ -237,4 +237,9 @@
     <string name="enter_hint_payment_address">请输入钱包地址</string>
     <string name="enter_title_currency_type">币种</string>
     <string name="enter_hint_currency_type">请选择币种</string>
+    <string name="wallet_system＿SWTC">SWTC公链钱包</string>
+    <string name="tab_bar_code">二维码</string>
+    <string name="tab_secret_key">密钥</string>
+    <string name="tab_keyStore">keyStore</string>
+    <string name="current_wallet">当前钱包</string>
 </resources>

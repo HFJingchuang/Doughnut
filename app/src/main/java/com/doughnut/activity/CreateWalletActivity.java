@@ -96,9 +96,9 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
                 if (paramCheck()) {
 
-//                    String walletName = mEdtWalletName.getText().toString();
-//                    String walletPwd = mEdtWalletPwd.getText().toString();
-//                    createWallet(walletName, walletPwd);
+                    String walletName = mEdtWalletName.getText().toString();
+                    String walletPwd = mEdtWalletPwd.getText().toString();
+                    createWallet(walletName, walletPwd);
                     Intent intent = new Intent(this, StartBakupActivity.class);
                     startActivity(intent);
 

@@ -38,17 +38,17 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
     private TitleBar mTitleBar;
     //    private TextView mTvWalletType;
+
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm, mEdtWalletTips;
     private ImageView mImgServiceTerms;
-    private TextView mTvServiceTerms;
+    private TextView mTvServiceTerms,tab_key,tab_barcode,tab_keystore;
 
     private Button mBtnConfirm;
 
     private BlockChainData.Block mBlock;
     private BaseWalletUtil mWalletUtil;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_wallet);
         if (getIntent().hasExtra(BLOCK)) {
@@ -58,6 +58,12 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         initView();
     }
 
+
+     void setSelect(){
+         tab_key.setSelected(false);
+         tab_barcode.setSelected(false);
+         tab_keystore.setSelected(false);
+     }
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
@@ -84,11 +90,20 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 //        mTvWalletType.setOnClickListener(this);
         mBtnConfirm.setOnClickListener(this);
 
+        tab_key = findViewById(R.id.tab_key);
+        tab_key.setOnClickListener(this);
+        tab_barcode = findViewById(R.id.tab_barcode);
+        tab_barcode.setOnClickListener(this);
+        tab_keystore = findViewById(R.id.tab_keystore);
+        tab_keystore.setOnClickListener(this);
+
         setWalletTypeInfo();
+        tab_key.performClick();
     }
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()) {
 //            case R.id.tv_wallet_type:
 //                ChooseWalletBlockActivity.navToActivity(CreateWalletActivity.this, REQUEST_CODE);
@@ -96,14 +111,16 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
             case R.id.btn_confirm:
 
                 if (paramCheck()) {
-
-//                    String walletName = mEdtWalletName.getText().toString();
-//                    String walletPwd = mEdtWalletPwd.getText().toString();
+                    String walletName = mEdtWalletName.getText().toString();
+                    String walletPwd = mEdtWalletPwd.getText().toString();
+                    //TODO 创建钱包
 //                    createWallet(walletName, walletPwd);
-                    Intent intent = new Intent(this, BackupStartActivity.class);
-                    startActivity(intent);
 
+                    Intent intent = new Intent(this, BackupStartActivity.class);
+
+                    startActivity(intent);
                 }
+                
                 break;
             case R.id.img_service_terms:
                 mImgServiceTerms.setSelected(!mImgServiceTerms.isSelected());
@@ -111,7 +128,33 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
             case R.id.tv_service_terms:
                 gotoServiceTermPage();
                 break;
+           //tab按钮事件
+
+            case  R.id.tab_barcode:
+
+                setSelect();
+                tab_barcode.setSelected(true);
+                break;
+            case  R.id.tab_key:
+                setSelect();
+                tab_key.setSelected(true);
+                break;
+            case  R.id.tab_keystore:
+                setSelect();
+                tab_keystore.setSelected(true);
+                break;
         }
+    }
+
+    private void createWallet(final String walletName, final String walletPwd) {
+         WalletManager walletManager =  WalletManager.getInstance(this);
+         // 创建钱包
+         walletManager.createWallet(walletPwd);
+         // 获取钱包私钥
+        walletManager.getPrivateKey(walletPwd);
+
+
+
     }
 
     @Override
@@ -163,6 +206,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         ((Activity) context).startActivityForResult(intent, request);
     }
 
+    // 前端页面校验
     private boolean paramCheck() {
 
         String walletName = mEdtWalletName.getText().toString();

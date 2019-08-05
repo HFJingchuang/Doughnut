@@ -46,10 +46,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-            ViewUtil.showBakupDialog(MainActivity.this, WalletInfoManager.getInstance().getCurrentWallet(), false,
-                    true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-        }
+//        if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
+//            ViewUtil.showBakupDialog(MainActivity.this, WalletInfoManager.getInstance().getCurrentWallet(), false,
+//                    true, WalletInfoManager.getInstance().getCurrentWallet().whash);
+//        }
     }
 
     @Override
@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (view == mLayoutTabMine) {
             mMainViewPager.setCurrentItem(MINE_INDEX);
         }
+
     }
 
     public static void startMainActivity(Context context) {
@@ -76,13 +77,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
         mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
         mLayoutTabWallet.setOnClickListener(this);
-
         mLayoutTabMine.setOnClickListener(this);
 
 
         mImgWallet = (ImageView) findViewById(R.id.img_tab_wallet);
         mTvWallet = (TextView) findViewById(R.id.tv_tab_wallet);
-
         mImgMine = (ImageView) findViewById(R.id.img_tab_mine);
         mTvMine = (TextView) findViewById(R.id.tv_tab_mine);
 
@@ -108,6 +107,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
         pageSelected(WALLET_INDEX);
     }
+
+
 
     private void pageSelected(int position) {
         resetTab();

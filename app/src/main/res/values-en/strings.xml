@@ -237,4 +237,9 @@
     <string name="enter_hint_payment_address">Please enter the wallet address</string>
     <string name="enter_title_currency_type">Currency type</string>
     <string name="enter_hint_currency_type">Please select the currency type </string>
+    <string name="wallet_system＿SWTC">SWTC Public Chain Wallet</string>
+    <string name="tab_bar_code">barCode</string>
+    <string name="tab_secret_key">secret key</string>
+    <string name="tab_keyStore">keyStore</string>
+    <string name="current_wallet">当前钱包</string>
 </resources>
