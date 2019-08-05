@@ -38,4 +38,6 @@
     <color name="color_text_80">#808080</color>
     <color name="color_theme">#2890FE</color>
 
+    <color name="color_split">#D5D2D2</color>
+
 </resources>

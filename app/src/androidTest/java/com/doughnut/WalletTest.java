@@ -37,11 +37,13 @@ public class WalletTest {
 
     @Test
     public void deleteWalletTest() throws Exception {
-        String addr = WalletManager.getInstance(appContext).deleteWallet("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe");
+        WalletManager.getInstance(appContext).deleteWallet("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe");
         List<String> wallets = WalletSp.getInstance(appContext, "").getAllWallet();
+        String addr = WalletSp.getInstance(appContext, "").getCurrentWallet();
         boolean isHas = wallets.contains("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe");
         Assert.assertFalse(isHas);
         Assert.assertNotNull(addr);
+        Assert.assertNotEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", addr);
     }
 
     @Test

@@ -1,29 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root_view">
-    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/backgroud_gray">
+
+    <com.doughnut.view.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:id="@+id/view_split"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/title_bar"
+        android:background="@color/color_split" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_no_transfer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_split"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/tv_no_transfer" />
+    </LinearLayout>
+
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/layout_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.doughnut.activity.MarketEditActivity">
+        android:layout_below="@+id/view_split"
+        app:srlEnableAutoLoadMore="false"
+        app:srlEnableLoadMoreWhenContentNotFull="false"
+        app:srlEnableOverScrollBounce="false"
+        app:srlEnableOverScrollDrag="false">
 
-        <com.doughnut.view.TitleBar
-            android:id="@+id/title_bar"
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_transaction_record"
+            android:id="@+id/view_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <include
-            android:id="@+id/empty_view"
-            layout="@layout/layout_empty_view"
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="wrap_content"
+            app:srlTextLoading="@string/footer_loading" />
 
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</RelativeLayout>

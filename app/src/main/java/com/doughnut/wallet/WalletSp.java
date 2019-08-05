@@ -100,10 +100,10 @@ public class WalletSp {
             editor.putString("wallets", walletList.toString().replace("[", "").replace("]", "").replace(" ", ""));
             editor.apply();
         }
-
+        setCurrentWallet(mAddress);
     }
 
-    public String delete() {
+    public void delete() {
         editor.clear();
         editor.apply();
         String fileName = mContext.getPackageName() + "_wallets";
@@ -123,9 +123,10 @@ public class WalletSp {
             editor.apply();
         }
         if (walletList.size() > 0) {
-            return walletList.get(0);
+            setCurrentWallet(walletList.get(0));
+        } else {
+            setCurrentWallet("");
         }
-        return "";
     }
 
     public List<String> getAllWallet() {
@@ -140,5 +141,19 @@ public class WalletSp {
             walletList = new ArrayList(arrList);
         }
         return walletList;
+    }
+
+    public void setCurrentWallet(String address) {
+        String fileName = mContext.getPackageName() + "_wallets";
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("currentWallet", address);
+        editor.apply();
+    }
+
+    public String getCurrentWallet() {
+        String fileName = mContext.getPackageName() + "_wallets";
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        return sharedPreferences.getString("currentWallet", "");
     }
 }

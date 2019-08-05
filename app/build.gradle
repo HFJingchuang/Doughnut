@@ -60,4 +60,5 @@ dependencies {
     implementation('com.github.Jingchaung:jch-jingtum-lib-android:1.0.0', {
         exclude group: 'junit'
     })
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
 }
