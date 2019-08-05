@@ -58,9 +58,15 @@ public class WalletManager implements IWallet {
         return "";
     }
 
+    /**
+     * 删除钱包，返回一个钱包用于当前显示
+     *
+     * @param address
+     * @return
+     */
     @Override
-    public boolean deleteWallet(String address) {
-        return false;
+    public String deleteWallet(String address) {
+        return WalletSp.getInstance(mContext, address).delete();
     }
 
     /**

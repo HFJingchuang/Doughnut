@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -31,6 +32,15 @@ public class WalletTest {
     @Test
     public void createWalletTest() throws Exception {
         String addr = WalletManager.getInstance(appContext).createWallet("123456", "测试");
+        Assert.assertNotNull(addr);
+    }
+
+    @Test
+    public void deleteWalletTest() throws Exception {
+        String addr = WalletManager.getInstance(appContext).deleteWallet("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe");
+        List<String> wallets = WalletSp.getInstance(appContext, "").getAllWallet();
+        boolean isHas = wallets.contains("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe");
+        Assert.assertFalse(isHas);
         Assert.assertNotNull(addr);
     }
 

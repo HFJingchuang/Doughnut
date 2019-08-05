@@ -4,18 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.doughnut.utils.GsonUtil;
-import com.google.gson.Gson;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import static com.doughnut.config.Constant.words;
 
 public class WalletSp {
 
@@ -90,9 +83,13 @@ public class WalletSp {
         if (TextUtils.isEmpty(wallets)) {
             walletList = new ArrayList();
         } else {
-            String str = wallets.replace("[", "").replace("]", "");
-            List<String> arrList = Arrays.asList(str.split(","));
-            walletList = new ArrayList(arrList);
+            if (wallets.contains(",")) {
+                List<String> arrList = Arrays.asList(wallets.split(","));
+                walletList = new ArrayList(arrList);
+            } else {
+                walletList = new ArrayList();
+                walletList.add(wallets);
+            }
         }
         if (!walletList.contains(mAddress)) {
             setName(name);
@@ -100,14 +97,48 @@ public class WalletSp {
             setKeyStore(keyStore);
             setCreateTime();
             walletList.add(mAddress);
-            editor.putString("wallets", walletList.toString());
+            editor.putString("wallets", walletList.toString().replace("[", "").replace("]", "").replace(" ", ""));
             editor.apply();
         }
 
     }
 
-    public void delete() {
+    public String delete() {
         editor.clear();
         editor.apply();
+        String fileName = mContext.getPackageName() + "_wallets";
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String wallets = sharedPreferences.getString("wallets", "");
+        List<String> walletList;
+        if (TextUtils.isEmpty(wallets)) {
+            walletList = new ArrayList();
+        } else {
+            List<String> arrList = Arrays.asList(wallets.split(","));
+            walletList = new ArrayList(arrList);
+        }
+        if (walletList.contains(mAddress)) {
+            walletList.remove(mAddress);
+            editor.putString("wallets", walletList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+            editor.apply();
+        }
+        if (walletList.size() > 0) {
+            return walletList.get(0);
+        }
+        return "";
+    }
+
+    public List<String> getAllWallet() {
+        String fileName = mContext.getPackageName() + "_wallets";
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String wallets = sharedPreferences.getString("wallets", "");
+        List<String> walletList;
+        if (TextUtils.isEmpty(wallets)) {
+            walletList = new ArrayList();
+        } else {
+            List<String> arrList = Arrays.asList(wallets.split(","));
+            walletList = new ArrayList(arrList);
+        }
+        return walletList;
     }
 }
