@@ -15,16 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.BlockChainData;
 import com.doughnut.base.BaseWalletUtil;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.base.WCallback;
+import com.doughnut.base.BlockChainData;
 import com.doughnut.base.TBController;
 import com.doughnut.config.Constant;
-import com.doughnut.utils.FileUtil;
-import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.TLog;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -48,22 +42,25 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
     private BlockChainData.Block mBlock;
     private BaseWalletUtil mWalletUtil;
 
-    @Override    public void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_wallet);
         if (getIntent().hasExtra(BLOCK)) {
             mBlock = getIntent().getParcelableExtra(BLOCK);
         }
-
         initView();
     }
 
+//     void setSelect(){
+//         tab_key.setSelected(false);
+//         tab_barcode.setSelected(false);
+//         tab_keystore.setSelected(false);
+//     }
 
-     void setSelect(){
-         tab_key.setSelected(false);
-         tab_barcode.setSelected(false);
-         tab_keystore.setSelected(false);
-     }
+    /**
+     * 页面初始化
+     */
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
@@ -105,56 +102,57 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
     public void onClick(View view) {
 
         switch (view.getId()) {
-//            case R.id.tv_wallet_type:
-//                ChooseWalletBlockActivity.navToActivity(CreateWalletActivity.this, REQUEST_CODE);
-//                break;
+            // 创建钱包按钮
             case R.id.btn_confirm:
-
                 if (paramCheck()) {
                     String walletName = mEdtWalletName.getText().toString();
                     String walletPwd = mEdtWalletPwd.getText().toString();
-                    //TODO 创建钱包
-//                    createWallet(walletName, walletPwd);
-
+                    // 创建钱包
+                    createWallet(walletName, walletPwd);
+                    // 跳转到备份页面
                     Intent intent = new Intent(this, BackupStartActivity.class);
-
                     startActivity(intent);
                 }
-                
                 break;
+            // 勾选框
             case R.id.img_service_terms:
                 mImgServiceTerms.setSelected(!mImgServiceTerms.isSelected());
                 break;
+            // 跳转服务条款页面
             case R.id.tv_service_terms:
                 gotoServiceTermPage();
                 break;
+
            //tab按钮事件
-
-            case  R.id.tab_barcode:
-
-                setSelect();
-                tab_barcode.setSelected(true);
-                break;
-            case  R.id.tab_key:
-                setSelect();
-                tab_key.setSelected(true);
-                break;
-            case  R.id.tab_keystore:
-                setSelect();
-                tab_keystore.setSelected(true);
-                break;
+//            case  R.id.tab_barcode:
+//                setSelect();
+//                tab_barcode.setSelected(true);
+//                break;
+//            case  R.id.tab_key:
+//                setSelect();
+//                tab_key.setSelected(true);
+//                break;
+//            case  R.id.tab_keystore:
+//                setSelect();
+//                tab_keystore.setSelected(true);
+//                break;
         }
     }
 
+    /**
+     * 创建钱包
+     * @param walletName
+     * @param walletPwd
+     */
     private void createWallet(final String walletName, final String walletPwd) {
+
          WalletManager walletManager =  WalletManager.getInstance(this);
+
          // 创建钱包
          walletManager.createWallet(walletPwd, walletName);
+
          // 获取钱包私钥
         walletManager.getPrivateKey(walletPwd, walletName);
-
-
-
     }
 
     @Override
@@ -206,7 +204,10 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         ((Activity) context).startActivityForResult(intent, request);
     }
 
-    // 前端页面校验
+    /**
+     * 前端页面校验
+     * @return
+     */
     private boolean paramCheck() {
 
         String walletName = mEdtWalletName.getText().toString();
@@ -246,6 +247,9 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         return true;
     }
 
+    /**
+     * 跳转服务条款页面
+     */
     private void gotoServiceTermPage() {
         WebBrowserActivity.startWebBrowserActivity(this, getString(R.string.titleBar_service_terms), Constant.service_term_url);
     }
