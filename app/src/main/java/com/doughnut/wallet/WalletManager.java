@@ -17,6 +17,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 钱包管理类
+ * <p>
+ * 创建钱包、删除钱包、导出二维码图片、导入私钥、导入二维码图片、导入KeyStore、获取私钥、转账、获取交易记录、获取余额
+ */
 public class WalletManager implements IWallet {
 
     private static WalletManager walletManager = null;
@@ -59,9 +64,7 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 删除钱包，返回一个钱包用于当前显示
-     *
-     * @param address
+     * 删除钱包
      */
     @Override
     public void deleteWallet(String address) {

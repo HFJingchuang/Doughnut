@@ -25,6 +25,7 @@ import com.doughnut.utils.TLog;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 
 public class TransactionRecordActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish,
@@ -32,23 +33,19 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
     private final static String TAG = "TransactionRecordActivity";
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
 
-    private RecyclerView mRecyclerViewTransactionRecord;
+    private RecyclerView mRecyclerView;
     private TransactionRecordAdapter mAdapter;
     private BaseWalletUtil mWalletUtil;
 
     private View mEmptyView;
-    private int mFrom = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_record);
-        if (getIntent() != null) {
-            mFrom = getIntent().getIntExtra("From", 2);
-        }
 
         initView();
     }
@@ -64,14 +61,10 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         }
         if (mAdapter != null) {
             mAdapter.refresh();
-            mSwipeRefreshLayout.setRefreshing(true);
+            mSmartRefreshLayout.setEnableRefresh(true);
         }
-        if (mFrom == 1) {
-            mTitleBar.setTitle(getString(R.string.titleBar_message_center));
+        mTitleBar.setTitle(WalletInfoManager.getInstance().getWname());
 
-        } else {
-            mTitleBar.setTitle(WalletInfoManager.getInstance().getWname());
-        }
 
     }
 
@@ -80,10 +73,10 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         if (!loadmore) {
             if (end) {
                 if (mAdapter.getLength() <= 0) {
-                    mRecyclerViewTransactionRecord.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.GONE);
                     mEmptyView.setVisibility(View.VISIBLE);
                 } else {
-                    mRecyclerViewTransactionRecord.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
                     mEmptyView.setVisibility(View.GONE);
                 }
             }
@@ -106,28 +99,26 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
     private void initView() {
 
-//        mSwipeRefreshLayout = findViewById(R.id.root_view);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+//        mSmartRefreshLayout = findViewById(R.id.root_view);
+//        mSmartRefreshLayout.setOnRefreshListener(this);
 
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setLeftTextColor(R.color.white);
         mTitleBar.setTitleTextColor(R.color.white);
-        if (mFrom == 2) {
-            mTitleBar.setRightDrawable(R.drawable.ic_changewallet);
-        }
+        mTitleBar.setRightDrawable(R.drawable.ic_changewallet);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitleBarClickListener(this);
 
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.setVisibility(View.GONE);
 
-//        mRecyclerViewTransactionRecord = findViewById(R.id.recyclerview_transaction_record);
+//        mRecyclerView = findViewById(R.id.recyclerview_transaction_record);
         mAdapter = new TransactionRecordAdapter();
         mAdapter.setDataLoadingListener(this);
-        mRecyclerViewTransactionRecord.setLayoutManager(new LinearLayoutManager(TransactionRecordActivity.this));
-        mRecyclerViewTransactionRecord.setAdapter(mAdapter);
-        mRecyclerViewTransactionRecord.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(TransactionRecordActivity.this));
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -153,11 +144,11 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
     private boolean isReadyForPullEnd() {
         try {
-            int lastVisiblePosition = mRecyclerViewTransactionRecord.getChildAdapterPosition(
-                    mRecyclerViewTransactionRecord.getChildAt(mRecyclerViewTransactionRecord.getChildCount() - 1));
-            if (lastVisiblePosition >= mRecyclerViewTransactionRecord.getAdapter().getItemCount() - 1) {
-                return mRecyclerViewTransactionRecord.getChildAt(mRecyclerViewTransactionRecord.getChildCount() - 1)
-                        .getBottom() <= mRecyclerViewTransactionRecord.getBottom();
+            int lastVisiblePosition = mRecyclerView.getChildAdapterPosition(
+                    mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
+            if (lastVisiblePosition >= mRecyclerView.getAdapter().getItemCount() - 1) {
+                return mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1)
+                        .getBottom() <= mRecyclerView.getBottom();
             }
         } catch (Throwable e) {
         }
@@ -209,7 +200,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
                         handleTransactioRecordResult(params, loadmore, extra);
                         mMarker = extra.getString("marker", "");
                     }
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSmartRefreshLayout.setEnableRefresh(false);
                 }
             });
         }
