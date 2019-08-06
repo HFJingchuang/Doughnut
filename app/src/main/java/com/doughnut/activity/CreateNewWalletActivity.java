@@ -35,7 +35,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm, mEdtWalletTips;
     private ImageView mImgServiceTerms;
-    private TextView mTvServiceTerms,tab_key,tab_barcode,tab_keystore;
+    private TextView mTvServiceTerms;
 
     private Button mBtnConfirm;
 
@@ -52,11 +52,6 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         initView();
     }
 
-//     void setSelect(){
-//         tab_key.setSelected(false);
-//         tab_barcode.setSelected(false);
-//         tab_keystore.setSelected(false);
-//     }
 
     /**
      * 页面初始化
@@ -87,20 +82,15 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 //        mTvWalletType.setOnClickListener(this);
         mBtnConfirm.setOnClickListener(this);
 
-        tab_key = findViewById(R.id.tab_key);
-        tab_key.setOnClickListener(this);
-        tab_barcode = findViewById(R.id.tab_barcode);
-        tab_barcode.setOnClickListener(this);
-        tab_keystore = findViewById(R.id.tab_keystore);
-        tab_keystore.setOnClickListener(this);
-
         setWalletTypeInfo();
-        tab_key.performClick();
     }
 
+    /**
+     *  画面按钮事件
+     * @param view
+     */
     @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             // 创建钱包按钮
             case R.id.btn_confirm:
@@ -109,8 +99,10 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                     String walletPwd = mEdtWalletPwd.getText().toString();
                     // 创建钱包
                     createWallet(walletName, walletPwd);
-                    // 跳转到备份页面
-                    Intent intent = new Intent(this, BackupStartActivity.class);
+                    // TODO 后面改成跳转到备份页面
+//                    Intent intent = new Intent(this, BackupStartActivity.class);
+//                    startActivity(intent);
+                    Intent intent = new Intent(this, WalletManageActivity.class);
                     startActivity(intent);
                 }
                 break;
@@ -122,20 +114,6 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
             case R.id.tv_service_terms:
                 gotoServiceTermPage();
                 break;
-
-           //tab按钮事件
-//            case  R.id.tab_barcode:
-//                setSelect();
-//                tab_barcode.setSelected(true);
-//                break;
-//            case  R.id.tab_key:
-//                setSelect();
-//                tab_key.setSelected(true);
-//                break;
-//            case  R.id.tab_keystore:
-//                setSelect();
-//                tab_keystore.setSelected(true);
-//                break;
         }
     }
 
