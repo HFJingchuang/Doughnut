@@ -304,7 +304,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         }
 
         private void gotoTransactionDetail(GsonUtil json) {
-            TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, json);
+//            TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, json);
         }
 
         class ViewHolder extends BaseRecyclerViewHolder {

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -156,6 +157,7 @@ public class TransactionRecordActivity extends BaseActivity implements
     class TransactionRecordAdapter extends RecyclerView.Adapter<TransactionRecordAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
+            LinearLayout mLayoutItem;
             ImageView mImgIcon;
             TextView mTvTransactionAddress;
             TextView mTvTransactionTime;
@@ -163,6 +165,14 @@ public class TransactionRecordActivity extends BaseActivity implements
 
             public VH(View v) {
                 super(v);
+                mLayoutItem = itemView.findViewById(R.id.layout_item);
+                mLayoutItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Transactions tr = transactions.get(getAdapterPosition());
+                        TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, tr);
+                    }
+                });
                 mImgIcon = itemView.findViewById(R.id.img_icon);
                 mTvTransactionAddress = itemView.findViewById(R.id.tv_transaction_address);
                 mTvTransactionTime = itemView.findViewById(R.id.tv_transaction_time);
@@ -286,14 +296,14 @@ public class TransactionRecordActivity extends BaseActivity implements
         //jn88gyE9wRrsXTszA8KhfmiwZgU22yZENN
         //jhD8c6ERtXsjhhA5tvYBRGvxPDS8CDWmSB
         //jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jhD8c6ERtXsjhhA5tvYBRGvxPDS8CDWmSB", 10, null);
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6", 10, null);
         transactions = accountTx.getTransactions();
         marker = accountTx.getMarker();
         mSmartRefreshLayout.finishRefresh();
     }
 
     private void getHistoryMore() {
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jhD8c6ERtXsjhhA5tvYBRGvxPDS8CDWmSB", 10, marker);
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6", 10, marker);
         transactions.addAll(accountTx.getTransactions());
         marker = accountTx.getMarker();
         mSmartRefreshLayout.finishRefresh();
