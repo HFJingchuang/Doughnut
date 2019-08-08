@@ -18,19 +18,27 @@
         android:paddingRight="@dimen/dimen_content_padding">
 
 
-        <View style="@style/Style.Line" />
+        <!--<View style="@style/Style.Line" />-->
 
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+        <!--<LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">-->
+
 
             <EditText
                 android:id="@+id/keyStore_text"
-                style="@style/Style.Edit.WalletCreate"
-                android:minLines="3"
-                android:layout_height="wrap_content"
-                android:hint="@string/content_keyStore" />
-        </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/shape_importwallet_privatkey"
+                android:hint="@string/content_keyStore"
+                android:padding="5dp"
+                android:textColor="@color/common_black_fontcolor"
+                android:textSize="14sp"
+                android:text=""/>
+        <!--</LinearLayout>-->
 
-        <View style="@style/Style.Line" />
+        <!--<View style="@style/Style.Line" />-->
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 

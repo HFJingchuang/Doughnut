@@ -22,15 +22,32 @@
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
-            <!--<TextView-->
-                <!--style="@style/Style.WalletCreateTitle"-->
-                <!--android:text="@string/enter_title_private_key" />-->
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:layout_weight="1.0">
 
-            <EditText
-                android:id="@+id/edt_private_key"
-                style="@style/Style.Edit.WalletCreate"
-                android:hint="@string/enter_hint_wallet_name"
-                />
+               <EditText
+                   android:id="@+id/edt_private_key"
+                   style="@style/Style.Edit.WalletCreate"
+                   android:hint="@string/enter_hint_private_key"
+                   />
+           </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_scan"
+                android:layout_width="25.0dip"
+                android:layout_height="25.0dip"
+                android:src="@drawable/ic_pop_item_scan"/>
+            <!--<TextView-->
+                <!--android:id="@+id/pop_item_scan"-->
+                <!--style="@style/Style_Pop_Item"-->
+                <!--android:drawableLeft="@drawable/ic_pop_item_scan"-->
+                <!--android:text="@string/btn_scan_it"-->
+                <!--android:visibility="visible"/>-->
+
+
 
 
         </LinearLayout>
@@ -46,7 +63,7 @@
             <EditText
                 android:id="@+id/edt_wallet_name"
                 style="@style/Style.Edit.WalletCreate"
-                android:hint="@string/enter_hint_private_key" />
+                android:hint="@string/enter_hint_wallet_name" />
         </LinearLayout>
 
 

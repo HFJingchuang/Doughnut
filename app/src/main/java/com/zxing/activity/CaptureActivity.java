@@ -200,11 +200,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
             Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent resultIntent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putString("result", resultString);
-        resultIntent.putExtras(bundle);
-        this.setResult(RESULT_OK, resultIntent);
+        Intent intent = new Intent();
+        intent.putExtra("scan_result", resultString);
+        setResult(RESULT_OK, intent);
         CaptureActivity.this.finish();
     }
 

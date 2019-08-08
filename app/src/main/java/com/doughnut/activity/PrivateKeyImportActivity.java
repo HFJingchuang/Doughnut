@@ -1,5 +1,6 @@
 package com.doughnut.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -15,17 +16,19 @@ import com.doughnut.config.Constant;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
+import com.zxing.activity.CaptureActivity;
 
 public class PrivateKeyImportActivity extends BaseActivity implements View.OnClickListener {
 
     private TitleBar mTitleBar;
 
-    private ImageView mImgServiceTerms;
+    private ImageView mImgServiceTerms,mimg_scan;
     private TextView mTvServiceTerms;
 
     private EditText mEPrivateKey, mEWalletName, mEWalletPwd, mEWalletPwdConfirm;
 
     private Button mBtnConfirm;
+    private Integer SCAN_CODE=101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,8 @@ public class PrivateKeyImportActivity extends BaseActivity implements View.OnCli
                 onBackPressed();
             }
         });
-
+        mimg_scan = findViewById(R.id.img_scan);
+        mimg_scan.setOnClickListener(this);
         mImgServiceTerms = findViewById(R.id.img_service_terms);
         mImgServiceTerms.setOnClickListener(this);
         mTvServiceTerms = findViewById(R.id.tv_service_terms);
@@ -62,6 +66,23 @@ public class PrivateKeyImportActivity extends BaseActivity implements View.OnCli
         mBtnConfirm = findViewById(R.id.btn_confirm);
         mBtnConfirm.setOnClickListener(this);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            String result = data.getStringExtra("scan_result");
+                 if (!result.isEmpty()) {
+                     mEPrivateKey.setText(result);
+                 }
+        } else {
+            this.finish();
+        }
+
+
+    }
+
+
 
     /**
      * 页面点击事件
@@ -87,6 +108,10 @@ public class PrivateKeyImportActivity extends BaseActivity implements View.OnCli
             // 跳转服务条款页面
             case R.id.tv_service_terms:
                 gotoServiceTermPage();
+                break;
+            case R.id.img_scan:
+                Intent intent=new Intent(PrivateKeyImportActivity.this, CaptureActivity.class);
+                startActivityForResult(intent,SCAN_CODE);
                 break;
         }
     }
