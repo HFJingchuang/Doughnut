@@ -22,10 +22,6 @@
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
-            <!--<TextView-->
-            <!--style="@style/Style.WalletCreateTitle"-->
-            <!--android:text="@string/enter_title_private_key" />-->
-
             <EditText
                 android:id="@+id/keyStore_text"
                 style="@style/Style.Edit.WalletCreate"
@@ -34,15 +30,24 @@
                 android:hint="@string/content_keyStore" />
         </LinearLayout>
 
+        <View style="@style/Style.Line" />
+
+        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+
+            <EditText
+                android:id="@+id/edt_wallet_name"
+                style="@style/Style.Edit.WalletCreate"
+                android:hint="@string/enter_hint_wallet_name" />
+        </LinearLayout>
 
         <View style="@style/Style.Line" />
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
             <EditText
-                android:id="@+id/edt_wallet_pwd_confirm"
+                android:id="@+id/edt_wallet_pwd"
                 style="@style/Style.Edit.WalletCreate.Pwd"
-                android:hint="@string/dialog_title_enter_password" />
+                android:hint="@string/enter_hint_keyStore_Pwd" />
         </LinearLayout>
 
         <View style="@style/Style.Line" />

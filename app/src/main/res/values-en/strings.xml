@@ -242,4 +242,10 @@
     <string name="tab_secret_key">secret key</string>
     <string name="tab_keyStore">keyStore</string>
     <string name="current_wallet">当前钱包</string>
+    <string name="dialog_content_no_private_key">Enter the private key</string>
+    <string name="dialog_content_no_keyStore">Enter the keyStore</string>
+    <string name="enter_hint_keyStore_Pwd">Please enter the keyStore password</string>
+
+    <string name="tv_no_transfer">暂无转账记录</string>
+    <string name="footer_loading">努力加载中......</string>
 </resources>
