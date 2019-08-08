@@ -1,5 +1,6 @@
 package com.doughnut.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
@@ -71,6 +72,9 @@ public class KeyStoreImportActivity extends BaseActivity implements View.OnClick
                     String walletPwd = mEWalletPwd.getText().toString();
                     // 导入钱包
                     importWallet(keyStore, walletName, walletPwd);
+                    // TODO 暂时跳转到钱包管理
+                    Intent intent = new Intent(this, WalletManageActivity.class);
+                    startActivity(intent);
                 }
                 break;
             // 勾选框

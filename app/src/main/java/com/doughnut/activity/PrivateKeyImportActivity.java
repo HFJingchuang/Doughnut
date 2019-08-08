@@ -99,6 +99,9 @@ public class PrivateKeyImportActivity extends BaseActivity implements View.OnCli
                     String walletPwd = mEWalletPwd.getText().toString();
                     // 导入钱包
                     importWallet(privateKey, walletName, walletPwd);
+                    // TODO 暂时跳转到钱包管理
+                    Intent intent = new Intent(this, WalletManageActivity.class);
+                    startActivity(intent);
                 }
                 break;
             // 勾选框
