@@ -36,6 +36,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -121,22 +122,22 @@ public class TransactionRecordActivity extends BaseActivity implements
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
+                getHistory();
                 mAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
-
             }
         });
         mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
+                getHistoryMore();
+                mAdapter.notifyDataSetChanged();
+                refreshlayout.finishLoadMore();
             }
         });
 
         JtServer.getInstance().changeServer("wss://s.jingtum.com:5020");
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6", 10, null);
-        transactions = accountTx.getTransactions();
-        marker = accountTx.getMarker();
-        mSmartRefreshLayout.finishRefresh();
+        getHistory();
     }
 
     public static void startTransactionRecordActivity(Context context, int from) {
@@ -211,14 +212,31 @@ public class TransactionRecordActivity extends BaseActivity implements
                 case "convert":
                     break;
                 case "offernew":
-                    //Transaction.flags.OfferCreate.Sell 是一个常量
                     holder.mImgIcon.setImageResource(R.drawable.ic_transaction_out);
-                    pays = tr.getEffects().getJSONObject(0).getJSONObject("paid");
-                    gets = tr.getEffects().getJSONObject(tr.getEffects().size() - 1).getJSONObject("got");
-                    if (pays != null && gets != null) {
-                        holder.mTvTransactionCount.setText(pays.getString("value") + pays.getString("currency") + " -> " + gets.getString("value") + gets.getString("currency"));
-                    } else {
-                        holder.mTvTransactionCount.setText(tr.getGets().getValue() + tr.getGets().getCurrency() + " -> " + tr.getPays().getValue() + tr.getPays().getCurrency());
+                    String getsCur = tr.getGets().getCurrency();
+                    String paysCur = tr.getPays().getCurrency();
+                    BigDecimal getsAmount = new BigDecimal("0");
+                    BigDecimal paysAmount = new BigDecimal("0");
+                    if (tr.getEffects() != null) {
+                        for (int i = 0; i < tr.getEffects().size(); i++) {
+                            pays = tr.getEffects().getJSONObject(i).getJSONObject("paid");
+                            gets = tr.getEffects().getJSONObject(i).getJSONObject("got");
+                            if (pays != null && gets != null) {
+                                String currency = pays.getString("currency");
+                                if (TextUtils.equals(currency, getsCur)) {
+                                    paysAmount = paysAmount.add(new BigDecimal(pays.getString("value")));
+                                }
+                                currency = gets.getString("currency");
+                                if (TextUtils.equals(currency, paysCur)) {
+                                    getsAmount = getsAmount.add(new BigDecimal(gets.getString("value")));
+                                }
+                            }
+                        }
+                        if (getsAmount.equals(new BigDecimal("0")) || paysAmount.equals(new BigDecimal("0"))) {
+                            holder.mTvTransactionCount.setText(tr.getGets().getValue() + getsCur + " -> " + tr.getPays().getValue() + paysCur);
+                        } else {
+                            holder.mTvTransactionCount.setText(paysAmount.stripTrailingZeros().toPlainString() + getsCur + " -> " + getsAmount.stripTrailingZeros().toPlainString() + paysCur);
+                        }
                     }
                     holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
                     break;
@@ -229,10 +247,22 @@ public class TransactionRecordActivity extends BaseActivity implements
                     break;
                 case "offereffect":
                     holder.mImgIcon.setImageResource(R.drawable.ic_token_normal);
+                    BigDecimal getsAmount1 = new BigDecimal("0");
+                    BigDecimal paysAmount1 = new BigDecimal("0");
+                    if (tr.getEffects() != null) {
+                        for (int i = 0; i < tr.getEffects().size(); i++) {
+                            pays = tr.getEffects().getJSONObject(i).getJSONObject("paid");
+                            gets = tr.getEffects().getJSONObject(i).getJSONObject("got");
+                            if (pays != null && gets != null) {
+                                paysAmount1 = getsAmount1.add(new BigDecimal(pays.getString("value")));
+                                getsAmount1 = getsAmount1.add(new BigDecimal(gets.getString("value")));
+                            }
+                        }
+                        String payCurrency = tr.getEffects().getJSONObject(0).getJSONObject("paid").getString("currency");
+                        String getCurrency = tr.getEffects().getJSONObject(0).getJSONObject("got").getString("currency");
+                        holder.mTvTransactionCount.setText(paysAmount1.stripTrailingZeros().toPlainString() + payCurrency + " -> " + getsAmount1.stripTrailingZeros().toPlainString() + getCurrency);
+                    }
                     holder.mTvTransactionAddress.setText(tr.getEffects().getJSONObject(0).getJSONObject("counterparty").getString("account"));
-                    pays = tr.getEffects().getJSONObject(0).getJSONObject("paid");
-                    gets = tr.getEffects().getJSONObject(0).getJSONObject("got");
-                    holder.mTvTransactionCount.setText(pays.getString("value") + pays.getString("currency") + " -> " + gets.getString("value") + gets.getString("currency"));
                     holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
                     break;
                 case "relationset":
@@ -260,6 +290,24 @@ public class TransactionRecordActivity extends BaseActivity implements
         public int getItemCount() {
             return transactions.size();
         }
+    }
+
+    private void getHistory() {
+        if (transactions != null) {
+            transactions.clear();
+        }
+
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jn88gyE9wRrsXTszA8KhfmiwZgU22yZENN", 10, null);
+        transactions = accountTx.getTransactions();
+        marker = accountTx.getMarker();
+        mSmartRefreshLayout.finishRefresh();
+    }
+
+    private void getHistoryMore() {
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jn88gyE9wRrsXTszA8KhfmiwZgU22yZENN", 10, marker);
+        transactions.addAll(accountTx.getTransactions());
+        marker = accountTx.getMarker();
+        mSmartRefreshLayout.finishRefresh();
     }
 
 }
