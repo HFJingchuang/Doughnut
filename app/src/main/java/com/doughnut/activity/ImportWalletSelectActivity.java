@@ -12,7 +12,7 @@ import com.doughnut.view.TitleBar;
 public class ImportWalletSelectActivity extends BaseActivity implements View.OnClickListener{
 
 
-    private RelativeLayout privateKeyBtn, keyStoreBtn, QRCodeBtn;
+    private RelativeLayout privateKeyBtn, keyStoreBtn;
 
     private TitleBar mTitleBar;
 
@@ -42,9 +42,6 @@ public class ImportWalletSelectActivity extends BaseActivity implements View.OnC
         keyStoreBtn = findViewById(R.id.select_export_keyStore);
         keyStoreBtn.setOnClickListener(this);
 
-        QRCodeBtn = findViewById(R.id.select_export_QRCode);
-        QRCodeBtn.setOnClickListener(this);
-
     }
 
 
@@ -57,14 +54,7 @@ public class ImportWalletSelectActivity extends BaseActivity implements View.OnC
         } else if (view == keyStoreBtn) {
             Intent intent = new Intent(this, KeyStoreImportActivity.class);
             startActivity(intent);
-        } else if (view == QRCodeBtn) {
-            Intent intent = new Intent(this, QrCodeImportActivity.class);
-            startActivity(intent);
         }
     }
-
-
-
-
 
 }
