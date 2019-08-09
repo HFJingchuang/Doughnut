@@ -2,14 +2,19 @@ package com.doughnut.wallet;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.Account;
 import com.android.jtblk.client.bean.AccountInfo;
+import com.android.jtblk.client.bean.AccountOffers;
+import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.AmountInfo;
+import com.android.jtblk.client.bean.Line;
 import com.android.jtblk.client.bean.Marker;
+import com.android.jtblk.client.bean.Offer;
 import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
@@ -191,7 +196,7 @@ public class WalletManager implements IWallet {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
-            amount.setCurrency("SWT");
+            amount.setCurrency(WConstant.CURRENCY_SWT);
             amount.setValue(value.toString());
             Transaction tx = JtServer.getInstance().getRemote().buildPaymentTx(from, to, amount);
             tx.setSecret(getPrivateKey(password, from));
@@ -199,7 +204,7 @@ public class WalletManager implements IWallet {
             memos.add(memo);
             tx.addMemo(memos);
             TransactionInfo bean = tx.submit();
-            if ("0".equals(bean.getEngineResultCode())) {
+            if (WConstant.RESULT_OK.equals(bean.getEngineResultCode())) {
                 return bean.getTxJson().getHash();
             } else {
                 return bean.getEngineResult();
@@ -233,11 +238,71 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public String getBalance(String address) {
+    public AccountRelations getBalance(String address) {
         try {
-            AccountInfo bean = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
-            return bean.getAccountData().getBalance();
-        } catch (Exception e) {
+            // 获取账户信息
+            AccountInfo info = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
+            // 获取账户挂单信息
+            AccountOffers accountOffers = JtServer.getInstance().getRemote().requestAccountOffers(address, null);
+            // 获取账户其它token信息
+            AccountRelations relationsTrust = JtServer.getInstance().getRemote().requestAccountRelations(address, null, WConstant.RELATION_TRUST);
+            AccountRelations relationsFreeze = JtServer.getInstance().getRemote().requestAccountRelations(address, null, WConstant.RELATION_FREEZE);
+
+            // 计算其它token冻结数量
+            List<Offer> offers = accountOffers.getOffers();
+            List<Line> linesT = relationsTrust.getLines();
+
+            // 计算swt冻结数量
+            Integer freezed = (relationsTrust.getLines().size() + accountOffers.getOffers().size()) * WConstant.FREEZED + WConstant.RESERVED;
+            Line swtLine = new Line();
+            BigDecimal valid = new BigDecimal(info.getAccountData().getBalance()).subtract(BigDecimal.valueOf(freezed));
+            swtLine.setBalance(valid.stripTrailingZeros().toPlainString());
+            swtLine.setCurrency(WConstant.CURRENCY_SWT);
+            swtLine.setLimit(String.valueOf(freezed));
+            relationsTrust.getLines().add(swtLine);
+
+            // trust limit 置零
+            for (int j = 0; j < linesT.size(); j++) {
+                String currency = linesT.get(j).getCurrency();
+                if (!TextUtils.equals(currency, WConstant.CURRENCY_SWT)) {
+                    linesT.get(j).setLimit("0");
+                }
+            }
+
+            // 通过挂单计算冻结数量
+            for (int i = 0; i < offers.size(); i++) {
+                String getsCurrency = offers.get(i).getTakerGets().getCurrency();
+                for (int j = 0; j < linesT.size(); j++) {
+                    Line line = linesT.get(j);
+                    String currency = line.getCurrency();
+                    if (TextUtils.equals(getsCurrency, currency)) {
+                        BigDecimal tokenFreeze = new BigDecimal(line.getLimit()).add(new BigDecimal(offers.get(i).getTakerGets().getValue()));
+                        BigDecimal balance = new BigDecimal(line.getBalance()).subtract(tokenFreeze);
+                        line.setBalance(balance.stripTrailingZeros().toPlainString());
+                        line.setLimit(tokenFreeze.stripTrailingZeros().toPlainString());
+                    }
+                }
+            }
+
+            // 通过冻结关系类型计算冻结数量
+            List<Line> linesF = relationsFreeze.getLines();
+            for (int i = 0; i < linesF.size(); i++) {
+                String FCurrency = linesF.get(i).getCurrency();
+                for (int j = 0; j < linesT.size(); j++) {
+                    Line line = linesT.get(j);
+                    String currency = line.getCurrency();
+                    if (TextUtils.equals(FCurrency, currency)) {
+                        BigDecimal tokenFreeze = new BigDecimal(line.getLimit()).add(new BigDecimal(linesF.get(i).getLimit()));
+                        BigDecimal balance = new BigDecimal(line.getBalance()).subtract(tokenFreeze);
+                        line.setBalance(balance.stripTrailingZeros().toPlainString());
+                        line.setLimit(tokenFreeze.stripTrailingZeros().toPlainString());
+                    }
+                }
+            }
+
+            return relationsTrust;
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
         return null;
