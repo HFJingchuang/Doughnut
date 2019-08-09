@@ -57,7 +57,7 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation('com.github.Jingchaung:jch-jingtum-lib-android:1.0.2', {
+    implementation('com.github.HFJingchuang:jch-jingtum-lib-android:1.0.3', {
         exclude group: 'junit'
     })
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
