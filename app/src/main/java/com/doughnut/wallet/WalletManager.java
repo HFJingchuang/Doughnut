@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
+import com.android.jtblk.client.bean.Account;
 import com.android.jtblk.client.bean.AccountInfo;
 import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.AmountInfo;
+import com.android.jtblk.client.bean.Marker;
 import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
@@ -215,9 +217,9 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public AccountTx getTansferHishory(String address, Integer limit) {
+    public AccountTx getTansferHishory(String address, Integer limit, Marker marker) {
         try {
-            AccountTx bean = JtServer.getInstance().getRemote().requestAccountTx(address, limit, null);
+            AccountTx bean = JtServer.getInstance().getRemote().requestAccountTx(address, limit, marker);
             return bean;
         } catch (Exception e) {
             e.printStackTrace();
@@ -235,6 +237,16 @@ public class WalletManager implements IWallet {
         try {
             AccountInfo bean = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
             return bean.getAccountData().getBalance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getTrans(String hash) {
+        try {
+            Account bean = JtServer.getInstance().getRemote().requestTx(hash);
+            return bean.getHash();
         } catch (Exception e) {
             e.printStackTrace();
         }

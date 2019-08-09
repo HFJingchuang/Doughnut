@@ -21,11 +21,10 @@
             android:id="@+id/tv_transaction_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:text=""
             android:textColor="@color/common_black_fontcolor"
-            android:textSize="36sp"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/tv_symbol"
@@ -62,8 +61,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.8dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
                 android:background="@color/split_color" />
 
             <TextView
@@ -80,10 +79,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="3dp"
+                android:layout_marginRight="15dp"
                 android:ellipsize="middle"
-                android:singleLine="true"
                 android:text=""
                 android:textColor="@color/common_black_fontcolor"
                 android:textSize="13sp" />
@@ -102,10 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="3dp"
+                android:layout_marginRight="15dp"
                 android:ellipsize="middle"
-                android:singleLine="true"
                 android:text=""
                 android:textColor="@color/common_black_fontcolor"
                 android:textSize="13sp" />
@@ -124,8 +121,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="3dp"
+                android:layout_marginRight="15dp"
                 android:text=""
                 android:textColor="@color/common_black_fontcolor"
                 android:textSize="13sp" />
@@ -144,10 +141,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="3dp"
+                android:layout_marginRight="15dp"
                 android:ellipsize="end"
-                android:singleLine="true"
                 android:text=""
                 android:textColor="@color/common_black_fontcolor"
                 android:textSize="13sp" />
@@ -156,16 +152,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.8dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
                 android:background="@color/split_color" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -192,8 +188,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="14dp"
+                android:layout_marginRight="15dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -221,8 +217,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginTop="14dp"
+                android:layout_marginRight="15dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -256,8 +252,8 @@
                 android:layout_width="118dp"
                 android:layout_height="38dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/shape_splash_createwallet_bg"
                 android:gravity="center"
                 android:text="@string/btn_copy_url"

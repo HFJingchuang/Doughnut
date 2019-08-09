@@ -28,6 +28,7 @@
 
     <!--common-->
     <color name="common_blue">#2890FE</color>
+    <color name="common_green">#009688</color>
     <color name="common_red">#f3474d</color>
     <color name="common_black_fontcolor">#333333</color>
 

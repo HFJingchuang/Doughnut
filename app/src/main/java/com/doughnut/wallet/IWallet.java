@@ -3,6 +3,7 @@ package com.doughnut.wallet;
 import android.graphics.Bitmap;
 
 import com.android.jtblk.client.bean.AccountTx;
+import com.android.jtblk.client.bean.Marker;
 
 import java.math.BigDecimal;
 
@@ -24,7 +25,7 @@ public interface IWallet {
 
     String transfer(String password, String from, String to, BigDecimal value, String memo);
 
-    AccountTx getTansferHishory(String address, Integer limit);
+    AccountTx getTansferHishory(String address, Integer limit, Marker marker);
 
     String getBalance(String address);
 }
