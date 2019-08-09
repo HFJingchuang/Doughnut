@@ -100,8 +100,11 @@ public class PrivateKeyImportActivity extends BaseActivity implements View.OnCli
                     // 导入钱包
                     importWallet(privateKey, walletName, walletPwd);
                     // TODO 暂时跳转到钱包管理
-                    Intent intent = new Intent(this, WalletManageActivity.class);
+//                    Intent intent = new Intent(this, WalletManageActivity.class);
+//                    startActivity(intent);
+                    Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
+                    this.finish();
                 }
                 break;
             // 勾选框

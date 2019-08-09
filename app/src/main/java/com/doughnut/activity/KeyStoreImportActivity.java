@@ -73,8 +73,11 @@ public class KeyStoreImportActivity extends BaseActivity implements View.OnClick
                     // 导入钱包
                     importWallet(keyStore, walletName, walletPwd);
                     // TODO 暂时跳转到钱包管理
-                    Intent intent = new Intent(this, WalletManageActivity.class);
+//                    Intent intent = new Intent(this, WalletManageActivity.class);
+//                    startActivity(intent);
+                    Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
+                    this.finish();
                 }
                 break;
             // 勾选框

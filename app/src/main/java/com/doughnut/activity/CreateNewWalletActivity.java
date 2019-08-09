@@ -102,8 +102,12 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                     // TODO 后面改成跳转到备份页面
 //                    Intent intent = new Intent(this, BackupStartActivity.class);
 //                    startActivity(intent);
-                    Intent intent = new Intent(this, WalletManageActivity.class);
+//                    Intent intent = new Intent(this, WalletManageActivity.class);
+//                    startActivity(intent);
+
+                    Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
+                    this.finish();
                 }
                 break;
             // 勾选框
