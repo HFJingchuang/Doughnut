@@ -10,17 +10,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.zxing.WriterException;
+import com.alibaba.fastjson.JSONObject;
+import com.android.jtblk.client.bean.Memo;
+import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
 import com.doughnut.base.BaseWalletUtil;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.base.WCallback;
-import com.doughnut.base.TBController;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.view.TitleBar;
+import com.google.zxing.WriterException;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 
 public class TransactionDetailsActivity extends BaseActivity implements View.OnClickListener {
@@ -42,6 +47,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private String mHash;
     private GsonUtil transactionData;
     private BaseWalletUtil mWalletUtil;
+    private static Transactions mTransactions;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,19 +57,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             String data = getIntent().getStringExtra("ITEM");
             transactionData = new GsonUtil(data);
         }
-        mHash = transactionData.getString("hash", "");
-        if (TextUtils.isEmpty(mHash)) {
-            ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_illegal_parameters));
-            this.finish();
-            return;
-        }
-
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
-        if (mWalletUtil == null) {
-            this.finish();
-            return;
-        }
-
         initView();
     }
 
@@ -98,58 +91,133 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvCopyUrl.setOnClickListener(this);
         mImgTransactionQrCode = findViewById(R.id.img_transaction_qrcode);
 
-        int type = WalletInfoManager.getInstance().getWalletType();
-        if (type == TBController.SWT_INDEX) {
-            loadData();
-        }
+        updateData();
     }
 
-    private void updateData(GsonUtil transactionInfo) {
-        double value = transactionInfo.getDouble("real_value", 0.0f);
-        String toAddress = transactionInfo.getString("to", "");
-        mTvSender.setText(transactionInfo.getString("from", ""));
-        mTvReceiver.setText(toAddress);
-        mTvGas.setText(transactionInfo.getString("fee", "0.0"));
-        mTvInfo.setText(transactionInfo.getString("input", ""));
-        mTvTransactionId.setText(transactionInfo.getString("hash", ""));
-        mTvBlockId.setText(transactionInfo.getString("blockNumber", ""));
-        mTvTransactionTime.setText(Util.formatTime(transactionInfo.getLong("timeStamp", 0l)));
-        int status = transactionInfo.getInt("txreceipt_status", 5);
-        if (status == 1) {
-            //success
-            mTvTransactionStatus.setText(getString(R.string.content_trading_success));
-        } else if (status == 2) {
-            //pending
-            mTvTransactionStatus.setText(getString(R.string.content_trading_pending));
-        } else if (status == 0) {
-            //fail
-            mTvTransactionStatus.setText(getString(R.string.content_trading_failure));
-        } else {
-            mTvTransactionStatus.setText(getString(R.string.content_trading_unknown));
-        }
-        mTvCount.setText(value + "");
-        mTvSymbol.setText(transactionInfo.getString("tokenSymbol", ""));
-        createQRCode(mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
-    }
-
-    private void loadData() {
-        mWalletUtil.queryTransactionDetails(mHash, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    updateData(extra.getObject("data", "{}"));
-                } else {
-                    ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_transaction_info_failure))
-                    ;
-                    TransactionDetailsActivity.this.finish();
+    private void updateData() {
+        JSONObject gets;
+        JSONObject pays;
+        switch (mTransactions.getType()) {
+            case "sent":
+                mTvCount.setText("-" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
+                mTvCount.setTextColor(getResources().getColor(R.color.common_red));
+                mTvReceiver.setText(mTransactions.getCounterparty());
+                mTvSender.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                break;
+            case "received":
+                mTvCount.setText("+" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
+                mTvCount.setTextColor(getResources().getColor(R.color.common_blue));
+                mTvSender.setText(mTransactions.getCounterparty());
+                mTvReceiver.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                break;
+            case "offernew":
+                String getsCur = mTransactions.getGets().getCurrency();
+                String paysCur = mTransactions.getPays().getCurrency();
+                BigDecimal getsAmount = new BigDecimal("0");
+                BigDecimal paysAmount = new BigDecimal("0");
+                if (mTransactions.getEffects() != null) {
+                    String receiver = "";
+                    for (int i = 0; i < mTransactions.getEffects().size(); i++) {
+                        pays = mTransactions.getEffects().getJSONObject(i).getJSONObject("paid");
+                        gets = mTransactions.getEffects().getJSONObject(i).getJSONObject("got");
+                        if (pays != null && gets != null) {
+                            String currency = pays.getString("currency");
+                            String paysCount = pays.getString("value");
+                            String addr = mTransactions.getEffects().getJSONObject(i).getJSONObject("counterparty").getString("account");
+                            String payStr = paysCount + " " + currency;
+                            if (TextUtils.equals(currency, getsCur)) {
+                                paysAmount = paysAmount.add(new BigDecimal(paysCount));
+                            }
+                            currency = gets.getString("currency");
+                            String getsCount = gets.getString("value");
+                            String getStr = getsCount + " " + currency;
+                            if (TextUtils.equals(currency, paysCur)) {
+                                getsAmount = getsAmount.add(new BigDecimal(getsCount));
+                            }
+                            receiver = receiver + addr + "\n" + payStr + " ->" + getStr + "\n \n";
+                        }
+                    }
+                    if (getsAmount.equals(new BigDecimal("0")) || paysAmount.equals(new BigDecimal("0"))) {
+                        mTvCount.setText(mTransactions.getGets().getValue() + " " + getsCur + " -> " + mTransactions.getPays().getValue() + " " + paysCur);
+                        mTvReceiver.setText("---");
+                    } else {
+                        mTvReceiver.setText(receiver);
+                        mTvCount.setText(paysAmount.stripTrailingZeros().toPlainString() + " " + getsCur + " -> " + getsAmount.stripTrailingZeros().toPlainString() + " " + paysCur);
+                    }
+                    mTvSender.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
                 }
+                mTvCount.setTextColor(getResources().getColor(R.color.common_green));
+                break;
+            case "offercancel":
+                if (mTransactions.getGets() != null && mTransactions.getPays() != null) {
+                    mTvCount.setText(mTransactions.getGets().getValue() + " " + mTransactions.getGets().getCurrency() + " -> " + mTransactions.getPays().getValue() + " " + mTransactions.getPays().getCurrency());
+                } else {
+                    mTvCount.setText("---");
+                }
+                mTvCount.setTextColor(getResources().getColor(R.color.common_green));
+                mTvSender.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                mTvReceiver.setText("---");
+                break;
+            case "offereffect":
+                BigDecimal getsAmount1 = new BigDecimal("0");
+                BigDecimal paysAmount1 = new BigDecimal("0");
+                if (mTransactions.getEffects() != null) {
+                    String receiver = "";
+                    for (int i = 0; i < mTransactions.getEffects().size(); i++) {
+                        pays = mTransactions.getEffects().getJSONObject(i).getJSONObject("paid");
+                        gets = mTransactions.getEffects().getJSONObject(i).getJSONObject("got");
+                        if (pays != null && gets != null) {
+                            String addr = mTransactions.getEffects().getJSONObject(i).getJSONObject("counterparty").getString("account");
+                            String currency = pays.getString("currency");
+                            String paysCount = pays.getString("value");
+                            String payStr = paysCount + " " + currency;
+                            paysAmount1 = paysAmount1.add(new BigDecimal(paysCount));
+
+                            currency = gets.getString("currency");
+                            String getsCount = gets.getString("value");
+                            String getStr = getsCount + " " + currency;
+                            getsAmount1 = getsAmount1.add(new BigDecimal(getsCount));
+                            receiver = receiver + addr + "\n" + getStr + " -> " + payStr + "\n \n";
+                        }
+                    }
+                    String payCurrency = mTransactions.getEffects().getJSONObject(0).getJSONObject("paid").getString("currency");
+                    String getCurrency = mTransactions.getEffects().getJSONObject(0).getJSONObject("got").getString("currency");
+                    mTvSender.setText(receiver);
+                    mTvCount.setText(paysAmount1.stripTrailingZeros().toPlainString() + " " + payCurrency + " -> " + getsAmount1.stripTrailingZeros().toPlainString() + " " + getCurrency);
+                }
+                mTvReceiver.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                mTvCount.setTextColor(getResources().getColor(R.color.common_green));
+                break;
+            default:
+                // TODO parse other type
+                break;
+        }
+        List<Memo> memos = mTransactions.getMemos();
+        if (memos != null && memos.size() > 0) {
+            String info = "";
+            for (int i = 0; i < memos.size(); i++) {
+                info = info + memos.get(i).getMemoData() + "\n";
             }
-        });
+            mTvInfo.setText(info);
+        }
+        mTvGas.setText(new BigDecimal(mTransactions.getFee()).stripTrailingZeros().toPlainString() + " SWT");
+        mTvTransactionId.setText(mTransactions.getHash());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(mTransactions.getDate().longValue() * 1000);
+        String sim = formatter.format(date);
+        mTvTransactionTime.setText(sim);
+        if ("tesSUCCESS".equals(mTransactions.getResult())) {
+            mTvTransactionStatus.setText("成功");
+            mTvTransactionStatus.setTextColor(getResources().getColor(R.color.common_green));
+        } else {
+            mTvTransactionStatus.setText("失败");
+            mTvTransactionStatus.setTextColor(getResources().getColor(R.color.common_red));
+        }
     }
 
-    public static void startTransactionDetailActivity(Context context, GsonUtil data) {
+    public static void startTransactionDetailActivity(Context context, Transactions data) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
-        intent.putExtra("ITEM", data.toString());
+        mTransactions = data;
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

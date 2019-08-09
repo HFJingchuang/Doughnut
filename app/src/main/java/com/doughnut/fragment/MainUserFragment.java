@@ -62,10 +62,10 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
             ManageWalletActivity.startModifyWalletActivity(getActivity());
         } else if (view == mLayoutRecordTransaction) {
             mLayoutRecordTransaction.setClickable(false);
-            TransactionRecordActivity.startTransactionRecordActivity(getActivity(), 2);
+            TransactionRecordActivity.startTransactionRecordActivity(getActivity());
         } else if (view == mLayoutNotification) {
             mLayoutNotification.setClickable(false);
-            TransactionRecordActivity.startTransactionRecordActivity(getActivity(), 1);
+            TransactionRecordActivity.startTransactionRecordActivity(getActivity());
         } else if (view == mLayoutHelp) {
             mLayoutHelp.setClickable(false);
             WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_help_center), Constant.help_url);
