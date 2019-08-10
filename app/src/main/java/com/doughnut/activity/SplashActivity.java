@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,17 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.config.AppConfig;
-import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;
+import com.doughnut.wallet.WalletManager;
 
 public class SplashActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = "SplashActivity";
-    private static final int REQUEST_CODE = 1008;
 
     private LinearLayout mLayoutSplashBtn;
     private TextView mTvCreateWallet;
@@ -47,16 +44,18 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         if (!NetUtil.isNetworkAvailable(this)) {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
-//        checkUpgrade();
         checkPermission();
     }
 
     @Override
     public void onClick(View v) {
+        // 创建钱包按钮点击事件
         if (v == mTvCreateWallet) {
-            gotoCreateWallet();
-        } else if (v == mTvImportWallet) {
-            gotoImportWallet();
+            CreateNewWalletActivity.startCreateNewWalletActivity(this);
+        }
+        // 导入钱包按钮点击事件
+        else if (v == mTvImportWallet) {
+            ImportWalletSelectActivity.startImportWalletSelectActivity(this);
         }
     }
 
@@ -66,22 +65,8 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         context.startActivity(intent);
     }
 
-    // 创建钱包按钮点击事件
-    private void gotoCreateWallet() {
-//        CreateNewWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
-//        this.finish();
-        Intent intent = new Intent(this, CreateNewWalletActivity.class);
-        startActivity(intent);
-    }
 
-    // 导入钱包按钮点击事件
-    private void gotoImportWallet() {
-//        ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
-//        this.finish();
-        Intent intent = new Intent(this, WalletImportActivity.class);
-        startActivity(intent);
-    }
-
+    // 权限检查
     private void checkPermission() {
         final String permissions[] = {Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -132,46 +117,25 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void permissonSuccess() {
-        AppConfig.postDelayOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String deviceId = DeviceUtil.getDeviceUniqueId();
-                if (TextUtils.isEmpty(deviceId)) {
-                    deviceId = DeviceUtil.generateDeviceUniqueId();
-                    uploadDeviceId(deviceId);
-                } else {
-                    if (WalletInfoManager.getInstance().hasWallet()) {
-                        MainActivity.startMainActivity(SplashActivity.this);
-                        SplashActivity.this.finish();
-                    } else {
-                        playAlphaAnim();
-                    }
-                }
+        AppConfig.postDelayOnUiThread(() -> {
+            if (WalletManager.getInstance(SplashActivity.this).hasWallet()) {
+                MainActivity.startMainActivity(SplashActivity.this);
+                SplashActivity.this.finish();
+            } else {
+                playAlphaAnim();
             }
+
         }, 1000);
     }
 
     private void playAlphaAnim() {
         mLayoutSplashBtn.setVisibility(View.VISIBLE);
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float alpha = (float) animation.getAnimatedValue();
-                mLayoutSplashBtn.setAlpha(alpha);
-            }
+        valueAnimator.addUpdateListener(animation -> {
+            float alpha = (float) animation.getAnimatedValue();
+            mLayoutSplashBtn.setAlpha(alpha);
         });
         valueAnimator.setDuration(1000);
         valueAnimator.start();
     }
-
-    private void uploadDeviceId(String deviceId) {
-        if (WalletInfoManager.getInstance().hasWallet()) {
-            MainActivity.startMainActivity(SplashActivity.this);
-            SplashActivity.this.finish();
-        } else {
-            playAlphaAnim();
-        }
-    }
-
 }

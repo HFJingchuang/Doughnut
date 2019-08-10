@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WalletManager;
 
@@ -27,13 +28,13 @@ public class JtServerTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        String balance = WalletManager.getInstance(appContext).getBalance(addr);
+        AccountRelations balance = WalletManager.getInstance(appContext).getBalance(addr);
         Assert.assertEquals(true, JtServer.getInstance().getRemote().getLocalSign());
 
         JtServer.getInstance().changeServer("wss://s.jingtum.com:5020", false);
-        String balance1 = WalletManager.getInstance(appContext).getBalance(addr);
+        AccountRelations balance1 = WalletManager.getInstance(appContext).getBalance(addr);
         Assert.assertEquals(false, JtServer.getInstance().getRemote().getLocalSign());
-        Assert.assertNotEquals(balance, balance1);
+        Assert.assertNotEquals(balance.getLines().size(), balance1.getLines().size());
     }
 
 }

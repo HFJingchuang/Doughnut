@@ -7,7 +7,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
+import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 
@@ -101,17 +103,21 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountTx bean = WalletManager.getInstance(appContext).getTansferHishory(addr, new Integer("20"));
+        AccountTx bean = WalletManager.getInstance(appContext).getTansferHishory(addr, new Integer("20"), null);
         Assert.assertEquals(bean.getTransactions().size(), 20);
     }
 
     @Test
     public void getBalanceTest() throws Exception {
         // 导入钱包
-        String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        String balance = WalletManager.getInstance(appContext).getBalance(addr);
-        Log.v(TAG, balance);
-        Assert.assertNotNull(balance);
+//        String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
+//        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+//        AccountRelations accountRelations = WalletManager.getInstance(appContext).getBalance(addr);
+//        Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", accountRelations.getAccount());
+
+        String privateKey = "jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6";
+        JtServer.getInstance().changeServer("wss://s.jingtum.com:5020");
+        AccountRelations accountRelations = WalletManager.getInstance(appContext).getBalance(privateKey);
+        Assert.assertEquals("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6", accountRelations.getAccount());
     }
 }

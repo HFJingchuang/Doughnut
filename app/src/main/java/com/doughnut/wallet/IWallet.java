@@ -2,6 +2,7 @@ package com.doughnut.wallet;
 
 import android.graphics.Bitmap;
 
+import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.Marker;
 
@@ -27,5 +28,5 @@ public interface IWallet {
 
     AccountTx getTansferHishory(String address, Integer limit, Marker marker);
 
-    String getBalance(String address);
+    AccountRelations getBalance(String address);
 }

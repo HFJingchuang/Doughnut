@@ -1,5 +1,6 @@
 package com.doughnut.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +10,7 @@ import com.doughnut.R;
 import com.doughnut.view.TitleBar;
 
 
-public class ImportWalletSelectActivity extends BaseActivity implements View.OnClickListener{
+public class ImportWalletSelectActivity extends BaseActivity implements View.OnClickListener {
 
 
     private RelativeLayout privateKeyBtn, keyStoreBtn;
@@ -55,6 +56,12 @@ public class ImportWalletSelectActivity extends BaseActivity implements View.OnC
             Intent intent = new Intent(this, KeyStoreImportActivity.class);
             startActivity(intent);
         }
+    }
+
+    public static void startImportWalletSelectActivity(Context from) {
+        Intent intent = new Intent(from, ImportWalletSelectActivity.class);
+        intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
+        from.startActivity(intent);
     }
 
 }
