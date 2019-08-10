@@ -18,47 +18,29 @@
         android:paddingRight="@dimen/dimen_content_padding">
 
 
-        <View style="@style/Style.Line" />
+        <!--<View style="@style/Style.Line" />-->
+
+        <!--<LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">-->
+
+
+        <EditText
+            android:id="@+id/keyStore_text"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/shape_importwallet_privatkey"
+            android:hint="@string/content_keyStore"
+            android:padding="5dp"
+            android:textColor="@color/common_black_fontcolor"
+            android:textSize="14sp"
+            android:text=""/>
+        <!--</LinearLayout>-->
+
+        <!--<View style="@style/Style.Line" />-->
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1.0">
-
-                <EditText
-                    android:id="@+id/edt_private_key"
-                    style="@style/Style.Edit.WalletCreate"
-                    android:hint="@string/enter_hint_private_key"
-                    />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/img_scan"
-                android:layout_width="25.0dip"
-                android:layout_height="25.0dip"
-                android:src="@drawable/ic_pop_item_scan"/>
-            <!--<TextView-->
-            <!--android:id="@+id/pop_item_scan"-->
-            <!--style="@style/Style_Pop_Item"-->
-            <!--android:drawableLeft="@drawable/ic_pop_item_scan"-->
-            <!--android:text="@string/btn_scan_it"-->
-            <!--android:visibility="visible"/>-->
-
-
-
-
-        </LinearLayout>
-
-        <View style="@style/Style.Line" />
-
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-            <!--style="@style/Style.WalletCreateTitle"-->
-            <!--android:text="@string/enter_title_import_wallet" />-->
 
             <EditText
                 android:id="@+id/edt_wallet_name"
@@ -66,36 +48,18 @@
                 android:hint="@string/enter_hint_wallet_name" />
         </LinearLayout>
 
-
         <View style="@style/Style.Line" />
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-            <!--style="@style/Style.WalletCreateTitle"-->
-            <!--android:text="@string/enter_title_password" />-->
 
             <EditText
                 android:id="@+id/edt_wallet_pwd"
                 style="@style/Style.Edit.WalletCreate.Pwd"
-                android:hint="@string/enter_hint_password" />
+                android:hint="@string/enter_hint_keyStore_Pwd" />
         </LinearLayout>
 
         <View style="@style/Style.Line" />
 
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-            <!--style="@style/Style.WalletCreateTitle"-->
-            <!--android:text="@string/enter_title_verify" />-->
-
-            <EditText
-                android:id="@+id/edt_wallet_pwd_confirm"
-                style="@style/Style.Edit.WalletCreate.Pwd"
-                android:hint="@string/enter_hint_verify" />
-        </LinearLayout>
-
-        <View style="@style/Style.Line" />
 
         <LinearLayout
             android:layout_width="match_parent"

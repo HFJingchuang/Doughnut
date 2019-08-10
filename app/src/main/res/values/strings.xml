@@ -241,6 +241,7 @@
     <string name="tab_bar_code">二维码</string>
     <string name="tab_secret_key">密钥</string>
     <string name="tab_keyStore">keyStore</string>
+    <string name="tab_privateKey">私钥</string>
     <string name="current_wallet">当前钱包</string>
     <string name="dialog_content_no_private_key">密钥不能为空</string>
     <string name="dialog_content_no_keyStore">keyStore不能为空</string>

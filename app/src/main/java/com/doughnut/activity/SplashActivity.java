@@ -78,7 +78,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     private void gotoImportWallet() {
 //        ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
 //        this.finish();
-        Intent intent = new Intent(this, ImportWalletSelectActivity.class);
+        Intent intent = new Intent(this, WalletImportActivity.class);
         startActivity(intent);
     }
 

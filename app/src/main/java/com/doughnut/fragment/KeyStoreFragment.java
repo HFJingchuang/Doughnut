@@ -11,9 +11,16 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.doughnut.R;
+import com.doughnut.activity.AboutActivity;
+import com.doughnut.activity.LanguageActivity;
+import com.doughnut.activity.ManageWalletActivity;
+import com.doughnut.activity.TransactionRecordActivity;
+import com.doughnut.activity.WebBrowserActivity;
+import com.doughnut.config.Constant;
 
 
-public class PrivateKeyFragment extends BaseFragment implements View.OnClickListener{
+public class KeyStoreFragment extends BaseFragment implements View.OnClickListener {
+
     private RelativeLayout mLayoutManageWallet;
     private RelativeLayout mLayoutRecordTransaction;
     private RelativeLayout mLayoutNotification;
@@ -21,9 +28,9 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
     private RelativeLayout mLayoutAbout;
     private RelativeLayout mLayoutLanguage;
 
-    public static PrivateKeyFragment newInstance() {
+    public static KeyStoreFragment newInstance() {
         Bundle args = new Bundle();
-        PrivateKeyFragment fragment = new PrivateKeyFragment();
+        KeyStoreFragment fragment = new KeyStoreFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,7 +38,7 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_private_key, container, false);
+        return inflater.inflate(R.layout.fragment_key_store, container, false);
     }
 
     @Override
