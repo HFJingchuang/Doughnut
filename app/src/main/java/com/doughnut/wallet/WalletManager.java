@@ -50,6 +50,20 @@ public class WalletManager implements IWallet {
     }
 
     /**
+     * 判断app当前是否有钱包
+     *
+     * @return
+     */
+    public boolean hasWallet() {
+        try {
+            return !TextUtils.isEmpty(WalletSp.getInstance(mContext, "").getCurrentWallet());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
      * 创建钱包
      *
      * @param password

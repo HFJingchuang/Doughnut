@@ -14,10 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
-import com.doughnut.utils.ViewUtil;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {

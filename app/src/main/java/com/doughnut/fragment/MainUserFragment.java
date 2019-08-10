@@ -2,10 +2,14 @@ package com.doughnut.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doughnut.R;
 import com.doughnut.activity.AboutActivity;
@@ -14,16 +18,22 @@ import com.doughnut.activity.ManageWalletActivity;
 import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
+import com.doughnut.utils.ToastUtil;
+import com.doughnut.wallet.WalletSp;
 
 
 public class MainUserFragment extends BaseFragment implements View.OnClickListener {
 
     private RelativeLayout mLayoutManageWallet;
     private RelativeLayout mLayoutRecordTransaction;
-    private RelativeLayout mLayoutNotification;
     private RelativeLayout mLayoutHelp;
     private RelativeLayout mLayoutAbout;
     private RelativeLayout mLayoutLanguage;
+    private LinearLayout mLayoutPay;
+    private LinearLayout mLayoutRecieve;
+    private LinearLayout mLayoutRight;
+    private TextView mAddrressTv;
+    private TextView mNameTv;
 
     public static MainUserFragment newInstance() {
         Bundle args = new Bundle();
@@ -49,7 +59,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         super.onResume();
         mLayoutManageWallet.setClickable(true);
         mLayoutRecordTransaction.setClickable(true);
-        mLayoutNotification.setClickable(true);
         mLayoutHelp.setClickable(true);
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
@@ -63,9 +72,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutRecordTransaction) {
             mLayoutRecordTransaction.setClickable(false);
             TransactionRecordActivity.startTransactionRecordActivity(getActivity());
-        } else if (view == mLayoutNotification) {
-            mLayoutNotification.setClickable(false);
-            TransactionRecordActivity.startTransactionRecordActivity(getActivity());
         } else if (view == mLayoutHelp) {
             mLayoutHelp.setClickable(false);
             WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_help_center), Constant.help_url);
@@ -75,6 +81,12 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutLanguage) {
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
+        } else if (view == mLayoutPay) {
+            ToastUtil.toast(getContext(), "还没实现。。。");
+        } else if (view == mLayoutRecieve) {
+            ToastUtil.toast(getContext(), "还没实现。。。");
+        } else if (view == mLayoutRight) {
+            ToastUtil.toast(getContext(), "还没实现。。。");
         }
     }
 
@@ -82,17 +94,32 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
 
         mLayoutManageWallet = view.findViewById(R.id.layout_manage_wallet);
         mLayoutRecordTransaction = view.findViewById(R.id.layout_transaction_record);
-        mLayoutNotification = view.findViewById(R.id.layout_notication);
         mLayoutHelp = view.findViewById(R.id.layout_help);
         mLayoutAbout = view.findViewById(R.id.layout_about);
         mLayoutLanguage = view.findViewById(R.id.layout_language);
 
+        mLayoutRight = view.findViewById(R.id.layout_right);
+        mLayoutPay = view.findViewById(R.id.layout_pay);
+        mLayoutRecieve = view.findViewById(R.id.layout_recieve);
+        mAddrressTv = view.findViewById(R.id.tv_wallet_address);
+        mNameTv = view.findViewById(R.id.tv_wallet_name);
+
         mLayoutManageWallet.setOnClickListener(this);
         mLayoutRecordTransaction.setOnClickListener(this);
-        mLayoutNotification.setOnClickListener(this);
         mLayoutHelp.setOnClickListener(this);
         mLayoutAbout.setOnClickListener(this);
         mLayoutLanguage.setOnClickListener(this);
+        mLayoutRight.setOnClickListener(this);
+        mLayoutPay.setOnClickListener(this);
+        mLayoutRecieve.setOnClickListener(this);
+
+        setWalletInfo();
+    }
+
+    private void setWalletInfo() {
+        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+        mAddrressTv.setText(currentWallet);
+        mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
     }
 
 }
