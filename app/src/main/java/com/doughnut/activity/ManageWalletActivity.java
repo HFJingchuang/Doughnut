@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,7 +26,7 @@ public class ManageWalletActivity extends BaseActivity implements View.OnClickLi
     private TextView mTvCreateWallet;
     private TextView mTvImPortWallet;
 
-    private ListView mLsWallet;
+    private RecyclerView mLsWallet;
     private WalletAdapter mAdapter;
 
 
@@ -71,17 +72,9 @@ public class ManageWalletActivity extends BaseActivity implements View.OnClickLi
                 ViewUtil.dip2px(ManageWalletActivity.this, 6),
                 ViewUtil.dip2px(ManageWalletActivity.this, 6));
 
-        mLsWallet = (ListView) findViewById(R.id.ls_manager_wallet);
+        mLsWallet = (RecyclerView) findViewById(R.id.ls_manager_wallet);
         mAdapter = new WalletAdapter();
-        mLsWallet.setAdapter(mAdapter);
-
-        mLsWallet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ModifyWalletActivity.startModifyWalletActivity(ManageWalletActivity.this,
-                        WalletInfoManager.getInstance().getAllWallet().get(position).waddress);
-            }
-        });
+//        mLsWallet.setAdapter(mAdapter);
     }
 
 

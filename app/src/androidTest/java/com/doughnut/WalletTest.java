@@ -8,14 +8,15 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
+import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -29,8 +30,14 @@ public class WalletTest {
     private static final String TAG = "WalletTest";
     private static Context appContext = InstrumentationRegistry.getTargetContext();
 
+    @Before
+    public void changeServer() throws Exception {
+        JtServer.getInstance().changeServer("ws://ts5.jingtum.com:5020");
+    }
+
     @Test
     public void createWalletTest() throws Exception {
+
         String addr = WalletManager.getInstance(appContext).createWallet("123456", "测试");
         Assert.assertNotNull(addr);
     }
@@ -92,7 +99,7 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        String res = WalletManager.getInstance(appContext).transfer("123456", addr, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", new BigDecimal("0.01"), "钱包工具类：转账单元测试");
+        String res = WalletManager.getInstance(appContext).transfer("123456", addr, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "钱包工具类：转账单元测试");
         Assert.assertNotNull(res);
     }
 

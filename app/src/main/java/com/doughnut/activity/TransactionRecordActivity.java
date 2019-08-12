@@ -189,7 +189,6 @@ public class TransactionRecordActivity extends BaseActivity implements
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = ViewUtil.inflatView(parent.getContext(), parent, R.layout.layout_item_transaction, false);
             return new VH(v);
-
         }
 
         @Override

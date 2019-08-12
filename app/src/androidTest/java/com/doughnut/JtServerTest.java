@@ -31,7 +31,7 @@ public class JtServerTest {
         AccountRelations balance = WalletManager.getInstance(appContext).getBalance(addr);
         Assert.assertEquals(true, JtServer.getInstance().getRemote().getLocalSign());
 
-        JtServer.getInstance().changeServer("wss://s.jingtum.com:5020", false);
+        JtServer.getInstance().changeServer("ws://ts5.jingtum.com:5020", false);
         AccountRelations balance1 = WalletManager.getInstance(appContext).getBalance(addr);
         Assert.assertEquals(false, JtServer.getInstance().getRemote().getLocalSign());
         Assert.assertNotEquals(balance.getLines().size(), balance1.getLines().size());

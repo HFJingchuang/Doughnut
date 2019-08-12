@@ -250,7 +250,24 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 获取余额
+     * 获取SWT余额
+     *
+     * @return
+     */
+    @Override
+    public String getSWTBalance(String address) {
+        try {
+            // 获取账户信息
+            AccountInfo info = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
+            return info.getAccountData().getBalance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取全部余额
      *
      * @return
      */

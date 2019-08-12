@@ -29,4 +29,6 @@ public interface IWallet {
     AccountTx getTansferHishory(String address, Integer limit, Marker marker);
 
     AccountRelations getBalance(String address);
+
+    String getSWTBalance(String address);
 }

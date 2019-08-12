@@ -16,6 +16,7 @@ import com.doughnut.activity.ManageWalletActivity;
 import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
+import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.ToastUtil;
@@ -68,7 +69,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View view) {
         if (view == mLayoutManageWallet) {
             mLayoutManageWallet.setClickable(false);
-            ManageWalletActivity.startModifyWalletActivity(getActivity());
+            WalletManageActivity.startModifyWalletActivity(getActivity());
         } else if (view == mLayoutRecordTransaction) {
             mLayoutRecordTransaction.setClickable(false);
             TransactionRecordActivity.startTransactionRecordActivity(getActivity());
