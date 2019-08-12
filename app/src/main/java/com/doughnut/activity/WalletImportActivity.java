@@ -62,6 +62,12 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     }
 
+    public static void startImportWalletActivity(Context from) {
+        Intent intent = new Intent(from, WalletImportActivity.class);
+        intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
+        from.startActivity(intent);
+    }
+
     /**
      * 前画面跳转用
      * @param context
@@ -128,21 +134,21 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         resetTab();
         switch (position) {
             case WALLET_INDEX:
-                mImgWallet.setImageResource(R.drawable.ic_tab_asset_selected);
+//                mImgWallet.setImageResource(R.drawable.ic_tab_asset_selected);
                 mTvWallet.setSelected(true);
                 break;
             case MINE_INDEX:
-                mImgMine.setImageResource(R.drawable.ic_tab_mine_selected);
+//                mImgMine.setImageResource(R.drawable.ic_tab_mine_selected);
                 mTvMine.setSelected(true);
                 break;
         }
     }
 
     private void resetTab() {
-        mImgWallet.setImageResource(R.drawable.ic_tab_asset_unselected);
+//        mImgWallet.setImageResource(R.drawable.ic_tab_asset_unselected);
         mTvWallet.setSelected(false);
 
-        mImgMine.setImageResource(R.drawable.ic_tab_mine_unselected);
+//        mImgMine.setImageResource(R.drawable.ic_tab_mine_unselected);
         mTvMine.setSelected(false);
     }
 
@@ -153,8 +159,9 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         }
 
         private Fragment[] mFragments = new Fragment[]{
-                KeyStoreFragment.newInstance(),
-                PrivateKeyFragment.newInstance()
+                PrivateKeyFragment.newInstance(),
+                KeyStoreFragment.newInstance()
+
         };
 
         @Override

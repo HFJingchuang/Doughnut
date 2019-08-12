@@ -26,10 +26,9 @@
 
             <ImageView
                 android:id="@+id/img_tab_wallet"
-                android:layout_width="22dp"
+                android:layout_width="23dp"
                 android:layout_height="22dp"
-                android:scaleType="fitXY"
-                 />
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/tv_tab_wallet"
@@ -38,7 +37,7 @@
                 android:layout_marginTop="2dp"
                 android:text="@string/tab_privateKey"
                 android:textColor="@color/selector_maintab_item_textcolor"
-                android:textSize="10sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!--<LinearLayout-->
@@ -116,7 +115,7 @@
                 android:layout_marginTop="2dp"
                 android:text="@string/tab_keyStore"
                 android:textColor="@color/selector_maintab_item_textcolor"
-                android:textSize="10sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
     </LinearLayout>
