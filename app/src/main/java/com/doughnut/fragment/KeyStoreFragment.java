@@ -90,7 +90,6 @@ public class KeyStoreFragment extends BaseFragment implements View.OnClickListen
 //                    startActivity(intent);
                     Intent intent = new Intent(mContext, MainActivity.class);
                     startActivity(intent);
-//                    this.finish();
                 }
                 break;
             // 勾选框
@@ -104,6 +103,10 @@ public class KeyStoreFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    /**
+     * 画面初期化
+     * @param view
+     */
     private void initView(View view) {
 
 //        mTitleBar = view.findViewById(R.id.title_bar);

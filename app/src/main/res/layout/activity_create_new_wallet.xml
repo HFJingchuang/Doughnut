@@ -20,9 +20,9 @@
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
-            <TextView
-                style="@style/Style.WalletCreateTitle"
-                android:text="@string/enter_title_wallet_name" />
+            <!--<TextView-->
+                <!--style="@style/Style.WalletCreateTitle"-->
+                <!--android:text="@string/enter_title_wallet_name" />-->
 
             <EditText
                 android:id="@+id/edt_wallet_name"
@@ -34,9 +34,9 @@
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
-            <TextView
-                style="@style/Style.WalletCreateTitle"
-                android:text="@string/enter_title_password" />｀
+            <!--<TextView-->
+                <!--style="@style/Style.WalletCreateTitle"-->
+                <!--android:text="@string/enter_title_password" />｀-->
 
             <EditText
                 android:id="@+id/edt_wallet_pwd"
@@ -48,9 +48,9 @@
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
-            <TextView
-                style="@style/Style.WalletCreateTitle"
-                android:text="@string/enter_title_verify" />
+            <!--<TextView-->
+                <!--style="@style/Style.WalletCreateTitle"-->
+                <!--android:text="@string/enter_title_verify" />-->
 
             <EditText
                 android:id="@+id/edt_wallet_pwd_confirm"

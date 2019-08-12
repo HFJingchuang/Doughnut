@@ -1,5 +1,6 @@
 package com.doughnut.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,16 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
         super.onViewCreated(view, savedInstanceState);
         mContext = getActivity();
         initView(view);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            String result = data.getStringExtra("scan_result");
+            if (!result.isEmpty()) {
+                mEPrivateKey.setText(result);
+            }
+        }
     }
 
     @Override
@@ -113,6 +124,10 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
     }
 
 
+    /**
+     * 画面初期化
+     * @param view
+     */
     private void initView(View view) {
 
         mimg_scan = view.findViewById(R.id.img_scan);
