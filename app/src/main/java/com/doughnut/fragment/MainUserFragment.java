@@ -2,19 +2,18 @@ package com.doughnut.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.doughnut.R;
 import com.doughnut.activity.AboutActivity;
 import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.ManageWalletActivity;
+import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
@@ -82,7 +81,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
         } else if (view == mLayoutPay) {
-            ToastUtil.toast(getContext(), "还没实现。。。");
+            TokenTransferActivity.startTokenTransferActivity(getActivity());
         } else if (view == mLayoutRecieve) {
             ToastUtil.toast(getContext(), "还没实现。。。");
         } else if (view == mLayoutRight) {

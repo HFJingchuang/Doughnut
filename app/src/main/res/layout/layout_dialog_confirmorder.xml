@@ -187,6 +187,33 @@
             android:textSize="15sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="备注"
+            android:textColor="@color/common_black_fontcolor"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_token_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="1"
+            android:textColor="@color/common_black_fontcolor"
+            android:textSize="15sp" />
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

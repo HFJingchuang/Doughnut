@@ -61,8 +61,8 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     @Override
     public void onClick(View v) {
         if (v == mLayoutTranster) {
-            TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
-                    mContractAddress, 0.0f, mItem.getString("bl_symbol", ""), mItem.getInt("decimal", 18), 0);
+//            TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
+//                    mContractAddress, 0.0f, mItem.getString("bl_symbol", ""), mItem.getInt("decimal", 18), 0);
         } else if (v == mLayoutReceive) {
             TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mItem.getString("bl_symbol", ""));
         }

@@ -1,6 +1,7 @@
 
 package com.doughnut.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,143 +11,138 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.jtblk.utils.CheckUtils;
+import com.contrarywind.adapter.WheelAdapter;
+import com.contrarywind.listener.OnItemSelectedListener;
+import com.contrarywind.view.WheelView;
 import com.doughnut.R;
-import com.doughnut.base.BaseWalletUtil;
-import com.doughnut.base.TBController;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.base.WCallback;
 import com.doughnut.dialog.OrderDetailDialog;
 import com.doughnut.dialog.PwdDialog;
-import com.doughnut.net.api.jtrequest.JTBalanceRequest;
-import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
+import com.zxing.activity.CaptureActivity;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
 
     public final static String TAG = "TokenTransferActivity";
     private TitleBar mTitleBar;
-    private TextView mTvToken;
+    private WheelView mWhTokenName;
     private TextView mTvGas;
     private EditText mEdtWalletAddress, mEdtTransferNum, mEdtTransferRemark;
     private Button mBtnNext;
     private double mGasPrice = 0.0f;
-    private BaseWalletUtil mWalletUtil;
-    private WalletInfoManager.WData mWalletData; //当前使用哪个钱包转账
-    private double mGas;
-    private String mContractAddress;
-    private String mOriginAddress;
-    private String mReceiveAddress;
-    private String mTokenSymbol;
-    private double mAmount;
-    private boolean defaultToken;
-    private int mDecimal = 0;
-    private int mBlockChain;
+    private List<String> tokenEntries;
 
-    private final static String CONTRACT_ADDRESS_KEY = "Contact_Address";
     private final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
-    private final static String TOKEN_SYMBOL_KEY = "Token_Symbol";
-    private final static String TOKEN_DECIMAL = "Token_Decimal";
-    private final static String TOEKN_GAS = "Token_Gas";
     private final static String TOEKN_AMOUNT = "Token_Amount";
+    private final static int SCAN_REQUEST_CODE = 10001;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer_token);
-        if (getIntent() != null) {
-            mOriginAddress = getIntent().getStringExtra(RECEIVE_ADDRESS_KEY);
-            mContractAddress = getIntent().getStringExtra(CONTRACT_ADDRESS_KEY);
-            mTokenSymbol = getIntent().getStringExtra(TOKEN_SYMBOL_KEY);
-            mDecimal = getIntent().getIntExtra(TOKEN_DECIMAL, 0);
-            mGas = getIntent().getDoubleExtra(TOEKN_GAS, 0);
-            mAmount = getIntent().getDoubleExtra(TOEKN_AMOUNT, 0.0f);
-        }
-
-        mWalletData = WalletInfoManager.getInstance().getCurrentWallet();
-        if (mWalletData == null) {
-            this.finish();
-            return;
-        }
-        mWalletUtil = TBController.getInstance().getWalletUtil(mWalletData.type);
-
-        defaultToken = TextUtils.equals(mWalletUtil.getDefaultTokenSymbol(), mTokenSymbol);
-
-        mBlockChain = WalletInfoManager.getInstance().getWalletType();
         initView();
     }
 
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_transfer));
-//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener());
+        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setRightDrawable(R.drawable.ic_pop_item_scan);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                TokenTransferActivity.this.finish();
+                finish();
+            }
+
+            @Override
+            public void onRightClick(View view) {
+                startActivityForResult(new Intent(TokenTransferActivity.this, CaptureActivity.class), SCAN_REQUEST_CODE);
             }
         });
-
-        mTvToken = findViewById(R.id.tv_token_name);
-        mTvToken.setOnClickListener(this);
-        mTvToken.setText(TextUtils.isEmpty(mTokenSymbol) ? "" : mTokenSymbol);
 
         mEdtWalletAddress = findViewById(R.id.edt_wallet_address);
 
         mEdtTransferNum = findViewById(R.id.edt_transfer_num);
+        mWhTokenName = findViewById(R.id.wh_token_name);
 
-        mGas = mWalletUtil.getRecommendGas(mGas, defaultToken);
+        //准备数据
+        tokenEntries = new ArrayList<>();
+        tokenEntries.clear();
+        tokenEntries.add("SWT");
+        tokenEntries.add("CNT");
+        tokenEntries.add("MOAC");
+        tokenEntries.add("JCC");
+        tokenEntries.add("CSP");
+        mWhTokenName.setAdapter(new ArrayWheelAdapter(tokenEntries));
+        mWhTokenName.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int index) {
+                Toast.makeText(TokenTransferActivity.this, "" + tokenEntries.get(index), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        mGas = mWalletUtil.getRecommendGas(mGas, defaultToken);
 
         mTvGas = findViewById(R.id.tv_transfer_gas);
         mTvGas.setOnClickListener(this);
-        mWalletUtil.gasPrice(new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    mGasPrice = extra.getDouble("gasPrice", 0.0);
-                    mWalletUtil.calculateGasInToken(mGas, mGasPrice, defaultToken, new WCallback() {
-                        @Override
-                        public void onGetWResult(int ret, GsonUtil extra) {
-                            mTvGas.setText(extra.getString("gas", ""));
-                        }
-                    });
-                }
-            }
-        });
-        mWalletUtil.translateAddress(mOriginAddress, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                mReceiveAddress = extra.getString("receive_address", "");
-                mEdtWalletAddress.setText(mReceiveAddress);
-            }
-        });
-        DecimalFormat df = new DecimalFormat("#.00000000");
-        mEdtTransferNum.setText(mAmount > 0.0f ? df.format(mAmount).toString() : "");
+//        mWalletUtil.gasPrice(new WCallback() {
+//            @Override
+//            public void onGetWResult(int ret, GsonUtil extra) {
+//                if (ret == 0) {
+//                    mGasPrice = extra.getDouble("gasPrice", 0.0);
+//                    mWalletUtil.calculateGasInToken(mGas, mGasPrice, defaultToken, new WCallback() {
+//                        @Override
+//                        public void onGetWResult(int ret, GsonUtil extra) {
+//                            mTvGas.setText(extra.getString("gas", ""));
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//        DecimalFormat df = new DecimalFormat("#.00000000");
+//        mEdtTransferNum.setText(mAmount > 0.0f ? df.format(mAmount).toString() : "");
 
         mEdtTransferRemark = findViewById(R.id.edt_transfer_remark);
 
         mBtnNext = findViewById(R.id.btn_next);
 
         mBtnNext.setOnClickListener(this);
+
+        if (getIntent() != null) {
+            mEdtWalletAddress.setText(getIntent().getStringExtra(RECEIVE_ADDRESS_KEY));
+            mEdtTransferNum.setText(String.valueOf(getIntent().getDoubleExtra(TOEKN_AMOUNT, 0.0f)));
+        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            mContractAddress = data.getStringExtra(CONTRACT_ADDRESS_KEY);
-            mTokenSymbol = data.getStringExtra(TOKEN_SYMBOL_KEY);
-            mDecimal = data.getIntExtra(TOKEN_DECIMAL, 0);
-            mTvToken.setText(TextUtils.isEmpty(mTokenSymbol) ? "" : mTokenSymbol);
-            defaultToken = TextUtils.equals(mWalletUtil.getDefaultTokenSymbol(), mTokenSymbol);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SCAN_REQUEST_CODE) {
+                //扫描到地址
+                String scanResult = data.getStringExtra("result");
+                if (TextUtils.isEmpty(scanResult)) {
+                    ToastUtil.toast(this, getString(R.string.toast_scan_failure));
+                } else {
+                    //swt
+//                    handleSwtScanResult(scanResult);
+                    GsonUtil res = new GsonUtil(scanResult);
+                    startTokenTransferActivity(this, res.getString(RECEIVE_ADDRESS_KEY, ""), res.getString(TOEKN_AMOUNT, ""));
+                }
+            }
         }
     }
 
@@ -161,26 +157,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                 public void onConfirmOrder() {
                                     verifyPwd();
                                 }
-                            }, mWalletData.waddress, mEdtWalletAddress.getText().toString(),
-                            mGasPrice, mGas, Util.parseDouble(mEdtTransferNum.getText().toString()), mBlockChain, mTokenSymbol, defaultToken);
+                            }, mEdtWalletAddress.getText().toString(),
+                            mGasPrice, 0, Util.parseDouble(mEdtTransferNum.getText().toString()), tokenEntries.get(mWhTokenName.getCurrentItem()), mEdtTransferRemark.getText().toString());
                     orderDetailDialog.show();
                 }
                 break;
             case R.id.tv_transfer_gas:
-                mWalletUtil.gasSetting(TokenTransferActivity.this, mGasPrice, defaultToken, new WCallback() {
-                    @Override
-                    public void onGetWResult(int ret, GsonUtil extra) {
-                        if (ret == 0) {
-                            String gas = extra.getString("gas", "");
-                            mGasPrice = extra.getDouble("gasPrice", 0.0f);
-                            mTvGas.setText(gas);
-                        }
-                    }
-                });
                 break;
-            case R.id.tv_token_name:
-                Intent intent = new Intent(TokenTransferActivity.this, ChooseTokenTransferActivity.class);
-                TokenTransferActivity.this.startActivityForResult(intent, 0);
         }
     }
 
@@ -190,107 +173,32 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             public void authPwd(String tag, boolean result) {
                 if (TextUtils.equals(tag, "transaction")) {
                     if (result) {
-                        pwdRight();
+//                        pwdRight();
+                        sendTranscation();
                     } else {
                         ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_order_password_incorrect));
                     }
                 }
             }
-        }, mWalletData.whash, "transaction");
+        }, "", "transaction");
         pwdDialog.show();
     }
 
-    private void pwdRight() {
-        updateBtnToTranferingState();
-        if (mBlockChain == TBController.SWT_INDEX) {
-            swtTokenTransfer();
+    public void sendTranscation() {
+        String hash = WalletManager.getInstance(this).transfer("", WalletSp.getInstance(this, "").getCurrentWallet(), mEdtWalletAddress.getText().toString(),
+                "", "", mEdtTransferNum.getText().toString(), mEdtTransferRemark.getText().toString());
+        if (!isValidHash(hash)) {
+            ToastUtil.toast(this, "交易已发送，请等待链上确认，仅需几秒时间。。");
+        } else {
+            ToastUtil.toast(this, "交易发送失败" + "\n" + hash);
         }
     }
 
-    private void swtTokenTransfer() {
-        //首先获取isuer con
-        new RequestPresenter().loadJtData(new JTBalanceRequest(mWalletData.waddress), new RequestPresenter.RequestCallback() {
-            @Override
-            public void onRequesResult(int ret, GsonUtil json) {
-                if (ret == 0) {
-                    long sequence = json.getLong("sequence", 0);
-                    if (sequence <= 0) {
-                        ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed) + 1002);
-                    } else {
-                        GsonUtil dataList = json.getArray("balances", "[]");
-                        int len = dataList.getLength();
-                        for (int i = 0; i < len; i++) {
-                            GsonUtil item = dataList.getObject(i);
-                            if (TextUtils.equals(item.getString("currency", ""), mTokenSymbol)) {
-                                String currency = item.getString("currency", "");
-                                String issuer = item.getString("issuer", "");
-                                double value = item.getDouble("value", 0.0f);
-                                if (value < mAmount) {
-                                    resetTranferBtn();
-                                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_insufficient_balance) + 1003);
-                                    return;
-                                }
-                                signedSwtTransaction(mGas, sequence, mWalletData.waddress,
-                                        mEdtWalletAddress.getText().toString(), Util.parseDouble(mEdtTransferNum.getText().toString()),
-                                        mWalletData.wpk, currency, issuer);
-                            }
-                        }
-                    }
-
-                } else {
-                    resetTranferBtn();
-                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed) + 1001);
-                }
-            }
-        });
-    }
-
-
-    private void signedSwtTransaction(double fee, long sequence, String senderAddress, String receiverAddress,
-                                      double value, String seed, String currency, String issuer) {
-        GsonUtil swtSigned = new GsonUtil("{}");
-        swtSigned.putDouble("fee", fee);
-        swtSigned.putDouble("value", value);
-        swtSigned.putLong("sequence", sequence);
-        swtSigned.putString("account", senderAddress);
-        swtSigned.putString("destination", receiverAddress);
-        swtSigned.putString("currency", currency);
-        swtSigned.putString("seed", seed);
-        swtSigned.putString("issuer", issuer);
-        mWalletUtil.signedTransaction(swtSigned, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    final String rawTransaction = extra.getObject("signedTransaction", "{}").getString("rawTransaction", "");
-                    sendSignedTransaction(rawTransaction);
-                } else {
-                    resetTranferBtn();
-                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed) + 6);
-                }
-            }
-        });
-    }
-
-
-    private void sendSignedTransaction(String rawTransaction) {
-        if (TextUtils.isEmpty(rawTransaction)) {
-            resetTranferBtn();
-            ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed) + 3);
-            return;
-        }
-        mWalletUtil.sendSignedTransaction(rawTransaction, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    resetTranferBtn();
-                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_success));
-                    TokenTransferActivity.this.finish();
-                } else {
-                    resetTranferBtn();
-                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed) + 4);
-                }
-            }
-        });
+    private boolean isValidHash(String hash) {
+        final String HASH_RE = "^[A-F0-9]{64}$";
+        Pattern pattern = Pattern.compile(HASH_RE);
+        Matcher matcher = pattern.matcher(hash);
+        return matcher.matches();
     }
 
     private boolean paramCheck() {
@@ -298,21 +206,21 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         String address = mEdtWalletAddress.getText().toString();
         String num = mEdtTransferNum.getText().toString();
 
-        if (TextUtils.isEmpty(mTvToken.getText().toString())) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_choose_token), "OK");
-            return false;
-        }
+//        if (TextUtils.isEmpty(mTvToken.getText().toString())) {
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_choose_token), "OK");
+//            return false;
+//        }
         if (TextUtils.isEmpty(address)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_address), "OK");
             return false;
         }
 
-        if (TextUtils.equals(address, mWalletData.waddress)) {
+        if (TextUtils.equals(address, WalletSp.getInstance(this, "").getCurrentWallet())) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_receive_address_incorrect), "OK");
             return false;
         }
 
-        if (!mWalletUtil.checkWalletAddress(address)) {
+        if (!CheckUtils.isValidAddress(address)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_address_format_incorrect), "OK");
             return false;
         }
@@ -335,20 +243,51 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mBtnNext.setText(getString(R.string.btn_next));
     }
 
+
+    class ArrayWheelAdapter implements WheelAdapter {
+        private List<String> mList;
+
+        public ArrayWheelAdapter(List<String> pList) {
+            this.mList = pList;
+        }
+
+        @Override
+        public int getItemsCount() {
+            return this.mList.size();
+        }
+
+        @Override
+        public Object getItem(int index) {
+            return this.mList.get(index);
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            return mList.indexOf(o);
+
+        }
+    }
+
     /**
      * 启动Activity
      *
      * @param context
      */
-    public static void startTokenTransferActivity(Context context, String receiveAddress, String contactAddress,
-                                                  double num, String tokenSymbol, int decimal, double gas) {
+    public static void startTokenTransferActivity(Context context, String receiveAddress,
+                                                  String amount) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
-        intent.putExtra(CONTRACT_ADDRESS_KEY, contactAddress);
         intent.putExtra(RECEIVE_ADDRESS_KEY, receiveAddress);
-        intent.putExtra(TOKEN_SYMBOL_KEY, tokenSymbol);
-        intent.putExtra(TOKEN_DECIMAL, decimal);
-        intent.putExtra(TOEKN_GAS, gas);
-        intent.putExtra(TOEKN_AMOUNT, num);
+        intent.putExtra(TOEKN_AMOUNT, amount);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 启动Activity
+     *
+     * @param context
+     */
+    public static void startTokenTransferActivity(Context context) {
+        Intent intent = new Intent(context, TokenTransferActivity.class);
         context.startActivity(intent);
     }
 
