@@ -13,6 +13,7 @@ import com.doughnut.R;
 import com.doughnut.activity.AboutActivity;
 import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.ManageWalletActivity;
+import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WebBrowserActivity;
@@ -83,7 +84,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutPay) {
             TokenTransferActivity.startTokenTransferActivity(getActivity());
         } else if (view == mLayoutRecieve) {
-            ToastUtil.toast(getContext(), "还没实现。。。");
+            TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
         } else if (view == mLayoutRight) {
             ToastUtil.toast(getContext(), "还没实现。。。");
         }

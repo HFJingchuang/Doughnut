@@ -24,6 +24,7 @@ import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -49,7 +50,7 @@ public class TransactionRecordActivity extends BaseActivity implements
     private Marker marker;
     private List<Transactions> transactions;
 
-    private View mEmptyView;
+    private LinearLayout mLayoutEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +101,7 @@ public class TransactionRecordActivity extends BaseActivity implements
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitleBarClickListener(this);
 
-//        mEmptyView = findViewById(R.id.empty_view);
-//        mEmptyView.setVisibility(View.GONE);
+        mLayoutEmpty = findViewById(R.id.layout_no_transfer);
 
         mAdapter = new TransactionRecordAdapter();
         mRecyclerView = findViewById(R.id.view_recycler);
@@ -115,6 +115,11 @@ public class TransactionRecordActivity extends BaseActivity implements
                 getHistory();
                 refreshlayout.finishRefresh();
                 mAdapter.notifyDataSetChanged();
+                if (transactions == null && transactions.isEmpty()) {
+                    mLayoutEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    mLayoutEmpty.setVisibility(View.GONE);
+                }
             }
         });
         mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -293,17 +298,15 @@ public class TransactionRecordActivity extends BaseActivity implements
         if (transactions != null) {
             transactions.clear();
         }
-        //jn88gyE9wRrsXTszA8KhfmiwZgU22yZENN
-        //jhD8c6ERtXsjhhA5tvYBRGvxPDS8CDWmSB
-        //jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6", 10, null);
+
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, null);
         transactions = accountTx.getTransactions();
         marker = accountTx.getMarker();
         mSmartRefreshLayout.finishRefresh();
     }
 
     private void getHistoryMore() {
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6", 10, marker);
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, marker);
         transactions.addAll(accountTx.getTransactions());
         marker = accountTx.getMarker();
         mSmartRefreshLayout.finishRefresh();

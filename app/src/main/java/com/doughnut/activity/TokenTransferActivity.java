@@ -18,6 +18,7 @@ import com.contrarywind.adapter.WheelAdapter;
 import com.contrarywind.listener.OnItemSelectedListener;
 import com.contrarywind.view.WheelView;
 import com.doughnut.R;
+import com.doughnut.config.Constant;
 import com.doughnut.dialog.OrderDetailDialog;
 import com.doughnut.dialog.PwdDialog;
 import com.doughnut.utils.GsonUtil;
@@ -46,8 +47,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private double mGasPrice = 0.0f;
     private List<String> tokenEntries;
 
-    private final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
-    private final static String TOEKN_AMOUNT = "Token_Amount";
     private final static int SCAN_REQUEST_CODE = 10001;
 
     @Override
@@ -123,8 +122,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mBtnNext.setOnClickListener(this);
 
         if (getIntent() != null) {
-            mEdtWalletAddress.setText(getIntent().getStringExtra(RECEIVE_ADDRESS_KEY));
-            mEdtTransferNum.setText(String.valueOf(getIntent().getDoubleExtra(TOEKN_AMOUNT, 0.0f)));
+            mEdtWalletAddress.setText(getIntent().getStringExtra(Constant.RECEIVE_ADDRESS_KEY));
+            mEdtTransferNum.setText(String.valueOf(getIntent().getDoubleExtra(Constant.TOEKN_AMOUNT, 0.0f)));
         }
     }
 
@@ -140,7 +139,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     //swt
 //                    handleSwtScanResult(scanResult);
                     GsonUtil res = new GsonUtil(scanResult);
-                    startTokenTransferActivity(this, res.getString(RECEIVE_ADDRESS_KEY, ""), res.getString(TOEKN_AMOUNT, ""));
+                    startTokenTransferActivity(this, res.getString(Constant.RECEIVE_ADDRESS_KEY, ""), res.getString(Constant.TOEKN_AMOUNT, ""));
                 }
             }
         }
@@ -276,8 +275,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     public static void startTokenTransferActivity(Context context, String receiveAddress,
                                                   String amount) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
-        intent.putExtra(RECEIVE_ADDRESS_KEY, receiveAddress);
-        intent.putExtra(TOEKN_AMOUNT, amount);
+        intent.putExtra(Constant.RECEIVE_ADDRESS_KEY, receiveAddress);
+        intent.putExtra(Constant.TOEKN_AMOUNT, amount);
         context.startActivity(intent);
     }
 

@@ -1,7 +1,6 @@
 package com.doughnut.config;
 
 
-
 public class Constant {
 
     public final static String wallet_prefs_prefix = "wallet_pref_";
@@ -16,6 +15,10 @@ public class Constant {
     public final static String baked = "baked";
     public final static String words = "words";
 
+
+    public final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
+    public final static String TOEKN_AMOUNT = "Token_Amount";
+
     //common sp
     public final static String common_prefs = "common_prefs";
     public final static String asset_visible_key = "asset_visible";
@@ -28,7 +31,7 @@ public class Constant {
     public final static String init_keys = "init_keys";
 
     //本地web3文件地址
-   public final static String base_web3_url = "file:///android_asset/web3.html";
+    public final static String base_web3_url = "file:///android_asset/web3.html";
 
     //帮助
     public final static String help_url = "";
