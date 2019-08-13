@@ -17,12 +17,8 @@ import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.Marker;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
-import com.doughnut.base.BaseWalletUtil;
-import com.doughnut.base.TBController;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
-import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -46,7 +42,6 @@ public class TransactionRecordActivity extends BaseActivity implements
 
     private RecyclerView mRecyclerView;
     private TransactionRecordAdapter mAdapter;
-    private BaseWalletUtil mWalletUtil;
     private Marker marker;
     private List<Transactions> transactions;
 
@@ -63,18 +58,9 @@ public class TransactionRecordActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        int blockId = WalletInfoManager.getInstance().getWalletType();
-        mWalletUtil = TBController.getInstance().getWalletUtil(blockId);
-        if (mWalletUtil == null) {
-            this.finish();
-            return;
-        }
-        if (mAdapter != null) {
-            mSmartRefreshLayout.setEnableRefresh(true);
-        }
-        mTitleBar.setTitle(WalletInfoManager.getInstance().getWname());
-
-
+        String currentWallet = WalletSp.getInstance(this, "").getCurrentWallet();
+        mTitleBar.setTitle(WalletSp.getInstance(this, currentWallet).getName());
+        getHistory();
     }
 
     @Override
@@ -113,8 +99,6 @@ public class TransactionRecordActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 getHistory();
-                refreshlayout.finishRefresh();
-                mAdapter.notifyDataSetChanged();
                 if (transactions == null && transactions.isEmpty()) {
                     mLayoutEmpty.setVisibility(View.VISIBLE);
                 } else {
@@ -130,13 +114,8 @@ public class TransactionRecordActivity extends BaseActivity implements
                     return;
                 }
                 getHistoryMore();
-                refreshlayout.finishLoadMore();
-                mAdapter.notifyDataSetChanged();
             }
         });
-
-        JtServer.getInstance().changeServer("wss://s.jingtum.com:5020");
-        getHistory();
     }
 
     public static void startTransactionRecordActivity(Context context) {
@@ -301,6 +280,9 @@ public class TransactionRecordActivity extends BaseActivity implements
         AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, null);
         transactions = accountTx.getTransactions();
         marker = accountTx.getMarker();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
         mSmartRefreshLayout.finishRefresh();
     }
 
@@ -308,7 +290,10 @@ public class TransactionRecordActivity extends BaseActivity implements
         AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, marker);
         transactions.addAll(accountTx.getTransactions());
         marker = accountTx.getMarker();
-        mSmartRefreshLayout.finishRefresh();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+        mSmartRefreshLayout.finishLoadMore();
     }
 
 }

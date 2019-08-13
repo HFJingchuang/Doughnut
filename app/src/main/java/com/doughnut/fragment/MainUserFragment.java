@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.activity.AboutActivity;
+import com.doughnut.activity.JtNodeRecordActivity;
 import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
@@ -26,6 +27,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
 
     private RelativeLayout mLayoutManageWallet;
     private RelativeLayout mLayoutRecordTransaction;
+    private RelativeLayout mLayoutNode;
     private RelativeLayout mLayoutHelp;
     private RelativeLayout mLayoutAbout;
     private RelativeLayout mLayoutLanguage;
@@ -84,6 +86,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutRecordTransaction) {
             mLayoutRecordTransaction.setClickable(false);
             TransactionRecordActivity.startTransactionRecordActivity(getActivity());
+        } else if (view == mLayoutNode) {
+            mLayoutNode.setClickable(false);
+            JtNodeRecordActivity.startJtNodeRecordActivity(getActivity());
         } else if (view == mLayoutHelp) {
             mLayoutHelp.setClickable(false);
             WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_help_center), Constant.help_url);
@@ -106,6 +111,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
 
         mLayoutManageWallet = view.findViewById(R.id.layout_manage_wallet);
         mLayoutRecordTransaction = view.findViewById(R.id.layout_transaction_record);
+        mLayoutNode = view.findViewById(R.id.layout_node);
         mLayoutHelp = view.findViewById(R.id.layout_help);
         mLayoutAbout = view.findViewById(R.id.layout_about);
         mLayoutLanguage = view.findViewById(R.id.layout_language);
@@ -118,6 +124,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
 
         mLayoutManageWallet.setOnClickListener(this);
         mLayoutRecordTransaction.setOnClickListener(this);
+        mLayoutNode.setOnClickListener(this);
         mLayoutHelp.setOnClickListener(this);
         mLayoutAbout.setOnClickListener(this);
         mLayoutLanguage.setOnClickListener(this);

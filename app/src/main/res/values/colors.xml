@@ -40,5 +40,9 @@
     <color name="color_theme">#2890FE</color>
 
     <color name="color_split">#D5D2D2</color>
+    <color name="color_ping_quick">#04E00C</color>
+    <color name="color_ping_normal">#FF9800</color>
+    <color name="color_ping_low">#ffff0000</color>
+
 
 </resources>
