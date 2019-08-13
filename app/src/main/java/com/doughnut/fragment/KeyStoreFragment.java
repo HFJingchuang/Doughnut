@@ -1,10 +1,11 @@
 package com.doughnut.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,32 +14,38 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.activity.AboutActivity;
+import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.MainActivity;
+import com.doughnut.activity.ManageWalletActivity;
+import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
-import com.zxing.activity.CaptureActivity;
 
 
-public class PrivateKeyFragment extends BaseFragment implements View.OnClickListener{
+public class KeyStoreFragment extends BaseFragment implements View.OnClickListener {
 
-    private ImageView mImgServiceTerms,mimg_scan;
+
+    private TitleBar mTitleBar;
+
+    private ImageView mImgServiceTerms;
     private TextView mTvServiceTerms;
 
-    private EditText mEPrivateKey, mEWalletName, mEWalletPwd, mEWalletPwdConfirm;
+    private EditText mEKeyStore, mEWalletName, mEWalletPwd;
 
     private Button mBtnConfirm;
-    private Integer SCAN_CODE=101;
-
     private Context mContext;
 
-    public static PrivateKeyFragment newInstance() {
+    public static KeyStoreFragment newInstance() {
         Bundle args = new Bundle();
-        PrivateKeyFragment fragment = new PrivateKeyFragment();
+        KeyStoreFragment fragment = new KeyStoreFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +53,7 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_private_key, container, false);
+        return inflater.inflate(R.layout.fragment_key_store, container, false);
     }
 
     @Override
@@ -54,16 +61,6 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
         super.onViewCreated(view, savedInstanceState);
         mContext = getActivity();
         initView(view);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            String result = data.getStringExtra("scan_result");
-            if (!result.isEmpty()) {
-                mEPrivateKey.setText(result);
-            }
-        }
     }
 
     @Override
@@ -83,17 +80,16 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
             // 导入按钮
             case R.id.btn_confirm:
                 if (paramCheck()) {
-                    String privateKey = mEPrivateKey.getText().toString();
+                    String keyStore = mEKeyStore.getText().toString();
                     String walletName = mEWalletName.getText().toString();
                     String walletPwd = mEWalletPwd.getText().toString();
                     // 导入钱包
-                    importWallet(privateKey, walletName, walletPwd);
+                    importWallet(keyStore, walletName, walletPwd);
                     // TODO 暂时跳转到钱包管理
 //                    Intent intent = new Intent(this, WalletManageActivity.class);
 //                    startActivity(intent);
                     Intent intent = new Intent(mContext, MainActivity.class);
                     startActivity(intent);
-//                    this.finish();
                 }
                 break;
             // 勾选框
@@ -104,25 +100,8 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
             case R.id.tv_service_terms:
                 gotoServiceTermPage();
                 break;
-            case R.id.img_scan:
-                Intent intent=new Intent(mContext, CaptureActivity.class);
-                startActivityForResult(intent,SCAN_CODE);
-                break;
         }
     }
-
-    /**
-     * 导入钱包
-     * @param walletName
-     * @param walletPwd
-     */
-    private void importWallet(final String  privateKey, final String walletName, final String walletPwd) {
-
-        WalletManager walletManager =  WalletManager.getInstance(mContext);
-        // 创建钱包
-        walletManager.importWalletWithKey(walletPwd, privateKey, walletName);
-    }
-
 
     /**
      * 画面初期化
@@ -130,18 +109,26 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
      */
     private void initView(View view) {
 
-        mimg_scan = view.findViewById(R.id.img_scan);
-        mimg_scan.setOnClickListener(this);
+//        mTitleBar = view.findViewById(R.id.title_bar);
+//        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+//        mTitleBar.setTitle(R.string.select_keyStore_import);
+//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
+////            @Override
+////            public void onLeftClick(View view) {
+////                onBackPressed();
+////
+////            }
+//        });
+
         mImgServiceTerms = view.findViewById(R.id.img_service_terms);
         mImgServiceTerms.setOnClickListener(this);
         mTvServiceTerms = view.findViewById(R.id.tv_service_terms);
         mTvServiceTerms.setText(Html.fromHtml(getString(R.string.content_read_service)));
         mTvServiceTerms.setOnClickListener(this);
 
-        mEPrivateKey = view.findViewById(R.id.edt_private_key);
+        mEKeyStore = view.findViewById(R.id.keyStore_text);
         mEWalletName = view.findViewById(R.id.edt_wallet_name);
         mEWalletPwd = view.findViewById(R.id.edt_wallet_pwd);
-        mEWalletPwdConfirm = view.findViewById(R.id.edt_wallet_pwd_confirm);
 
         mBtnConfirm = view.findViewById(R.id.btn_confirm);
         mBtnConfirm.setOnClickListener(this);
@@ -153,14 +140,14 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
      */
     private boolean paramCheck() {
 
-        String privateKey = mEPrivateKey.getText().toString();
+        String keyStore = mEKeyStore.getText().toString();
         String walletName = mEWalletName.getText().toString();
         String walletPwd = mEWalletPwd.getText().toString();
-        String walletPwdRepeat = mEWalletPwdConfirm.getText().toString();
+//        String walletPwdRepeat = mEWalletPwdConfirm.getText().toString();
         boolean readedTerms = mImgServiceTerms.isSelected();
 
-        if (TextUtils.isEmpty(privateKey)) {
-            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_private_key), "OK");
+        if (TextUtils.isEmpty(keyStore)) {
+            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_keyStore), "OK");
             return false;
         }
 
@@ -173,15 +160,15 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
             return false;
         }
 
-        if (TextUtils.isEmpty(walletPwdRepeat)) {
-            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_verify_password), "OK");
-            return false;
-        }
-
-        if (!TextUtils.equals(walletPwdRepeat, walletPwd)) {
-            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_passwords_unmatch), "OK");
-            return false;
-        }
+//        if (TextUtils.isEmpty(walletPwdRepeat)) {
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_verify_password), "OK");
+//            return false;
+//        }
+//
+//        if (!TextUtils.equals(walletPwdRepeat, walletPwd)) {
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_passwords_unmatch), "OK");
+//            return false;
+//        }
 
         if (walletPwd.length() < 8) {
             ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_short_password), "OK");
@@ -194,6 +181,20 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
         }
 
         return true;
+    }
+
+    /**
+     * 导入钱包
+     * @param walletName
+     * @param walletPwd
+     */
+    private void importWallet(final String  keyStore, final String walletName, final String walletPwd) {
+
+        WalletManager walletManager =  WalletManager.getInstance(mContext);
+        // 导入钱包
+        walletManager.importKeysStore(keyStore, walletName);
+//         获取钱包私钥
+//        walletManager.getPrivateKey(walletPwd,walletName);
     }
 
     /**

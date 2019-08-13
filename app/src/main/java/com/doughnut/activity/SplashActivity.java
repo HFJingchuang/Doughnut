@@ -55,7 +55,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         }
         // 导入钱包按钮点击事件
         else if (v == mTvImportWallet) {
-            ImportWalletSelectActivity.startImportWalletSelectActivity(this);
+            WalletImportActivity.startImportWalletActivity(this);
         }
     }
 
@@ -64,6 +64,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
 
     // 权限检查
     private void checkPermission() {

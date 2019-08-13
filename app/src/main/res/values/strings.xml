@@ -8,7 +8,7 @@
     <string name="enter_title_password">设置密码</string>
     <string name="enter_hint_password">请输入密码,至少8位</string>
     <string name="enter_title_verify">确认密码</string>
-    <string name="enter_hint_verify">确认密码</string>
+    <string name="enter_hint_verify">请确认密码</string>
     <string name="enter_title_prompt">提示信息</string>
     <string name="enter_hint_prompt">可不填</string>
     <string name="btn_create_wallet_done">创建钱包</string>
@@ -242,6 +242,7 @@
     <string name="tab_bar_code">二维码</string>
     <string name="tab_secret_key">密钥</string>
     <string name="tab_keyStore">keyStore</string>
+    <string name="tab_privateKey">私钥</string>
     <string name="current_wallet">当前钱包</string>
     <string name="dialog_content_no_private_key">密钥不能为空</string>
     <string name="dialog_content_no_keyStore">keyStore不能为空</string>

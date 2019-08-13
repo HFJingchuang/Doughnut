@@ -35,6 +35,9 @@ public class KeyStoreImportActivity extends BaseActivity implements View.OnClick
         initView();
     }
 
+    /**
+     * 画面初期化
+     */
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
@@ -61,6 +64,10 @@ public class KeyStoreImportActivity extends BaseActivity implements View.OnClick
         mBtnConfirm.setOnClickListener(this);
     }
 
+    /**
+     * 点击事件
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
