@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -17,6 +18,7 @@ import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.util.List;
 
@@ -26,7 +28,9 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     private TitleBar mTitleBar;
 
     private TextView mTvCreateWallet;
+    private LinearLayout mLayoutCreateWallet;
     private TextView mTvImPortWallet;
+    private LinearLayout mLayoutImPortWallet;
 
     private RecyclerView mLsWallet;
     private WalletRecordAdapter mAdapter;
@@ -63,14 +67,15 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mTitleBar.setTitleTextColor(R.color.white);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitleBarClickListener(this);
-
+        mLayoutCreateWallet = findViewById(R.id.layout_create_wallet);
+        mLayoutCreateWallet.setOnClickListener(this);
+        mLayoutImPortWallet = findViewById(R.id.layout_import_wallet);
+        mLayoutImPortWallet.setOnClickListener(this);
         mTvCreateWallet = findViewById(R.id.tv_create_wallet);
-        mTvCreateWallet.setOnClickListener(this);
         MethodCompat.setLeftDrawableWithBounds(WalletManageActivity.this, mTvCreateWallet, R.drawable.ic_manager_createwallet,
                 ViewUtil.dip2px(WalletManageActivity.this, 6),
                 ViewUtil.dip2px(WalletManageActivity.this, 6));
         mTvImPortWallet = findViewById(R.id.tv_import_wallet);
-        mTvImPortWallet.setOnClickListener(this);
         MethodCompat.setLeftDrawableWithBounds(WalletManageActivity.this, mTvImPortWallet, R.drawable.ic_manager_importwallet,
                 ViewUtil.dip2px(WalletManageActivity.this, 6),
                 ViewUtil.dip2px(WalletManageActivity.this, 6));
@@ -86,9 +91,9 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        if (v == mTvCreateWallet) {
+        if (v == mLayoutCreateWallet) {
             gotoCreateWallet();
-        } else if (v == mTvImPortWallet) {
+        } else if (v == mLayoutImPortWallet) {
             gotoImportWallet();
         }
 
@@ -113,17 +118,18 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void gotoImportWallet() {
-        ImportWalletActivity.startImportWalletActivity(this);
+        WalletImportActivity.startImportWalletActivity(this);
     }
 
     class WalletRecordAdapter extends RecyclerView.Adapter<WalletRecordAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            LinearLayout mLayoutItem;
+            RelativeLayout mLayoutItem;
             TextView mTvBalance;
             TextView mTvBalanceCNY;
             TextView mTvAddress;
             TextView mTvName;
+            TextView mTvTime;
 
             public VH(View v) {
                 super(v);
@@ -131,6 +137,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 mTvBalanceCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvAddress = itemView.findViewById(R.id.tv_wallet_address);
                 mTvName = itemView.findViewById(R.id.tv_wallet_name);
+                mTvTime = itemView.findViewById(R.id.tv_wallet_time);
                 mLayoutItem = itemView.findViewById(R.id.layout_wallet);
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -160,7 +167,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             holder.mTvBalanceCNY.setText("没数据。。");
             holder.mTvAddress.setText(address);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
-
+            holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
         }
 
         @Override

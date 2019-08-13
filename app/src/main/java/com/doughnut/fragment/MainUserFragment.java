@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.activity.AboutActivity;
 import com.doughnut.activity.LanguageActivity;
-import com.doughnut.activity.ManageWalletActivity;
 import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
@@ -58,6 +57,18 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
+        setWalletInfo();
+        mLayoutManageWallet.setClickable(true);
+        mLayoutRecordTransaction.setClickable(true);
+        mLayoutHelp.setClickable(true);
+        mLayoutAbout.setClickable(true);
+        mLayoutLanguage.setClickable(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setWalletInfo();
         mLayoutManageWallet.setClickable(true);
         mLayoutRecordTransaction.setClickable(true);
         mLayoutHelp.setClickable(true);
