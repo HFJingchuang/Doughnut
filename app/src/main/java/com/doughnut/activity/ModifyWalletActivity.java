@@ -1,13 +1,12 @@
 package com.doughnut.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -18,6 +17,8 @@ import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener,
         PwdDialog.PwdResult {
@@ -26,17 +27,16 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     private TitleBar mTitleBar;
 
     private TextView mTvWalletAddress;
+    private TextView mTvWalletBalance;
 
     private EditText mEdtWalletName;
-    private RelativeLayout mLayoutModifyPwd;
-    private RelativeLayout mLayoutExportPrivateKey;
+    private LinearLayout mLayoutModifyPwd;
+    private LinearLayout mLayoutExportPrivateKey;
 
     private TextView mTvDeleteWallet;
-    private TextView mTvBak;
 
-    private double mAsset = 0;
-    private WalletInfoManager.WData mWalletData;
     private String mWalletAddress;
+    private String mWalletName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +44,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_modify_wallet);
         if (getIntent() != null) {
             mWalletAddress = getIntent().getStringExtra("Wallet_Address");
-        }
-        mWalletData = WalletInfoManager.getInstance().getWData(mWalletAddress);
-        if (mWalletData == null) {
-            finish();
-            return;
+            mWalletName = WalletSp.getInstance(this, mWalletAddress).getName();
         }
         initView();
     }
@@ -56,11 +52,6 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        mWalletData = WalletInfoManager.getInstance().getWData(mWalletAddress);
-        if (mWalletData == null) {
-            finish();
-            return;
-        }
     }
 
     @Override
@@ -71,8 +62,6 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
             verifyPwd("exportprivatekey");
         } else if (view == mTvDeleteWallet) {
             verifyPwd("deletewallet");
-        } else if (view == mTvBak) {
-            gotoBak();
         } else if (view == mTvWalletAddress) {
             Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
@@ -95,10 +84,10 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
-    public void authPwd(String tag, boolean result) {
+    public void authPwd(String tag, boolean result, String key) {
         if (TextUtils.equals(tag, "exportprivatekey")) {
             if (result) {
-                realExportPrivateKey();
+                realExportPrivateKey(key);
             } else {
                 ToastUtil.toast(this, getString(R.string.toast_password_incorrect));
             }
@@ -121,51 +110,42 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     private void initView() {
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(mWalletData.wname);
+        mTitleBar.setTitle(mWalletName);
         mTitleBar.setRightText(getString(R.string.titleBar_save));
         mTitleBar.setRightTextColor(R.color.white);
         mTitleBar.setTitleBarClickListener(this);
 
+        mTvWalletBalance = findViewById(R.id.tv_wallet_balance);
         mTvWalletAddress = (TextView) findViewById(R.id.tv_wallet_address);
-        mTvWalletAddress.setText(mWalletData.waddress);
         mTvWalletAddress.setOnClickListener(this);
 
         mEdtWalletName = (EditText) findViewById(R.id.edt_wallet_name);
-        mEdtWalletName.setText(mWalletData.wname);
 
-        mLayoutModifyPwd = (RelativeLayout) findViewById(R.id.layout_modify_pwd);
+        mLayoutModifyPwd = (LinearLayout) findViewById(R.id.layout_modify_pwd);
         mLayoutModifyPwd.setOnClickListener(this);
 
-        mLayoutExportPrivateKey = (RelativeLayout) findViewById(R.id.layout_export_privatekey);
+        mLayoutExportPrivateKey = (LinearLayout) findViewById(R.id.layout_export_privatekey);
         mLayoutExportPrivateKey.setOnClickListener(this);
 
         mTvDeleteWallet = (TextView) findViewById(R.id.tv_delete_wallet);
-        mTvBak = (TextView) findViewById(R.id.tv_bak);
         mTvDeleteWallet.setOnClickListener(this);
-        mTvBak.setOnClickListener(this);
 
-        if (!mWalletData.isBaked) {
-            if (mWalletData.type == 1) {
-                mTvBak.setVisibility(View.VISIBLE);
-            } else if (mWalletData.type == 2) {
-                mTvBak.setVisibility(View.GONE);
-            }
-        }
-
+        setWalletInfo();
     }
 
     private void gotoModifyPwd() {
-        ModifyPwdActivity.startModifyPwdActivity(ModifyWalletActivity.this, mWalletData.waddress);
+        ModifyPwdActivity.startModifyPwdActivity(ModifyWalletActivity.this, mWalletAddress);
     }
 
     private void verifyPwd(String tag) {
-        PwdDialog pwdDialog = new PwdDialog(this, this, mWalletData.whash, tag);
+        PwdDialog pwdDialog = new PwdDialog(this, this, mWalletAddress, tag);
         pwdDialog.show();
     }
 
-    private void realExportPrivateKey() {
+    private void realExportPrivateKey(String key) {
+        String privateKey = WalletManager.getInstance(this).getPrivateKey(key, mWalletAddress);
         PKDialog PKDialog = new PKDialog(this,
-                mWalletData.wpk);
+                privateKey);
         PKDialog.show();
     }
 
@@ -175,58 +155,74 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_name), "Ok");
             return;
         }
-        mWalletData.wname = newWalletName;
-        WalletInfoManager.getInstance().updateWalletName(mWalletData.waddress, newWalletName);
+        WalletSp.getInstance(this, mWalletAddress).setName(newWalletName);
         finish();
     }
 
+    private void setWalletInfo() {
+        mTvWalletAddress.setText(mWalletAddress);
+        mEdtWalletName.setText(mWalletName);
+        mTvWalletAddress.setText(mWalletAddress);
+        String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
+        mTvWalletBalance.setText(balance);
+    }
+
     private void deleteWallet() {
-        if (!mWalletData.isBaked) {
-            if (mWalletData.type == 1) {
-                ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_wallet_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        gotoBak();
-                        dialog.dismiss();
-                    }
-                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-            } else if (mWalletData.type == 2) {
-                ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_key_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        verifyPwd("exportprivatekey");
-                        dialog.dismiss();
-                    }
-                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-            }
-        } else {
-            WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
+//        if (!mWalletData.isBaked) {
+//            if (mWalletData.type == 1) {
+//                ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_wallet_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        gotoBak();
+//                        dialog.dismiss();
+//                    }
+//                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
+//                        dialog.dismiss();
+//                        finish();
+//                    }
+//                });
+//            } else if (mWalletData.type == 2) {
+//                ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_key_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        verifyPwd("exportprivatekey");
+//                        dialog.dismiss();
+//                    }
+//                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
+//                        dialog.dismiss();
+//                        finish();
+//                    }
+//                });
+//            }
+//        } else {
+//            WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
+//            finish();
+//        }
+
+        boolean isBack = true;
+        if (isBack) {
+            WalletManager.getInstance(this).deleteWallet(mWalletAddress);
+            ToastUtil.toast(this, "钱包「" + mWalletName + "」已成功删除!");
             finish();
+        } else {
+            // todo 检测要删除钱包是否已备份过
         }
     }
 
-    private void gotoBak() {
-        String[] words = null;
-        words = mWalletData.words.split(" ");
-        if (words == null || words.length < 12) {
-            ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_cant_backup));
-            return;
-        }
-        StartBakupActivity.startBakupWalletStartActivity(ModifyWalletActivity.this, mWalletData.waddress, 2);
-    }
+//    private void gotoBak() {
+//        String[] words = null;
+//        words = mWalletData.words.split(" ");
+//        if (words == null || words.length < 12) {
+//            ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_cant_backup));
+//            return;
+//        }
+//        StartBakupActivity.startBakupWalletStartActivity(ModifyWalletActivity.this, mWalletData.waddress, 2);
+//    }
 
 }

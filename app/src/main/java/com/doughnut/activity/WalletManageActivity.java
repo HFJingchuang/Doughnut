@@ -18,7 +18,6 @@ import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
-import com.nostra13.universalimageloader.utils.L;
 
 import java.util.List;
 
@@ -48,9 +47,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
+        getWallets();
     }
 
     public static void startModifyWalletActivity(Context context) {
@@ -143,7 +140,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void onClick(View v) {
                         ModifyWalletActivity.startModifyWalletActivity(WalletManageActivity.this,
-                                "");
+                                mTvAddress.getText().toString());
                     }
                 });
             }
@@ -183,6 +180,8 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
 
     private void getWallets() {
         walletList = WalletSp.getInstance(this, "").getAllWallet();
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }

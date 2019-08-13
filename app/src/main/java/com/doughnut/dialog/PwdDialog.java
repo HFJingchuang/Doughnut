@@ -13,9 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.TLog;
-
+import com.doughnut.wallet.WalletManager;
 
 
 public class PwdDialog extends Dialog implements View.OnClickListener {
@@ -24,20 +23,20 @@ public class PwdDialog extends Dialog implements View.OnClickListener {
     private EditText mEdtPw;
     private TextView mTvCancel;
     private TextView mTvOk;
-    private String mPwdContent;
+    private String mAddress;
     private String mTag;
 
     private PwdResult mPwdResult;
 
 
     public interface PwdResult {
-        void authPwd(String tag, boolean result);
+        void authPwd(String tag, boolean result, String key);
     }
 
-    public PwdDialog(@NonNull Context context, PwdResult authPwdListener, String pwdHash, String tag) {
+    public PwdDialog(@NonNull Context context, PwdResult authPwdListener, String address, String tag) {
         super(context, R.style.DialogStyle);
         this.mPwdResult = authPwdListener;
-        this.mPwdContent = pwdHash;
+        this.mAddress = address;
         this.mTag = tag;
     }
 
@@ -67,12 +66,13 @@ public class PwdDialog extends Dialog implements View.OnClickListener {
                 return;
             }
             if (TextUtils.isEmpty(mEdtPw.getText().toString())) {
-                mPwdResult.authPwd(mTag, false);
+                mPwdResult.authPwd(mTag, false, "");
             } else {
-                if (TextUtils.equals(mPwdContent, FileUtil.getStringContent(mEdtPw.getText().toString()))) {
-                    mPwdResult.authPwd(mTag, true);
+                String oldKey = WalletManager.getInstance(getContext()).getPrivateKey(mEdtPw.getText().toString(), mAddress);
+                if (TextUtils.isEmpty(oldKey)) {
+                    mPwdResult.authPwd(mTag, false, "");
                 } else {
-                    mPwdResult.authPwd(mTag,false);
+                    mPwdResult.authPwd(mTag, true, mEdtPw.getText().toString());
                 }
             }
 

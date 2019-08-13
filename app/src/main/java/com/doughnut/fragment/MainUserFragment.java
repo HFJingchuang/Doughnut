@@ -32,7 +32,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private LinearLayout mLayoutPay;
     private LinearLayout mLayoutRecieve;
     private LinearLayout mLayoutRight;
-    private TextView mAddrressTv;
+    private TextView mAddressTv;
     private TextView mNameTv;
 
     public static MainUserFragment newInstance() {
@@ -113,7 +113,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRight = view.findViewById(R.id.layout_right);
         mLayoutPay = view.findViewById(R.id.layout_pay);
         mLayoutRecieve = view.findViewById(R.id.layout_recieve);
-        mAddrressTv = view.findViewById(R.id.tv_wallet_address);
+        mAddressTv = view.findViewById(R.id.tv_wallet_address);
         mNameTv = view.findViewById(R.id.tv_wallet_name);
 
         mLayoutManageWallet.setOnClickListener(this);
@@ -130,7 +130,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
 
     private void setWalletInfo() {
         String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
-        mAddrressTv.setText(currentWallet);
+        mAddressTv.setText(currentWallet);
         mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
     }
 

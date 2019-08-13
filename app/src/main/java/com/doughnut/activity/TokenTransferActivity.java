@@ -169,7 +169,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private void verifyPwd() {
         PwdDialog pwdDialog = new PwdDialog(TokenTransferActivity.this, new PwdDialog.PwdResult() {
             @Override
-            public void authPwd(String tag, boolean result) {
+            public void authPwd(String tag, boolean result, String key) {
                 if (TextUtils.equals(tag, "transaction")) {
                     if (result) {
 //                        pwdRight();

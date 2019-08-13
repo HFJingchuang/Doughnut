@@ -17,16 +17,58 @@
         android:background="@color/common_blue"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_wallet_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:singleLine="true"
-            android:text="2342342353dsfgsdgfdsgfdsgfdsgfdsgf453452345"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|bottom">
+
+            <TextView
+                android:id="@+id/tv_wallet_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="1111111"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_wallet_balance"
+                android:layout_alignBottom="@+id/tv_wallet_balance"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/tv_wallet_balance"
+                android:background="@drawable/shape_balance_icon"
+                android:drawablePadding="4dp"
+                android:text="SWTC"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tv_balance_CNY"
+                android:text="¥"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_balance_CNY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1,111,111"
+                android:textSize="12sp" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -41,12 +83,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingVertical="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
                 android:text="@string/enter_title_wallet_name"
                 android:textColor="#333333"
                 android:textSize="16sp" />
@@ -55,20 +98,59 @@
                 android:id="@+id/edt_wallet_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:background="@null"
-                android:text="Wallet"
+                android:ellipsize="end"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text=""
                 android:textColor="@color/modify_wallet_bottom_textcolor"
                 android:textSize="13sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/split_color" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/split_color" />
+
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="horizontal"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="钱包地址"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_wallet_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:ellipsize="middle"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:textColor="@color/modify_wallet_bottom_textcolor"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/split_color" />
+
+        <LinearLayout
+            android:id="@+id/layout_modify_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -76,7 +158,6 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/layout_modify_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp">
@@ -108,6 +189,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_export_privatekey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -115,7 +197,6 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/layout_export_privatekey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
@@ -150,9 +231,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="100dp"
+            android:layout_marginRight="20dp"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tv_delete_wallet"
                 android:layout_width="match_parent"
@@ -162,17 +244,6 @@
                 android:text="@string/btn_delete_wallet"
                 android:textColor="@color/white"
                 android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tv_bak"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="@string/btn_backup_mnemonic"
-                android:textColor="@color/common_blue"
-                android:textSize="15sp"
-                android:visibility="gone"/>
         </LinearLayout>
 
     </LinearLayout>

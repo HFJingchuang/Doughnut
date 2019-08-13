@@ -13,10 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletManager;
 
 
 public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBarClickListener, View.OnClickListener {
@@ -29,21 +28,14 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
     private EditText mEdtReaptNewPwd;
 
     private TextView mTvForgetPwdTips;
-    private WalletInfoManager.WData mWalletData;
+    private String mWalletAddress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pwd);
         if (getIntent() != null) {
-            String walletAddress = getIntent().getStringExtra("Wallet_Address");
-            if (!TextUtils.isEmpty(walletAddress)) {
-                mWalletData = WalletInfoManager.getInstance().getWData(walletAddress);
-            }
-        }
-        if (mWalletData == null) {
-            finish();
-            return;
+            mWalletAddress = getIntent().getStringExtra("Wallet_Address");
         }
         initView();
     }
@@ -80,15 +72,22 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
             showTipAlertDialog(getString(R.string.dialog_content_old_new_same));
             return;
         }
-        String oldHash = FileUtil.getStringContent(mEdtOldPwd.getText().toString());
-        if (!TextUtils.equals(oldHash, mWalletData.whash)) {
+
+        String oldKey = WalletManager.getInstance(this).getPrivateKey(mEdtOldPwd.getText().toString(), mWalletAddress);
+        if (TextUtils.isEmpty(oldKey)) {
             showTipAlertDialog(getString(R.string.dialog_content_old_password_incorrect));
             mEdtOldPwd.setText("");
             return;
         }
-        ToastUtil.toast(ModifyPwdActivity.this, getString(R.string.toast_password_changed));
-        WalletInfoManager.getInstance().updateWalletHash(mWalletData.waddress, FileUtil.getStringContent(mEdtNewPwd.getText().toString()));
-        this.finish();
+
+        // 修改KeyStore密码，name参数可不传
+        String res = WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), oldKey, "");
+        if (TextUtils.equals(res, mWalletAddress)) {
+            ToastUtil.toast(ModifyPwdActivity.this, getString(R.string.toast_password_changed));
+            this.finish();
+        } else {
+            showTipAlertDialog("修改失败，请重新尝试。");
+        }
     }
 
     @Override
