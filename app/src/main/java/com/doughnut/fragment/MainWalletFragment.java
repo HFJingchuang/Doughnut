@@ -2,6 +2,7 @@
 package com.doughnut.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -73,6 +74,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private boolean isViewCreated = false;
     private double mTotalAsset = 0.0f;
 
+    private Context mContext;
+
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
         MainWalletFragment fragment = new MainWalletFragment();
@@ -89,6 +92,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        mContext = getActivity();
         initView(view);
     }
 
@@ -135,10 +139,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mMenuAction = view.findViewById(R.id.wallet_menu);
         mMenuAction.setOnClickListener(this);
 
-        view.findViewById(R.id.wallet_action_receive1).setOnClickListener(this);
+//        view.findViewById(R.id.wallet_action_receive1).setOnClickListener(this);
         view.findViewById(R.id.wallet_action_receive).setOnClickListener(this);
         view.findViewById(R.id.wallet_action_transfer).setOnClickListener(this);
-        view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
+//        view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
         isViewCreated = true;
     }
 
@@ -165,14 +169,14 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 setAssetVisible();
                 break;
             case R.id.wallet_action_transfer:
-            case R.id.wallet_action_transfer1:
-                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
-                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
-                break;
+//            case R.id.wallet_action_transfer1:
+//                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
+//                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+//                break;
             case R.id.wallet_action_receive:
-            case R.id.wallet_action_receive1:
-                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), mWalletUtil.getDefaultTokenSymbol());
-                break;
+//            case R.id.wallet_action_receive1:
+//                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), mWalletUtil.getDefaultTokenSymbol());
+//                break;
         }
     }
 
@@ -272,16 +276,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      * 显示功能菜单pop
      */
     private void showActionMenuPop() {
-        if (walletActionPop == null) {
-            walletActionPop = new WalletActionPop(getActivity(), new WalletActionPop.ScanClickListener() {
-                @Override
-                public void onScanClick() {
-                    startActivityForResult(new Intent(getActivity(), CaptureActivity.class), SCAN_REQUEST_CODE);
-
-                }
-            });
-        }
-        walletActionPop.showAsDropDown(mMenuAction);
+        Intent intent=new Intent(mContext, CaptureActivity.class);
+        startActivityForResult(intent, SCAN_REQUEST_CODE);
     }
 
     private void setAssetVisible() {
