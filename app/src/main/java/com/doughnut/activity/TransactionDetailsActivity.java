@@ -14,12 +14,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
-import com.doughnut.base.BaseWalletUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletSp;
 import com.google.zxing.WriterException;
 
 import java.math.BigDecimal;
@@ -33,20 +33,16 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private TitleBar mTitleBar;
     private TextView mTvTransactionStatus;
     private TextView mTvCount;
-    private TextView mTvSymbol;
     private TextView mTvSender;
     private TextView mTvReceiver;
     private TextView mTvGas;
     private TextView mTvInfo;
     private TextView mTvTransactionId;
-    private TextView mTvBlockId;
     private TextView mTvTransactionTime;
     private TextView mTvCopyUrl;
 
     private ImageView mImgTransactionQrCode;
-    private String mHash;
     private GsonUtil transactionData;
-    private BaseWalletUtil mWalletUtil;
     private static Transactions mTransactions;
 
     @Override
@@ -74,7 +70,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
 
         mTvTransactionStatus = findViewById(R.id.tv_transaction_status);
         mTvCount = findViewById(R.id.tv_transaction_count);
-        mTvSymbol = findViewById(R.id.tv_symbol);
         mTvSender = findViewById(R.id.tv_send_address);
         mTvSender.setOnClickListener(this);
 
@@ -85,7 +80,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvInfo = findViewById(R.id.tv_info);
         mTvTransactionId = findViewById(R.id.tv_transaction_id);
         mTvTransactionId.setOnClickListener(this);
-        mTvBlockId = findViewById(R.id.tv_block);
         mTvTransactionTime = findViewById(R.id.tv_transaction_time);
         mTvCopyUrl = findViewById(R.id.tv_copy_transaction_url);
         mTvCopyUrl.setOnClickListener(this);
@@ -97,18 +91,19 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private void updateData() {
         JSONObject gets;
         JSONObject pays;
+        String address = WalletSp.getInstance(this, "").getCurrentWallet();
         switch (mTransactions.getType()) {
             case "sent":
                 mTvCount.setText("-" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
                 mTvCount.setTextColor(getResources().getColor(R.color.common_red));
                 mTvReceiver.setText(mTransactions.getCounterparty());
-                mTvSender.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                mTvSender.setText(address);
                 break;
             case "received":
                 mTvCount.setText("+" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
                 mTvCount.setTextColor(getResources().getColor(R.color.common_blue));
                 mTvSender.setText(mTransactions.getCounterparty());
-                mTvReceiver.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                mTvReceiver.setText(address);
                 break;
             case "offernew":
                 String getsCur = mTransactions.getGets().getCurrency();
@@ -144,7 +139,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         mTvReceiver.setText(receiver);
                         mTvCount.setText(paysAmount.stripTrailingZeros().toPlainString() + " " + getsCur + " -> " + getsAmount.stripTrailingZeros().toPlainString() + " " + paysCur);
                     }
-                    mTvSender.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                    mTvSender.setText(address);
                 }
                 mTvCount.setTextColor(getResources().getColor(R.color.common_green));
                 break;
@@ -155,7 +150,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     mTvCount.setText("---");
                 }
                 mTvCount.setTextColor(getResources().getColor(R.color.common_green));
-                mTvSender.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                mTvSender.setText(address);
                 mTvReceiver.setText("---");
                 break;
             case "offereffect":
@@ -185,7 +180,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     mTvSender.setText(receiver);
                     mTvCount.setText(paysAmount1.stripTrailingZeros().toPlainString() + " " + payCurrency + " -> " + getsAmount1.stripTrailingZeros().toPlainString() + " " + getCurrency);
                 }
-                mTvReceiver.setText("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
+                mTvReceiver.setText(address);
                 mTvCount.setTextColor(getResources().getColor(R.color.common_green));
                 break;
             default:
@@ -234,9 +229,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     @Override
     public void onClick(View v) {
         if (v == mTvCopyUrl) {
-            Util.clipboard(TransactionDetailsActivity.this, "",
-                    mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
-            ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_url_copied));
         } else if (v == mTvSender) {
             Util.clipboard(TransactionDetailsActivity.this, "", mTvSender.getText().toString());
             ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_send_address_copied))
@@ -246,8 +238,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_receive_address_copied))
             ;
         } else if (v == mTvTransactionId) {
-            WebBrowserActivity.startWebBrowserActivity(TransactionDetailsActivity.this, getString(R.string.titleBar_transaction_query),
-                    mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
         }
     }
 }

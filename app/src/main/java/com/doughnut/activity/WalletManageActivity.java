@@ -4,20 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.utils.MethodCompat;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,12 +27,14 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     private TitleBar mTitleBar;
 
     private TextView mTvCreateWallet;
+    private LinearLayout mLayoutCreateWallet;
     private TextView mTvImPortWallet;
+    private LinearLayout mLayoutImPortWallet;
 
-    private ListView mLsWallet;
-    private WalletAdapter mAdapter;
+    private RecyclerView mLsWallet;
+    private WalletRecordAdapter mAdapter;
 
-    private List< WalletInfoManager.WData>  walletList;
+    private List<String> walletList;
 
 
     @Override
@@ -44,13 +47,11 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
+        getWallets();
     }
 
     public static void startModifyWalletActivity(Context context) {
-        Intent intent = new Intent(context, ManageWalletActivity.class);
+        Intent intent = new Intent(context, WalletManageActivity.class);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -63,57 +64,33 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mTitleBar.setTitleTextColor(R.color.white);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitleBarClickListener(this);
-
-
-        ///初始化
-        walletList=new ArrayList<>();
-        WalletInfoManager.WData wallet = new WalletInfoManager.WData();
-        wallet.waddress="agdjshsudfhfijshdjdjsiksididi";
-        wallet.type=1;
-        wallet.wname="钱包１";
-        wallet.words="wewwre";
-
-        walletList.add(wallet);
-
-        WalletInfoManager.WData wallet1 = new WalletInfoManager.WData();
-        wallet1.waddress="agdjshsudfhfijshdjdjsiksididi";
-        wallet1.type=1;
-        wallet1.wname="钱包2";
-        walletList.add(wallet1);
-
-        ///////////////////////////
-
+        mLayoutCreateWallet = findViewById(R.id.layout_create_wallet);
+        mLayoutCreateWallet.setOnClickListener(this);
+        mLayoutImPortWallet = findViewById(R.id.layout_import_wallet);
+        mLayoutImPortWallet.setOnClickListener(this);
         mTvCreateWallet = findViewById(R.id.tv_create_wallet);
-        mTvCreateWallet.setOnClickListener(this);
         MethodCompat.setLeftDrawableWithBounds(WalletManageActivity.this, mTvCreateWallet, R.drawable.ic_manager_createwallet,
                 ViewUtil.dip2px(WalletManageActivity.this, 6),
                 ViewUtil.dip2px(WalletManageActivity.this, 6));
         mTvImPortWallet = findViewById(R.id.tv_import_wallet);
-        mTvImPortWallet.setOnClickListener(this);
         MethodCompat.setLeftDrawableWithBounds(WalletManageActivity.this, mTvImPortWallet, R.drawable.ic_manager_importwallet,
                 ViewUtil.dip2px(WalletManageActivity.this, 6),
                 ViewUtil.dip2px(WalletManageActivity.this, 6));
 
-        mLsWallet = (ListView) findViewById(R.id.ls_manager_wallet);
-        mAdapter = new WalletAdapter();
+        mLsWallet = (RecyclerView) findViewById(R.id.ls_manager_wallet);
+        mLsWallet.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new WalletRecordAdapter();
         mLsWallet.setAdapter(mAdapter);
 
-        mLsWallet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ModifyWalletActivity.startModifyWalletActivity(WalletManageActivity.this,
-                        WalletInfoManager.getInstance().getAllWallet().get(position).waddress);
-            }
-        });
-
+        getWallets();
     }
 
 
     @Override
     public void onClick(View v) {
-        if (v == mTvCreateWallet) {
+        if (v == mLayoutCreateWallet) {
             gotoCreateWallet();
-        } else if (v == mTvImPortWallet) {
+        } else if (v == mLayoutImPortWallet) {
             gotoImportWallet();
         }
 
@@ -134,31 +111,60 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void gotoCreateWallet() {
-//        CreateWalletActivity.navToActivity(WalletManageActivity.this, -1);
-        Intent intent = new Intent(this, CreateNewWalletActivity.class);
-        startActivity(intent);
+        CreateNewWalletActivity.startCreateNewWalletActivity(this);
     }
 
     private void gotoImportWallet() {
-//        ImportWalletActivity.startImportWalletActivity(WalletManageActivity.this);
-        Intent intent = new Intent(this, ImportWalletSelectActivity.class);
-        startActivity(intent);
+        WalletImportActivity.startImportWalletActivity(this);
     }
 
+    class WalletRecordAdapter extends RecyclerView.Adapter<WalletRecordAdapter.VH> {
 
-    class WalletAdapter extends BaseAdapter {
+        class VH extends RecyclerView.ViewHolder {
+            RelativeLayout mLayoutItem;
+            TextView mTvBalance;
+            TextView mTvBalanceCNY;
+            TextView mTvAddress;
+            TextView mTvName;
+            TextView mTvTime;
 
-        @Override
-        public int getCount() {
-
-//            return WalletInfoManager.getInstance().getAllWallet().size();
-            return walletList.size();
+            public VH(View v) {
+                super(v);
+                mTvBalance = itemView.findViewById(R.id.tv_balance);
+                mTvBalanceCNY = itemView.findViewById(R.id.tv_balance_cny);
+                mTvAddress = itemView.findViewById(R.id.tv_wallet_address);
+                mTvName = itemView.findViewById(R.id.tv_wallet_name);
+                mTvTime = itemView.findViewById(R.id.tv_wallet_time);
+                mLayoutItem = itemView.findViewById(R.id.layout_wallet);
+                mLayoutItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ModifyWalletActivity.startModifyWalletActivity(WalletManageActivity.this,
+                                mTvAddress.getText().toString());
+                    }
+                });
+            }
         }
 
         @Override
-        public Object getItem(int position) {
-//            return WalletInfoManager.getInstance().getAllWallet() == null ? 0 : WalletInfoManager.getInstance().getAllWallet().size();
-            return walletList == null ? 0 : walletList.size();
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = ViewUtil.inflatView(parent.getContext(), parent, R.layout.layout_item_wallet_manager, false);
+            return new VH(v);
+
+        }
+
+        @Override
+        public void onBindViewHolder(VH holder, int position) {
+            if (walletList == null) {
+                return;
+            }
+            String address = walletList.get(position);
+            String balance = WalletManager.getInstance(WalletManageActivity.this).getSWTBalance(address);
+            holder.mTvBalance.setText(balance);
+            holder.mTvBalanceCNY.setText("没数据。。");
+            holder.mTvAddress.setText(address);
+            holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
+            holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
         }
 
         @Override
@@ -167,34 +173,15 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = ViewUtil.inflatView(parent.getContext(), parent, R.layout.layout_item_wallet_manager, false);
-                holder = new ViewHolder();
-                holder.mTvWalletName = (TextView) convertView.findViewById(R.id.tv_wallet_name);
-//                holder.mTvBakTips = (TextView) convertView.findViewById(R.id.tv_bak_tips);
-                holder.mTvWalletAddress = (TextView) convertView.findViewById(R.id.tv_wallet_address);
-//                holder.mTvTotalAsset = (TextView) convertView.findViewById(R.id.tv_total_asset);
-//                holder.mTvTotalAsset.setVisibility(View.INVISIBLE);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-//            WalletInfoManager.WData wallet = WalletInfoManager.getInstance().getAllWallet().get(position);
-            WalletInfoManager.WData wallet = walletList.get(position);
-            holder.mTvWalletName.setText(wallet.wname);
-//            holder.mTvBakTips.setVisibility(wallet.isBaked ? View.GONE : View.VISIBLE);
-            holder.mTvWalletAddress.setText(wallet.waddress);
-//            holder.mTvTotalAsset.setText(Html.fromHtml("<font><big>0</big>ether</font>"));
-            return convertView;
+        public int getItemCount() {
+            return walletList.size();
         }
+    }
 
-        class ViewHolder {
-            TextView mTvWalletName;
-//            TextView mTvBakTips;
-            TextView mTvWalletAddress;
-//            TextView mTvTotalAsset;
+    private void getWallets() {
+        walletList = WalletSp.getInstance(this, "").getAllWallet();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

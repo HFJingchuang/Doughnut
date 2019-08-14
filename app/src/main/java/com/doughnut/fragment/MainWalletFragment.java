@@ -173,6 +173,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 //                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
 //                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
 //                break;
+            case R.id.wallet_action_transfer1:
+//                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
+//                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+                break;
             case R.id.wallet_action_receive:
 //            case R.id.wallet_action_receive1:
 //                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), mWalletUtil.getDefaultTokenSymbol());
@@ -215,8 +219,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
             final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
             String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-            TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                    "", num, token, 0, 0);
+//            TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
+//                    "", num, token, 0, 0);
         } else {
             ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_reminder), getString(R.string.dialog_content_switch_jintum_wallet),
                     getString(R.string.dialog_btn_not_switch), new DialogInterface.OnClickListener() {
@@ -237,8 +241,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                     double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
                                     final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
                                     String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-                                    TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                                            "", num, token, 0, 0);
+//                                    TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
+//                                            "", num, token, 0, 0);
                                 }
                             }
                         }

@@ -59,7 +59,7 @@ public class ViewUtil {
                         if (needVerifyPwd) {
                             PwdDialog pwdDialog = new PwdDialog(context, new PwdDialog.PwdResult() {
                                 @Override
-                                public void authPwd(String tag, boolean result) {
+                                public void authPwd(String tag, boolean result, String key) {
                                     if (result) {
                                         if (TextUtils.isEmpty(walletData.words)) {
                                             StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,

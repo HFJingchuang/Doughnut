@@ -14,17 +14,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.zxing.WriterException;
+import com.contrarywind.adapter.WheelAdapter;
+import com.contrarywind.listener.OnItemSelectedListener;
+import com.contrarywind.view.WheelView;
 import com.doughnut.R;
-import com.doughnut.base.BaseWalletUtil;
-import com.doughnut.base.TBController;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.base.WCallback;
+import com.doughnut.config.Constant;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WalletSp;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TokenReceiveActivity extends BaseActivity {
@@ -39,9 +43,9 @@ public class TokenReceiveActivity extends BaseActivity {
     private ImageView mImgQrShadow;
     private EditText mEdtAmount;
     private TextView mTvAddress;
-    private TextView mTvTokenName;
-    private TextView mTvCopyAddress;
-    private BaseWalletUtil mWalletUtil;
+    private ImageView mImgCopyAddress;
+    private WheelView mWhTokenName;
+    private List<String> tokenEntries;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,15 +53,6 @@ public class TokenReceiveActivity extends BaseActivity {
         setContentView(R.layout.token_receive_activity);
         if (getIntent() != null) {
             mToken = getIntent().getStringExtra(TOKEN);
-        }
-        if (TextUtils.isEmpty(mToken)) {
-            finish();
-            return;
-        }
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
-        if (mWalletUtil == null) {
-            this.finish();
-            return;
         }
         initView();
         initData();
@@ -79,20 +74,35 @@ public class TokenReceiveActivity extends BaseActivity {
         mImgQrShadow.setVisibility(View.GONE);
         mEdtAmount = findViewById(R.id.receive_amount);
         mTvAddress = findViewById(R.id.receive_address);
-        mTvTokenName = findViewById(R.id.tv_token_name);
-        mTvTokenName.setText(mToken);
-        mTvCopyAddress = findViewById(R.id.tv_copy_address);
-        mTvCopyAddress.setOnClickListener(new View.OnClickListener() {
+        mImgCopyAddress = findViewById(R.id.img_copy);
+        mImgCopyAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Util.clipboard(TokenReceiveActivity.this, "", mTvAddress.getText().toString());
                 ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_wallet_address_copied));
             }
         });
+        mWhTokenName = findViewById(R.id.wh_token_name);
+        //准备数据
+        tokenEntries = new ArrayList<>();
+        tokenEntries.clear();
+        tokenEntries.add("SWT");
+        tokenEntries.add("CNT");
+        tokenEntries.add("MOAC");
+        tokenEntries.add("JCC");
+        tokenEntries.add("CSP");
+        mWhTokenName.setAdapter(new ArrayWheelAdapter(tokenEntries));
+        mWhTokenName.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int index) {
+                createQRCode();
+            }
+        });
+        createQRCode();
     }
 
     private void initData() {
-        final String address = WalletInfoManager.getInstance().getWAddress();
+        final String address = WalletSp.getInstance(this, "").getCurrentWallet();
         mTvAddress.setText(address);
         mEdtAmount.addTextChangedListener(new TextWatcher() {
             @Override
@@ -107,55 +117,50 @@ public class TokenReceiveActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                double amount = Util.parseDouble(mEdtAmount.getText().toString());
-                double tokenAmount = 0.0f;
-                if (amount < 0) {
-                    ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_enter_amount));
-                } else {
-                    tokenAmount = amount;
-                }
-
-                generateAddress(WalletInfoManager.getInstance().getWAddress(),
-                        tokenAmount, mToken);
-            }
-        });
-        //刚开始就钱包地址
-        generateAddress(WalletInfoManager.getInstance().getWAddress(), 0.0f, mToken);
-    }
-
-    private void generateAddress(String walletAddress, double amount, String token) {
-        if (TextUtils.isEmpty(walletAddress) || amount < 0.0f || TextUtils.isEmpty(token)) {
-            ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_collect_code_err));
-            mImgQrShadow.setVisibility(View.VISIBLE);
-            return;
-        }
-        mWalletUtil.generateReceiveAddress(walletAddress, amount, token, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    String receiveAddress = extra.getString("receiveAddress", ""); //不同体系生成的格式不同
-                    if (!TextUtils.isEmpty(receiveAddress)) {
-                        mImgQrShadow.setVisibility(View.GONE);
-                        createQRCode(receiveAddress);
-                    }
-                } else {
-                    ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_collect_code_err));
-                    mImgQrShadow.setVisibility(View.VISIBLE);
-                }
+                createQRCode();
             }
         });
     }
 
-    private void createQRCode(String content) {
-        if (TextUtils.isEmpty(content)) {
-            mImgQrShadow.setVisibility(View.VISIBLE);
-            return;
-        }
+    private void createQRCode() {
+        String amountStr = mEdtAmount.getText().toString();
         try {
-            Bitmap bitmap = QRUtils.createQRCode(content, getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
+            GsonUtil gsonUtil = new GsonUtil("{}");
+            if (TextUtils.isEmpty(amountStr)) {
+                gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, "");
+            } else {
+                BigDecimal amount = new BigDecimal(amountStr);
+                gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, amount.stripTrailingZeros().toPlainString());
+            }
+            gsonUtil.putString(Constant.TOEKN_AMOUNT, tokenEntries.get(mWhTokenName.getCurrentItem()));
+            Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            ToastUtil.toast(TokenReceiveActivity.this, "数量格式不正确");
+        }
+    }
+
+    class ArrayWheelAdapter implements WheelAdapter {
+        private List<String> mList;
+
+        public ArrayWheelAdapter(List<String> pList) {
+            this.mList = pList;
+        }
+
+        @Override
+        public int getItemsCount() {
+            return this.mList.size();
+        }
+
+        @Override
+        public Object getItem(int index) {
+            return this.mList.get(index);
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            return mList.indexOf(o);
+
         }
     }
 

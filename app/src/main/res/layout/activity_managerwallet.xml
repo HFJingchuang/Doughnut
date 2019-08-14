@@ -9,15 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/ls_manager_wallet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title_bar"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
         android:divider="@null" />
 
     <LinearLayout
@@ -27,6 +25,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/layout_create_wallet"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -37,14 +36,15 @@
                 android:id="@+id/tv_create_wallet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="3dp"
                 android:gravity="center"
                 android:text="@string/btn_create_wallet"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:drawablePadding="3dp"/>
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_import_wallet"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -55,10 +55,10 @@
                 android:id="@+id/tv_import_wallet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="3dp"
                 android:gravity="center"
                 android:text="@string/btn_import_wallet"
-                android:textColor="@color/white"
-                android:drawablePadding="3dp"/>
+                android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>
 

@@ -24,9 +24,11 @@ public interface IWallet {
 
     String getPrivateKey(String password, String address);
 
-    String transfer(String password, String from, String to, BigDecimal value, String memo);
+    String transfer(String password, String from, String to, String token, String issuer, String value, String memo);
 
     AccountTx getTansferHishory(String address, Integer limit, Marker marker);
 
     AccountRelations getBalance(String address);
+
+    String getSWTBalance(String address);
 }

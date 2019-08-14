@@ -201,17 +201,20 @@ public class WalletManager implements IWallet {
      * @param password
      * @param from
      * @param to
+     * @param token
+     * @param issuer
      * @param value
      * @param memo
      * @return
      */
     @Override
-    public String transfer(String password, String from, String to, BigDecimal value, String memo) {
+    public String transfer(String password, String from, String to, String token, String issuer, String value, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
-            amount.setCurrency(WConstant.CURRENCY_SWT);
-            amount.setValue(value.toString());
+            amount.setCurrency(token);
+            amount.setIssuer(issuer);
+            amount.setValue(value);
             Transaction tx = JtServer.getInstance().getRemote().buildPaymentTx(from, to, amount);
             tx.setSecret(getPrivateKey(password, from));
             List<String> memos = new ArrayList<String>();
@@ -247,7 +250,24 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 获取余额
+     * 获取SWT余额
+     *
+     * @return
+     */
+    @Override
+    public String getSWTBalance(String address) {
+        try {
+            // 获取账户信息
+            AccountInfo info = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
+            return info.getAccountData().getBalance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取全部余额
      *
      * @return
      */
@@ -283,7 +303,7 @@ public class WalletManager implements IWallet {
                 }
             }
 
-            // 通过挂单计算冻结数量
+            // 根据挂单计算冻结数量
             for (int i = 0; i < offers.size(); i++) {
                 String getsCurrency = offers.get(i).getTakerGets().getCurrency();
                 for (int j = 0; j < linesT.size(); j++) {
@@ -298,7 +318,7 @@ public class WalletManager implements IWallet {
                 }
             }
 
-            // 通过冻结关系类型计算冻结数量
+            // 根据冻结关系类型计算冻结数量
             List<Line> linesF = relationsFreeze.getLines();
             for (int i = 0; i < linesF.size(); i++) {
                 String FCurrency = linesF.get(i).getCurrency();

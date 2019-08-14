@@ -33,6 +33,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="4dp"
+                    android:ellipsize="marquee"
+                    android:maxWidth="200dp"
+                    android:singleLine="true"
                     android:textColor="#99FFFFFF"
                     android:textSize="16dp" />
 
@@ -40,10 +43,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10.0dip"
-                    android:background="@color/possible_result_points"
+                    android:background="@drawable/shape_balance_icon"
                     android:drawablePadding="4dp"
                     android:text="@string/current_wallet"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="8dp" />
             </LinearLayout>
 

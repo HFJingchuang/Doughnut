@@ -61,4 +61,6 @@ dependencies {
         exclude group: 'junit'
     })
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
+    implementation 'com.contrarywind:wheelview:4.0.9'
+    implementation 'com.github.stealthcopter:AndroidNetworkTools:0.4.3'
 }
