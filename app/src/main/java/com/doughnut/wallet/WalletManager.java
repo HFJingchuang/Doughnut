@@ -215,7 +215,7 @@ public class WalletManager implements IWallet {
             amount.setCurrency(token);
             amount.setIssuer(issuer);
             amount.setValue(value);
-            Transaction tx = JtServer.getInstance().getRemote().buildPaymentTx(from, to, amount);
+            Transaction tx = JtServer.getInstance(mContext).getRemote().buildPaymentTx(from, to, amount);
             tx.setSecret(getPrivateKey(password, from));
             List<String> memos = new ArrayList<String>();
             memos.add(memo);
@@ -241,7 +241,7 @@ public class WalletManager implements IWallet {
     @Override
     public AccountTx getTansferHishory(String address, Integer limit, Marker marker) {
         try {
-            AccountTx bean = JtServer.getInstance().getRemote().requestAccountTx(address, limit, marker);
+            AccountTx bean = JtServer.getInstance(mContext).getRemote().requestAccountTx(address, limit, marker);
             return bean;
         } catch (Exception e) {
             e.printStackTrace();
@@ -258,7 +258,7 @@ public class WalletManager implements IWallet {
     public String getSWTBalance(String address) {
         try {
             // 获取账户信息
-            AccountInfo info = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
+            AccountInfo info = JtServer.getInstance(mContext).getRemote().requestAccountInfo(address, null, null);
             return info.getAccountData().getBalance();
         } catch (Exception e) {
             e.printStackTrace();
@@ -275,12 +275,12 @@ public class WalletManager implements IWallet {
     public AccountRelations getBalance(String address) {
         try {
             // 获取账户信息
-            AccountInfo info = JtServer.getInstance().getRemote().requestAccountInfo(address, null, null);
+            AccountInfo info = JtServer.getInstance(mContext).getRemote().requestAccountInfo(address, null, null);
             // 获取账户挂单信息
-            AccountOffers accountOffers = JtServer.getInstance().getRemote().requestAccountOffers(address, null);
+            AccountOffers accountOffers = JtServer.getInstance(mContext).getRemote().requestAccountOffers(address, null);
             // 获取账户其它token信息
-            AccountRelations relationsTrust = JtServer.getInstance().getRemote().requestAccountRelations(address, null, WConstant.RELATION_TRUST);
-            AccountRelations relationsFreeze = JtServer.getInstance().getRemote().requestAccountRelations(address, null, WConstant.RELATION_FREEZE);
+            AccountRelations relationsTrust = JtServer.getInstance(mContext).getRemote().requestAccountRelations(address, null, WConstant.RELATION_TRUST);
+            AccountRelations relationsFreeze = JtServer.getInstance(mContext).getRemote().requestAccountRelations(address, null, WConstant.RELATION_FREEZE);
 
             // 计算其它token冻结数量
             List<Offer> offers = accountOffers.getOffers();
@@ -344,7 +344,7 @@ public class WalletManager implements IWallet {
 
     public String getTrans(String hash) {
         try {
-            Account bean = JtServer.getInstance().getRemote().requestTx(hash);
+            Account bean = JtServer.getInstance(mContext).getRemote().requestTx(hash);
             return bean.getHash();
         } catch (Exception e) {
             e.printStackTrace();

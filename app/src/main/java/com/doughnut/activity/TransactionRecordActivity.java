@@ -35,8 +35,6 @@ import java.util.List;
 public class TransactionRecordActivity extends BaseActivity implements
         TitleBar.TitleBarClickListener {
 
-    private final static String TAG = "TransactionRecordActivity";
-
     private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
 
@@ -60,7 +58,9 @@ public class TransactionRecordActivity extends BaseActivity implements
         super.onResume();
         String currentWallet = WalletSp.getInstance(this, "").getCurrentWallet();
         mTitleBar.setTitle(WalletSp.getInstance(this, currentWallet).getName());
-        getHistory();
+        if (mAdapter != null) {
+            mSmartRefreshLayout.autoRefresh();
+        }
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TransactionRecordActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 getHistory();
-                if (transactions == null && transactions.isEmpty()) {
+                if (transactions == null || transactions.isEmpty()) {
                     mLayoutEmpty.setVisibility(View.VISIBLE);
                 } else {
                     mLayoutEmpty.setVisibility(View.GONE);
@@ -268,7 +268,10 @@ public class TransactionRecordActivity extends BaseActivity implements
 
         @Override
         public int getItemCount() {
-            return transactions.size();
+            if (transactions != null) {
+                return transactions.size();
+            }
+            return 0;
         }
     }
 
@@ -278,8 +281,10 @@ public class TransactionRecordActivity extends BaseActivity implements
         }
 
         AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, null);
-        transactions = accountTx.getTransactions();
-        marker = accountTx.getMarker();
+        if (accountTx != null) {
+            transactions = accountTx.getTransactions();
+            marker = accountTx.getMarker();
+        }
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
@@ -288,8 +293,10 @@ public class TransactionRecordActivity extends BaseActivity implements
 
     private void getHistoryMore() {
         AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, marker);
-        transactions.addAll(accountTx.getTransactions());
-        marker = accountTx.getMarker();
+        if (accountTx != null) {
+            transactions.addAll(accountTx.getTransactions());
+            marker = accountTx.getMarker();
+        }
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }

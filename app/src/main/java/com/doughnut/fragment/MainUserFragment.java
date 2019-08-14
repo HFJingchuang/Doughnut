@@ -76,6 +76,10 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutHelp.setClickable(true);
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
+        mLayoutNode.setClickable(true);
+        mLayoutPay.setClickable(true);
+        mLayoutRecieve.setClickable(true);
+        mLayoutRight.setClickable(true);
     }
 
     @Override
@@ -99,10 +103,13 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
         } else if (view == mLayoutPay) {
+            mLayoutPay.setClickable(false);
             TokenTransferActivity.startTokenTransferActivity(getActivity());
         } else if (view == mLayoutRecieve) {
+            mLayoutRecieve.setClickable(false);
             TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
         } else if (view == mLayoutRight) {
+            mLayoutRight.setClickable(false);
             ToastUtil.toast(getContext(), "还没实现。。。");
         }
     }
