@@ -13,13 +13,13 @@ import com.doughnut.R;
 import com.doughnut.activity.AboutActivity;
 import com.doughnut.activity.JtNodeRecordActivity;
 import com.doughnut.activity.LanguageActivity;
+import com.doughnut.activity.ModifyWalletActivity;
 import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.wallet.WalletSp;
 
 
@@ -65,6 +65,10 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutHelp.setClickable(true);
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
+        mLayoutNode.setClickable(true);
+        mLayoutPay.setClickable(true);
+        mLayoutRecieve.setClickable(true);
+        mLayoutRight.setClickable(true);
     }
 
     @Override
@@ -110,7 +114,8 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
             TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
         } else if (view == mLayoutRight) {
             mLayoutRight.setClickable(false);
-            ToastUtil.toast(getContext(), "还没实现。。。");
+            ModifyWalletActivity.startModifyWalletActivity(getActivity(),
+                    mAddressTv.getText().toString());
         }
     }
 

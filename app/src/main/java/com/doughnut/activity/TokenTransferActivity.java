@@ -123,7 +123,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
         if (getIntent() != null) {
             mEdtWalletAddress.setText(getIntent().getStringExtra(Constant.RECEIVE_ADDRESS_KEY));
-            mEdtTransferNum.setText(String.valueOf(getIntent().getDoubleExtra(Constant.TOEKN_AMOUNT, 0.0f)));
+            mEdtTransferNum.setText(getIntent().getStringExtra(Constant.TOEKN_AMOUNT));
+            mWhTokenName.setCurrentItem(getIntent().getIntExtra(Constant.TOEKN_NAME, 0));
         }
     }
 
@@ -139,7 +140,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     //swt
 //                    handleSwtScanResult(scanResult);
                     GsonUtil res = new GsonUtil(scanResult);
-                    startTokenTransferActivity(this, res.getString(Constant.RECEIVE_ADDRESS_KEY, ""), res.getString(Constant.TOEKN_AMOUNT, ""));
+                    startTokenTransferActivity(this, res.getString(Constant.RECEIVE_ADDRESS_KEY, ""), res.getString(Constant.TOEKN_AMOUNT, ""), res.getInt(Constant.TOEKN_NAME, 0));
                 }
             }
         }
@@ -273,10 +274,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      * @param context
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress,
-                                                  String amount) {
+                                                  String amount, int token) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(Constant.RECEIVE_ADDRESS_KEY, receiveAddress);
         intent.putExtra(Constant.TOEKN_AMOUNT, amount);
+        intent.putExtra(Constant.TOEKN_NAME, token);
         context.startActivity(intent);
     }
 
