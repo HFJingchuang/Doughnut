@@ -15,9 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.BaseWalletUtil;
-import com.doughnut.base.TBController;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.config.AppConfig;
 import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
@@ -43,10 +40,10 @@ public class JtNodeRecordActivity extends BaseActivity implements
     final private BigDecimal PING_LOW = new BigDecimal("100");
 
     private SmartRefreshLayout mSmartRefreshLayout;
+    private TextView mTvAddNode;
     private TitleBar mTitleBar;
     private RecyclerView mRecyclerView;
     private TransactionRecordAdapter mAdapter;
-    private BaseWalletUtil mWalletUtil;
     private GsonUtil publicNodes;
     private int mSelectedItem = -1;
 
@@ -55,7 +52,6 @@ public class JtNodeRecordActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jtnode_record);
-
         initView();
     }
 
@@ -100,6 +96,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mTitleBar.setTitle("节点设置");
         mTitleBar.setTitleBarClickListener(this);
 
+        mTvAddNode = findViewById(R.id.tv_add_node);
         mAdapter = new TransactionRecordAdapter();
         mRecyclerView = findViewById(R.id.view_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
