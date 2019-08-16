@@ -27,10 +27,13 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.stealthcopter.networktools.Ping;
+import com.stealthcopter.networktools.PortScan;
 import com.stealthcopter.networktools.ping.PingResult;
 import com.stealthcopter.networktools.ping.PingStats;
 
 import java.math.BigDecimal;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 
 public class JtNodeRecordActivity extends BaseActivity implements
@@ -114,6 +117,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
+                mSelectedItem = -1;
                 refreshlayout.finishLoadMore();
                 mAdapter.notifyDataSetChanged();
             }
@@ -184,6 +188,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
             holder.mTvNodeName.setText(item.getString("name", ""));
             String url = item.getString("node", "");
             holder.mTvNodeUrl.setText(url);
+            holder.mLayoutItem.setClickable(true);
             if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1) {
                 mSelectedItem = position;
                 holder.mRadioSelected.setChecked(true);
@@ -193,37 +198,57 @@ public class JtNodeRecordActivity extends BaseActivity implements
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String host = url.replace("ws://", "").replace("wss://", "").split(":")[0];
-                    Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
-                        @Override
-                        public void onResult(PingResult pingResult) {
-                        }
+                    String[] ws = url.replace("ws://", "").replace("wss://", "").split(":");
+                    String host = ws[0];
+                    String port = ws[1];
+                    try {
+                        ArrayList<Integer> prots = PortScan.onAddress(host).setMethodTCP().setPort(Integer.valueOf(port)).doScan();
+                        if (prots != null && prots.size() == 1) {
+                            Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
+                                @Override
+                                public void onResult(PingResult pingResult) {
+                                }
 
-                        @Override
-                        public void onFinished(PingStats pingStats) {
+                                @Override
+                                public void onFinished(PingStats pingStats) {
+                                    AppConfig.postOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
+                                            holder.mTvNodePing.setText(ping + "ms");
+                                            BigDecimal pingBig = new BigDecimal(ping);
+                                            if (pingBig.compareTo(PING_QUICK) == -1) {
+                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
+                                            } else if (pingBig.compareTo(PING_LOW) == -1) {
+                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
+                                            } else {
+                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                                            }
+                                            holder.mTvNodePing.setVisibility(View.VISIBLE);
+                                            holder.mImgLoad.setVisibility(View.GONE);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                }
+                            });
+                        } else {
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
-                                    holder.mTvNodePing.setText(ping + "ms");
-                                    BigDecimal pingBig = new BigDecimal(ping);
-                                    if (pingBig.compareTo(PING_QUICK) == -1) {
-                                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
-                                    } else if (pingBig.compareTo(PING_LOW) == -1) {
-                                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
-                                    } else {
-                                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
-                                    }
+                                    holder.mLayoutItem.setClickable(false);
+                                    holder.mTvNodePing.setText("---");
+                                    holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
                                     holder.mTvNodePing.setVisibility(View.VISIBLE);
                                     holder.mImgLoad.setVisibility(View.GONE);
                                 }
                             });
                         }
-
-                        @Override
-                        public void onError(Exception e) {
-                        }
-                    });
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
                 }
             }).start();
         }
