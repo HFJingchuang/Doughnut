@@ -126,13 +126,14 @@ public class TokenReceiveActivity extends BaseActivity {
         String amountStr = mEdtAmount.getText().toString();
         try {
             GsonUtil gsonUtil = new GsonUtil("{}");
+            gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, mTvAddress.getText().toString());
             if (TextUtils.isEmpty(amountStr)) {
-                gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, "");
+                gsonUtil.putString(Constant.TOEKN_AMOUNT, "");
             } else {
                 BigDecimal amount = new BigDecimal(amountStr);
-                gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, amount.stripTrailingZeros().toPlainString());
+                gsonUtil.putString(Constant.TOEKN_AMOUNT, amount.stripTrailingZeros().toPlainString());
             }
-            gsonUtil.putString(Constant.TOEKN_AMOUNT, tokenEntries.get(mWhTokenName.getCurrentItem()));
+            gsonUtil.putInt(Constant.TOEKN_NAME, mWhTokenName.getCurrentItem());
             Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
         } catch (Exception e) {

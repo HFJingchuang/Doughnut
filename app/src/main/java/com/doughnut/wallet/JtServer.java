@@ -1,5 +1,10 @@
 package com.doughnut.wallet;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.android.jtblk.client.Remote;
 import com.android.jtblk.connection.Connection;
 import com.android.jtblk.connection.ConnectionFactory;
@@ -15,17 +20,32 @@ public class JtServer {
     private static Connection conn;
     private static Remote remote;
     private static JtServer instance;
+    private static Context mContext;
+    private static int i = 0;
 
     private JtServer() {
         if (conn != null) {
             this.conn.close();
         }
-        conn = ConnectionFactory.getCollection(server);
-        remote = new Remote(conn, local_sign);
+        String fileName = mContext.getPackageName() + WConstant.SP_SERVER;
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String nodeUrl = sharedPreferences.getString("nodeUrl", "");
+        if (!TextUtils.isEmpty(nodeUrl)) {
+            server = nodeUrl;
+        }
+        try {
+            conn = ConnectionFactory.getCollection(server);
+            remote = new Remote(conn, local_sign);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static JtServer getInstance() {
+    public static JtServer getInstance(Context context) {
         if (instance == null) {
+            i++;
+            Log.v("wwww", "===>" + i);
+            mContext = context;
             instance = new JtServer();
         }
         return instance;

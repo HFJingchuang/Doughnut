@@ -18,6 +18,7 @@ public class Constant {
 
     public final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
     public final static String TOEKN_AMOUNT = "Token_Amount";
+    public final static String TOEKN_NAME = "Token_Name";
 
     //common sp
     public final static String common_prefs = "common_prefs";

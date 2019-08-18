@@ -23,4 +23,7 @@ public class WConstant {
     // 钱包操作冻结SWT（挂单，新增TOKEN）
     public final static Integer FREEZED = 5;
 
+    // 节点服务地址保存文件后缀
+    public final static String SP_SERVER = "_server";
+
 }
