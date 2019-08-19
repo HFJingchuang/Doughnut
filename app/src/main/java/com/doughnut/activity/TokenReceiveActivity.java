@@ -3,6 +3,7 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.contrarywind.adapter.WheelAdapter;
 import com.contrarywind.listener.OnItemSelectedListener;
 import com.contrarywind.view.WheelView;
@@ -29,6 +31,8 @@ import com.doughnut.wallet.WalletSp;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class TokenReceiveActivity extends BaseActivity {
@@ -45,7 +49,7 @@ public class TokenReceiveActivity extends BaseActivity {
     private TextView mTvAddress;
     private ImageView mImgCopyAddress;
     private WheelView mWhTokenName;
-    private List<String> tokenEntries;
+    private Map<String, String> tokenEntries;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,16 +86,10 @@ public class TokenReceiveActivity extends BaseActivity {
                 ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_wallet_address_copied));
             }
         });
-        mWhTokenName = findViewById(R.id.wh_token_name);
         //准备数据
-        tokenEntries = new ArrayList<>();
-        tokenEntries.clear();
-        tokenEntries.add("SWT");
-        tokenEntries.add("CNT");
-        tokenEntries.add("MOAC");
-        tokenEntries.add("JCC");
-        tokenEntries.add("CSP");
-        mWhTokenName.setAdapter(new ArrayWheelAdapter(tokenEntries));
+        getAllTokens();
+        mWhTokenName = findViewById(R.id.wh_token_name);
+        mWhTokenName.setAdapter(new ArrayWheelAdapter(tokenEntries.keySet()));
         mWhTokenName.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(int index) {
@@ -142,10 +140,11 @@ public class TokenReceiveActivity extends BaseActivity {
     }
 
     class ArrayWheelAdapter implements WheelAdapter {
-        private List<String> mList;
+        private List<String> mList = new ArrayList<>();
 
-        public ArrayWheelAdapter(List<String> pList) {
-            this.mList = pList;
+        public ArrayWheelAdapter(Set<String> set) {
+            this.mList.clear();
+            this.mList.addAll(set);
         }
 
         @Override
@@ -163,6 +162,16 @@ public class TokenReceiveActivity extends BaseActivity {
             return mList.indexOf(o);
 
         }
+    }
+
+    /**
+     * 获取所有tokens
+     */
+    public void getAllTokens() {
+        String fileName = getPackageName() + "_tokens";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String tokens = sharedPreferences.getString("tokens", "");
+        tokenEntries = JSONObject.parseObject(tokens, Map.class);
     }
 
     /**

@@ -1,10 +1,12 @@
 package com.doughnut.wallet;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.Account;
@@ -21,6 +23,8 @@ import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
 import com.doughnut.config.AppConfig;
+import com.doughnut.net.api.GetAllTokenList;
+import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.GsonUtil;
 import com.jccdex.rpc.api.JccConfig;
 import com.jccdex.rpc.api.JccdexInfo;
@@ -30,7 +34,10 @@ import com.jccdex.rpc.url.JccdexUrl;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 钱包管理类
@@ -365,7 +372,7 @@ public class WalletManager implements IWallet {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // 获取exHosts
+                // 获取infoHosts
                 JccConfig jccConfig = JccConfig.getInstance();
                 JccdexUrl jccdexUrl = new JccdexUrl(CONFIG_HOST, true);
                 jccConfig.setmBaseUrl(jccdexUrl);
@@ -416,6 +423,49 @@ public class WalletManager implements IWallet {
                 });
             }
         }).start();
+    }
+
+    /**
+     * 获取所有tokens
+     */
+    public void getAllTokens() {
+        GetAllTokenList request = new GetAllTokenList();
+        new RequestPresenter().loadData(request, false, new RequestPresenter.RequestCallback() {
+            @Override
+            public void onRequesResult(int ret, GsonUtil json) {
+                String code = json.getString("code", "");
+                if (TextUtils.equals(code, "0")) {
+                    GsonUtil data = json.getArray("data");
+                    Map<String, String> tokenMap = new TreeMap<>();
+                    for (int i = 0; i < data.getLength(); i++) {
+                        GsonUtil tokenPair = data.getObject(i);
+                        List<String> keys = tokenPair.getKey();
+                        GsonUtil tokens = tokenPair.getArray(keys.get(0));
+                        for (int j = 0; j < tokens.getLength(); j++) {
+                            String[] token = tokens.getString(j, "").split("_");
+                            if (token.length == 2) {
+                                tokenMap.put(token[0], token[1]);
+                            }
+                        }
+                    }
+                    Map<String, String> sortTokenMap = new TreeMap<>(new Comparator<String>() {
+                        @Override
+                        public int compare(String o1, String o2) {
+                            return o1.compareTo(o2);
+                        }
+                    });
+                    sortTokenMap.putAll(tokenMap);
+
+                    String JStr = JSON.toJSONString(sortTokenMap);
+                    // 本地保存tokens
+                    String fileName = mContext.getPackageName() + "_tokens";
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("tokens", JStr);
+                    editor.apply();
+                }
+            }
+        });
     }
 
     public String getTrans(String hash) {

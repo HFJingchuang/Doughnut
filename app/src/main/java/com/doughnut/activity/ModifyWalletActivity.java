@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.dialog.PKDialog;
 import com.doughnut.dialog.PwdDialog;
 import com.doughnut.utils.ToastUtil;

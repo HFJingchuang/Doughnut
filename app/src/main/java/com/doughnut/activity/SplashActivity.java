@@ -117,6 +117,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void permissonSuccess() {
+        WalletManager.getInstance(this).getAllTokens();
         AppConfig.postDelayOnUiThread(() -> {
             if (WalletManager.getInstance(SplashActivity.this).hasWallet()) {
                 MainActivity.startMainActivity(SplashActivity.this);

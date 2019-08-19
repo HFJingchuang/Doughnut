@@ -48,6 +48,9 @@ public class Constant {
 
     public final static String JC_EXCHANGE_SERVER = "https://e9joixcvsdvi4sf.jccdex.cn";
 
+    // 井畅SWTC浏览器
+    public final static String JC_SCAN_SERVER = "https://swtcscan.jccdex.cn";
+
     //jt
     public final static String jt_base_url = "https://api.jingtum.com";
 

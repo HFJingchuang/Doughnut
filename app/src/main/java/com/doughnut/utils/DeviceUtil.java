@@ -11,6 +11,7 @@ import com.doughnut.config.Constant;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.UUID;
 
 
 public final class DeviceUtil {
@@ -29,7 +30,7 @@ public final class DeviceUtil {
         try {
             String deviceUniqueId = FileUtil.getStringFromSp(AppConfig.getContext(), Constant.sys_prefs, Constant.init_keys);
             if (TextUtils.isEmpty(deviceUniqueId)) {
-                String id = "";
+                String id = UUID.randomUUID().toString();
                 String deviceId = FileUtil.getStringContent(id);
                 FileUtil.putStringToSp(AppConfig.getContext(), Constant.sys_prefs, Constant.init_keys, deviceId);
                 return deviceId;
