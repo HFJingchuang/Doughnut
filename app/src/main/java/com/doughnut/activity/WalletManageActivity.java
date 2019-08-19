@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -13,12 +14,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.MethodCompat;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.jccdex.rpc.base.JCallback;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 
 
@@ -161,7 +168,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             String address = walletList.get(position);
             String balance = WalletManager.getInstance(WalletManageActivity.this).getSWTBalance(address);
             holder.mTvBalance.setText(balance);
-            holder.mTvBalanceCNY.setText("没数据。。");
+            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY);
             holder.mTvAddress.setText(address);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());

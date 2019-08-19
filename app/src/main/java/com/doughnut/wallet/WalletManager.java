@@ -3,6 +3,7 @@ package com.doughnut.wallet;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.widget.TextView;
 
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
@@ -19,8 +20,15 @@ import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
+import com.doughnut.config.AppConfig;
+import com.doughnut.utils.GsonUtil;
+import com.jccdex.rpc.api.JccConfig;
+import com.jccdex.rpc.api.JccdexInfo;
+import com.jccdex.rpc.base.JCallback;
+import com.jccdex.rpc.url.JccdexUrl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +41,8 @@ public class WalletManager implements IWallet {
 
     private static WalletManager walletManager = null;
     private static Context mContext;
+    final private String CONFIG_HOST = "weidex.vip";
+    final private String COUNTER = "CNT";
 
     private WalletManager() {
     }
@@ -259,11 +269,13 @@ public class WalletManager implements IWallet {
         try {
             // 获取账户信息
             AccountInfo info = JtServer.getInstance(mContext).getRemote().requestAccountInfo(address, null, null);
-            return info.getAccountData().getBalance();
+            if (info != null && info.getAccountData() != null) {
+                return info.getAccountData().getBalance();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "0";
     }
 
     /**
@@ -340,6 +352,70 @@ public class WalletManager implements IWallet {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取token时价
+     *
+     * @param base
+     * @param balance
+     * @param view
+     */
+    public void getTokenPrice(String base, BigDecimal balance, TextView view) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 获取exHosts
+                JccConfig jccConfig = JccConfig.getInstance();
+                JccdexUrl jccdexUrl = new JccdexUrl(CONFIG_HOST, true);
+                jccConfig.setmBaseUrl(jccdexUrl);
+                jccConfig.requestConfig(new JCallback() {
+                    @Override
+                    public void onResponse(String code, String response) {
+                        if (!TextUtils.isEmpty(response)) {
+                            GsonUtil res = new GsonUtil(response);
+                            GsonUtil infoHosts = res.getArray("infoHosts");
+                            int index = (int) (Math.random() * infoHosts.getLength());
+                            final JccdexUrl jccUrl = new JccdexUrl(infoHosts.getString(index, ""), true);
+                            JccdexInfo jccdexInfo = JccdexInfo.getInstance();
+                            jccdexInfo.setmBaseUrl(jccUrl);
+                            // 获取时价
+                            jccdexInfo.requestTicker(base, COUNTER, new JCallback() {
+                                @Override
+                                public void onResponse(String code, String response) {
+                                    if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                        GsonUtil res = new GsonUtil(response);
+                                        GsonUtil data = res.getArray("data");
+                                        if (data.isValid()) {
+                                            // SWT当前价
+                                            BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                                            // 计算SWT总价值
+                                            BigDecimal value = balance.multiply(cur, new MathContext(2));
+                                            AppConfig.postOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    view.setText(String.format("%.2f", value));
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFail(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }).start();
     }
 
     public String getTrans(String hash) {

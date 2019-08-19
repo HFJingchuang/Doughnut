@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="1111111"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="28sp" />
 
@@ -65,7 +65,7 @@
                 android:id="@+id/tv_balance_CNY"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1,111,111"
+                android:text=""
                 android:textSize="12sp" />
 
         </LinearLayout>
