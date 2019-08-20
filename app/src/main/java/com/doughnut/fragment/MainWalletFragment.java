@@ -372,9 +372,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             WalletManager walletManager = WalletManager.getInstance(mContext);
             String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
             AccountRelations accountRelations = walletManager.getBalance(currentWallet);
-
-            List list = accountRelations.getLines();
-
+            List list = new ArrayList();
+            if (accountRelations != null) {
+                list = accountRelations.getLines();
+            }
             GsonUtil extra = new GsonUtil(list);
 
 //
