@@ -24,7 +24,7 @@
             android:id="@+id/swtc_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="213122434 SWTC"
+            android:text="213122 SWTC"
             android:textColor="#99FFFFFF"
             android:drawableRight="@drawable/ic_asset_visible"
             android:drawablePadding="6dp"/>
@@ -33,7 +33,7 @@
             android:id="@+id/wallet_unit2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="￥47463"
+            android:text="￥27463"
             android:textColor="#99FFFFFF"
             android:drawablePadding="4dp"/>
 
