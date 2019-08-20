@@ -26,4 +26,7 @@ public class WConstant {
     // 节点服务地址保存文件后缀
     public final static String SP_SERVER = "_server";
 
+    // JCC_RPC请求返回值：成功
+    public final static String SUCCESS_CODE = "0";
+
 }

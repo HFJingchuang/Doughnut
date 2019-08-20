@@ -10,15 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.dialog.PKDialog;
 import com.doughnut.dialog.PwdDialog;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+
+import java.math.BigDecimal;
 
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener,
         PwdDialog.PwdResult {
@@ -28,6 +30,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
     private TextView mTvWalletAddress;
     private TextView mTvWalletBalance;
+    private TextView mTvWalletBalanceCNY;
 
     private EditText mEdtWalletName;
     private LinearLayout mLayoutModifyPwd;
@@ -116,6 +119,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTitleBar.setTitleBarClickListener(this);
 
         mTvWalletBalance = findViewById(R.id.tv_wallet_balance);
+        mTvWalletBalanceCNY = findViewById(R.id.tv_balance_CNY);
         mTvWalletAddress = (TextView) findViewById(R.id.tv_wallet_address);
         mTvWalletAddress.setOnClickListener(this);
 
@@ -165,6 +169,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletAddress.setText(mWalletAddress);
         String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
         mTvWalletBalance.setText(balance);
+        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvWalletBalanceCNY);
     }
 
     private void deleteWallet() {

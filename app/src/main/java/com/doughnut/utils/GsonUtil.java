@@ -15,6 +15,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GsonUtil implements Serializable {
@@ -119,7 +121,7 @@ public class GsonUtil implements Serializable {
         if (obj != null) {
             try {
                 String t = obj.getString(key);
-                if (TextUtils.equals("null",t)) {
+                if (TextUtils.equals("null", t)) {
                     return "";
                 }
                 return t;
@@ -134,7 +136,7 @@ public class GsonUtil implements Serializable {
         if (arrayobj != null) {
             try {
                 String t = arrayobj.getString(index);
-                if (TextUtils.equals("null",t)) {
+                if (TextUtils.equals("null", t)) {
                     return "";
                 }
                 return t;
@@ -450,4 +452,19 @@ public class GsonUtil implements Serializable {
         return this;
     }
 
+    public List<String> getKey() {
+        List<String> list = new ArrayList<>();
+        if (obj != null) {
+            try {
+                Iterator<String> iterator = obj.keys();
+                while (iterator.hasNext()) {
+
+                    String key = iterator.next();
+                    list.add(key);
+                }
+            } catch (Throwable e) {
+            }
+        }
+        return list;
+    }
 }

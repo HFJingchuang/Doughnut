@@ -1,9 +1,12 @@
 package com.doughnut.wallet;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.Account;
@@ -19,10 +22,22 @@ import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
+import com.doughnut.config.AppConfig;
+import com.doughnut.net.api.GetAllTokenList;
+import com.doughnut.net.load.RequestPresenter;
+import com.doughnut.utils.GsonUtil;
+import com.jccdex.rpc.api.JccConfig;
+import com.jccdex.rpc.api.JccdexInfo;
+import com.jccdex.rpc.base.JCallback;
+import com.jccdex.rpc.url.JccdexUrl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 钱包管理类
@@ -33,6 +48,8 @@ public class WalletManager implements IWallet {
 
     private static WalletManager walletManager = null;
     private static Context mContext;
+    final private String CONFIG_HOST = "weidex.vip";
+    final private String COUNTER = "CNT";
 
     private WalletManager() {
     }
@@ -259,11 +276,13 @@ public class WalletManager implements IWallet {
         try {
             // 获取账户信息
             AccountInfo info = JtServer.getInstance(mContext).getRemote().requestAccountInfo(address, null, null);
-            return info.getAccountData().getBalance();
+            if (info != null && info.getAccountData() != null) {
+                return info.getAccountData().getBalance();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "0";
     }
 
     /**
@@ -340,6 +359,113 @@ public class WalletManager implements IWallet {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取token时价
+     *
+     * @param base
+     * @param balance
+     * @param view
+     */
+    public void getTokenPrice(String base, BigDecimal balance, TextView view) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 获取infoHosts
+                JccConfig jccConfig = JccConfig.getInstance();
+                JccdexUrl jccdexUrl = new JccdexUrl(CONFIG_HOST, true);
+                jccConfig.setmBaseUrl(jccdexUrl);
+                jccConfig.requestConfig(new JCallback() {
+                    @Override
+                    public void onResponse(String code, String response) {
+                        if (!TextUtils.isEmpty(response)) {
+                            GsonUtil res = new GsonUtil(response);
+                            GsonUtil infoHosts = res.getArray("infoHosts");
+                            int index = (int) (Math.random() * infoHosts.getLength());
+                            final JccdexUrl jccUrl = new JccdexUrl(infoHosts.getString(index, ""), true);
+                            JccdexInfo jccdexInfo = JccdexInfo.getInstance();
+                            jccdexInfo.setmBaseUrl(jccUrl);
+                            // 获取时价
+                            jccdexInfo.requestTicker(base, COUNTER, new JCallback() {
+                                @Override
+                                public void onResponse(String code, String response) {
+                                    if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                        GsonUtil res = new GsonUtil(response);
+                                        GsonUtil data = res.getArray("data");
+                                        if (data.isValid()) {
+                                            // SWT当前价
+                                            BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                                            // 计算SWT总价值
+                                            BigDecimal value = balance.multiply(cur, new MathContext(2));
+                                            AppConfig.postOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    view.setText(String.format("%.2f", value));
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFail(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 获取所有tokens
+     */
+    public void getAllTokens() {
+        GetAllTokenList request = new GetAllTokenList();
+        new RequestPresenter().loadData(request, false, new RequestPresenter.RequestCallback() {
+            @Override
+            public void onRequesResult(int ret, GsonUtil json) {
+                String code = json.getString("code", "");
+                if (TextUtils.equals(code, "0")) {
+                    GsonUtil data = json.getArray("data");
+                    Map<String, String> tokenMap = new TreeMap<>();
+                    for (int i = 0; i < data.getLength(); i++) {
+                        GsonUtil tokenPair = data.getObject(i);
+                        List<String> keys = tokenPair.getKey();
+                        GsonUtil tokens = tokenPair.getArray(keys.get(0));
+                        for (int j = 0; j < tokens.getLength(); j++) {
+                            String[] token = tokens.getString(j, "").split("_");
+                            if (token.length == 2) {
+                                tokenMap.put(token[0], token[1]);
+                            }
+                        }
+                    }
+                    Map<String, String> sortTokenMap = new TreeMap<>(new Comparator<String>() {
+                        @Override
+                        public int compare(String o1, String o2) {
+                            return o1.compareTo(o2);
+                        }
+                    });
+                    sortTokenMap.putAll(tokenMap);
+
+                    String JStr = JSON.toJSONString(sortTokenMap);
+                    // 本地保存tokens
+                    String fileName = mContext.getPackageName() + "_tokens";
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("tokens", JStr);
+                    editor.apply();
+                }
+            }
+        });
     }
 
     public String getTrans(String hash) {
