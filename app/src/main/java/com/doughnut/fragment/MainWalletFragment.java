@@ -3,15 +3,13 @@ package com.doughnut.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,30 +20,30 @@ import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.R;
+import com.doughnut.activity.AddCurrencyActivity;
+import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.TokenDetailsActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
 import com.doughnut.base.BaseWalletUtil;
 import com.doughnut.base.BlockChainData;
 import com.doughnut.base.TBController;
-import com.doughnut.base.WCallback;
 import com.doughnut.base.WalletInfoManager;
-import com.doughnut.config.Constant;
 import com.doughnut.dialog.WalletActionPop;
 import com.doughnut.dialog.WalletMenuPop;
 import com.doughnut.utils.DefaultItemDecoration;
-import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.TokenImageLoader;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
-import com.google.gson.JsonArray;
 import com.zxing.activity.CaptureActivity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,13 +53,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private final static int SCAN_REQUEST_CODE = 10001;
 
     private SwipeRefreshLayout mSwipteRefreshLayout;
-    private AppBarLayout mAppbarLayout;
-    private Toolbar mToolbar;
+    private CardView mAppbarLayout;
+//    private Toolbar mToolbar;
     private RecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
     private View mEmptyView;
     private View mWalletAction, mMenuAction;
-    private TextView mTvWalletName, mTvWalletUnit;
+    private TextView mTvWalletName, mTvWalletUnit, mTvwalletUnit2, mTvswtcAmount, mTvAddCurrency;
 
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
@@ -101,18 +99,20 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
 
         mAppbarLayout = view.findViewById(R.id.main_appbar);
-        mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
+//        mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
 
-        mToolbar = view.findViewById(R.id.toolbar);
+//        mToolbar = view.findViewById(R.id.toolbar);
         mWalletAction = view.findViewById(R.id.wallet_menu_action);
         mTvWalletName = view.findViewById(R.id.tv_wallet_name);
         setWalletName();
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+//        ((AppCompatActivity) getActivity()).setSupmToolbarportActionBar(mToolbar);
         mEmptyView = view.findViewById(R.id.empty_view);
 
         mTvWalletUnit = view.findViewById(R.id.wallet_unit);
         mTvWalletUnit.setOnClickListener(this);
+        mTvwalletUnit2 = view.findViewById(R.id.wallet_unit2);
+        mTvswtcAmount = view.findViewById(R.id.swtc_amount);
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -134,6 +134,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mTvWalletName.setOnClickListener(this);
         mMenuAction = view.findViewById(R.id.wallet_menu);
         mMenuAction.setOnClickListener(this);
+
+        mTvAddCurrency = view.findViewById(R.id.add_asset);
+        mTvAddCurrency.setOnClickListener(this);
 
         isViewCreated = true;
 
@@ -165,6 +168,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_menu:
                 showActionMenuPop();
+                break;
+            case R.id.mainwallet_recycleview:
+//                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
+                break;
+            case R.id.add_asset:
+                AddCurrencyActivity.startLanguageActivity(mContext);
                 break;
 //            case R.id.wallet_unit:
 ////                setAssetVisible();
@@ -284,7 +293,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             float fraction = Math.abs(verticalOffset * 1.0f) / appBarLayout.getTotalScrollRange();
-            mToolbar.setBackgroundColor(changeAlpha(getResources().getColor(R.color.colorPrimary), fraction));
+//            mToolbar.setBackgroundColor(changeAlpha(getResources().getColor(R.color.colorPrimary), fraction));
             if (fraction < 0.5f) {
                 if (mTvWalletName.getVisibility() != View.VISIBLE) {
                     mTvWalletName.setVisibility(View.VISIBLE);
@@ -317,17 +326,17 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         }
     };
-
-    /**
-     * 根据百分比改变颜色透明度
-     */
-    private int changeAlpha(int color, float fraction) {
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        int alpha = (int) (Color.alpha(color) * fraction);
-        return Color.argb(alpha, red, green, blue);
-    }
+//
+//    /**
+//     * 根据百分比改变颜色透明度
+//     */
+//    private int changeAlpha(int color, float fraction) {
+//        int red = Color.red(color);
+//        int green = Color.green(color);
+//        int blue = Color.blue(color);
+//        int alpha = (int) (Color.alpha(color) * fraction);
+//        return Color.argb(alpha, red, green, blue);
+//    }
 
     class MainTokenRecycleViewAdapter extends BaseRecycleAdapter<String, RecyclerView.ViewHolder> {
 
@@ -371,6 +380,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
             WalletManager walletManager = WalletManager.getInstance(mContext);
             String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+            // 取得钱包资产
             AccountRelations accountRelations = walletManager.getBalance(currentWallet);
             List list = new ArrayList();
             if (accountRelations != null) {
@@ -378,17 +388,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
             GsonUtil extra = new GsonUtil(list);
 
-//
-//            TBController.getInstance().getWalletUtil(type).queryBalance(address, type, new WCallback() {
-//                @Override
-//                public void onGetWResult(int ret, GsonUtil extra) {
-//                    if (ret == 0) {
-                        handleTokenRequestResult(params, loadmore, extra);
-//                    }
-//                    mSwipteRefreshLayout.setRefreshing(false);
-//                }
-//            });
-
+            // SWTC余额
+            String balance = walletManager.getSWTBalance(currentWallet);
+            mTvswtcAmount.setText(balance);
+            // SWTC实时总价值
+            walletManager.getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvwalletUnit2);
+            handleTokenRequestResult(params, loadmore, extra);
         }
 
         private void handleTokenRequestResult(final String params, final boolean loadmore, GsonUtil json) {

@@ -251,6 +251,9 @@
     <string name="tv_no_transfer">暂无转账记录</string>
     <string name="footer_loading">努力加载中......</string>
     <string name="content_total_asset">Total Asset</string>
+    <string name="content_exchange_RMB">兑换人民币(元)</string>
+    <string name="content_add_asset">Add Asset</string>
+    <string name="content_add_currency_type">添加币种</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
