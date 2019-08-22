@@ -96,7 +96,34 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         mNameTv = view.findViewById(R.id.tv_wallet_name);
 
+        //下拉刷新
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
+        //下拉刷新的圆圈是否显示
+        mSwipteRefreshLayout.setRefreshing(false);
+
+        //设置下拉时圆圈的颜色（可以由多种颜色拼成）
+        mSwipteRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light,
+                android.R.color.holo_orange_light);
+
+        //设置下拉时圆圈的背景颜色（这里设置成白色）
+        mSwipteRefreshLayout.setProgressBackgroundColorSchemeResource(android.R.color.white);
+
+        //设置下拉刷新时的操作
+        mSwipteRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                //修改数据的代码，最后记得填上此行代码
+                mSwipteRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshWallet();
+                        mSwipteRefreshLayout.setRefreshing(false);
+                    }
+                }, 1000);
+            }
+        });
 
         mAppbarLayout = view.findViewById(R.id.main_appbar);
 //        mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
@@ -215,11 +242,21 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0, R.drawable.ic_arrow_up, 0);
     }
 
+//    private void refreshWallet() {
+//        setWalletName();
+//        refresh();
+//        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+//    }
+
+    /**
+     * 界面刷新功能
+     */
     private void refreshWallet() {
         setWalletName();
-        refresh();
+        mAdapter.refresh();
         mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
     }
+
 
     /**
      * 显示功能菜单pop
