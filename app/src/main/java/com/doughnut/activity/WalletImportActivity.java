@@ -9,31 +9,28 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.fragment.KeyStoreFragment;
-import com.doughnut.fragment.PrivateKeyFragment;
+import com.doughnut.fragment.KeyStoreImpFragment;
+import com.doughnut.fragment.PrivateKeyImpFragment;
 import com.doughnut.view.TitleBar;
 
 
 public class WalletImportActivity extends BaseActivity implements View.OnClickListener {
 
-    private final static int WALLET_INDEX = 0;
-    private final static int MINE_INDEX = 1;
+    private final static int PRIVATEKEY_INDEX = 0;
+    private final static int KEYSTORE_INDEX = 1;
     private ViewPager mMainViewPager;
 
     //tab
-    private LinearLayout mLayoutTabWallet;
-    private LinearLayout mLayoutTabMine;
+    private LinearLayout mLayoutTabPrivateKey;
+    private LinearLayout mLayoutTabKeyStore;
 
-    private ImageView mImgWallet;
-    private TextView mTvWallet;
+    private TextView mTvPrivateKey;
 
-    private ImageView mImgMine;
-    private TextView mTvMine;
+    private TextView mTvKeyStore;
     private TitleBar mTitleBar;
 
     @Override
@@ -54,10 +51,10 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (view == mLayoutTabWallet) {
-            mMainViewPager.setCurrentItem(WALLET_INDEX);
-        } else if (view == mLayoutTabMine) {
-            mMainViewPager.setCurrentItem(MINE_INDEX);
+        if (view == mLayoutTabPrivateKey) {
+            mMainViewPager.setCurrentItem(PRIVATEKEY_INDEX);
+        } else if (view == mLayoutTabKeyStore) {
+            mMainViewPager.setCurrentItem(KEYSTORE_INDEX);
         }
 
     }
@@ -94,16 +91,14 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             }
         });
         //tab
-        mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
-        mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
-        mLayoutTabWallet.setOnClickListener(this);
-        mLayoutTabMine.setOnClickListener(this);
+        mLayoutTabPrivateKey = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
+        mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
+        mLayoutTabPrivateKey.setOnClickListener(this);
+        mLayoutTabKeyStore.setOnClickListener(this);
 
 
-        mImgWallet = (ImageView) findViewById(R.id.img_tab_wallet);
-        mTvWallet = (TextView) findViewById(R.id.tv_tab_wallet);
-        mImgMine = (ImageView) findViewById(R.id.img_tab_mine);
-        mTvMine = (TextView) findViewById(R.id.tv_tab_mine);
+        mTvPrivateKey = (TextView) findViewById(R.id.tv_tab_privatekey);
+        mTvKeyStore = (TextView) findViewById(R.id.tv_tab_keystore);
 
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mMainViewPager.setOffscreenPageLimit(3);
@@ -125,7 +120,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         });
 
         mMainViewPager.setAdapter(new WalletImportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
-        pageSelected(WALLET_INDEX);
+        pageSelected(PRIVATEKEY_INDEX);
     }
 
 
@@ -133,23 +128,18 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     private void pageSelected(int position) {
         resetTab();
         switch (position) {
-            case WALLET_INDEX:
-//                mImgWallet.setImageResource(R.drawable.ic_tab_asset_selected);
-                mTvWallet.setSelected(true);
+            case PRIVATEKEY_INDEX:
+                mTvPrivateKey.setSelected(true);
                 break;
-            case MINE_INDEX:
-//                mImgMine.setImageResource(R.drawable.ic_tab_mine_selected);
-                mTvMine.setSelected(true);
+            case KEYSTORE_INDEX:
+                mTvKeyStore.setSelected(true);
                 break;
         }
     }
 
     private void resetTab() {
-//        mImgWallet.setImageResource(R.drawable.ic_tab_asset_unselected);
-        mTvWallet.setSelected(false);
-
-//        mImgMine.setImageResource(R.drawable.ic_tab_mine_unselected);
-        mTvMine.setSelected(false);
+        mTvPrivateKey.setSelected(false);
+        mTvKeyStore.setSelected(false);
     }
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {
@@ -159,8 +149,8 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         }
 
         private Fragment[] mFragments = new Fragment[]{
-                PrivateKeyFragment.newInstance(),
-                KeyStoreFragment.newInstance()
+                PrivateKeyImpFragment.newInstance(),
+                KeyStoreImpFragment.newInstance()
 
         };
 

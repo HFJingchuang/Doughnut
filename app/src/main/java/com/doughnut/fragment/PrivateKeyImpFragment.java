@@ -24,7 +24,7 @@ import com.doughnut.wallet.WalletManager;
 import com.zxing.activity.CaptureActivity;
 
 
-public class PrivateKeyFragment extends BaseFragment implements View.OnClickListener{
+public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickListener{
 
     private ImageView mImgServiceTerms,mimg_scan;
     private TextView mTvServiceTerms;
@@ -36,9 +36,9 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
 
     private Context mContext;
 
-    public static PrivateKeyFragment newInstance() {
+    public static PrivateKeyImpFragment newInstance() {
         Bundle args = new Bundle();
-        PrivateKeyFragment fragment = new PrivateKeyFragment();
+        PrivateKeyImpFragment fragment = new PrivateKeyImpFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +46,7 @@ public class PrivateKeyFragment extends BaseFragment implements View.OnClickList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_private_key, container, false);
+        return inflater.inflate(R.layout.fragment_private_key_imp, container, false);
     }
 
     @Override
