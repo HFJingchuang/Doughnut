@@ -37,6 +37,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     private LinearLayout mLayoutExportPrivateKey;
 
     private TextView mTvDeleteWallet;
+    private TextView mTvExportWallet;
 
     private String mWalletAddress;
     private String mWalletName;
@@ -68,6 +69,8 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         } else if (view == mTvWalletAddress) {
             Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
+        } else if (view == mTvExportWallet) {
+            gotoExportWallet();
         }
     }
 
@@ -134,11 +137,18 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvDeleteWallet = (TextView) findViewById(R.id.tv_delete_wallet);
         mTvDeleteWallet.setOnClickListener(this);
 
+        mTvExportWallet = (TextView) findViewById(R.id.tv_export_wallet);
+        mTvExportWallet.setOnClickListener(this);
+
         setWalletInfo();
     }
 
     private void gotoModifyPwd() {
         ModifyPwdActivity.startModifyPwdActivity(ModifyWalletActivity.this, mWalletAddress);
+    }
+
+    private void gotoExportWallet() {
+        WalletExportActivity.startExportWalletActivity(this);
     }
 
     private void verifyPwd(String tag) {

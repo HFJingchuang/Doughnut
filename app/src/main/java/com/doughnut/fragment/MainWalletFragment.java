@@ -1,19 +1,15 @@
 
 package com.doughnut.fragment;
 
-import android.app.Activity;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,47 +18,48 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.R;
+import com.doughnut.activity.AddCurrencyActivity;
+import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.TokenDetailsActivity;
-import com.doughnut.activity.TokenReceiveActivity;
-import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
-import com.doughnut.base.BlockChainData;
 import com.doughnut.base.BaseWalletUtil;
+import com.doughnut.base.BlockChainData;
 import com.doughnut.base.TBController;
-import com.doughnut.base.WCallback;
 import com.doughnut.base.WalletInfoManager;
-import com.doughnut.config.Constant;
 import com.doughnut.dialog.WalletActionPop;
 import com.doughnut.dialog.WalletMenuPop;
 import com.doughnut.utils.DefaultItemDecoration;
-import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.TokenImageLoader;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.wallet.WConstant;
+import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainWalletFragment extends BaseFragment implements View.OnClickListener,
-        SwipeRefreshLayout.OnRefreshListener,
-        BaseRecycleAdapter.OnDataLodingFinish {
 
-    private static final String TAG = "MainWalletFragment";
+public class MainWalletFragment extends BaseFragment implements View.OnClickListener {
 
     private final static int SCAN_REQUEST_CODE = 10001;
 
     private SwipeRefreshLayout mSwipteRefreshLayout;
-    private AppBarLayout mAppbarLayout;
-    private Toolbar mToolbar;
+    private CardView mAppbarLayout;
+//    private Toolbar mToolbar;
     private RecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
     private View mEmptyView;
     private View mWalletAction, mMenuAction;
-    private TextView mTvWalletName, mTvWalletUnit;
+    private TextView mTvWalletName, mTvWalletUnit, mTvwalletUnit2, mTvswtcAmount, mTvAddCurrency;
 
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
@@ -71,7 +68,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private String unit = "¥";
     private boolean isViewCreated = false;
-    private double mTotalAsset = 0.0f;
+
+    private Context mContext;
+    private TextView mNameTv;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -89,30 +88,58 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        mContext = getActivity();
         initView(view);
     }
 
     private void initView(View view) {
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
 
-        isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
+        mNameTv = view.findViewById(R.id.tv_wallet_name);
 
+        //下拉刷新
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
-        mSwipteRefreshLayout.setOnRefreshListener(this);
+        //下拉刷新的圆圈是否显示
+        mSwipteRefreshLayout.setRefreshing(false);
+
+        //设置下拉时圆圈的颜色（可以由多种颜色拼成）
+        mSwipteRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light,
+                android.R.color.holo_orange_light);
+
+        //设置下拉时圆圈的背景颜色（这里设置成白色）
+        mSwipteRefreshLayout.setProgressBackgroundColorSchemeResource(android.R.color.white);
+
+        //设置下拉刷新时的操作
+        mSwipteRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                //修改数据的代码，最后记得填上此行代码
+                mSwipteRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshWallet();
+                        mSwipteRefreshLayout.setRefreshing(false);
+                    }
+                }, 1000);
+            }
+        });
 
         mAppbarLayout = view.findViewById(R.id.main_appbar);
-        mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
+//        mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
 
-        mToolbar = view.findViewById(R.id.toolbar);
+//        mToolbar = view.findViewById(R.id.toolbar);
         mWalletAction = view.findViewById(R.id.wallet_menu_action);
         mTvWalletName = view.findViewById(R.id.tv_wallet_name);
         setWalletName();
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+//        ((AppCompatActivity) getActivity()).setSupmToolbarportActionBar(mToolbar);
         mEmptyView = view.findViewById(R.id.empty_view);
 
         mTvWalletUnit = view.findViewById(R.id.wallet_unit);
         mTvWalletUnit.setOnClickListener(this);
+        mTvwalletUnit2 = view.findViewById(R.id.wallet_unit2);
+        mTvswtcAmount = view.findViewById(R.id.swtc_amount);
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -125,7 +152,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         });
         mAdapter = new MainTokenRecycleViewAdapter();
-        mAdapter.setDataLoadingListener(this);
+//        mAdapter.setDataLoadingListener(this);
         mRecycleView.addItemDecoration(
                 new DefaultItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_line)));
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -135,11 +162,19 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mMenuAction = view.findViewById(R.id.wallet_menu);
         mMenuAction.setOnClickListener(this);
 
-        view.findViewById(R.id.wallet_action_receive1).setOnClickListener(this);
-        view.findViewById(R.id.wallet_action_receive).setOnClickListener(this);
-        view.findViewById(R.id.wallet_action_transfer).setOnClickListener(this);
-        view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
+        mTvAddCurrency = view.findViewById(R.id.add_asset);
+        mTvAddCurrency.setOnClickListener(this);
+
         isViewCreated = true;
+
+        setWalletInfo();
+    }
+
+
+    private void setWalletInfo() {
+        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+
+        mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
     }
 
     @Override
@@ -161,86 +196,31 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             case R.id.wallet_menu:
                 showActionMenuPop();
                 break;
-            case R.id.wallet_unit:
-                setAssetVisible();
+            case R.id.mainwallet_recycleview:
+//                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
                 break;
-            case R.id.wallet_action_transfer:
-            case R.id.wallet_action_transfer1:
-//                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
-//                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+            case R.id.add_asset:
+                AddCurrencyActivity.startLanguageActivity(mContext);
                 break;
-            case R.id.wallet_action_receive:
-            case R.id.wallet_action_receive1:
-                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), mWalletUtil.getDefaultTokenSymbol());
-                break;
+//            case R.id.wallet_unit:
+////                setAssetVisible();
+////                break;
+//            case R.id.wallet_action_transfer:
+////            case R.id.wallet_action_transfer1:
+////                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
+////                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+////                break;
+//            case R.id.wallet_action_transfer1:
+////                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
+////                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+//                break;
+//            case R.id.wallet_action_receive:
+////            case R.id.wallet_action_receive1:
+////                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), mWalletUtil.getDefaultTokenSymbol());
+////                break;
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SCAN_REQUEST_CODE) {
-                //扫描到地址
-                String scanResult = data.getStringExtra("result");
-                if (TextUtils.isEmpty(scanResult)) {
-                    ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
-                } else {
-                    if (scanResult.startsWith("iban")) {
-                        //eth
-                        ToastUtil.toast(getContext(), getString(R.string.toast_not_support_eth_wallet));
-                    } else if (scanResult.startsWith("jingtum")) {
-                        //swt
-                        handleSwtScanResult(scanResult);
-                    } else {
-                        ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
-                    }
-                }
-            }
-        }
-    }
-
-
-    private void handleSwtScanResult(final String scanResult) {
-        if (!WalletInfoManager.getInstance().hasWallet(TBController.SWT_INDEX)) {
-            ToastUtil.toast(getContext(), getString(R.string.toast_no_jintum_wallet));
-            return;
-        }
-        if (WalletInfoManager.getInstance().getWalletType() == TBController.SWT_INDEX) {
-            //当前就是SWT钱包
-            int beginIndex = scanResult.indexOf("amount=") + 7;
-            double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-            final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-            String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-//            TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-//                    "", num, token, 0, 0);
-        } else {
-            ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_reminder), getString(R.string.dialog_content_switch_jintum_wallet),
-                    getString(R.string.dialog_btn_not_switch), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, getString(R.string.dialog_btn_switch), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (WalletInfoManager.getInstance().setCurrentWallet(TBController.SWT_INDEX)) {
-                                //跳转到井通转账
-                                if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-                                    ViewUtil.showBakupDialog(getActivity(), WalletInfoManager.getInstance().getCurrentWallet(),
-                                            true, true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-                                } else {
-                                    int beginIndex = scanResult.indexOf("amount=") + 7;
-                                    double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-                                    final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-                                    String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-//                                    TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-//                                            "", num, token, 0, 0);
-                                }
-                            }
-                        }
-                    });
-        }
-    }
 
     /**
      * 显示钱包菜单pop
@@ -262,55 +242,57 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0, R.drawable.ic_arrow_up, 0);
     }
 
+//    private void refreshWallet() {
+//        setWalletName();
+//        refresh();
+//        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+//    }
+
+    /**
+     * 界面刷新功能
+     */
     private void refreshWallet() {
         setWalletName();
-        refresh();
+        mAdapter.refresh();
         mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
     }
+
 
     /**
      * 显示功能菜单pop
      */
     private void showActionMenuPop() {
-        if (walletActionPop == null) {
-            walletActionPop = new WalletActionPop(getActivity(), new WalletActionPop.ScanClickListener() {
-                @Override
-                public void onScanClick() {
-                    startActivityForResult(new Intent(getActivity(), CaptureActivity.class), SCAN_REQUEST_CODE);
-
-                }
-            });
-        }
-        walletActionPop.showAsDropDown(mMenuAction);
+        Intent intent=new Intent(mContext, CaptureActivity.class);
+        startActivityForResult(intent, SCAN_REQUEST_CODE);
     }
 
-    private void setAssetVisible() {
-        if (mAdapter != null && mAdapter.getLength() > 0) {
-            isAssetVisible = !isAssetVisible;
-            FileUtil.putBooleanToSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, isAssetVisible);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
+//    private void setAssetVisible() {
+//        if (mAdapter != null && mAdapter.getLength() > 0) {
+//            isAssetVisible = !isAssetVisible;
+//            FileUtil.putBooleanToSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, isAssetVisible);
+//            mAdapter.notifyDataSetChanged();
+//        }
+//    }
 
-    @Override
-    public void onRefresh() {
-        mAdapter.refresh();
-    }
-
-    @Override
-    public <K> void onDataLoadingFinish(K params, boolean end, boolean loadmore) {
-        if (!loadmore) {
-            if (end) {
-                if (mAdapter.getLength() <= 0) {
-                    mRecycleView.setVisibility(View.GONE);
-                    mEmptyView.setVisibility(View.VISIBLE);
-                } else {
-                    mRecycleView.setVisibility(View.VISIBLE);
-                    mEmptyView.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onRefresh() {
+//        mAdapter.refresh();
+//    }
+//
+//    @Override
+//    public <K> void onDataLoadingFinish(K params, boolean end, boolean loadmore) {
+//        if (!loadmore) {
+//            if (end) {
+//                if (mAdapter.getLength() <= 0) {
+//                    mRecycleView.setVisibility(View.GONE);
+//                    mEmptyView.setVisibility(View.VISIBLE);
+//                } else {
+//                    mRecycleView.setVisibility(View.VISIBLE);
+//                    mEmptyView.setVisibility(View.GONE);
+//                }
+//            }
+//        }
+//    }
 
     private void update() {
         mTvWalletUnit.setText(String.format(getString(R.string.content_my_asset)));
@@ -348,7 +330,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             float fraction = Math.abs(verticalOffset * 1.0f) / appBarLayout.getTotalScrollRange();
-            mToolbar.setBackgroundColor(changeAlpha(getResources().getColor(R.color.colorPrimary), fraction));
+//            mToolbar.setBackgroundColor(changeAlpha(getResources().getColor(R.color.colorPrimary), fraction));
             if (fraction < 0.5f) {
                 if (mTvWalletName.getVisibility() != View.VISIBLE) {
                     mTvWalletName.setVisibility(View.VISIBLE);
@@ -381,17 +363,17 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         }
     };
-
-    /**
-     * 根据百分比改变颜色透明度
-     */
-    private int changeAlpha(int color, float fraction) {
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        int alpha = (int) (Color.alpha(color) * fraction);
-        return Color.argb(alpha, red, green, blue);
-    }
+//
+//    /**
+//     * 根据百分比改变颜色透明度
+//     */
+//    private int changeAlpha(int color, float fraction) {
+//        int red = Color.red(color);
+//        int green = Color.green(color);
+//        int blue = Color.blue(color);
+//        int alpha = (int) (Color.alpha(color) * fraction);
+//        return Color.argb(alpha, red, green, blue);
+//    }
 
     class MainTokenRecycleViewAdapter extends BaseRecycleAdapter<String, RecyclerView.ViewHolder> {
 
@@ -433,24 +415,29 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
 
-            int type = WalletInfoManager.getInstance().getWalletType();
-            String address = WalletInfoManager.getInstance().getWAddress();
-            TBController.getInstance().getWalletUtil(type).queryBalance(address, type, new WCallback() {
-                @Override
-                public void onGetWResult(int ret, GsonUtil extra) {
-                    if (ret == 0) {
-                        handleTokenRequestResult(params, loadmore, extra);
-                    }
-                    mSwipteRefreshLayout.setRefreshing(false);
-                }
-            });
+            WalletManager walletManager = WalletManager.getInstance(mContext);
+            String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+            // 取得钱包资产
+            AccountRelations accountRelations = walletManager.getBalance(currentWallet);
+            List list = new ArrayList();
+            if (accountRelations != null) {
+                list = accountRelations.getLines();
+            }
+            GsonUtil extra = new GsonUtil(list);
+
+            // SWTC余额
+            String balance = walletManager.getSWTBalance(currentWallet);
+            mTvswtcAmount.setText(balance);
+            // SWTC实时总价值
+            walletManager.getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvwalletUnit2);
+            handleTokenRequestResult(params, loadmore, extra);
         }
 
         private void handleTokenRequestResult(final String params, final boolean loadmore, GsonUtil json) {
 //            TLog.d(TAG, "token list:" + json);
             GsonUtil data = json.getObject("data", "{}");
             unit = data.getString("unit", "¥");
-            GsonUtil tokens = json.getArray("data", "");
+            GsonUtil tokens = json;
             if (!loadmore) {
                 //第一页
                 setData(tokens);
@@ -472,9 +459,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             TokenImageLoader.displayImage(data.getString("icon_url", ""), holder.mImgTokenIcon,
                     TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth,
                             R.drawable.ic_images_asset_eth));
-            holder.mTvTokenName.setText(data.getString("bl_symbol", "ETH"));
-            if (isAssetVisible) {
-                holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), Util.parseDouble(data.getString("balance", "0"))));
+            holder.mTvTokenName.setText(data.getString("currency", "ETH"));
+            if (!isAssetVisible) {
+//                holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), Util.parseDouble(data.getString("balance", "0"))));
+                holder.mTvTokenCount.setText("" + Util.parseDouble(data.getString("balance", "0")));
             } else {
                 holder.mTvTokenCount.setText("***");
             }

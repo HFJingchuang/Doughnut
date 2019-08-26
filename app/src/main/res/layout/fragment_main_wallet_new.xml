@@ -6,56 +6,106 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+
+    <!--<android.support.design.widget.CoordinatorLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical">-->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
+        <include
+            layout="@layout/wallet_toolbar_layout"
+            tools:visibility="visible" />
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/dimen_toolbar_heigth"-->
+            <!--app:layout_collapseMode="pin"-->
+            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light">-->
+        <!--</android.support.v7.widget.Toolbar>-->
+
+        <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dimen_toolbar_heigth"-->
+        <!--app:layout_collapseMode="pin"-->
+        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light">-->
+        <!--</android.support.v7.widget.Toolbar>-->
+
+
+
+        <android.support.design.card.MaterialCardView
             android:id="@+id/main_appbar"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="200dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:fitsSystemWindows="true"
+            app:cardBackgroundColor="@color/modify_wallet_bottom_textcolor"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/main_collapsing"
-                android:layout_width="match_parent"
+
+            <!--<android.support.design.widget.CollapsingToolbarLayout-->
+            <!--android:id="@+id/main_collapsing"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!--app:contentScrim="?attr/colorPrimary"-->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
+
+            <include
+                layout="@layout/wallet_collapsing_layout"
+                tools:visibility="visible" />
+
+            <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+
+        </android.support.design.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/my_asset"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                <include
-                    layout="@layout/wallet_collapsing_layout"
-                    tools:visibility="visible" />
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_toolbar_heigth"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-                    <include
-                        layout="@layout/wallet_toolbar_layout"
-                        tools:visibility="visible" />
-
-                </android.support.v7.widget.Toolbar>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-
-        </android.support.design.widget.AppBarLayout>
+                android:text="@string/content_my_asset"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/viewfinder_frame"
+                android:textSize="@dimen/text_size_18"
+                android:drawablePadding="4dp"/>
+            <TextView
+                android:id="@+id/add_asset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="200dp"
+                android:text="@string/content_add_asset"
+                android:textColor="@color/viewfinder_frame"
+                android:textSize="@dimen/text_size_18"
+                android:drawablePadding="8dp"/>
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mainwallet_recycleview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
         </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+
+    <!--</android.support.design.widget.CoordinatorLayout>-->
+
+
+
 
     <include
         android:id="@+id/empty_view"

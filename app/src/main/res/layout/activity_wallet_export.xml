@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <include
-        layout="@layout/layout_view_wallet_export_tab"
+        layout="@layout/layout_view_wallet_import_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
-         />
+        />
 
     <com.doughnut.view.NoScrollViewPager
         android:id="@+id/main_viewpager"
@@ -22,5 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dip"
         android:layout_below="@id/title_bar"/>
+
+
 
 </RelativeLayout>

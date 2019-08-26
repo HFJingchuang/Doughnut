@@ -2,10 +2,8 @@ package com.doughnut.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,15 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.activity.AboutActivity;
-import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.MainActivity;
-import com.doughnut.activity.ManageWalletActivity;
-import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.ViewUtil;
@@ -30,7 +23,7 @@ import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 
 
-public class KeyStoreFragment extends BaseFragment implements View.OnClickListener {
+public class KeyStoreImpFragment extends BaseFragment implements View.OnClickListener {
 
 
     private TitleBar mTitleBar;
@@ -43,9 +36,9 @@ public class KeyStoreFragment extends BaseFragment implements View.OnClickListen
     private Button mBtnConfirm;
     private Context mContext;
 
-    public static KeyStoreFragment newInstance() {
+    public static KeyStoreImpFragment newInstance() {
         Bundle args = new Bundle();
-        KeyStoreFragment fragment = new KeyStoreFragment();
+        KeyStoreImpFragment fragment = new KeyStoreImpFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +46,7 @@ public class KeyStoreFragment extends BaseFragment implements View.OnClickListen
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_key_store, container, false);
+        return inflater.inflate(R.layout.fragment_key_store_imp, container, false);
     }
 
     @Override

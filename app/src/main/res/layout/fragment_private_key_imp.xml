@@ -5,8 +5,6 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,25 +32,12 @@
                 android:layout_width="25.0dip"
                 android:layout_height="25.0dip"
                 android:src="@drawable/ic_pop_item_scan"/>
-            <!--<TextView-->
-            <!--android:id="@+id/pop_item_scan"-->
-            <!--style="@style/Style_Pop_Item"-->
-            <!--android:drawableLeft="@drawable/ic_pop_item_scan"-->
-            <!--android:text="@string/btn_scan_it"-->
-            <!--android:visibility="visible"/>-->
-
-
-
 
         </LinearLayout>
 
         <View style="@style/Style.Line" />
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-            <!--style="@style/Style.WalletCreateTitle"-->
-            <!--android:text="@string/enter_title_import_wallet" />-->
 
             <EditText
                 android:id="@+id/edt_wallet_name"
@@ -64,10 +49,6 @@
         <View style="@style/Style.Line" />
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-            <!--style="@style/Style.WalletCreateTitle"-->
-            <!--android:text="@string/enter_title_password" />-->
 
             <EditText
                 android:id="@+id/edt_wallet_pwd"

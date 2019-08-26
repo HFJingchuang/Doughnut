@@ -154,7 +154,8 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         if (TextUtils.isEmpty(mUnit)) {
             mUnit = "$";
         }
-        tvBalance.setText("" + mWalletUtil.getValue(mItem.getInt("decimal", 0), Util.parseDouble(mItem.getString("balance", "0"))));
+        //TODO
+//        tvBalance.setText("" + mWalletUtil.getValue(mItem.getInt("decimal", 0), Util.parseDouble(mItem.getString("balance", "0"))));
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
 
@@ -212,14 +213,15 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             }
             requestParams.putString("token", mItem.getString("bl_symbol", ""));
 
-            mWalletUtil.queryTransactionList(requestParams, new WCallback() {
-                @Override
-                public void onGetWResult(int ret, GsonUtil extra) {
-                    if (ret == 0) {
-                        handleTransactioRecordResult(params, loadmore, extra);
-                    }
-                }
-            });
+            //TODO
+//            mWalletUtil.queryTransactionList(requestParams, new WCallback() {
+//                @Override
+//                public void onGetWResult(int ret, GsonUtil extra) {
+//                    if (ret == 0) {
+//                        handleTransactioRecordResult(params, loadmore, extra);
+//                    }
+//                }
+//            });
         }
 
         @Override

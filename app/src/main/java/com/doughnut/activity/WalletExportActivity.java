@@ -2,31 +2,31 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.fragment.KeyStoreImpFragment;
-import com.doughnut.fragment.PrivateKeyImpFragment;
+import com.doughnut.fragment.KeyStoreExpFragment;
+import com.doughnut.fragment.PrivateKeyExpFragment;
 import com.doughnut.view.TitleBar;
 
-
-public class WalletImportActivity extends BaseActivity implements View.OnClickListener {
+public class WalletExportActivity  extends BaseActivity implements View.OnClickListener  {
 
     private final static int PRIVATEKEY_INDEX = 0;
     private final static int KEYSTORE_INDEX = 1;
     private ViewPager mMainViewPager;
 
     //tab
-    private LinearLayout mLayoutTabPrivateKey;
+    private LinearLayout mLayoutTabPrivate;
     private LinearLayout mLayoutTabKeyStore;
+
 
     private TextView mTvPrivateKey;
 
@@ -36,22 +36,18 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wallet_import);
+        setContentView(R.layout.activity_wallet_export);
         initView();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-//            ViewUtil.showBakupDialog(MainActivity.this, WalletInfoManager.getInstance().getCurrentWallet(), false,
-//                    true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-//        }
     }
 
     @Override
     public void onClick(View view) {
-        if (view == mLayoutTabPrivateKey) {
+        if (view == mLayoutTabPrivate) {
             mMainViewPager.setCurrentItem(PRIVATEKEY_INDEX);
         } else if (view == mLayoutTabKeyStore) {
             mMainViewPager.setCurrentItem(KEYSTORE_INDEX);
@@ -59,8 +55,8 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     }
 
-    public static void startImportWalletActivity(Context from) {
-        Intent intent = new Intent(from, WalletImportActivity.class);
+    public static void startExportWalletActivity(Context from) {
+        Intent intent = new Intent(from, WalletExportActivity.class);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);
     }
@@ -69,7 +65,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
      * 前画面跳转用
      * @param context
      */
-    public static void startWalletImportActivity(Context context) {
+    public static void startWalletExportActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -83,7 +79,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(R.string.titleBar_import_wallet);
+        mTitleBar.setTitle(R.string.titleBar_export_wallet);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -91,9 +87,9 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             }
         });
         //tab
-        mLayoutTabPrivateKey = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
+        mLayoutTabPrivate = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
         mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
-        mLayoutTabPrivateKey.setOnClickListener(this);
+        mLayoutTabPrivate.setOnClickListener(this);
         mLayoutTabKeyStore.setOnClickListener(this);
 
 
@@ -119,7 +115,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             }
         });
 
-        mMainViewPager.setAdapter(new WalletImportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
+        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
         pageSelected(PRIVATEKEY_INDEX);
     }
 
@@ -139,6 +135,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     private void resetTab() {
         mTvPrivateKey.setSelected(false);
+
         mTvKeyStore.setSelected(false);
     }
 
@@ -149,8 +146,8 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         }
 
         private Fragment[] mFragments = new Fragment[]{
-                PrivateKeyImpFragment.newInstance(),
-                KeyStoreImpFragment.newInstance()
+                PrivateKeyExpFragment.newInstance(),
+                KeyStoreExpFragment.newInstance()
 
         };
 
@@ -164,6 +161,4 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             return mFragments.length;
         }
     }
-
-
 }
