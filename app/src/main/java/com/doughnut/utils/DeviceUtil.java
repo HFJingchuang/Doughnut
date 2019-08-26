@@ -2,6 +2,8 @@ package com.doughnut.utils;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
@@ -58,6 +60,21 @@ public final class DeviceUtil {
             TLog.d("AndroidConfig", "getVersionName error " + e.getMessage());
         }
         return version;
+    }
+
+    public static int getVersionCode(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo packInfo = manager.getPackageInfo(context.getPackageName(), 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                return (int) packInfo.getLongVersionCode();
+            } else {
+                return packInfo.versionCode;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static String getVersionName() {

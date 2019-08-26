@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.Constant;
+import com.doughnut.update.UpdateTask;
 import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.view.TitleBar;
@@ -45,6 +46,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         mLayoutCheckUpdate = (RelativeLayout) findViewById(R.id.layout_check_update);
         mLayoutCheckUpdate.setVisibility(View.GONE);
         mLayoutCheckUpdate.setOnClickListener(this);
+        new UpdateTask().execute(this);
 
     }
 
