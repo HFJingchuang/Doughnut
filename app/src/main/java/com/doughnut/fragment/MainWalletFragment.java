@@ -3,6 +3,7 @@ package com.doughnut.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -17,6 +18,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.R;
@@ -41,6 +43,14 @@ import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+
+
+import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
@@ -55,7 +65,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private SwipeRefreshLayout mSwipteRefreshLayout;
     private CardView mAppbarLayout;
 //    private Toolbar mToolbar;
-    private RecyclerView mRecycleView;
+    private SwipeMenuRecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
     private View mEmptyView;
     private View mWalletAction, mMenuAction;
@@ -114,7 +124,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onRefresh() {
 
-                //修改数据的代码，最后记得填上此行代码
+//                //修改数据的代码，最后记得填上此行代码
                 mSwipteRefreshLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -136,11 +146,24 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 //        ((AppCompatActivity) getActivity()).setSupmToolbarportActionBar(mToolbar);
         mEmptyView = view.findViewById(R.id.empty_view);
 
+
         mTvWalletUnit = view.findViewById(R.id.wallet_unit);
         mTvWalletUnit.setOnClickListener(this);
         mTvwalletUnit2 = view.findViewById(R.id.wallet_unit2);
         mTvswtcAmount = view.findViewById(R.id.swtc_amount);
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
+
+        mRecycleView.setSwipeMenuCreator(swipeMenuCreator);
+
+        ///
+        mRecycleView.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
+            @Override
+            public void onItemClick(SwipeMenuBridge menuBridge) {
+             int position= menuBridge.getAdapterPosition();//当前item的position
+                ToastUtil.toast(getActivity(),"测滑点击删除方法");
+                menuBridge.closeMenu();
+            }
+        });
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -158,6 +181,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycleView.setAdapter(mAdapter);
 
+
         mTvWalletName.setOnClickListener(this);
         mMenuAction = view.findViewById(R.id.wallet_menu);
         mMenuAction.setOnClickListener(this);
@@ -170,6 +194,54 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         setWalletInfo();
     }
 
+    /**
+     * 菜单创建器，在Item要创建菜单的时候调用。
+     */
+    private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
+        @Override
+        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
+            int width = getResources().getDimensionPixelSize(R.dimen.dimen_mnue_width);
+
+            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+            // 2. 指定具体的高，比如80;
+            // 3. WRAP_CONTENT，自身高度，不推荐;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+//            // 添加左侧的，如果不添加，则左侧不会出现菜单。
+//            {
+//                SwipeMenuItem addItem = new SwipeMenuItem(ListActivity.this).setBackground(R.drawable.selector_green)
+//                        .setImage(R.drawable.ic_action_add)
+//                        .setWidth(width)
+//                        .setHeight(height);
+//                swipeLeftMenu.addMenuItem(addItem); // 添加菜单到左侧。
+//
+//                SwipeMenuItem closeItem = new SwipeMenuItem(ListActivity.this).setBackground(R.drawable.selector_red)
+//                        .setImage(R.drawable.ic_action_close)
+//                        .setWidth(width)
+//                        .setHeight(height);
+//                swipeLeftMenu.addMenuItem(closeItem); // 添加菜单到左侧。
+//            }
+
+            // 添加右侧的，如果不添加，则右侧不会出现菜单。
+            {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.color.common_red)
+                        .setImage(R.drawable.shape_delete_wallet_bg)
+                        .setText("删除")
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(16)
+                        .setWidth(width)
+                        .setHeight(height);
+                swipeRightMenu.addMenuItem(deleteItem);// 添加菜单到右侧。
+
+//                SwipeMenuItem addItem = new SwipeMenuItem(ListActivity.this).setBackground(R.drawable.selector_green)
+//                        .setText("添加")
+//                        .setTextColor(Color.WHITE)
+//                        .setWidth(width)
+//                        .setHeight(height);
+//                swipeRightMenu.addMenuItem(addItem); // 添加菜单到右侧。
+            }
+        }
+    };
 
     private void setWalletInfo() {
         String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
@@ -388,11 +460,25 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         gotoTokenDetail(MainTokenRecycleViewAdapter.this.getItem(position));
                     }
                 };
+        /***
+         * 长安按钮点击事件
+         */
+        private BaseRecyclerViewHolder.ItemLongClickListener mItemLongClickListener =
+                    new BaseRecyclerViewHolder.ItemLongClickListener() {
+                        @Override
+                        public void onItemLongClick(View view, int position) {
+                            ToastUtil.toast(getActivity(),"长按按钮点击删除方法");
+                        }
+                    };
+
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = ViewUtil.inflatView(getContext(), parent, R.layout.wallet_token_item_view, false);
-            return new TokenViewHolder(view, mItemClickListener);
+
+            //　由原本的点击事件，更改为长安点击事件　
+            // return new TokenViewHolder(view, mItemClickListener);
+            return new TokenViewHolder(view, mItemLongClickListener);
         }
 
         @Override
@@ -484,8 +570,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             TextView mTvTokenCount;
             TextView mTvTokenAsset;
 
-            public TokenViewHolder(View itemView, ItemClickListener onItemClickListener) {
-                super(itemView, onItemClickListener);
+            public TokenViewHolder(View itemView, ItemLongClickListener onItemLongClickListener) {
+                super(itemView, onItemLongClickListener);
                 mImgTokenIcon = itemView.findViewById(R.id.token_icon);
                 mTvTokenName = itemView.findViewById(R.id.token_name);
                 mTvTokenCount = itemView.findViewById(R.id.token_count);

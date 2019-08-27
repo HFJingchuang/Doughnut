@@ -36,6 +36,14 @@ public class BaseRecyclerViewHolder extends RecyclerView.ViewHolder {
     public BaseRecyclerViewHolder(View itemView, ItemLongClickListener itemLongClickListener) {
         super(itemView);
         this.mOnItemLongClickListener = itemLongClickListener;
+        /****2019-08-27 增长安按钮事件*/
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mOnItemLongClickListener.onItemLongClick(v,getAdapterPosition());
+                return false;
+            }
+        });
     }
 
     public BaseRecyclerViewHolder(View itemView, ItemClickListener itemClickListener, ItemLongClickListener itemLongClickListener) {

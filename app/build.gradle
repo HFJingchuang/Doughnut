@@ -64,4 +64,5 @@ dependencies {
     implementation 'com.contrarywind:wheelview:4.0.9'
     implementation 'com.github.stealthcopter:AndroidNetworkTools:0.4.3'
     implementation 'com.github.JCCDex:jcc_rpc_java:2.4'
+    implementation  'com.yanzhenjie:recyclerview-swipe:1.1.2'
 }
