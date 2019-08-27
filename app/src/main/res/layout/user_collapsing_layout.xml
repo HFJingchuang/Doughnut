@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/common_blue"
-    android:orientation="vertical"
-    app:layout_collapseMode="parallax">
+    android:background="@drawable/ic_bg"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/text_size_15"
+            android:src="@drawable/ic_erm" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:id="@+id/layout_info"
@@ -36,15 +47,16 @@
                     android:ellipsize="marquee"
                     android:maxWidth="200dp"
                     android:singleLine="true"
-                    android:textColor="#99FFFFFF"
-                    android:textSize="16dp" />
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10.0dip"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_balance_icon"
-                    android:drawablePadding="4dp"
+                    android:padding="2dp"
                     android:text="@string/current_wallet"
                     android:textColor="@color/white"
                     android:textSize="8dp" />
@@ -68,10 +80,6 @@
                     android:text=""
                     android:textColor="#99FFFFFF" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_walletutil_help" />
             </LinearLayout>
 
         </LinearLayout>
@@ -80,114 +88,117 @@
             android:id="@+id/layout_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true">
+            android:layout_alignBaseline="@+id/layout_info"
+            android:layout_alignParentRight="true">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_size_15"
-                android:src="@drawable/ic_user_rightarrow" />
+                android:src="@drawable/ic_go" />
         </LinearLayout>
-
-
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="20dp"
+        android:background="@drawable/shape_my_bg" />
 
-        <android.support.design.card.MaterialCardView
-            android:id="@+id/cardView"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:layout_marginHorizontal="22dp"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="5dp">
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/modify_wallet_bottom_textcolor"
-                android:orientation="horizontal">
+    <!--<android.support.design.card.MaterialCardView-->
+    <!--android:id="@+id/cardView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_marginHorizontal="22dp"-->
+    <!--app:cardCornerRadius="4dp"-->
+    <!--app:cardElevation="5dp">-->
 
-                <LinearLayout
-                    android:id="@+id/layout_pay"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:gravity="center">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@color/modify_wallet_bottom_textcolor"-->
+    <!--android:orientation="horizontal">-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_receive" />
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout_pay"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1.0"-->
+    <!--android:gravity="center">-->
 
-                    <TextView
-                        android:id="@+id/wallet_action_transfer1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="12dp"
-                        android:text="@string/content_transfer"
-                        android:textColor="@color/white"
-                        android:textSize="12dp" />
-                </LinearLayout>
+    <!--<ImageView-->
+    <!--android:layout_width="15dp"-->
+    <!--android:layout_height="15dp"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:src="@drawable/ic_receive" />-->
 
-                <View
-                    android:layout_width="@dimen/dimen_line"
-                    android:layout_height="match_parent"
-                    android:layout_marginVertical="10dp"
-                    android:background="@color/color_line" />
+    <!--<TextView-->
+    <!--android:id="@+id/wallet_action_transfer1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:drawablePadding="12dp"-->
+    <!--android:text="@string/content_transfer"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="12dp" />-->
+    <!--</LinearLayout>-->
 
-                <LinearLayout
-                    android:id="@+id/layout_recieve"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:gravity="center">
+    <!--<View-->
+    <!--android:layout_width="@dimen/dimen_line"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginVertical="10dp"-->
+    <!--android:background="@color/color_line" />-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_transfer" />
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout_recieve"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1.0"-->
+    <!--android:gravity="center">-->
 
-                    <TextView
-                        android:id="@+id/wallet_action_receive1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="12dp"
-                        android:text="@string/btn_collect"
-                        android:textColor="@color/white"
-                        android:textSize="12dp" />
-                </LinearLayout>
-            </LinearLayout>
+    <!--<ImageView-->
+    <!--android:layout_width="15dp"-->
+    <!--android:layout_height="15dp"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:src="@drawable/ic_transfer" />-->
 
-        </android.support.design.card.MaterialCardView>
+    <!--<TextView-->
+    <!--android:id="@+id/wallet_action_receive1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:drawablePadding="12dp"-->
+    <!--android:text="@string/btn_collect"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="12dp" />-->
+    <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
+    <!--</android.support.design.card.MaterialCardView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.0"
-                android:background="@color/common_blue"
-                tools:ignore="Suspicious0dp" />
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:orientation="vertical">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2.0"
-                android:background="@color/white"
-                tools:ignore="Suspicious0dp" />
-        </LinearLayout>
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1.0"-->
+    <!--android:background="@color/common_blue"-->
+    <!--tools:ignore="Suspicious0dp" />-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="2.0"-->
+    <!--android:background="@color/white"-->
+    <!--tools:ignore="Suspicious0dp" />-->
+    <!--</LinearLayout>-->
 
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 </LinearLayout>

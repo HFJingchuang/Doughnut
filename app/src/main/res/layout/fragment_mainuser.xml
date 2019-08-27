@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#f5f5f9"
     android:orientation="vertical">
-    
+
     <android.support.design.widget.CollapsingToolbarLayout
         android:id="@+id/main_collapsing"
         android:layout_width="match_parent"
@@ -32,11 +32,11 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="22dp"
-            android:drawableLeft="@drawable/ic_wallet_manage"
+            android:drawableLeft="@drawable/ic_walletmanager"
             android:drawablePadding="13dp"
             android:gravity="center_vertical"
             android:text="@string/btn_manage_wallet"
-            android:textColor="#333333" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_user_rightarrow" />
+            android:src="@drawable/ic_go2" />
 
     </RelativeLayout>
 
@@ -62,11 +62,11 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="22dp"
-            android:drawableLeft="@drawable/ic_record"
+            android:drawableLeft="@drawable/ic_transferhistory"
             android:drawablePadding="13dp"
             android:gravity="center_vertical"
             android:text="@string/btn_transactions"
-            android:textColor="#333333" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_user_rightarrow" />
+            android:src="@drawable/ic_go2" />
     </RelativeLayout>
 
     <View
@@ -96,11 +96,11 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="22dp"
-            android:drawableLeft="@drawable/ic_language"
+            android:drawableLeft="@drawable/ic_node"
             android:drawablePadding="13dp"
             android:gravity="center_vertical"
             android:text="@string/btn_node"
-            android:textColor="#333333" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -108,7 +108,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_user_rightarrow" />
+            android:src="@drawable/ic_go2" />
 
     </RelativeLayout>
 
@@ -129,7 +129,7 @@
             android:drawablePadding="13dp"
             android:gravity="center_vertical"
             android:text="@string/btn_language"
-            android:textColor="#333333" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_user_rightarrow" />
+            android:src="@drawable/ic_go2" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -153,11 +153,11 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="22dp"
-            android:drawableLeft="@drawable/ic_help"
+            android:drawableLeft="@drawable/ic_info"
             android:drawablePadding="13dp"
             android:gravity="center_vertical"
             android:text="@string/btn_help_support"
-            android:textColor="#333333" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -165,7 +165,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_user_rightarrow" />
+            android:src="@drawable/ic_go2" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -181,11 +181,11 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="22dp"
-            android:drawableLeft="@drawable/ic_about_us"
+            android:drawableLeft="@drawable/ic_version"
             android:drawablePadding="13dp"
             android:gravity="center_vertical"
             android:text="@string/btn_about_us"
-            android:textColor="#333333" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -193,7 +193,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_user_rightarrow" />
+            android:src="@drawable/ic_go2" />
 
     </RelativeLayout>
 

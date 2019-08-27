@@ -14,8 +14,6 @@ import com.doughnut.activity.AboutActivity;
 import com.doughnut.activity.JtNodeRecordActivity;
 import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.ModifyWalletActivity;
-import com.doughnut.activity.TokenReceiveActivity;
-import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.activity.WebBrowserActivity;
@@ -31,8 +29,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout mLayoutHelp;
     private RelativeLayout mLayoutAbout;
     private RelativeLayout mLayoutLanguage;
-    private LinearLayout mLayoutPay;
-    private LinearLayout mLayoutRecieve;
     private LinearLayout mLayoutRight;
     private TextView mAddressTv;
     private TextView mNameTv;
@@ -66,8 +62,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
         mLayoutNode.setClickable(true);
-        mLayoutPay.setClickable(true);
-        mLayoutRecieve.setClickable(true);
         mLayoutRight.setClickable(true);
     }
 
@@ -81,8 +75,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
         mLayoutNode.setClickable(true);
-        mLayoutPay.setClickable(true);
-        mLayoutRecieve.setClickable(true);
         mLayoutRight.setClickable(true);
     }
 
@@ -106,12 +98,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutLanguage) {
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
-        } else if (view == mLayoutPay) {
-            mLayoutPay.setClickable(false);
-            TokenTransferActivity.startTokenTransferActivity(getActivity());
-        } else if (view == mLayoutRecieve) {
-            mLayoutRecieve.setClickable(false);
-            TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
         } else if (view == mLayoutRight) {
             mLayoutRight.setClickable(false);
             ModifyWalletActivity.startModifyWalletActivity(getActivity(),
@@ -129,8 +115,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutLanguage = view.findViewById(R.id.layout_language);
 
         mLayoutRight = view.findViewById(R.id.layout_right);
-        mLayoutPay = view.findViewById(R.id.layout_pay);
-        mLayoutRecieve = view.findViewById(R.id.layout_recieve);
         mAddressTv = view.findViewById(R.id.tv_wallet_address);
         mNameTv = view.findViewById(R.id.tv_wallet_name);
 
@@ -141,8 +125,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutAbout.setOnClickListener(this);
         mLayoutLanguage.setOnClickListener(this);
         mLayoutRight.setOnClickListener(this);
-        mLayoutPay.setOnClickListener(this);
-        mLayoutRecieve.setOnClickListener(this);
 
         setWalletInfo();
     }

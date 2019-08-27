@@ -38,12 +38,14 @@
     <color name="color_line">#E8E8E8</color>
     <color name="color_text_3">#333333</color>
     <color name="color_text_80">#808080</color>
-    <color name="color_theme">#2890FE</color>
+    <color name="color_theme">#03162D</color>
 
     <color name="color_split">#D5D2D2</color>
     <color name="color_ping_quick">#04E00C</color>
     <color name="color_ping_normal">#FF9800</color>
     <color name="color_ping_low">#ffff0000</color>
+
+    <color name="color_label">#25A886</color>
 
 
 </resources>

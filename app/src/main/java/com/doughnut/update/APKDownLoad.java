@@ -11,12 +11,11 @@ import java.io.File;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
-public class APKDownLoad implements IDownLoad {
+public class APKDownLoad {
 
     final private static String MIMETYPE = "application/vnd.android.package-archive";
 
-    @Override
-    public void downLoad(Context context, String url) {
+    public static void downLoad(Context context, String url) {
         // 指定下载地址
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         // 允许在计费流量下下载
