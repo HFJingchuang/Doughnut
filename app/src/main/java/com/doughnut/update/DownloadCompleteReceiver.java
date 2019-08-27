@@ -25,14 +25,14 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent != null) {
             long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            String fileName = context.getPackageName() + "_update";
+            SharedPreferences sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+            long id = sharedPreferences.getLong("downloadId", -1);
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+            if (id == downloadId && DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
                 try {
-                    String fileName = context.getPackageName() + "_update";
-                    SharedPreferences sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
                     String apkName = sharedPreferences.getString("apkName", "");
                     File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath(), apkName);
-
                     // 验证APK MD5
                     String md5 = sharedPreferences.getString("md5", "");
                     if (!(FileUtil.checkFileMD5(file, md5))) {

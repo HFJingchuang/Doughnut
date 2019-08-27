@@ -40,13 +40,14 @@ public class APKDownLoad {
 
         // 添加一个下载任务
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
+        long downloadId = downloadManager.enqueue(request);
 
         // 保存文件名
         String fileName = context.getPackageName() + "_update";
         SharedPreferences sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("apkName", apkName);
+        editor.putLong("downloadId", downloadId);
         editor.apply();
     }
 }
