@@ -2,6 +2,7 @@ package com.doughnut.update;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.webkit.URLUtil;
@@ -12,7 +13,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class APKDownLoad {
 
-    private static String MIMETYPE = "application/vnd.android.package-archive";
+    final private static String MIMETYPE = "application/vnd.android.package-archive";
 
     public static void downLoad(Context context, String url) {
         // 指定下载地址
@@ -29,16 +30,23 @@ public class APKDownLoad {
 //        request.addRequestHeader("User-Agent", userAgent);
 
         // 设置下载文件保存的路径和文件名
-        String fileName = URLUtil.guessFileName(url, "", MIMETYPE);
-        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, fileName);
-        String filePath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + fileName;
+        String apkName = URLUtil.guessFileName(url, "", MIMETYPE);
+        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, apkName);
+        String filePath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + apkName;
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
             file.delete();
         }
 
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         // 添加一个下载任务
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         downloadManager.enqueue(request);
+
+        // 保存文件名
+        String fileName = context.getPackageName() + "_update";
+        SharedPreferences sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("apkName", apkName);
+        editor.apply();
     }
 }

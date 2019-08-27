@@ -6,8 +6,10 @@ import android.content.res.AssetManager;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 
 
@@ -60,7 +62,6 @@ public class FileUtil {
     }
 
 
-
     public static String getStringContent(String originTxt) {
         return originTxt;
     }
@@ -100,5 +101,41 @@ public class FileUtil {
             e.printStackTrace();
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 验证MD5
+     *
+     * @param file
+     * @param md5
+     * @return
+     */
+    public static boolean checkFileMD5(File file, String md5) {
+        if (!file.isFile()) {
+            return false;
+        }
+        boolean md5Flg = false;
+        MessageDigest digest;
+        FileInputStream in;
+        String localMD5;
+        byte buffer[] = new byte[1024];
+        int len;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+            in = new FileInputStream(file);
+            while ((len = in.read(buffer, 0, 1024)) != -1) {
+                digest.update(buffer, 0, len);
+            }
+            in.close();
+            BigInteger bigInt = new BigInteger(1, digest.digest());
+            localMD5 = bigInt.toString(16);
+            while (localMD5.length() < 32) {
+                localMD5 = "0" + localMD5;
+            }
+            md5Flg = localMD5.equals(md5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return md5Flg;
     }
 }

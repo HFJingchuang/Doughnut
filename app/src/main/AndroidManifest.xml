@@ -33,6 +33,22 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.doughnut.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <receiver android:name=".update.DownloadCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".activity.WalletImportActivity" />
         <activity android:name=".activity.WalletManageActivity" /> <!-- <activity android:name=".activity.WallwtManageActivity" /> -->
         <activity android:name=".activity.BackupStartActivity" />
