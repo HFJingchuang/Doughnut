@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="47dp"
-    android:background="@color/color_theme">
+    android:background="@color/white">
 
     <FrameLayout
         android:id="@+id/layout_left"
@@ -31,21 +31,20 @@
         android:id="@+id/layout_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        >
+        android:layout_centerInParent="true">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:ellipsize="end"
+            android:maxWidth="250dp"
+            android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="17sp"
             android:textStyle="bold"
-            android:visibility="invisible"
-            android:maxWidth="250dp"
-            android:singleLine="true"
-            android:ellipsize="end"/>
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/img_title"

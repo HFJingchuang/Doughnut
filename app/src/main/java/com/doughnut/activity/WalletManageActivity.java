@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -14,18 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.config.AppConfig;
-import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.MethodCompat;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
-import com.jccdex.rpc.base.JCallback;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.List;
 
 
@@ -33,9 +27,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
 
     private TitleBar mTitleBar;
 
-    private TextView mTvCreateWallet;
     private LinearLayout mLayoutCreateWallet;
-    private TextView mTvImPortWallet;
     private LinearLayout mLayoutImPortWallet;
 
     private RecyclerView mLsWallet;
@@ -68,22 +60,13 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_manage_wallet));
-        mTitleBar.setTitleTextColor(R.color.white);
-        mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
+        mTitleBar.setTitleTextColor(R.color.black);
+        mTitleBar.setBackgroundColor(getResources().getColor(R.color.white));
         mTitleBar.setTitleBarClickListener(this);
         mLayoutCreateWallet = findViewById(R.id.layout_create_wallet);
         mLayoutCreateWallet.setOnClickListener(this);
         mLayoutImPortWallet = findViewById(R.id.layout_import_wallet);
         mLayoutImPortWallet.setOnClickListener(this);
-        mTvCreateWallet = findViewById(R.id.tv_create_wallet);
-        MethodCompat.setLeftDrawableWithBounds(WalletManageActivity.this, mTvCreateWallet, R.drawable.ic_manager_createwallet,
-                ViewUtil.dip2px(WalletManageActivity.this, 6),
-                ViewUtil.dip2px(WalletManageActivity.this, 6));
-        mTvImPortWallet = findViewById(R.id.tv_import_wallet);
-        MethodCompat.setLeftDrawableWithBounds(WalletManageActivity.this, mTvImPortWallet, R.drawable.ic_manager_importwallet,
-                ViewUtil.dip2px(WalletManageActivity.this, 6),
-                ViewUtil.dip2px(WalletManageActivity.this, 6));
-
         mLsWallet = (RecyclerView) findViewById(R.id.ls_manager_wallet);
         mLsWallet.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new WalletRecordAdapter();

@@ -107,26 +107,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
     private void pageSelected(int position) {
         resetTab();
         switch (position) {
             case WALLET_INDEX:
-                mImgWallet.setImageResource(R.drawable.ic_tab_asset_selected);
+                mImgWallet.setImageResource(R.drawable.ic_wallet_click);
                 mTvWallet.setSelected(true);
                 break;
             case MINE_INDEX:
-                mImgMine.setImageResource(R.drawable.ic_tab_mine_selected);
+                mImgMine.setImageResource(R.drawable.ic_myself_click);
                 mTvMine.setSelected(true);
                 break;
         }
     }
 
     private void resetTab() {
-        mImgWallet.setImageResource(R.drawable.ic_tab_asset_unselected);
+        mImgWallet.setImageResource(R.drawable.ic_wallet_noclick);
         mTvWallet.setSelected(false);
 
-        mImgMine.setImageResource(R.drawable.ic_tab_mine_unselected);
+        mImgMine.setImageResource(R.drawable.ic_myself_noclick);
         mTvMine.setSelected(false);
     }
 
