@@ -1,8 +1,6 @@
 package com.doughnut.dialog;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -12,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.update.APKDownLoad;
 
 
 public class UpgradeDialog extends BaseDialog {
@@ -56,11 +55,8 @@ public class UpgradeDialog extends BaseDialog {
                     dismiss();
                     return;
                 }
-                Uri url = Uri.parse(mUpgradeUrl);
-                Intent intent = new Intent(Intent.ACTION_VIEW, url);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(intent);
-
+                APKDownLoad.downLoad(getContext(), mUpgradeUrl);
+                dismiss();
 //                AppConfig.getContext().clearActivity();
 //                android.os.Process.killProcess(android.os.Process.myPid());
 //                System.exit(0);
