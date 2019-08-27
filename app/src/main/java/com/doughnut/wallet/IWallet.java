@@ -1,6 +1,7 @@
 package com.doughnut.wallet;
 
 import android.graphics.Bitmap;
+import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
@@ -31,4 +32,8 @@ public interface IWallet {
     AccountRelations getBalance(String address);
 
     String getSWTBalance(String address);
+
+    void getTokenPrice(String base, BigDecimal balance, TextView view);
+
+    void getAllTokens();
 }
