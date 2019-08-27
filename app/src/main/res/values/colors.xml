@@ -46,6 +46,8 @@
     <color name="color_ping_low">#ffff0000</color>
 
     <color name="color_label">#25A886</color>
+    <color name="color_receive">#2F5794</color>
+    <color name="color_send">#25A886</color>
 
 
 </resources>
