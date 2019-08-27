@@ -49,7 +49,6 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
                     } else {
                         uri = Uri.fromFile(file);
                     }
-                    installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
                     context.startActivity(installIntent);
                 } catch (Exception e) {
