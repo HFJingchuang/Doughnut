@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="left"
-            android:paddingVertical="10dp"
             android:text="默认节点"
             android:textColor="@color/color_detail_time"
             android:textSize="14sp" />
@@ -75,19 +74,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:gravity="center"
-                    android:paddingVertical="10dp"
-                    android:text="自定义节点"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|left"
+                    android:text="@string/tv_custom_node"
                     android:textColor="@color/color_detail_time"
                     android:textSize="14sp" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/view_recycler_self"
+                    android:id="@+id/view_recycler_custom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp" />
-            </LinearLayout>
 
+                <Button
+                    android:id="@+id/btn_custom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_btn_add_node"
+                    android:text="添加自定义节点"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
 

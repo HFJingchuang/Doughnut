@@ -258,4 +258,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tv_current_wallet">当前钱包</string>
     <string name="tv_transferdetail">交易记录</string>
+    <string name="tv_custom_node">自定义节点</string>
+    <string name="tv_err_node">请输入合法的节点地址</string>
 </resources>

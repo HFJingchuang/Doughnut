@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
+import com.doughnut.dialog.NodeCubtomDialog;
 import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ViewUtil;
@@ -34,6 +36,8 @@ import com.stealthcopter.networktools.ping.PingStats;
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class JtNodeRecordActivity extends BaseActivity implements
@@ -43,11 +47,14 @@ public class JtNodeRecordActivity extends BaseActivity implements
     final private BigDecimal PING_LOW = new BigDecimal("100");
 
     private SmartRefreshLayout mSmartRefreshLayout;
-    private TextView mTvAddNode;
     private TitleBar mTitleBar;
     private RecyclerView mRecyclerView;
-    private TransactionRecordAdapter mAdapter;
-    private GsonUtil publicNodes;
+    private RecyclerView mRecyclerViewCustom;
+    private Button mBtnCustom;
+    private NodeRecordAdapter mAdapter;
+    private NodeRecordCustomAdapter mAdapterCustom;
+    private GsonUtil publicNodes = new GsonUtil("{}");
+    private List<String> publicNodesCustom = new ArrayList<>();
     private int mSelectedItem = -1;
 
 
@@ -68,12 +75,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
 
     @Override
     public void onLeftClick(View view) {
-        this.finish();
-    }
-
-    @Override
-    public void onRightClick(View view) {
-        TransactionRecordAdapter.VH vh = (TransactionRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+        NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
         String url = vh.mTvNodeUrl.getText().toString();
         JtServer.getInstance(this).changeServer(url);
         String fileName = getPackageName() + WConstant.SP_SERVER;
@@ -82,6 +84,10 @@ public class JtNodeRecordActivity extends BaseActivity implements
         editor.putString("nodeUrl", url);
         editor.apply();
         finish();
+    }
+
+    @Override
+    public void onRightClick(View view) {
     }
 
     @Override
@@ -94,13 +100,40 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setLeftTextColor(R.color.white);
         mTitleBar.setTitleTextColor(R.color.color_detail_address);
-        mTitleBar.setRightDrawable(R.drawable.ic_changewallet);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitle("节点设置");
         mTitleBar.setTitleBarClickListener(this);
 
-        mTvAddNode = findViewById(R.id.tv_add_node);
-        mAdapter = new TransactionRecordAdapter();
+        mBtnCustom = findViewById(R.id.btn_custom);
+        mBtnCustom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new NodeCubtomDialog(JtNodeRecordActivity.this, new NodeCubtomDialog.onConfirmOrderListener() {
+                    @Override
+                    public void onConfirmOrder() {
+                        String fileName = JtNodeRecordActivity.this.getPackageName() + "_customNode";
+                        SharedPreferences sharedPreferences = JtNodeRecordActivity.this.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        String nodes = sharedPreferences.getString("nodes", "");
+                        List<String> nodeList;
+                        if (!TextUtils.isEmpty(nodes)) {
+                            if (nodes.contains(",")) {
+                                List<String> arrList = Arrays.asList(nodes.split(","));
+                                nodeList = new ArrayList(arrList);
+                            } else {
+                                nodeList = new ArrayList();
+                                nodeList.add(nodes);
+                            }
+                            publicNodesCustom.addAll(nodeList);
+                            if (mAdapterCustom != null) {
+                                mAdapterCustom.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }).show();
+            }
+        });
+        mAdapter = new NodeRecordAdapter();
         mRecyclerView = findViewById(R.id.view_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
@@ -122,6 +155,12 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mAdapter.notifyDataSetChanged();
             }
         });
+
+        mRecyclerViewCustom = findViewById(R.id.view_recycler_custom);
+        mRecyclerViewCustom.setLayoutManager(new LinearLayoutManager(this));
+        mAdapterCustom = new NodeRecordCustomAdapter();
+        mRecyclerViewCustom.setAdapter(mAdapterCustom);
+
         getPublicNode();
     }
 
@@ -131,7 +170,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         context.startActivity(intent);
     }
 
-    class TransactionRecordAdapter extends RecyclerView.Adapter<TransactionRecordAdapter.VH> {
+    class NodeRecordAdapter extends RecyclerView.Adapter<NodeRecordAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
             RelativeLayout mLayoutItem;
@@ -264,6 +303,139 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
+    class NodeRecordCustomAdapter extends RecyclerView.Adapter<NodeRecordCustomAdapter.VH> {
+
+        class VH extends RecyclerView.ViewHolder {
+            RelativeLayout mLayoutItem;
+            TextView mTvNodeUrl;
+            TextView mTvNodeName;
+            TextView mTvNodePing;
+            ImageView mImgLoad;
+            RadioButton mRadioSelected;
+
+            public VH(View v) {
+                super(v);
+                mLayoutItem = itemView.findViewById(R.id.layout_item);
+                mTvNodeUrl = itemView.findViewById(R.id.tv_node_url);
+                mTvNodeName = itemView.findViewById(R.id.tv_node_name);
+                mTvNodePing = itemView.findViewById(R.id.tv_ping);
+                mImgLoad = itemView.findViewById(R.id.img_ping);
+                mRadioSelected = itemView.findViewById(R.id.radio_selected);
+                mRadioSelected.setClickable(false);
+                mLayoutItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        VH vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+                        if (getAdapterPosition() != mSelectedItem && vh != null) {
+                            vh.mRadioSelected.clearAnimation();
+                            vh.mRadioSelected.setChecked(false);
+                            mSelectedItem = getAdapterPosition();
+                            vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+                            vh.mRadioSelected.setChecked(true);
+                        } else {
+                            if (mSelectedItem != -1) {
+                                notifyItemChanged(mSelectedItem);
+                            }
+                            mSelectedItem = getAdapterPosition();
+                            vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(getAdapterPosition());
+                            vh.mRadioSelected.setChecked(true);
+                        }
+                    }
+                });
+            }
+        }
+
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = ViewUtil.inflatView(parent.getContext(), parent, R.layout.layout_item_node, false);
+            return new VH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(VH holder, int position) {
+            if (publicNodesCustom == null || publicNodesCustom.size() == 0) {
+                return;
+            }
+            String item = publicNodesCustom.get(position);
+            holder.mTvNodeUrl.setText(item);
+            holder.mLayoutItem.setClickable(true);
+            if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1) {
+                mSelectedItem = position;
+                holder.mRadioSelected.setChecked(true);
+            } else {
+                holder.mRadioSelected.setChecked(false);
+            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String[] ws = item.replace("ws://", "").replace("wss://", "").split(":");
+                    if (ws.length != 2) {
+                        return;
+                    }
+                    String host = ws[0];
+                    String port = ws[1];
+                    try {
+                        ArrayList<Integer> prots = PortScan.onAddress(host).setMethodTCP().setPort(Integer.valueOf(port)).doScan();
+                        if (prots != null && prots.size() == 1) {
+                            Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
+                                @Override
+                                public void onResult(PingResult pingResult) {
+                                }
+
+                                @Override
+                                public void onFinished(PingStats pingStats) {
+                                    AppConfig.postOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
+                                            holder.mTvNodePing.setText(ping + "ms");
+                                            BigDecimal pingBig = new BigDecimal(ping);
+                                            if (pingBig.compareTo(PING_QUICK) == -1) {
+                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
+                                            } else if (pingBig.compareTo(PING_LOW) == -1) {
+                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
+                                            } else {
+                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                                            }
+                                            holder.mTvNodePing.setVisibility(View.VISIBLE);
+                                            holder.mImgLoad.setVisibility(View.GONE);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                }
+                            });
+                        } else {
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.mLayoutItem.setClickable(false);
+                                    holder.mTvNodePing.setText("---");
+                                    holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                                    holder.mTvNodePing.setVisibility(View.VISIBLE);
+                                    holder.mImgLoad.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            return publicNodesCustom.size();
+        }
+    }
 
     private void getPublicNode() {
         publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));

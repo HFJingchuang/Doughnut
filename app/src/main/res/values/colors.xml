@@ -52,5 +52,8 @@
     <color name="color_detail_time">#FFA6A9AD</color>
     <color name="color_detail_receive">#FF27B498</color>
     <color name="color_detail_send">#FFF55758</color>
+    <color name="color_btn_add_node">#FF383B3E</color>
+    <color name="color_edt_add_node">#fff4f5f6</color>
+    <color name="color_dialog_confirm">#FF3B6CA6</color>
 
 </resources>
