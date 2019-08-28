@@ -93,7 +93,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setLeftTextColor(R.color.white);
-        mTitleBar.setTitleTextColor(R.color.white);
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setRightDrawable(R.drawable.ic_changewallet);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitle("节点设置");
