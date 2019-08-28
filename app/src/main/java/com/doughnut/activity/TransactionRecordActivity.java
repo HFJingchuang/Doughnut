@@ -82,8 +82,9 @@ public class TransactionRecordActivity extends BaseActivity implements
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setLeftTextColor(R.color.white);
-        mTitleBar.setTitleTextColor(R.color.white);
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setRightDrawable(R.drawable.ic_changewallet);
+        mTitleBar.setTitle(getString(R.string.tv_transferdetail));
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitleBarClickListener(this);
 
@@ -180,19 +181,19 @@ public class TransactionRecordActivity extends BaseActivity implements
             JSONObject pays;
             switch (tr.getType()) {
                 case "sent":
-                    holder.mImgIcon.setImageResource(R.drawable.ic_send);
+                    holder.mImgIcon.setImageResource(R.drawable.ic_transfer_send);
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
                     holder.mTvTransactionCount.setText("-" + tr.getAmount().getValue() + " " + tr.getAmount().getCurrency());
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_red));
+                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.color_detail_send));
                     break;
                 case "received":
-                    holder.mImgIcon.setImageResource(R.drawable.ic_reciver);
+                    holder.mImgIcon.setImageResource(R.drawable.ic_transfer_receive);
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
                     holder.mTvTransactionCount.setText("+" + tr.getAmount().getValue() + " " + tr.getAmount().getCurrency());
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_blue));
+                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.color_detail_receive));
                     break;
                 case "offernew":
-                    holder.mImgIcon.setImageResource(R.drawable.ic_transaction_out);
+                    holder.mImgIcon.setImageResource(R.drawable.ic_offer_new);
                     holder.mTvTransactionAddress.setText("挂单创建");
                     String getsCur = tr.getGets().getCurrency();
                     String paysCur = tr.getPays().getCurrency();
@@ -222,7 +223,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
                     break;
                 case "offercancel":
-                    holder.mImgIcon.setImageResource(R.drawable.ic_transfer);
+                    holder.mImgIcon.setImageResource(R.drawable.ic_offer_cancel);
                     holder.mTvTransactionAddress.setText("挂单取消");
                     if (tr.getGets() != null && tr.getPays() != null) {
                         holder.mTvTransactionCount.setText(tr.getGets().getValue() + " " + tr.getGets().getCurrency() + " -> " + tr.getPays().getValue() + " " + tr.getPays().getCurrency());
@@ -232,7 +233,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
                     break;
                 case "offereffect":
-                    holder.mImgIcon.setImageResource(R.drawable.ic_token_normal);
+                    holder.mImgIcon.setImageResource(R.drawable.ic_offer_effect);
                     BigDecimal getsAmount1 = new BigDecimal("0");
                     BigDecimal paysAmount1 = new BigDecimal("0");
                     if (tr.getEffects() != null) {
