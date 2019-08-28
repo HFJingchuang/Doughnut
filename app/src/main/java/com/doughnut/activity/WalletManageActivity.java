@@ -111,7 +111,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     class WalletRecordAdapter extends RecyclerView.Adapter<WalletRecordAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            RelativeLayout mLayoutItem;
+            LinearLayout mLayoutItem;
             TextView mTvBalance;
             TextView mTvBalanceCNY;
             TextView mTvAddress;

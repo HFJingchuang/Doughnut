@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/white">
 
     <com.doughnut.view.TitleBar
         android:id="@+id/title_bar"
@@ -18,12 +17,11 @@
         android:layout_marginTop="20dp"
         android:divider="@null" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
+        android:background="@color/white"
         android:orientation="horizontal"
         android:paddingHorizontal="15dp">
 
@@ -31,6 +29,7 @@
             android:id="@+id/layout_create_wallet"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginVertical="10dp"
             android:layout_weight="1"
             android:background="@drawable/shape_btn_receive"
             android:gravity="center">
@@ -52,6 +51,7 @@
             android:id="@+id/layout_import_wallet"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginVertical="10dp"
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:background="@drawable/shape_btn_send"
