@@ -243,7 +243,6 @@
     <string name="tab_secret_key">密钥</string>
     <string name="tab_keyStore">keyStore</string>
     <string name="tab_privateKey">私钥</string>
-    <string name="current_wallet">当前钱包</string>
     <string name="dialog_content_no_private_key">密钥不能为空</string>
     <string name="dialog_content_no_keyStore">keyStore不能为空</string>
     <string name="enter_hint_keyStore_Pwd">请输入keyStore密码</string>
@@ -257,4 +256,5 @@
     <string name="titleBar_export_wallet">导出钱包</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tv_current_wallet">当前钱包</string>
 </resources>

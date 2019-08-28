@@ -57,7 +57,7 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_balance_icon"
                     android:padding="2dp"
-                    android:text="@string/current_wallet"
+                    android:text="@string/tv_current_wallet"
                     android:textColor="@color/white"
                     android:textSize="8dp" />
             </LinearLayout>
