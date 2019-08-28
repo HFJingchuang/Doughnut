@@ -1,6 +1,7 @@
 package com.doughnut.update;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.doughnut.config.Constant;
@@ -68,6 +69,14 @@ public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
                 String url = versionInfo.getString("url", "");
                 if (version_Code > DeviceUtil.getVersionCode(mContext)) {
                     new UpgradeDialog(mContext, url).show();
+
+                    // 保存md5
+                    String md5 = versionInfo.getString("md5", "");
+                    String fileName = mContext.getPackageName() + "_update";
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("md5", md5);
+                    editor.apply();
                 } else {
                     ToastUtil.toast(mContext, "已是最新版！");
                 }

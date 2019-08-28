@@ -98,7 +98,7 @@ public abstract class NetUtil {
         return typeName;
     }
 
-    // wuwenhua add: 以wifi、2g、3g、4g作为返回格式
+    // wuwenhua ic_add: 以wifi、2g、3g、4g作为返回格式
     public static String getNetTypeNameEx(Context context) {
 
         String type = "null";

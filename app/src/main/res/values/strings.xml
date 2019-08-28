@@ -170,8 +170,8 @@
     <string name="btn_transactions">交易记录</string>
     <string name="btn_message_center">消息中心</string>
     <string name="btn_contacts">联系人</string>
-    <string name="btn_help_support">帮助中心</string>
-    <string name="btn_about_us">关于我们</string>
+    <string name="btn_help_support">版权信息</string>
+    <string name="btn_about_us">当前版本</string>
     <string name="btn_settings">系统设置</string>
     <string name="enter_hint_plaintext_private_key">明文私钥</string>
     <string name="enter_title_import_block">钱包体系</string>

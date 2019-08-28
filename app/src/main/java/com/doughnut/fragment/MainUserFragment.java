@@ -31,9 +31,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout mLayoutHelp;
     private RelativeLayout mLayoutAbout;
     private RelativeLayout mLayoutLanguage;
-    private LinearLayout mLayoutPay;
-    private LinearLayout mLayoutRecieve;
     private LinearLayout mLayoutRight;
+    private LinearLayout mLayoutReceive;
+    private LinearLayout mLayoutSend;
     private TextView mAddressTv;
     private TextView mNameTv;
 
@@ -66,9 +66,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
         mLayoutNode.setClickable(true);
-        mLayoutPay.setClickable(true);
-        mLayoutRecieve.setClickable(true);
         mLayoutRight.setClickable(true);
+        mLayoutReceive.setClickable(true);
+        mLayoutSend.setClickable(true);
     }
 
     @Override
@@ -81,9 +81,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
         mLayoutNode.setClickable(true);
-        mLayoutPay.setClickable(true);
-        mLayoutRecieve.setClickable(true);
         mLayoutRight.setClickable(true);
+        mLayoutReceive.setClickable(true);
+        mLayoutSend.setClickable(true);
     }
 
     @Override
@@ -106,16 +106,16 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutLanguage) {
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
-        } else if (view == mLayoutPay) {
-            mLayoutPay.setClickable(false);
-            TokenTransferActivity.startTokenTransferActivity(getActivity());
-        } else if (view == mLayoutRecieve) {
-            mLayoutRecieve.setClickable(false);
-            TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
         } else if (view == mLayoutRight) {
             mLayoutRight.setClickable(false);
             ModifyWalletActivity.startModifyWalletActivity(getActivity(),
                     mAddressTv.getText().toString());
+        } else if (view == mLayoutReceive) {
+            mLayoutReceive.setClickable(false);
+            TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
+        } else if (view == mLayoutSend) {
+            mLayoutSend.setClickable(false);
+            TokenTransferActivity.startTokenTransferActivity(getActivity());
         }
     }
 
@@ -129,8 +129,8 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutLanguage = view.findViewById(R.id.layout_language);
 
         mLayoutRight = view.findViewById(R.id.layout_right);
-        mLayoutPay = view.findViewById(R.id.layout_pay);
-        mLayoutRecieve = view.findViewById(R.id.layout_recieve);
+        mLayoutReceive = view.findViewById(R.id.layout_receiver);
+        mLayoutSend = view.findViewById(R.id.layout_send);
         mAddressTv = view.findViewById(R.id.tv_wallet_address);
         mNameTv = view.findViewById(R.id.tv_wallet_name);
 
@@ -141,8 +141,8 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutAbout.setOnClickListener(this);
         mLayoutLanguage.setOnClickListener(this);
         mLayoutRight.setOnClickListener(this);
-        mLayoutPay.setOnClickListener(this);
-        mLayoutRecieve.setOnClickListener(this);
+        mLayoutReceive.setOnClickListener(this);
+        mLayoutSend.setOnClickListener(this);
 
         setWalletInfo();
     }

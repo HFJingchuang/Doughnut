@@ -368,6 +368,7 @@ public class WalletManager implements IWallet {
      * @param balance
      * @param view
      */
+    @Override
     public void getTokenPrice(String base, BigDecimal balance, TextView view) {
         new Thread(new Runnable() {
             @Override
@@ -428,6 +429,7 @@ public class WalletManager implements IWallet {
     /**
      * 获取所有tokens
      */
+    @Override
     public void getAllTokens() {
         GetAllTokenList request = new GetAllTokenList();
         new RequestPresenter().loadData(request, false, new RequestPresenter.RequestCallback() {
@@ -466,15 +468,5 @@ public class WalletManager implements IWallet {
                 }
             }
         });
-    }
-
-    public String getTrans(String hash) {
-        try {
-            Account bean = JtServer.getInstance(mContext).getRemote().requestTx(hash);
-            return bean.getHash();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
