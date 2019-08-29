@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -26,6 +27,7 @@ public class TitleBar extends LinearLayout implements View.OnClickListener {
     private FrameLayout mLayoutLeft;
     private FrameLayout mLayoutTitle;
     private FrameLayout mLayoutRight;
+    private RelativeLayout mLayoutTitleBar;
 
     private View mViewSplit;
 
@@ -86,6 +88,8 @@ public class TitleBar extends LinearLayout implements View.OnClickListener {
         mLayoutRight.setOnClickListener(this);
 
         mViewSplit = view.findViewById(R.id.view_split);
+
+        mLayoutTitleBar = view.findViewById(R.id.layout_title_bar);
     }
 
     @Override
@@ -205,5 +209,10 @@ public class TitleBar extends LinearLayout implements View.OnClickListener {
 
     public void setSplitVisible(int visible) {
         mViewSplit.setVisibility(visible);
+    }
+
+    public void setTitleBarBackColor(int id) {
+//        mLayoutTitleBar.setBackgroundColor(id);
+        mLayoutTitleBar.setBackgroundResource(id);
     }
 }

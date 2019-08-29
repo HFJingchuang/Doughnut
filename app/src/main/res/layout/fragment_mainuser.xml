@@ -135,7 +135,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="22dp"
-                    android:drawableLeft="@drawable/ic_language"
+                    android:drawableLeft="@drawable/ic_globus"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_language"
