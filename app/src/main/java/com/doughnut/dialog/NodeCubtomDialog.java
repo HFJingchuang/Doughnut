@@ -93,33 +93,37 @@ public class NodeCubtomDialog extends BaseDialog implements View.OnClickListener
             dismiss();
         } else if (v == mTvConfirm) {
             String node = mEdtNode.getText().toString();
-            if (TextUtils.isEmpty(node) || (!node.startsWith("ws://") && !node.startsWith("wss://"))) {
-                mEdtNode.setText("");
-                mTvErr.setVisibility(View.VISIBLE);
-            } else {
-                String fileName = getContext().getPackageName() + "_customNode";
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                String nodes = sharedPreferences.getString("nodes", "");
-                List<String> nodeList;
-                if (TextUtils.isEmpty(nodes)) {
-                    nodeList = new ArrayList();
-                } else {
-                    if (nodes.contains(",")) {
-                        List<String> arrList = Arrays.asList(nodes.split(","));
-                        nodeList = new ArrayList(arrList);
-                    } else {
+            if (!TextUtils.isEmpty(node) && (node.startsWith("ws://") || node.startsWith("wss://"))) {
+                String[] ws = node.replace("ws://", "").replace("wss://", "").split(":");
+                if (ws.length == 2) {
+                    String fileName = getContext().getPackageName() + "_customNode";
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    String nodes = sharedPreferences.getString("nodes", "");
+                    List<String> nodeList;
+                    if (TextUtils.isEmpty(nodes)) {
                         nodeList = new ArrayList();
-                        nodeList.add(nodes);
+                    } else {
+                        if (nodes.contains(",")) {
+                            List<String> arrList = Arrays.asList(nodes.split(","));
+                            nodeList = new ArrayList(arrList);
+                        } else {
+                            nodeList = new ArrayList();
+                            nodeList.add(nodes);
+                        }
                     }
+                    if (!nodeList.contains(node)) {
+                        nodeList.add(node);
+                        editor.putString("nodes", nodeList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+                        editor.apply();
+                    }
+                    mOnConfirmOrderListener.onConfirmOrder();
+                    dismiss();
+                    return;
                 }
-                if (!nodeList.contains(node)) {
-                    nodeList.add(node);
-                    editor.putString("nodes", nodeList.toString().replace("[", "").replace("]", "").replace(" ", ""));
-                    editor.apply();
-                }
-                mOnConfirmOrderListener.onConfirmOrder();
             }
+            mEdtNode.setText("");
+            mTvErr.setVisibility(View.VISIBLE);
         }
     }
 }

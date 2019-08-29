@@ -75,7 +75,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
                     android:gravity="center|left"
                     android:text="@string/tv_custom_node"
                     android:textColor="@color/color_detail_time"

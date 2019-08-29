@@ -34,8 +34,8 @@
             android:background="@drawable/shape_dialog_edt"
             android:gravity="center|left"
             android:hint="ws://"
-            android:paddingLeft="10dp"
             android:inputType="textEmailAddress"
+            android:paddingLeft="10dp"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
@@ -53,7 +53,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="1dp"
             android:background="@color/color_split" />
 
         <LinearLayout
@@ -73,7 +73,7 @@
                 android:textSize="18sp" />
 
             <View
-                android:layout_width="1px"
+                android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:background="@color/color_split" />
 

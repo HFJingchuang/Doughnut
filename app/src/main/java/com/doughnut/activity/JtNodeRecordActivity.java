@@ -56,7 +56,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
     private GsonUtil publicNodes = new GsonUtil("{}");
     private List<String> publicNodesCustom = new ArrayList<>();
     private int mSelectedItem = -1;
-
+    private int mSelectedCustomItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +75,27 @@ public class JtNodeRecordActivity extends BaseActivity implements
 
     @Override
     public void onLeftClick(View view) {
-        NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
-        String url = vh.mTvNodeUrl.getText().toString();
-        JtServer.getInstance(this).changeServer(url);
-        String fileName = getPackageName() + WConstant.SP_SERVER;
-        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("nodeUrl", url);
-        editor.apply();
+        String url;
+        String ping;
+        if (mSelectedItem != -1) {
+            NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+            url = vh.mTvNodeUrl.getText().toString();
+            ping = vh.mTvNodePing.getText().toString();
+        } else {
+            NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
+            url = vh.mTvNodeUrl.getText().toString();
+            ping = vh.mTvNodePing.getText().toString();
+        }
+        // ping值没有时，忽略
+        ping = ping.replace("ms", "");
+        if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
+            JtServer.getInstance(this).changeServer(url);
+            String fileName = getPackageName() + WConstant.SP_SERVER;
+            SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("nodeUrl", url);
+            editor.apply();
+        }
         finish();
     }
 
@@ -111,24 +124,9 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 new NodeCubtomDialog(JtNodeRecordActivity.this, new NodeCubtomDialog.onConfirmOrderListener() {
                     @Override
                     public void onConfirmOrder() {
-                        String fileName = JtNodeRecordActivity.this.getPackageName() + "_customNode";
-                        SharedPreferences sharedPreferences = JtNodeRecordActivity.this.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        String nodes = sharedPreferences.getString("nodes", "");
-                        List<String> nodeList;
-                        if (!TextUtils.isEmpty(nodes)) {
-                            if (nodes.contains(",")) {
-                                List<String> arrList = Arrays.asList(nodes.split(","));
-                                nodeList = new ArrayList(arrList);
-                            } else {
-                                nodeList = new ArrayList();
-                                nodeList.add(nodes);
-                            }
-                            publicNodesCustom.addAll(nodeList);
-                            if (mAdapterCustom != null) {
-                                mAdapterCustom.notifyDataSetChanged();
-                            }
-                        }
+                        cancelDefaultNode();
+                        mSelectedCustomItem = 0;
+                        getCustomNode();
                     }
                 }).show();
             }
@@ -162,6 +160,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mRecyclerViewCustom.setAdapter(mAdapterCustom);
 
         getPublicNode();
+        getCustomNode();
     }
 
     public static void startJtNodeRecordActivity(Context context) {
@@ -192,9 +191,9 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        cancelCustomNode();
                         VH vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
                         if (getAdapterPosition() != mSelectedItem && vh != null) {
-                            vh.mRadioSelected.clearAnimation();
                             vh.mRadioSelected.setChecked(false);
                             mSelectedItem = getAdapterPosition();
                             vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
@@ -228,7 +227,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
             String url = item.getString("node", "");
             holder.mTvNodeUrl.setText(url);
             holder.mLayoutItem.setClickable(true);
-            if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1) {
+            if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1 && mSelectedCustomItem == -1) {
                 mSelectedItem = position;
                 holder.mRadioSelected.setChecked(true);
             } else {
@@ -238,6 +237,9 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 @Override
                 public void run() {
                     String[] ws = url.replace("ws://", "").replace("wss://", "").split(":");
+                    if (ws.length != 2) {
+                        return;
+                    }
                     String host = ws[0];
                     String port = ws[1];
                     try {
@@ -325,19 +327,19 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        VH vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
-                        if (getAdapterPosition() != mSelectedItem && vh != null) {
-                            vh.mRadioSelected.clearAnimation();
+                        cancelDefaultNode();
+                        VH vh = (VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
+                        if (getAdapterPosition() != mSelectedCustomItem && vh != null) {
                             vh.mRadioSelected.setChecked(false);
-                            mSelectedItem = getAdapterPosition();
-                            vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+                            mSelectedCustomItem = getAdapterPosition();
+                            vh = (VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
                             vh.mRadioSelected.setChecked(true);
                         } else {
-                            if (mSelectedItem != -1) {
-                                notifyItemChanged(mSelectedItem);
+                            if (mSelectedCustomItem != -1) {
+                                notifyItemChanged(mSelectedCustomItem);
                             }
-                            mSelectedItem = getAdapterPosition();
-                            vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(getAdapterPosition());
+                            mSelectedCustomItem = getAdapterPosition();
+                            vh = (VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
                             vh.mRadioSelected.setChecked(true);
                         }
                     }
@@ -356,15 +358,16 @@ public class JtNodeRecordActivity extends BaseActivity implements
             if (publicNodesCustom == null || publicNodesCustom.size() == 0) {
                 return;
             }
-            String item = publicNodesCustom.get(position);
+            int last = publicNodesCustom.size() - 1;
+            // 倒序显示
+            String item = publicNodesCustom.get(last - position);
             holder.mTvNodeUrl.setText(item);
-            holder.mLayoutItem.setClickable(true);
-            if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1) {
-                mSelectedItem = position;
+            if (mSelectedItem == -1 && mSelectedCustomItem == position) {
                 holder.mRadioSelected.setChecked(true);
             } else {
                 holder.mRadioSelected.setChecked(false);
             }
+            holder.mLayoutItem.setClickable(true);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -437,10 +440,54 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
+    // 获取默认节点
     private void getPublicNode() {
         publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));
         if (mAdapter != null) {
+            cancelCustomNode();
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    // 获取自定义节点
+    private void getCustomNode() {
+        publicNodesCustom.clear();
+        String fileName = JtNodeRecordActivity.this.getPackageName() + "_customNode";
+        SharedPreferences sharedPreferences = JtNodeRecordActivity.this.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String nodes = sharedPreferences.getString("nodes", "");
+        List<String> nodeList;
+        if (!TextUtils.isEmpty(nodes)) {
+            if (nodes.contains(",")) {
+                List<String> arrList = Arrays.asList(nodes.split(","));
+                nodeList = new ArrayList(arrList);
+            } else {
+                nodeList = new ArrayList();
+                nodeList.add(nodes);
+            }
+            publicNodesCustom.addAll(nodeList);
+            if (mAdapterCustom != null) {
+                cancelDefaultNode();
+                mAdapterCustom.notifyDataSetChanged();
+            }
+        }
+    }
+
+    // 去消默认节点选中
+    private void cancelDefaultNode() {
+        NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+        if (vh != null) {
+            vh.mRadioSelected.setChecked(false);
+            mSelectedItem = -1;
+        }
+    }
+
+    // 去消自定义节点选中
+    private void cancelCustomNode() {
+        NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
+        if (vh != null) {
+            vh.mRadioSelected.setChecked(false);
+            mSelectedCustomItem = -1;
         }
     }
 }

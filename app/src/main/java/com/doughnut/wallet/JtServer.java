@@ -44,7 +44,6 @@ public class JtServer {
     public static JtServer getInstance(Context context) {
         if (instance == null) {
             i++;
-            Log.v("wwww", "===>" + i);
             mContext = context;
             instance = new JtServer();
         }
