@@ -267,20 +267,20 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      * 显示钱包菜单pop
      */
     private void showWalletMenuPop() {
-        if (walletMenuPop == null) {
-            walletMenuPop = new WalletMenuPop(getActivity());
-            walletMenuPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0,
-                            R.drawable.ic_arrow_down, 0);
-                    refreshWallet();
-                }
-            });
-        }
-        walletMenuPop.setData();
-        walletMenuPop.showAsDropDown(mTvWalletName);
-        mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0, R.drawable.ic_arrow_up, 0);
+//        if (walletMenuPop == null) {
+//            walletMenuPop = new WalletMenuPop(getActivity());
+//            walletMenuPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+//                @Override
+//                public void onDismiss() {
+//                    mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0,
+//                            R.drawable.ic_arrow_down, 0);
+//                    refreshWallet();
+//                }
+//            });
+//        }
+//        walletMenuPop.setData();
+//        walletMenuPop.showAsDropDown(mTvWalletName);
+//        mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0, R.drawable.ic_arrow_up, 0);
     }
 
     /**
@@ -304,7 +304,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
 
     private void update() {
-        mTvWalletUnit.setText(String.format(getString(R.string.content_my_asset)));
+//        mTvWalletUnit.setText(String.format(getString(R.string.content_my_asset)));
         setWalletName();
     }
 
