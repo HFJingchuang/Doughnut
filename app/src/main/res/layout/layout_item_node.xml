@@ -2,29 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="15dp">
+    android:paddingTop="10dp">
 
     <RelativeLayout
         android:id="@+id/layout_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/text_size_15"
-        android:gravity="center_vertical">
+        android:layout_height="50dp"
+        android:background="@drawable/shape_node"
+        android:paddingHorizontal="20dp">
 
-        <TextView
-            android:id="@+id/tv_node_name"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_node_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_node_name"
-            android:singleLine="true"
-            android:text="" />
+            <TextView
+                android:id="@+id/tv_node_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|left"
+                android:text="ssssss"
+                android:textColor="@color/color_detail_address"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_node_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_node_name"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="sssss"
+                android:textColor="@color/color_detail_time"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_ping"
@@ -34,6 +46,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/radio_selected"
             android:text=""
+            android:textSize="12sp"
             android:visibility="gone" />
 
         <ImageView
@@ -47,17 +60,13 @@
 
         <RadioButton
             android:id="@+id/radio_selected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@null"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:button="@drawable/selector_btn_node" />
 
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:background="@color/split_color" />
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -110,13 +111,16 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
 
     class WalletRecordAdapter extends RecyclerView.Adapter<WalletRecordAdapter.VH> {
 
+        String currentWallet = WalletSp.getInstance(WalletManageActivity.this, "").getCurrentWallet();
+
         class VH extends RecyclerView.ViewHolder {
-            RelativeLayout mLayoutItem;
+            LinearLayout mLayoutItem;
             TextView mTvBalance;
             TextView mTvBalanceCNY;
             TextView mTvAddress;
             TextView mTvName;
             TextView mTvTime;
+            TextView mTvLabel;
 
             public VH(View v) {
                 super(v);
@@ -125,6 +129,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 mTvAddress = itemView.findViewById(R.id.tv_wallet_address);
                 mTvName = itemView.findViewById(R.id.tv_wallet_name);
                 mTvTime = itemView.findViewById(R.id.tv_wallet_time);
+                mTvLabel = itemView.findViewById(R.id.tv_label);
                 mLayoutItem = itemView.findViewById(R.id.layout_wallet);
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -148,13 +153,24 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             if (walletList == null) {
                 return;
             }
-            String address = walletList.get(position);
+            String address;
+            // 当前钱包置顶
+            if (position == 0) {
+                address = currentWallet;
+                walletList.remove(address);
+            } else {
+                address = walletList.get(position);
+            }
+
+            if (TextUtils.equals(currentWallet, address)) {
+                holder.mTvLabel.setVisibility(View.VISIBLE);
+            }
             String balance = WalletManager.getInstance(WalletManageActivity.this).getSWTBalance(address);
             holder.mTvBalance.setText(balance);
-            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY);
             holder.mTvAddress.setText(address);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
+            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY);
         }
 
         @Override

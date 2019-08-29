@@ -143,13 +143,13 @@ public class WalletSp {
             }
         }
         if (!walletList.contains(mAddress)) {
-            setName(name);
             setAddress(mAddress);
-            setCreateTime();
             walletList.add(mAddress);
             editor.putString("wallets", walletList.toString().replace("[", "").replace("]", "").replace(" ", ""));
             editor.apply();
         }
+        setName(name);
+        setCreateTime();
         setKeyStore(keyStore);
         setCurrentWallet(mAddress);
     }
