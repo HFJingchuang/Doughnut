@@ -80,11 +80,18 @@
                     android:textColor="@color/color_detail_time"
                     android:textSize="14sp" />
 
-                <android.support.v7.widget.RecyclerView
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/view_recycler_custom"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="10dp" />-->
+
+                <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
                     android:id="@+id/view_recycler_custom"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                </com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
 
                 <Button
                     android:id="@+id/btn_custom"

@@ -3,6 +3,7 @@ package com.doughnut.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.NodeCubtomDialog;
 import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
+import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.JtServer;
@@ -32,6 +34,12 @@ import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.PortScan;
 import com.stealthcopter.networktools.ping.PingResult;
 import com.stealthcopter.networktools.ping.PingStats;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
@@ -49,7 +57,8 @@ public class JtNodeRecordActivity extends BaseActivity implements
     private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
     private RecyclerView mRecyclerView;
-    private RecyclerView mRecyclerViewCustom;
+//    private RecyclerView mRecyclerViewCustom;
+    private SwipeMenuRecyclerView mRecyclerViewCustom;
     private Button mBtnCustom;
     private NodeRecordAdapter mAdapter;
     private NodeRecordCustomAdapter mAdapterCustom;
@@ -98,6 +107,33 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
         finish();
     }
+
+    /**
+     * 菜单创建器，在Item要创建菜单的时候调用。
+     */
+    private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
+        @Override
+        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
+            int width = getResources().getDimensionPixelSize(R.dimen.dimen_item_height);
+
+            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+            // 2. 指定具体的高，比如80;
+            // 3. WRAP_CONTENT，自身高度，不推荐;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+            // 添加右侧的，如果不添加，则右侧不会出现菜单。
+            {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(JtNodeRecordActivity.this).setBackground(R.color.common_red)
+                        .setImage(R.drawable.shape_delete_wallet_bg)
+                        .setText("删除")
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(12)
+                        .setWidth(width)
+                        .setHeight(height);
+                swipeRightMenu.addMenuItem(deleteItem);
+            }
+        }
+    };
 
     @Override
     public void onRightClick(View view) {
@@ -155,6 +191,24 @@ public class JtNodeRecordActivity extends BaseActivity implements
         });
 
         mRecyclerViewCustom = findViewById(R.id.view_recycler_custom);
+
+
+        mRecyclerViewCustom.setSwipeMenuCreator(swipeMenuCreator);
+
+        //
+        mRecyclerViewCustom.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
+            @Override
+            public void onItemClick(SwipeMenuBridge menuBridge) {
+                int position= menuBridge.getAdapterPosition();//当前item的position
+
+                ToastUtil.toast(JtNodeRecordActivity.this,"长按删除");
+//                mAdapter.refresh();
+                menuBridge.closeMenu();
+            }
+        });
+
+
+
         mRecyclerViewCustom.setLayoutManager(new LinearLayoutManager(this));
         mAdapterCustom = new NodeRecordCustomAdapter();
         mRecyclerViewCustom.setAdapter(mAdapterCustom);
