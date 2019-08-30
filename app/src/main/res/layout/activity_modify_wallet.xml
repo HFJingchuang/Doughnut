@@ -38,22 +38,22 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:singleLine="true"
-                        android:text="1111"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="40sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="16dp"
                         android:layout_alignTop="@+id/tv_wallet_balance"
                         android:layout_marginLeft="5dp"
                         android:layout_marginTop="12dp"
+                        android:gravity="center"
                         android:layout_toRightOf="@+id/tv_wallet_balance"
                         android:background="@drawable/shape_balance_icon"
-                        android:padding="3dp"
                         android:text="SWTC"
                         android:textColor="@color/white"
-                        android:textSize="8sp" />
+                        android:textSize="10sp" />
 
                 </RelativeLayout>
 
