@@ -6,6 +6,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -83,7 +84,7 @@ public class Util {
     //单位为gwei
     public static double getMinGweiGas(long blockChain, boolean defaultToken) {
         if (blockChain == 1) {
-            if(defaultToken) {
+            if (defaultToken) {
 
             }
             return 32000;
@@ -106,7 +107,7 @@ public class Util {
     //单位为gwei
     public static double getRecommendGweiGas(long blockChain, boolean defaultToken) {
         if (blockChain == 1) {
-            if(defaultToken) {
+            if (defaultToken) {
                 return 25200;
             } else {
                 return 60000;
@@ -118,7 +119,7 @@ public class Util {
     public static String getSymbolByBlockChain(long blockChain) {
         if (blockChain == 1) {
             return "ETH";
-        } else if(blockChain == 2) {
+        } else if (blockChain == 2) {
             return "SWT";
         }
         return "";
@@ -148,7 +149,7 @@ public class Util {
 
     public static double translateValue(int decimal, double value) {
         double divider = 1.0f;
-        for(int i = 0; i < decimal; i++) {
+        for (int i = 0; i < decimal; i++) {
             divider *= 10;
         }
         return value / divider;
@@ -166,9 +167,9 @@ public class Util {
     }
 
     public static double tokenToWei(long blockChain, double tokenValue, int dec) {
-        if(blockChain == 1) {
+        if (blockChain == 1) {
             String decimal = "1";
-            for(int i = 0; i < dec; i++)  {
+            for (int i = 0; i < dec; i++) {
                 decimal = decimal + "0";
             }
             TLog.e(TAG, "decimal:" + decimal);
@@ -199,7 +200,7 @@ public class Util {
 
 
     public static double parseDouble(String doubStr) {
-        if(TextUtils.isEmpty(doubStr)) {
+        if (TextUtils.isEmpty(doubStr)) {
             return 0.0f;
         }
         try {
@@ -208,5 +209,11 @@ public class Util {
             e.printStackTrace();
             return 0.0f;
         }
+    }
+
+    // 数字每隔三位加个逗号
+    public static String formatWithComma(long amunot) {
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(amunot);
     }
 }

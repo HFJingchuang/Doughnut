@@ -192,7 +192,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletAddress.setText(mWalletAddress);
         String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
         mTvWalletBalance.setText(balance);
-        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvWalletBalanceCNY);
+        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvWalletBalanceCNY, null);
     }
 
     private void deleteWallet() {

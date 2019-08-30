@@ -18,12 +18,12 @@
         <android.support.design.card.MaterialCardView
             android:id="@+id/main_appbar"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:fitsSystemWindows="true"
-            app:cardBackgroundColor="@color/modify_wallet_bottom_textcolor"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp">
 
             <include
                 layout="@layout/wallet_collapsing_layout"
@@ -35,27 +35,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center"
             android:layout_marginTop="10dp"
+            android:gravity="center"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/my_asset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/content_my_asset"
                 android:layout_marginLeft="10dp"
+                android:drawablePadding="4dp"
+                android:text="@string/content_my_asset"
                 android:textColor="@color/viewfinder_frame"
-                android:textSize="@dimen/text_size_18"
-                android:drawablePadding="4dp"/>
+                android:textSize="@dimen/text_size_18" />
+
             <TextView
                 android:id="@+id/add_asset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="200dp"
+                android:drawablePadding="8dp"
                 android:text="@string/content_add_asset"
                 android:textColor="@color/viewfinder_frame"
-                android:textSize="@dimen/text_size_18"
-                android:drawablePadding="8dp"/>
+                android:textSize="@dimen/text_size_18" />
         </LinearLayout>
 
 
@@ -63,8 +65,7 @@
             android:id="@+id/mainwallet_recycleview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        </com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"></com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
     </LinearLayout>
 
 
