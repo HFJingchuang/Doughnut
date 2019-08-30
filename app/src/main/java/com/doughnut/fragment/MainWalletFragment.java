@@ -52,6 +52,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +63,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private SwipeRefreshLayout mSwipteRefreshLayout;
     private CardView mAppbarLayout;
-    //    private Toolbar mToolbar;
     private SwipeMenuRecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
     private View mEmptyView;
-    private View mWalletAction, mMenuAction;
-    private TextView mTvWalletName, mTvWalletUnit, mTvwalletUnit2, mTvswtcAmount, mTvAddCurrency;
+    private View mWalletAction, mMenuAction, mViewSee;
+    private TextView mTvWalletName, mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
 
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
@@ -142,19 +142,19 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mAppbarLayout = view.findViewById(R.id.main_appbar);
 //        mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
 
-//        mToolbar = view.findViewById(R.id.toolbar);
         mWalletAction = view.findViewById(R.id.wallet_menu_action);
         mTvWalletName = view.findViewById(R.id.tv_wallet_name);
         setWalletName();
 
-//        ((AppCompatActivity) getActivity()).setSupmToolbarportActionBar(mToolbar);
         mEmptyView = view.findViewById(R.id.empty_view);
 
+        mTvBalance = view.findViewById(R.id.tv_balance);
+        mTvBalanceDec = view.findViewById(R.id.tv_balance_decimal);
+        mTvBalanceCny = view.findViewById(R.id.tv_balance_cny);
+        mTvBalanceCnyDec = view.findViewById(R.id.tv_balance_cny_decimal);
 
-        mTvWalletUnit = view.findViewById(R.id.wallet_unit);
-        mTvWalletUnit.setOnClickListener(this);
-        mTvwalletUnit2 = view.findViewById(R.id.wallet_unit2);
-        mTvswtcAmount = view.findViewById(R.id.swtc_amount);
+        mViewSee = view.findViewById(R.id.view_see);
+        mViewSee.setOnClickListener(this);
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
 
         mRecycleView.setSwipeMenuCreator(swipeMenuCreator);
@@ -163,9 +163,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mRecycleView.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge) {
-                int position= menuBridge.getAdapterPosition();//当前item的position
+                int position = menuBridge.getAdapterPosition();//当前item的position
 
-                ToastUtil.toast(getActivity(),"已删除");
+                ToastUtil.toast(getActivity(), "已删除");
                 deletePosition = position;
                 mAdapter.refresh();
                 menuBridge.closeMenu();
@@ -259,6 +259,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             case R.id.add_asset:
                 AddCurrencyActivity.startLanguageActivity(mContext);
                 break;
+            case R.id.view_see:
+                //todo
         }
     }
 
@@ -298,7 +300,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      * 显示功能菜单pop
      */
     private void showActionMenuPop() {
-        Intent intent=new Intent(mContext, CaptureActivity.class);
+        Intent intent = new Intent(mContext, CaptureActivity.class);
         startActivityForResult(intent, SCAN_REQUEST_CODE);
     }
 
@@ -432,7 +434,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             List list = new ArrayList();
             if (accountRelations != null) {
                 list = accountRelations.getLines();
-                if(dataList != null && dataList.size() != 0) {
+                if (dataList != null && dataList.size() != 0) {
                     list = dataList;
                 }
                 List copyList = new ArrayList<>();
@@ -447,9 +449,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
             // SWTC余额
             String balance = walletManager.getSWTBalance(currentWallet);
-            mTvswtcAmount.setText(balance);
+            String[] balanceArr = balance.split("\\.");
+            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+            mTvBalanceDec.setText(balanceArr[1]);
             // SWTC实时总价值
-            walletManager.getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvwalletUnit2);
+            walletManager.getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvBalanceCny, mTvBalanceCnyDec);
             handleTokenRequestResult(params, loadmore, extra);
         }
 

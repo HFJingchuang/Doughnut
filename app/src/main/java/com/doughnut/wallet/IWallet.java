@@ -33,7 +33,7 @@ public interface IWallet {
 
     String getSWTBalance(String address);
 
-    void getTokenPrice(String base, BigDecimal balance, TextView view);
+    void getTokenPrice(String base, BigDecimal balance, TextView v1, TextView v2);
 
     void getAllTokens();
 }

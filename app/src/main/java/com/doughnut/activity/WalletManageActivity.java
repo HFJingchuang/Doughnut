@@ -170,7 +170,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             holder.mTvAddress.setText(address);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
-            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY);
+            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY, null);
         }
 
         @Override

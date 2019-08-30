@@ -26,6 +26,7 @@ import com.doughnut.config.AppConfig;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.GsonUtil;
+import com.doughnut.utils.Util;
 import com.jccdex.rpc.api.JccConfig;
 import com.jccdex.rpc.api.JccdexInfo;
 import com.jccdex.rpc.base.JCallback;
@@ -366,10 +367,11 @@ public class WalletManager implements IWallet {
      *
      * @param base
      * @param balance
-     * @param view
+     * @param v1
+     * @param v2
      */
     @Override
-    public void getTokenPrice(String base, BigDecimal balance, TextView view) {
+    public void getTokenPrice(String base, BigDecimal balance, TextView v1, TextView v2) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -402,7 +404,14 @@ public class WalletManager implements IWallet {
                                             AppConfig.postOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    view.setText(String.format("%.2f", value));
+                                                    if (v2 == null) {
+                                                        v1.setText(String.format("%.2f", value));
+                                                    } else {
+                                                        String balanceStr = value.toPlainString();
+                                                        String[] balanceArr = balanceStr.split("\\.");
+                                                        v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                        v2.setText(balanceArr[1]);
+                                                    }
                                                 }
                                             });
                                         }

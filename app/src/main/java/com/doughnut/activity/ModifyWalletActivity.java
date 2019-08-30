@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -33,11 +34,14 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     private TextView mTvWalletBalanceCNY;
 
     private EditText mEdtWalletName;
-    private LinearLayout mLayoutModifyPwd;
-    private LinearLayout mLayoutExportPrivateKey;
+    private RelativeLayout mLayoutModifyPwd;
+    private RelativeLayout mLayoutExportPrivateKey;
 
     private TextView mTvDeleteWallet;
     private TextView mTvExportWallet;
+
+    private ImageView ImgCopy;
+    private ImageView ImgEdt;
 
     private String mWalletAddress;
     private String mWalletName;
@@ -71,6 +75,11 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
         } else if (view == mTvExportWallet) {
             gotoExportWallet();
+        } else if (view == ImgCopy) {
+            Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
+            ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
+        } else if (view == ImgEdt) {
+//todo
         }
     }
 
@@ -115,9 +124,10 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
     private void initView() {
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
         mTitleBar.setTitle(mWalletName);
         mTitleBar.setRightText(getString(R.string.titleBar_save));
+        mTitleBar.setTitleBarBackColor(R.color.color_dialog_confirm);
         mTitleBar.setRightTextColor(R.color.white);
         mTitleBar.setTitleBarClickListener(this);
 
@@ -128,10 +138,10 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
         mEdtWalletName = (EditText) findViewById(R.id.edt_wallet_name);
 
-        mLayoutModifyPwd = (LinearLayout) findViewById(R.id.layout_modify_pwd);
+        mLayoutModifyPwd = (RelativeLayout) findViewById(R.id.layout_modify_pwd);
         mLayoutModifyPwd.setOnClickListener(this);
 
-        mLayoutExportPrivateKey = (LinearLayout) findViewById(R.id.layout_export_privatekey);
+        mLayoutExportPrivateKey = (RelativeLayout) findViewById(R.id.layout_export_privatekey);
         mLayoutExportPrivateKey.setOnClickListener(this);
 
         mTvDeleteWallet = (TextView) findViewById(R.id.tv_delete_wallet);
@@ -139,6 +149,9 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
         mTvExportWallet = (TextView) findViewById(R.id.tv_export_wallet);
         mTvExportWallet.setOnClickListener(this);
+
+        ImgCopy = findViewById(R.id.img_copy);
+        ImgCopy.setOnClickListener(this);
 
         setWalletInfo();
     }
@@ -179,7 +192,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletAddress.setText(mWalletAddress);
         String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
         mTvWalletBalance.setText(balance);
-        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvWalletBalanceCNY);
+        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvWalletBalanceCNY, null);
     }
 
     private void deleteWallet() {
