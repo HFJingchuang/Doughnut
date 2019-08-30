@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
@@ -166,7 +167,8 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 holder.mTvLabel.setVisibility(View.VISIBLE);
             }
             String balance = WalletManager.getInstance(WalletManageActivity.this).getSWTBalance(address);
-            holder.mTvBalance.setText(balance);
+            String[] balanceArr = balance.split("\\.");
+            holder.mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])) + "." + balanceArr[1]);
             holder.mTvAddress.setText(address);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());

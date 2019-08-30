@@ -21,8 +21,8 @@ import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.NodeCubtomDialog;
 import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WConstant;
@@ -57,7 +57,6 @@ public class JtNodeRecordActivity extends BaseActivity implements
     private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
     private RecyclerView mRecyclerView;
-//    private RecyclerView mRecyclerViewCustom;
     private SwipeMenuRecyclerView mRecyclerViewCustom;
     private Button mBtnCustom;
     private NodeRecordAdapter mAdapter;
@@ -108,33 +107,6 @@ public class JtNodeRecordActivity extends BaseActivity implements
         finish();
     }
 
-    /**
-     * 菜单创建器，在Item要创建菜单的时候调用。
-     */
-    private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
-        @Override
-        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
-            int width = getResources().getDimensionPixelSize(R.dimen.dimen_item_height);
-
-            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
-            // 2. 指定具体的高，比如80;
-            // 3. WRAP_CONTENT，自身高度，不推荐;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-            // 添加右侧的，如果不添加，则右侧不会出现菜单。
-            {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(JtNodeRecordActivity.this).setBackground(R.color.common_red)
-                        .setImage(R.drawable.shape_delete_wallet_bg)
-                        .setText("删除")
-                        .setTextColor(Color.WHITE)
-                        .setTextSize(12)
-                        .setWidth(width)
-                        .setHeight(height);
-                swipeRightMenu.addMenuItem(deleteItem);
-            }
-        }
-    };
-
     @Override
     public void onRightClick(View view) {
     }
@@ -150,7 +122,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mTitleBar.setLeftTextColor(R.color.white);
         mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
-        mTitleBar.setTitle("节点设置");
+        mTitleBar.setTitle(getString(R.string.title_node_setting));
         mTitleBar.setTitleBarClickListener(this);
 
         mBtnCustom = findViewById(R.id.btn_custom);
@@ -171,6 +143,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mRecyclerView = findViewById(R.id.view_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 15));
         mSmartRefreshLayout = (SmartRefreshLayout) findViewById(R.id.layout_refresh);
         mSmartRefreshLayout.autoRefresh();
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -191,22 +164,17 @@ public class JtNodeRecordActivity extends BaseActivity implements
         });
 
         mRecyclerViewCustom = findViewById(R.id.view_recycler_custom);
-
-
+        mRecyclerViewCustom.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 15));
         mRecyclerViewCustom.setSwipeMenuCreator(swipeMenuCreator);
 
-        //
         mRecyclerViewCustom.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge) {
-                int position= menuBridge.getAdapterPosition();//当前item的position
-
-                ToastUtil.toast(JtNodeRecordActivity.this,"长按删除");
-//                mAdapter.refresh();
+                int position = menuBridge.getAdapterPosition();
+                deleteCustomNode(position);
                 menuBridge.closeMenu();
             }
         });
-
 
 
         mRecyclerViewCustom.setLayoutManager(new LinearLayoutManager(this));
@@ -216,6 +184,28 @@ public class JtNodeRecordActivity extends BaseActivity implements
         getPublicNode();
         getCustomNode();
     }
+
+    /**
+     * 菜单创建器，在Item要创建菜单的时候调用。
+     */
+    private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
+        @Override
+        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
+            int width = ViewUtil.dip2px(JtNodeRecordActivity.this, 80);
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+            // 添加右侧的，如果不添加，则右侧不会出现菜单。
+            {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(JtNodeRecordActivity.this).setBackground(R.drawable.shape_delete_bg)
+                        .setText(getString(R.string.tv_delete))
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(15)
+                        .setWidth(width)
+                        .setHeight(height);
+                swipeRightMenu.addMenuItem(deleteItem);
+            }
+        }
+    };
 
     public static void startJtNodeRecordActivity(Context context) {
         Intent intent = new Intent(context, JtNodeRecordActivity.class);
@@ -416,6 +406,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
             // 倒序显示
             String item = publicNodesCustom.get(last - position);
             holder.mTvNodeUrl.setText(item);
+            holder.mTvNodeName.setText(getResources().getString(R.string.tv_custom) + (position + 1));
             if (mSelectedItem == -1 && mSelectedCustomItem == position) {
                 holder.mRadioSelected.setChecked(true);
             } else {
@@ -494,7 +485,9 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
-    // 获取默认节点
+    /**
+     * 获取默认节点
+     */
     private void getPublicNode() {
         publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));
         if (mAdapter != null) {
@@ -503,7 +496,9 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
-    // 获取自定义节点
+    /**
+     * 获取自定义节点
+     */
     private void getCustomNode() {
         publicNodesCustom.clear();
         String fileName = JtNodeRecordActivity.this.getPackageName() + "_customNode";
@@ -527,7 +522,43 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
-    // 去消默认节点选中
+    /**
+     * 删除自定义节点
+     *
+     * @param index
+     */
+    private void deleteCustomNode(int index) {
+        String fileName = JtNodeRecordActivity.this.getPackageName() + "_customNode";
+        SharedPreferences sharedPreferences = JtNodeRecordActivity.this.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String nodes = sharedPreferences.getString("nodes", "");
+        List<String> nodeList;
+        if (!TextUtils.isEmpty(nodes)) {
+            if (nodes.contains(",")) {
+                List<String> arrList = Arrays.asList(nodes.split(","));
+                nodeList = new ArrayList(arrList);
+            } else {
+                nodeList = new ArrayList();
+                nodeList.add(nodes);
+            }
+            publicNodesCustom.remove(index);
+            nodeList.remove(index);
+            editor.putString("nodes", nodeList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+            editor.apply();
+
+            if (mSelectedCustomItem != -1 && publicNodesCustom.size() > 0) {
+                mSelectedCustomItem = 0;
+            } else if (publicNodesCustom.size() == 0 && mSelectedItem == -1) {
+                mSelectedCustomItem = -1;
+                mAdapter.notifyDataSetChanged();
+            }
+            mAdapterCustom.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 去消默认节点选中
+     */
     private void cancelDefaultNode() {
         NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
         if (vh != null) {
@@ -536,7 +567,9 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
-    // 去消自定义节点选中
+    /**
+     * 去消自定义节点选中
+     */
     private void cancelCustomNode() {
         NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
         if (vh != null) {

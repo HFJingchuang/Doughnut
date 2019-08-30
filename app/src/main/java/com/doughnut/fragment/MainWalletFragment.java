@@ -11,13 +11,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
@@ -52,7 +50,6 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,7 +214,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
             {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.color.common_red)
-                        .setImage(R.drawable.shape_delete_wallet_bg)
+                        .setImage(R.drawable.shape_delete_bg)
                         .setText("删除")
                         .setTextColor(Color.WHITE)
                         .setTextSize(16)
