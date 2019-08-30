@@ -48,6 +48,10 @@
     <color name="color_label">#25A886</color>
     <color name="color_receive">#2F5794</color>
     <color name="color_send">#25A886</color>
+
+    <!-- 资产管理 -->
+    <color name="color_wallet_name">#021933</color>
+
     <color name="color_detail_address">#FF021E38</color>
     <color name="color_detail_time">#FFA6A9AD</color>
     <color name="color_detail_receive">#FF27B498</color>

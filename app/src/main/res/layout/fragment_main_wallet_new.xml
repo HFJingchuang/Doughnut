@@ -6,12 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <!--<android.support.design.widget.CoordinatorLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical">-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,24 +14,6 @@
         <include
             layout="@layout/wallet_toolbar_layout"
             tools:visibility="visible" />
-
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/dimen_toolbar_heigth"-->
-            <!--app:layout_collapseMode="pin"-->
-            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light">-->
-        <!--</android.support.v7.widget.Toolbar>-->
-
-        <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/dimen_toolbar_heigth"-->
-        <!--app:layout_collapseMode="pin"-->
-        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light">-->
-        <!--</android.support.v7.widget.Toolbar>-->
-
-
 
         <android.support.design.card.MaterialCardView
             android:id="@+id/main_appbar"
@@ -49,20 +25,9 @@
             app:cardBackgroundColor="@color/modify_wallet_bottom_textcolor"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-
-            <!--<android.support.design.widget.CollapsingToolbarLayout-->
-            <!--android:id="@+id/main_collapsing"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:fitsSystemWindows="true"-->
-            <!--app:contentScrim="?attr/colorPrimary"-->
-            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
-
             <include
                 layout="@layout/wallet_collapsing_layout"
                 tools:visibility="visible" />
-
-            <!--</android.support.design.widget.CollapsingToolbarLayout>-->
 
         </android.support.design.card.MaterialCardView>
 
@@ -93,18 +58,14 @@
                 android:drawablePadding="8dp"/>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+
+        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
             android:id="@+id/mainwallet_recycleview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        </android.support.v7.widget.RecyclerView>
+        </com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
     </LinearLayout>
-
-
-    <!--</android.support.design.widget.CoordinatorLayout>-->
-
-
 
 
     <include
