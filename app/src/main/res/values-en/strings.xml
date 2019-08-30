@@ -268,5 +268,7 @@
     <string name="tv_custom">custom</string>
     <string name="btn_custom">Add custom nodes</string>
     <string name="title_default_node">Default Node</string>
+    <string name="btn_send">Send</string>
+    <string name="btn_receive">Receive</string>
 
 </resources>
