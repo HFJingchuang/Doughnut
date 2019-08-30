@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
-import com.doughnut.dialog.NodeCubtomDialog;
+import com.doughnut.dialog.NodeCustomDialog;
 import com.doughnut.utils.FileUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ViewUtil;
@@ -129,7 +129,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mBtnCustom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new NodeCubtomDialog(JtNodeRecordActivity.this, new NodeCubtomDialog.onConfirmOrderListener() {
+                new NodeCustomDialog(JtNodeRecordActivity.this, new NodeCustomDialog.onConfirmOrderListener() {
                     @Override
                     public void onConfirmOrder() {
                         cancelDefaultNode();
@@ -237,18 +237,24 @@ public class JtNodeRecordActivity extends BaseActivity implements
                     public void onClick(View v) {
                         cancelCustomNode();
                         VH vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
-                        if (getAdapterPosition() != mSelectedItem && vh != null) {
+                        int position = getAdapterPosition();
+                        if (position == mSelectedItem) {
+                            return;
+                        } else if (position != mSelectedItem && vh != null) {
                             vh.mRadioSelected.setChecked(false);
-                            mSelectedItem = getAdapterPosition();
+                            vh.mLayoutItem.setActivated(false);
+                            mSelectedItem = position;
                             vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
                             vh.mRadioSelected.setChecked(true);
+                            vh.mLayoutItem.setActivated(true);
                         } else {
                             if (mSelectedItem != -1) {
                                 notifyItemChanged(mSelectedItem);
                             }
-                            mSelectedItem = getAdapterPosition();
-                            vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(getAdapterPosition());
+                            mSelectedItem = position;
+                            vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(position);
                             vh.mRadioSelected.setChecked(true);
+                            vh.mLayoutItem.setActivated(true);
                         }
                     }
                 });
@@ -274,8 +280,10 @@ public class JtNodeRecordActivity extends BaseActivity implements
             if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1 && mSelectedCustomItem == -1) {
                 mSelectedItem = position;
                 holder.mRadioSelected.setChecked(true);
+                holder.mLayoutItem.setActivated(true);
             } else {
                 holder.mRadioSelected.setChecked(false);
+                holder.mLayoutItem.setActivated(false);
             }
             new Thread(new Runnable() {
                 @Override
@@ -373,18 +381,24 @@ public class JtNodeRecordActivity extends BaseActivity implements
                     public void onClick(View v) {
                         cancelDefaultNode();
                         VH vh = (VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
-                        if (getAdapterPosition() != mSelectedCustomItem && vh != null) {
+                        int position = getAdapterPosition();
+                        if (position == mSelectedCustomItem) {
+                            return;
+                        } else if (position != mSelectedCustomItem && vh != null) {
                             vh.mRadioSelected.setChecked(false);
-                            mSelectedCustomItem = getAdapterPosition();
+                            vh.mLayoutItem.setActivated(false);
+                            mSelectedCustomItem = position;
                             vh = (VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
                             vh.mRadioSelected.setChecked(true);
+                            vh.mLayoutItem.setActivated(true);
                         } else {
                             if (mSelectedCustomItem != -1) {
                                 notifyItemChanged(mSelectedCustomItem);
                             }
-                            mSelectedCustomItem = getAdapterPosition();
+                            mSelectedCustomItem = position;
                             vh = (VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
                             vh.mRadioSelected.setChecked(true);
+                            vh.mLayoutItem.setActivated(true);
                         }
                     }
                 });
@@ -406,13 +420,15 @@ public class JtNodeRecordActivity extends BaseActivity implements
             // 倒序显示
             String item = publicNodesCustom.get(last - position);
             holder.mTvNodeUrl.setText(item);
-            holder.mTvNodeName.setText(getResources().getString(R.string.tv_custom) + (position + 1));
+            holder.mTvNodeName.setText(getResources().getString(R.string.tv_custom) + (last - position + 1));
+            holder.mLayoutItem.setClickable(true);
             if (mSelectedItem == -1 && mSelectedCustomItem == position) {
                 holder.mRadioSelected.setChecked(true);
+                holder.mLayoutItem.setActivated(true);
             } else {
                 holder.mRadioSelected.setChecked(false);
+                holder.mLayoutItem.setActivated(false);
             }
-            holder.mLayoutItem.setClickable(true);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -563,6 +579,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
         if (vh != null) {
             vh.mRadioSelected.setChecked(false);
+            vh.mLayoutItem.setActivated(false);
             mSelectedItem = -1;
         }
     }
@@ -574,6 +591,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
         if (vh != null) {
             vh.mRadioSelected.setChecked(false);
+            vh.mLayoutItem.setActivated(false);
             mSelectedCustomItem = -1;
         }
     }
