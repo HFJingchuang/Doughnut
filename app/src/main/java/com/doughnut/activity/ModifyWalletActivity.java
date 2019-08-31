@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.Constant;
 import com.doughnut.dialog.PKDialog;
 import com.doughnut.dialog.PwdDialog;
 import com.doughnut.utils.ToastUtil;
@@ -35,7 +36,6 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
     private EditText mEdtWalletName;
     private RelativeLayout mLayoutModifyPwd;
-    private RelativeLayout mLayoutExportPrivateKey;
 
     private TextView mTvDeleteWallet;
     private TextView mTvExportWallet;
@@ -66,15 +66,13 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View view) {
         if (view == mLayoutModifyPwd) {
             gotoModifyPwd();
-        } else if (view == mLayoutExportPrivateKey) {
-            verifyPwd("exportprivatekey");
         } else if (view == mTvDeleteWallet) {
-            verifyPwd("deletewallet");
+            verifyPwd(Constant.WALLET_DEL);
         } else if (view == mTvWalletAddress) {
             Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
         } else if (view == mTvExportWallet) {
-            gotoExportWallet();
+            verifyPwd(Constant.WALLET_IMP);
         } else if (view == ImgCopy) {
             Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
@@ -100,17 +98,13 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void authPwd(String tag, boolean result, String key) {
-        if (TextUtils.equals(tag, "exportprivatekey")) {
+        if (TextUtils.equals(tag, Constant.WALLET_IMP)) {
             if (result) {
-                realExportPrivateKey(key);
-            } else {
-                ToastUtil.toast(this, getString(R.string.toast_password_incorrect));
+                gotoExportWallet();
             }
-        } else if (TextUtils.equals(tag, "deletewallet")) {
+        } else if (TextUtils.equals(tag, Constant.WALLET_DEL)) {
             if (result) {
                 deleteWallet();
-            } else {
-                ToastUtil.toast(this, getString(R.string.toast_password_incorrect));
             }
         }
     }
@@ -140,9 +134,6 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
         mLayoutModifyPwd = (RelativeLayout) findViewById(R.id.layout_modify_pwd);
         mLayoutModifyPwd.setOnClickListener(this);
-
-        mLayoutExportPrivateKey = (RelativeLayout) findViewById(R.id.layout_export_privatekey);
-        mLayoutExportPrivateKey.setOnClickListener(this);
 
         mTvDeleteWallet = (TextView) findViewById(R.id.tv_delete_wallet);
         mTvDeleteWallet.setOnClickListener(this);
@@ -219,7 +210,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 //                        verifyPwd("exportprivatekey");
 //                        dialog.dismiss();
 //                    }
-//                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
+//                }, getString(R.string.dialog_btn_delete), ønew DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {
 //                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);

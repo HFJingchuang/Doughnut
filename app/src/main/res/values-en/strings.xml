@@ -246,7 +246,6 @@
     <string name="dialog_content_no_private_key">Enter the private key</string>
     <string name="dialog_content_no_keyStore">Enter the keyStore</string>
     <string name="enter_hint_keyStore_Pwd">Please enter the keyStore password</string>
-
     <string name="tv_no_transfer">No transfer record</string>
     <string name="footer_loading">Try loading......</string>
     <string name="content_total_asset">Total Asset</string>
@@ -270,5 +269,9 @@
     <string name="title_default_node">Default Node</string>
     <string name="btn_send">Send</string>
     <string name="btn_receive">Receive</string>
-
+    <string name="title_verify_password">Verify Password</string>
+    <string name="tip_delete_wallet">** Make sure the wallet is backed up before deleting it! **</string>
+    <string name="tv_input_pwd">Please enter your wallet password</string>
+    <string name="tv_err_pwd">The password is incorrect. Please re input.</string>
+    <string name="btn_confirm_delete">DELETE</string>
 </resources>

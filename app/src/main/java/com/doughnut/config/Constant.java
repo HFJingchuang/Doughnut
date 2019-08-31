@@ -62,4 +62,7 @@ public class Constant {
     // 更新信息
     public final static String UPATE_URL = "https://raw.githubusercontent.com/gwang74/note/master/versionInfo";
 
+    public final static String WALLET_DEL = "0";
+
+    public final static String WALLET_IMP = "1";
 }
