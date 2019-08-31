@@ -17,13 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.R;
 import com.doughnut.activity.AddCurrencyActivity;
+import com.doughnut.activity.CreateNewWalletActivity;
 import com.doughnut.activity.TokenDetailsActivity;
+import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
 import com.doughnut.base.BaseWalletUtil;
@@ -68,6 +71,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private View mEmptyView;
     private View mWalletAction, mMenuAction, mViewSee;
     private TextView mTvWalletName, mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
+    private LinearLayout mTvCreateWallet, mTvImportWallet;
 
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
@@ -196,6 +200,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mTvAddCurrency = view.findViewById(R.id.add_asset);
         mTvAddCurrency.setOnClickListener(this);
 
+        mTvCreateWallet = view.findViewById(R.id.create_wallet);
+        mTvCreateWallet.setOnClickListener(this);
+
+        mTvImportWallet = view.findViewById(R.id.import_wallet);
+        mTvImportWallet.setOnClickListener(this);
+
         isViewCreated = true;
 
         setWalletInfo();
@@ -261,6 +271,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.view_see:
                 //todo
+                break;
+            case R.id.create_wallet:
+                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
+                break;
+            case R.id.import_wallet:
+                WalletImportActivity.startImportWalletActivity(mContext);
+                break;
         }
     }
 
@@ -448,14 +465,16 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             GsonUtil extra = new GsonUtil(list);
 
             // SWTC余额
-            String balance = walletManager.getSWTBalance(currentWallet);
-            String[] balanceArr = balance.split("\\.");
-            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-            mTvBalanceDec.setText(balanceArr[1]);
+//            String balance = walletManager.getSWTBalance(currentWallet);
+//            String[] balanceArr = balance.split("\\.");
+//            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+//            mTvBalanceDec.setText(balanceArr[1]);
             // SWTC实时总价值
-            walletManager.getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvBalanceCny, mTvBalanceCnyDec);
+            walletManager.getAllTokenPrice(dataList, mTvBalanceCny, mTvBalanceCnyDec, mTvBalance, mTvBalanceDec);
             handleTokenRequestResult(params, loadmore, extra);
         }
+
+
 
         private void handleTokenRequestResult(final String params, final boolean loadmore, GsonUtil json) {
 //            TLog.d(TAG, "token list:" + json);

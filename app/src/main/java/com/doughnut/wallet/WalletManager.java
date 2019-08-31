@@ -436,6 +436,114 @@ public class WalletManager implements IWallet {
     }
 
     /**
+     * 获取所有的token时价
+     * @param dataList
+     * @param v1
+     * @param v2
+     * @param v3
+     * @param v4
+     */
+    @Override
+    public void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 获取infoHosts
+                JccConfig jccConfig = JccConfig.getInstance();
+                JccdexUrl jccdexUrl = new JccdexUrl(CONFIG_HOST, true);
+                jccConfig.setmBaseUrl(jccdexUrl);
+                jccConfig.requestConfig(new JCallback() {
+                    @Override
+                    public void onResponse(String code, String response) {
+                        if (!TextUtils.isEmpty(response)) {
+                            GsonUtil res = new GsonUtil(response);
+                            GsonUtil infoHosts = res.getArray("infoHosts");
+                            int index = (int) (Math.random() * infoHosts.getLength());
+                            final JccdexUrl jccUrl = new JccdexUrl(infoHosts.getString(index, ""), true);
+                            JccdexInfo jccdexInfo = JccdexInfo.getInstance();
+                            jccdexInfo.setmBaseUrl(jccUrl);
+                            if (dataList != null && dataList.size() != 0) {
+                                    // 获取时价
+                                    jccdexInfo.requestAllTickers(new JCallback() {
+                                        BigDecimal values = new BigDecimal(0.00);
+                                        BigDecimal swtPrice = new BigDecimal(0.00);
+                                        BigDecimal number = new BigDecimal(0.00);
+                                        @Override
+                                        public void onResponse(String code, String response) {
+                                            if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                                GsonUtil res = new GsonUtil(response);
+                                                GsonUtil data = res.getObject("data");
+                                                GsonUtil gsonUtil = data.getArray("SWT-CNY");
+                                                swtPrice = new BigDecimal(gsonUtil.getString(1,"0"));
+                                                for (int i=0; i<dataList.size(); i++) {
+                                                    Line line = (Line)dataList.get(i);
+                                                    // 数量
+                                                    String balance = line.getBalance();
+                                                    // 币种
+                                                    String currency = line.getCurrency();
+
+                                                    String currency_cny = currency + "-CNY";
+
+                                                    BigDecimal price = new BigDecimal(0);
+                                                    GsonUtil currencyLst = data.getArray(currency_cny);
+                                                    if (currencyLst != null) {
+                                                        price = new BigDecimal(currencyLst.getString(1,"0"));
+
+                                                    }
+                                                    // 当前币种总价值
+                                                    BigDecimal value = new BigDecimal(balance).multiply(price, new MathContext(2));
+                                                    values = values.add(value);
+                                                }
+                                                    number = values.divide(swtPrice, 1, 2);
+                                                    AppConfig.postOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+
+                                                            if (v2 == null) {
+                                                                v1.setText(String.format("%.2f", values));
+                                                            } else {
+                                                                String balanceStr = values.toPlainString();
+                                                                String[] balanceArr = balanceStr.split("\\.");
+                                                                v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                                v2.setText(balanceArr[1]);
+                                                            }
+
+                                                            if (v4 == null) {
+                                                                v3.setText(String.format("%.2f", number));
+                                                            } else {
+                                                                String balanceStr = number.toPlainString();
+                                                                String[] balanceArr = balanceStr.split("\\.");
+                                                                v3.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                                v4.setText(balanceArr[1]);
+                                                            }
+
+                                                        }
+                                                    });
+
+//                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFail(Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
      * 获取所有tokens
      */
     @Override

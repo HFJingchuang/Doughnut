@@ -8,6 +8,7 @@ import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.Marker;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface IWallet {
 
@@ -34,6 +35,8 @@ public interface IWallet {
     String getSWTBalance(String address);
 
     void getTokenPrice(String base, BigDecimal balance, TextView v1, TextView v2);
+
+    void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4);
 
     void getAllTokens();
 }
