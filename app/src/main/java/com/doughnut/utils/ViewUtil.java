@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.doughnut.R;
 import com.doughnut.activity.StartBakupActivity;
 import com.doughnut.base.WalletInfoManager;
-import com.doughnut.dialog.PwdDialog;
+import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.WarnDialog;
 
 
@@ -57,24 +57,24 @@ public class ViewUtil {
                     public void onConfirmClick(final Dialog dialog, View view) {
 
                         if (needVerifyPwd) {
-                            PwdDialog pwdDialog = new PwdDialog(context, new PwdDialog.PwdResult() {
-                                @Override
-                                public void authPwd(String tag, boolean result, String key) {
-                                    if (result) {
-                                        if (TextUtils.isEmpty(walletData.words)) {
-                                            StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
-                                                    1);
-                                        } else {
-                                            StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
-                                                    2);
-                                        }
-                                        dialog.dismiss();
-                                    } else {
-                                        ToastUtil.toast(context, context.getString(R.string.toast_password_incorrect));
-                                    }
-                                }
-                            }, pwdHash, "");
-                            pwdDialog.show();
+//                            EditDialog editDialog = new EditDialog(context, new EditDialog.PwdResultListener() {
+//                                @Override
+//                                public void authPwd(String tag, boolean result, String key) {
+//                                    if (result) {
+//                                        if (TextUtils.isEmpty(walletData.words)) {
+//                                            StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
+//                                                    1);
+//                                        } else {
+//                                            StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
+//                                                    2);
+//                                        }
+//                                        dialog.dismiss();
+//                                    } else {
+//                                        ToastUtil.toast(context, context.getString(R.string.toast_password_incorrect));
+//                                    }
+//                                }
+//                            }, pwdHash, "");
+//                            editDialog.show();
                         } else {
                             if (TextUtils.isEmpty(walletData.words)) {
                                 StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,

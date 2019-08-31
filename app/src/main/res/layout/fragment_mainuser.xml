@@ -46,7 +46,8 @@
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_manage_wallet"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -76,7 +77,8 @@
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_transactions"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -110,7 +112,8 @@
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_node"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -139,7 +142,8 @@
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_language"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -167,7 +171,8 @@
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_help_support"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -195,7 +200,8 @@
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
                     android:text="@string/btn_about_us"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"

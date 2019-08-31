@@ -110,29 +110,35 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/edt_wallet_name"
+                    <LinearLayout
+                        android:id="@+id/layout_edt"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="@null"
-                        android:ellipsize="middle"
-                        android:gravity="center|left"
-                        android:maxWidth="180dp"
-                        android:paddingLeft="10dp"
-                        android:singleLine="true"
-                        android:text=""
-                        android:textColor="@color/color_detail_address"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_height="match_parent">
 
-                    <ImageView
-                        android:id="@+id/img_edt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_edit" />
+                        <TextView
+                            android:id="@+id/tv_wallet_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:ellipsize="middle"
+                            android:gravity="center|left"
+                            android:maxWidth="180dp"
+                            android:paddingLeft="10dp"
+                            android:singleLine="true"
+                            android:text=""
+                            android:textColor="@color/color_detail_address"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginHorizontal="10dp"
+                            android:src="@drawable/ic_edit" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <View
@@ -154,33 +160,40 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:text="钱包地址"
+                        android:text="@string/tv_wallet_address"
                         android:textColor="@color/color_detail_address"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_wallet_address"
+                    <LinearLayout
+                        android:id="@+id/layout_copy"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="@null"
-                        android:ellipsize="middle"
-                        android:gravity="center|left"
-                        android:maxWidth="180dp"
-                        android:paddingLeft="10dp"
-                        android:singleLine="true"
-                        android:textColor="@color/color_detail_address"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_height="match_parent">
 
-                    <ImageView
-                        android:id="@+id/img_copy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_copy" />
+                        <TextView
+                            android:id="@+id/tv_wallet_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:ellipsize="middle"
+                            android:gravity="center|left"
+                            android:maxWidth="180dp"
+                            android:paddingLeft="10dp"
+                            android:singleLine="true"
+                            android:textColor="@color/color_detail_address"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:src="@drawable/ic_copy" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <View
