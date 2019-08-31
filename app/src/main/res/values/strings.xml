@@ -262,4 +262,11 @@
     <string name="tv_transferdetail">交易记录</string>
     <string name="tv_custom_node">自定义节点</string>
     <string name="tv_err_node">请输入合法的节点地址</string>
+    <string name="title_node_setting">节点设置</string>
+    <string name="tv_delete">删除</string>
+    <string name="tv_custom">自定义</string>
+    <string name="btn_custom">添加自定义节点</string>
+    <string name="title_default_node">默认节点</string>
+    <string name="btn_send">账户转账</string>
+    <string name="btn_receive">我要收款</string>
 </resources>

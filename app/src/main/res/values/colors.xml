@@ -59,5 +59,6 @@
     <color name="color_btn_add_node">#FF383B3E</color>
     <color name="color_edt_add_node">#fff4f5f6</color>
     <color name="color_dialog_confirm">#FF3B6CA6</color>
+    <color name="color_item_node">#FFEEEEF2</color>
 
 </resources>

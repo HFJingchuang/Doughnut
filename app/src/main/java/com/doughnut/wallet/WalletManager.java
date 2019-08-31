@@ -283,7 +283,7 @@ public class WalletManager implements IWallet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "0";
+        return "0.00";
     }
 
     /**

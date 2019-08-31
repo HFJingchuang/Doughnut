@@ -19,186 +19,103 @@
             android:src="@drawable/ic_erm" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_marginBottom="20dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/layout_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/layout_right"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginLeft="22dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_wallet_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:ellipsize="marquee"
-                    android:maxWidth="200dp"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/shape_balance_icon"
-                    android:padding="2dp"
-                    android:text="@string/tv_current_wallet"
-                    android:textColor="@color/white"
-                    android:textSize="8dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginLeft="22dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_wallet_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:ellipsize="middle"
-                    android:maxWidth="120dp"
-                    android:singleLine="true"
-                    android:text=""
-                    android:textColor="#99FFFFFF" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_right"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/layout_info"
-            android:layout_alignParentRight="true">
+            android:layout_height="wrap_content">
 
-            <ImageView
+            <LinearLayout
+                android:id="@+id/layout_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/layout_right"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tv_wallet_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:ellipsize="middle"
+                        android:gravity="left"
+                        android:maxWidth="200dp"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/tv_label"
+                        android:layout_width="50dp"
+                        android:layout_height="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@+id/tv_wallet_name"
+                        android:background="@drawable/shape_balance_icon"
+                        android:gravity="center"
+                        android:text="@string/tv_current_wallet"
+                        android:textColor="@color/white"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="22dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_wallet_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.6"
+                        android:drawablePadding="4dp"
+                        android:ellipsize="middle"
+                        android:gravity="center|left"
+                        android:maxWidth="200dp"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_size_15"
-                android:src="@drawable/ic_go" />
-        </LinearLayout>
-    </RelativeLayout>
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_size_15"
+                    android:src="@drawable/ic_go" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@drawable/shape_my_bg" />
 
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<android.support.design.card.MaterialCardView-->
-    <!--android:id="@+id/cardView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="40dp"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:layout_marginHorizontal="22dp"-->
-    <!--app:cardCornerRadius="4dp"-->
-    <!--app:cardElevation="5dp">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@color/modify_wallet_bottom_textcolor"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/layout_pay"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1.0"-->
-    <!--android:gravity="center">-->
-
-    <!--<ImageView-->
-    <!--android:layout_width="15dp"-->
-    <!--android:layout_height="15dp"-->
-    <!--android:layout_marginRight="5dp"-->
-    <!--android:src="@drawable/ic_receive" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/wallet_action_transfer1"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:drawablePadding="12dp"-->
-    <!--android:text="@string/content_transfer"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="12dp" />-->
-    <!--</LinearLayout>-->
-
-    <!--<View-->
-    <!--android:layout_width="@dimen/dimen_line"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginVertical="10dp"-->
-    <!--android:background="@color/color_line" />-->
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/layout_recieve"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1.0"-->
-    <!--android:gravity="center">-->
-
-    <!--<ImageView-->
-    <!--android:layout_width="15dp"-->
-    <!--android:layout_height="15dp"-->
-    <!--android:layout_marginRight="5dp"-->
-    <!--android:src="@drawable/ic_transfer" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/wallet_action_receive1"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:drawablePadding="12dp"-->
-    <!--android:text="@string/btn_collect"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="12dp" />-->
-    <!--</LinearLayout>-->
-    <!--</LinearLayout>-->
-
-    <!--</android.support.design.card.MaterialCardView>-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="40dp"-->
-    <!--android:layout_marginTop="10dp"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="1.0"-->
-    <!--android:background="@color/common_blue"-->
-    <!--tools:ignore="Suspicious0dp" />-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="2.0"-->
-    <!--android:background="@color/white"-->
-    <!--tools:ignore="Suspicious0dp" />-->
-    <!--</LinearLayout>-->
-
-
-    <!--</RelativeLayout>-->
 </LinearLayout>

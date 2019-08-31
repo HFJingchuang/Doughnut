@@ -13,11 +13,13 @@
         android:id="@+id/ls_manager_wallet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/layout_btn"
         android:layout_below="@id/title_bar"
         android:layout_marginTop="20dp"
         android:divider="@null" />
 
     <LinearLayout
+        android:id="@+id/layout_btn"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"

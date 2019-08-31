@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/layout_item"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/shape_node"
+        android:background="@drawable/selector_node_item"
         android:paddingHorizontal="20dp">
 
         <LinearLayout
@@ -22,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center|left"
-                android:text="ssssss"
+                android:text=""
                 android:textColor="@color/color_detail_address"
                 android:textSize="15sp" />
 
@@ -33,7 +32,7 @@
                 android:layout_below="@+id/tv_node_name"
                 android:gravity="center|left"
                 android:singleLine="true"
-                android:text="sssss"
+                android:text=""
                 android:textColor="@color/color_detail_time"
                 android:textSize="12sp" />
         </LinearLayout>

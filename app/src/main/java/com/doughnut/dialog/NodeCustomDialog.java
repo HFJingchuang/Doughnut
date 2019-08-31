@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-public class NodeCubtomDialog extends BaseDialog implements View.OnClickListener {
+/**
+ * 自定义节点Dialog
+ */
+public class NodeCustomDialog extends BaseDialog implements View.OnClickListener {
 
     private EditText mEdtNode;
     private TextView mTvErr;
@@ -33,7 +35,7 @@ public class NodeCubtomDialog extends BaseDialog implements View.OnClickListener
 
     private onConfirmOrderListener mOnConfirmOrderListener;
 
-    public NodeCubtomDialog(@NonNull Context context, onConfirmOrderListener onConfirmOrderListener) {
+    public NodeCustomDialog(@NonNull Context context, onConfirmOrderListener onConfirmOrderListener) {
         super(context, R.style.DialogStyle);
         mOnConfirmOrderListener = onConfirmOrderListener;
     }
@@ -58,7 +60,6 @@ public class NodeCubtomDialog extends BaseDialog implements View.OnClickListener
     public void onBackPressed() {
         super.onBackPressed();
     }
-
 
     private void initView() {
         mEdtNode = findViewById(R.id.edt_node);
