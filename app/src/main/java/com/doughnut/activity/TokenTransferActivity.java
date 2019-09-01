@@ -19,8 +19,8 @@ import com.contrarywind.listener.OnItemSelectedListener;
 import com.contrarywind.view.WheelView;
 import com.doughnut.R;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.OrderDetailDialog;
-import com.doughnut.dialog.PwdDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
@@ -168,20 +168,20 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     }
 
     private void verifyPwd() {
-        PwdDialog pwdDialog = new PwdDialog(TokenTransferActivity.this, new PwdDialog.PwdResult() {
-            @Override
-            public void authPwd(String tag, boolean result, String key) {
-                if (TextUtils.equals(tag, "transaction")) {
-                    if (result) {
-//                        pwdRight();
-                        sendTranscation();
-                    } else {
-                        ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_order_password_incorrect));
-                    }
-                }
-            }
-        }, "", "transaction");
-        pwdDialog.show();
+//        EditDialog editDialog = new EditDialog(TokenTransferActivity.this, new EditDialog.PwdResultListener() {
+//            @Override
+//            public void authPwd(String tag, boolean result, String key) {
+//                if (TextUtils.equals(tag, "transaction")) {
+//                    if (result) {
+////                        pwdRight();
+//                        sendTranscation();
+//                    } else {
+//                        ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_order_password_incorrect));
+//                    }
+//                }
+//            }
+//        }, "", "transaction");
+//        editDialog.show();
     }
 
     public void sendTranscation() {

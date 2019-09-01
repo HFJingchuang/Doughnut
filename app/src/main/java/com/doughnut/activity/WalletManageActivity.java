@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -22,6 +21,7 @@ import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,7 +35,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     private RecyclerView mLsWallet;
     private WalletRecordAdapter mAdapter;
 
-    private List<String> walletList;
+    private List<String> walletList = new ArrayList<>();
 
 
     @Override
@@ -154,15 +154,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             if (walletList == null) {
                 return;
             }
-            String address;
-            // 当前钱包置顶
-            if (position == 0) {
-                address = currentWallet;
-                walletList.remove(address);
-            } else {
-                address = walletList.get(position);
-            }
-
+            String address = walletList.get(position);
             if (TextUtils.equals(currentWallet, address)) {
                 holder.mTvLabel.setVisibility(View.VISIBLE);
             }
@@ -187,7 +179,12 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void getWallets() {
-        walletList = WalletSp.getInstance(this, "").getAllWallet();
+        walletList.clear();
+        String currentWallet = WalletSp.getInstance(WalletManageActivity.this, "").getCurrentWallet();
+        walletList.add(currentWallet);
+        List<String> wallets = WalletSp.getInstance(this, "").getAllWallet();
+        wallets.remove(currentWallet);
+        walletList.addAll(wallets);
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
