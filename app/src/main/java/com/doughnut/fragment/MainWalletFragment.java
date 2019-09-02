@@ -284,7 +284,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.openEyes:
                 this.isHidden = !isHidden;
-//                view.setVisibility(View.INVISIBLE);
                 if (isHidden) {
                     mTvOpenEyes.setImageResource(R.drawable.ic_close_eyes);
                 } else {

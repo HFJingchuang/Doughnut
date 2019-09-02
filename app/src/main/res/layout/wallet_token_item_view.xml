@@ -15,17 +15,18 @@
 
     <ImageView
         android:id="@+id/token_icon"
-        android:layout_width="@dimen/dimen_icon_size"
-        android:layout_height="@dimen/dimen_icon_size"
+        android:layout_width="@dimen/dimen_token_icon_size"
+        android:layout_height="@dimen/dimen_token_icon_size"
         android:background="@drawable/shape_icon_bg" />
 
     <TextView
         android:id="@+id/token_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="14dp"
+        android:layout_marginLeft="11dp"
         android:textColor="@color/viewfinder_frame"
-        android:textSize="@dimen/text_size_18"
+        android:textSize="@dimen/text_size_14"
+        android:textStyle="bold"
         tools:text="BTC" />
 
     <LinearLayout
@@ -43,9 +44,10 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/viewfinder_frame"
-            android:textSize="@dimen/text_size_18"
+            android:textSize="@dimen/text_size_14"
             tools:text="0.00153"
             android:maxLines="1"
+            android:textStyle="bold"
             android:ellipsize="end"/>
 
         <!--<TextView-->
