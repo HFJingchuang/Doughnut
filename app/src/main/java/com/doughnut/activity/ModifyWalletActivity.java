@@ -3,8 +3,9 @@ package com.doughnut.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import com.doughnut.R;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
@@ -66,7 +68,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         } else if (view == mTvExportWallet) {
             importWallet();
         } else if (view == mLayoutCopy) {
-            Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
+            Util.clipboard(ModifyWalletActivity.this, "", mWalletAddress);
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
         } else if (view == mLayoutEdt) {
             changeWalletName();
@@ -104,8 +106,10 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletBalance = findViewById(R.id.tv_wallet_balance);
         mTvWalletBalanceCNY = findViewById(R.id.tv_balance_CNY);
         mTvWalletAddress = (TextView) findViewById(R.id.tv_wallet_address);
+        ViewUtil.EllipsisTextView(mTvWalletAddress);
 
         mTvWalletName = (TextView) findViewById(R.id.tv_wallet_name);
+        ViewUtil.EllipsisTextView(mTvWalletName);
 
         mLayoutModifyPwd = (RelativeLayout) findViewById(R.id.layout_modify_pwd);
         mLayoutModifyPwd.setOnClickListener(this);
@@ -171,6 +175,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                         if (result) {
                             WalletSp.getInstance(ModifyWalletActivity.this, mWalletAddress).setName(key);
                             mTvWalletName.setText(key);
+                            ViewUtil.EllipsisTextView(mTvWalletName);
                             mTitleBar.setTitle(key);
                         }
                     }

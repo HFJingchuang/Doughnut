@@ -128,7 +128,9 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 mTvBalance = itemView.findViewById(R.id.tv_balance);
                 mTvBalanceCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvAddress = itemView.findViewById(R.id.tv_wallet_address);
+
                 mTvName = itemView.findViewById(R.id.tv_wallet_name);
+                ViewUtil.EllipsisTextView(mTvName);
                 mTvTime = itemView.findViewById(R.id.tv_wallet_time);
                 mTvLabel = itemView.findViewById(R.id.tv_label);
                 mLayoutItem = itemView.findViewById(R.id.layout_wallet);
@@ -136,7 +138,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void onClick(View v) {
                         ModifyWalletActivity.startModifyWalletActivity(WalletManageActivity.this,
-                                mTvAddress.getText().toString());
+                                walletList.get(getAdapterPosition()));
                     }
                 });
             }
@@ -162,7 +164,9 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             String[] balanceArr = balance.split("\\.");
             holder.mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])) + "." + balanceArr[1]);
             holder.mTvAddress.setText(address);
+            ViewUtil.EllipsisTextView(holder.mTvAddress);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
+            ViewUtil.EllipsisTextView(holder.mTvName);
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
             WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY, null);
         }

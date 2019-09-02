@@ -91,13 +91,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CreateWalletActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activity.ChooseWalletBlockActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ImportWalletActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activity.TransactionRecordActivity"
             android:screenOrientation="portrait" />
@@ -130,10 +132,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TokenTransferActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activity.TokenReceiveActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activity.ConfirmWalletBakupInfoActivity"
             android:screenOrientation="portrait" />

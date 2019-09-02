@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.activity.StartBakupActivity;
@@ -95,4 +98,31 @@ public class ViewUtil {
     }
 
 
+    /**
+     * 替换TextView的省略号{...}为星号{***}
+     *
+     * @param textView
+     */
+    public static void EllipsisTextView(TextView textView) {
+        ViewTreeObserver observer = textView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            boolean isfirstRunning = true;
+
+            @Override
+            public void onGlobalLayout() {
+                if (isfirstRunning == false) return;
+                Layout layout = textView.getLayout();
+                if (textView != null && layout != null) {
+                    int lines = layout.getLineCount();
+                    int ellipsisCount = layout.getEllipsisCount(lines - 1);
+                    if (ellipsisCount == 0) return;
+                    String showText = textView.getText().toString();
+                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 1);
+                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 1);
+                    textView.setText(startStr + "***" + endStr);
+                    isfirstRunning = false;
+                }
+            }
+        });
+    }
 }
