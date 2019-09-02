@@ -67,11 +67,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private View mWalletAction, mMenuAction, mViewSee;
     private TextView mTvWalletName, mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
     private LinearLayout mTvCreateWallet, mTvImportWallet;
-    private ImageView mTvOpenEyes;
+    private ImageView mTvOpenEyes, mTvCloseEyes;
 
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
-    private boolean isAssetVisible = false;
+//    private boolean isAssetVisible = false;
     private BaseWalletUtil mWalletUtil;
 
     private String unit = "¥";
@@ -208,6 +208,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mTvOpenEyes = view.findViewById(R.id.openEyes);
         mTvOpenEyes.setOnClickListener(this);
 
+//        mTvCloseEyes = view.findViewById(R.id.closeEyes);
+//        mTvCloseEyes.setOnClickListener(this);
+
         isViewCreated = true;
 
         setWalletInfo();
@@ -281,6 +284,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.openEyes:
                 this.isHidden = !isHidden;
+//                view.setVisibility(View.INVISIBLE);
+                if (isHidden) {
+                    mTvOpenEyes.setImageResource(R.drawable.ic_close_eyes);
+                } else {
+                    mTvOpenEyes.setImageResource(R.drawable.ic_see);
+                }
+
                 mAdapter.refresh();
         }
     }
@@ -290,7 +300,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      * 显示钱包菜单pop
      */
     private void showWalletMenuPop() {
-//        if (walletMenuPop == null) {
+//        if (walletMenuPop == null) {q
 //            walletMenuPop = new WalletMenuPop(getActivity());
 //            walletMenuPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
 //                @Override
@@ -507,7 +517,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth,
                             R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("currency", "ETH"));
-            if (!isAssetVisible) {
+            if (!isHidden) {
 //                holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), Util.parseDouble(data.getString("balance", "0"))));
                 holder.mTvTokenCount.setText("" + Util.parseDouble(data.getString("balance", "0")));
             } else {

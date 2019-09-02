@@ -501,14 +501,14 @@ public class WalletManager implements IWallet {
 
                                                             if (v2 == null) {
                                                                 if (isHidden) {
-                                                                    v1.setText("**.*");
+                                                                    v1.setText("***");
                                                                 } else {
                                                                     v1.setText(String.format("%.2f", values));
                                                                 }
                                                             } else {
                                                                 if (isHidden) {
-                                                                    v1.setText("**.*");
-                                                                    v2.setText("**.*");
+                                                                    v1.setText("***");
+                                                                    v2.setText("**");
                                                                 } else {
                                                                     String balanceStr = values.toPlainString();
                                                                     String[] balanceArr = balanceStr.split("\\.");
@@ -519,14 +519,14 @@ public class WalletManager implements IWallet {
 
                                                             if (v4 == null) {
                                                                 if (isHidden) {
-                                                                    v3.setText("**.*");
+                                                                    v3.setText("***");
                                                                 }  else {
                                                                     v3.setText(String.format("%.2f", number));
                                                                 }
                                                             } else {
                                                                 if(isHidden) {
-                                                                    v3.setText("**.*");
-                                                                    v4.setText("**.*");
+                                                                    v3.setText("***");
+                                                                    v4.setText("**");
                                                                 } else {
                                                                     String balanceStr = number.toPlainString();
                                                                     String[] balanceArr = balanceStr.split("\\.");
