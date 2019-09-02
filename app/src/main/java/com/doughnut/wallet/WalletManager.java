@@ -444,7 +444,7 @@ public class WalletManager implements IWallet {
      * @param v4
      */
     @Override
-    public void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4) {
+    public void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4, Boolean isHidden) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -500,21 +500,40 @@ public class WalletManager implements IWallet {
                                                         public void run() {
 
                                                             if (v2 == null) {
-                                                                v1.setText(String.format("%.2f", values));
+                                                                if (isHidden) {
+                                                                    v1.setText("**.*");
+                                                                } else {
+                                                                    v1.setText(String.format("%.2f", values));
+                                                                }
                                                             } else {
-                                                                String balanceStr = values.toPlainString();
-                                                                String[] balanceArr = balanceStr.split("\\.");
-                                                                v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                                v2.setText(balanceArr[1]);
+                                                                if (isHidden) {
+                                                                    v1.setText("**.*");
+                                                                    v2.setText("**.*");
+                                                                } else {
+                                                                    String balanceStr = values.toPlainString();
+                                                                    String[] balanceArr = balanceStr.split("\\.");
+                                                                    v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                                    v2.setText(balanceArr[1]);
+                                                                }
                                                             }
 
                                                             if (v4 == null) {
-                                                                v3.setText(String.format("%.2f", number));
+                                                                if (isHidden) {
+                                                                    v3.setText("**.*");
+                                                                }  else {
+                                                                    v3.setText(String.format("%.2f", number));
+                                                                }
                                                             } else {
-                                                                String balanceStr = number.toPlainString();
-                                                                String[] balanceArr = balanceStr.split("\\.");
-                                                                v3.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                                v4.setText(balanceArr[1]);
+                                                                if(isHidden) {
+                                                                    v3.setText("**.*");
+                                                                    v4.setText("**.*");
+                                                                } else {
+                                                                    String balanceStr = number.toPlainString();
+                                                                    String[] balanceArr = balanceStr.split("\\.");
+                                                                    v3.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                                    v4.setText(balanceArr[1]);
+                                                                }
+
                                                             }
 
                                                         }

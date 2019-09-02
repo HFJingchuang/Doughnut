@@ -36,7 +36,7 @@ public interface IWallet {
 
     void getTokenPrice(String base, BigDecimal balance, TextView v1, TextView v2);
 
-    void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4);
+    void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4, Boolean isHidden);
 
     void getAllTokens();
 }

@@ -51,6 +51,7 @@
 
     <!-- 资产管理 -->
     <color name="color_wallet_name">#021933</color>
+    <color name="color_currency_name">#021E38</color>
 
     <color name="color_detail_address">#FF021E38</color>
     <color name="color_detail_time">#FFA6A9AD</color>

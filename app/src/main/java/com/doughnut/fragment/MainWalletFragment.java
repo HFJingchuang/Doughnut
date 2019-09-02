@@ -67,6 +67,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private View mWalletAction, mMenuAction, mViewSee;
     private TextView mTvWalletName, mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
     private LinearLayout mTvCreateWallet, mTvImportWallet;
+    private ImageView mTvOpenEyes;
 
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
@@ -82,6 +83,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private Integer deletePosition;
 
     private List dataList;
+
+    private boolean isHidden;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -102,6 +105,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mContext = getActivity();
         dataList = new ArrayList();
         deletePosition = null;
+        isHidden = false;
         initView(view);
     }
 
@@ -201,6 +205,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mTvImportWallet = view.findViewById(R.id.import_wallet);
         mTvImportWallet.setOnClickListener(this);
 
+        mTvOpenEyes = view.findViewById(R.id.openEyes);
+        mTvOpenEyes.setOnClickListener(this);
+
         isViewCreated = true;
 
         setWalletInfo();
@@ -221,8 +228,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
             {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.color.common_red)
-                        .setImage(R.drawable.shape_delete_bg)
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
                         .setText("删除")
                         .setTextColor(Color.WHITE)
                         .setTextSize(16)
@@ -273,6 +279,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             case R.id.import_wallet:
                 WalletImportActivity.startImportWalletActivity(mContext);
                 break;
+            case R.id.openEyes:
+                this.isHidden = !isHidden;
+                mAdapter.refresh();
         }
     }
 
@@ -465,7 +474,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 //            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
 //            mTvBalanceDec.setText(balanceArr[1]);
             // SWTC实时总价值
-            walletManager.getAllTokenPrice(dataList, mTvBalanceCny, mTvBalanceCnyDec, mTvBalance, mTvBalanceDec);
+            walletManager.getAllTokenPrice(dataList, mTvBalanceCny, mTvBalanceCnyDec, mTvBalance, mTvBalanceDec, isHidden);
             handleTokenRequestResult(params, loadmore, extra);
         }
 

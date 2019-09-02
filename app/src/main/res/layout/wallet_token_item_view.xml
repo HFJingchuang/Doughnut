@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="77dp"
-    android:background="@color/color_white_1"
+    android:layout_height="66dp"
+    android:background="#F8F8FF"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/dimen_content_padding"
@@ -49,15 +49,15 @@
             android:ellipsize="end"/>
 
         <!--<TextView-->
-            <!--android:id="@+id/token_asset"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="3dp"-->
-            <!--android:ellipsize="end"-->
-            <!--android:singleLine="true"-->
-            <!--android:textColor="@color/color_text_80"-->
-            <!--android:textSize="@dimen/text_size_14"-->
-            <!--tools:text="≈ ¥ 120" />-->
+        <!--android:id="@+id/token_asset"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="3dp"-->
+        <!--android:ellipsize="end"-->
+        <!--android:singleLine="true"-->
+        <!--android:textColor="@color/color_text_80"-->
+        <!--android:textSize="@dimen/text_size_14"-->
+        <!--tools:text="≈ ¥ 120" />-->
 
     </LinearLayout>
 </LinearLayout>
