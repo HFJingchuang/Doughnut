@@ -20,7 +20,6 @@ import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
-import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletSp;
 
 
@@ -37,7 +36,6 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private LinearLayout mLayoutSend;
     private TextView mAddressTv;
     private TextView mNameTv;
-    private String currentWallet;
 
     public static MainUserFragment newInstance() {
         Bundle args = new Bundle();
@@ -111,7 +109,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutRight) {
             mLayoutRight.setClickable(false);
             ModifyWalletActivity.startModifyWalletActivity(getActivity(),
-                    currentWallet);
+                    mAddressTv.getText().toString());
         } else if (view == mLayoutReceive) {
             mLayoutReceive.setClickable(false);
             TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
@@ -150,11 +148,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void setWalletInfo() {
-        currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
         mAddressTv.setText(currentWallet);
-        ViewUtil.EllipsisTextView(mAddressTv);
         mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
-        ViewUtil.EllipsisTextView(mNameTv);
     }
 
 }
