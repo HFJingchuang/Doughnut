@@ -150,6 +150,9 @@
         <activity
             android:name=".activity.JtNodeRecordActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WalletQRActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

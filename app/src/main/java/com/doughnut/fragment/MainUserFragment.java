@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
 import com.doughnut.activity.WalletManageActivity;
+import com.doughnut.activity.WalletQRActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.ViewUtil;
@@ -37,6 +39,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private LinearLayout mLayoutSend;
     private TextView mAddressTv;
     private TextView mNameTv;
+    private ImageView mImgQR;
     private String currentWallet;
 
     public static MainUserFragment newInstance() {
@@ -86,6 +89,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRight.setClickable(true);
         mLayoutReceive.setClickable(true);
         mLayoutSend.setClickable(true);
+        mImgQR.setClickable(true);
     }
 
     @Override
@@ -118,6 +122,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutSend) {
             mLayoutSend.setClickable(false);
             TokenTransferActivity.startTokenTransferActivity(getActivity());
+        } else if (view == mImgQR) {
+            mImgQR.setClickable(false);
+            WalletQRActivity.startTokenReceiveActivity(getActivity(), currentWallet);
         }
     }
 
@@ -135,6 +142,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutSend = view.findViewById(R.id.layout_send);
         mAddressTv = view.findViewById(R.id.tv_wallet_address);
         mNameTv = view.findViewById(R.id.tv_wallet_name);
+        mImgQR = view.findViewById(R.id.img_qr);
 
         mLayoutManageWallet.setOnClickListener(this);
         mLayoutRecordTransaction.setOnClickListener(this);
@@ -145,6 +153,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRight.setOnClickListener(this);
         mLayoutReceive.setOnClickListener(this);
         mLayoutSend.setOnClickListener(this);
+        mImgQR.setOnClickListener(this);
 
         setWalletInfo();
     }

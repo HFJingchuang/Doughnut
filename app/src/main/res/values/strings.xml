@@ -284,4 +284,6 @@
     <string name="tv_amount_tips">转账数量</string>
     <string name="tv_err_amount">余额不足</string>
     <string name="tv_err_address1">转入和转出钱包地址不能为同一个</string>
+    <string name="tv_share">分享给他人进行收款</string>
+    <string name="tv_save">保存二维码</string>
 </resources>
