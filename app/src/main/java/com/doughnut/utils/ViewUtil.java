@@ -1,13 +1,25 @@
 package com.doughnut.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+<<<<<<< HEAD
+=======
+import android.graphics.Rect;
+import android.text.Layout;
+>>>>>>> gwang
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+<<<<<<< HEAD
+=======
+import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
+import android.widget.TextView;
+>>>>>>> gwang
 
 import com.doughnut.R;
 import com.doughnut.activity.StartBakupActivity;
@@ -95,4 +107,81 @@ public class ViewUtil {
     }
 
 
+<<<<<<< HEAD
+=======
+    /**
+     * 替换TextView的省略号{...}为星号{***}
+     *
+     * @param textView
+     */
+    public static void EllipsisTextView(TextView textView) {
+        ViewTreeObserver observer = textView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            boolean isfirstRunning = true;
+
+            @Override
+            public void onGlobalLayout() {
+                if (isfirstRunning == false) return;
+                Layout layout = textView.getLayout();
+                if (textView != null && layout != null) {
+                    int lines = layout.getLineCount();
+                    int ellipsisCount = layout.getEllipsisCount(lines - 1);
+                    if (ellipsisCount == 0) return;
+                    String showText = textView.getText().toString();
+                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 1);
+                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 1);
+                    textView.setText(startStr + "***" + endStr);
+                    isfirstRunning = false;
+                }
+            }
+        });
+    }
+
+    /**
+     * @param root         最外层布局，需要调整的布局
+     * @param scrollToView 被键盘遮挡的scrollToView，滚动root，使scrollToView在root可视区域的底部
+     */
+    public static void controlKeyboardLayout(final View root, final ScrollView scrollToView, final Activity context) {
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                final Rect rect = new Rect();
+                //获取root在窗体的可视区域
+                root.getWindowVisibleDisplayFrame(rect);
+                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                int rootInvisibleHeight = root.getRootView().getHeight() - rect.bottom;
+                //若不可视区域高度大于100，则键盘显示
+                if (rootInvisibleHeight > 100) {
+                    int[] location = new int[2];
+                    //获取scrollToView在窗体的坐标
+                    scrollToView.getLocationInWindow(location);
+                    final Rect rect1 = new Rect();
+                    if (context.getWindow().getCurrentFocus() == null) {
+                        return;
+                    }
+                    context.getWindow().getCurrentFocus().getGlobalVisibleRect(rect1);
+                    final int px = dip2px(context, 80);
+                    if ((rect.bottom < rect1.bottom) || ((rect.bottom - rect1.bottom) < px)) {
+                        scrollToView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollToView.scrollBy(0, px - (rect.bottom - rect1.bottom));
+                            }
+                        });
+                    } else if ((rect.bottom - rect1.bottom) > 2 * px) {
+                        scrollToView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollToView.scrollBy(0, -((rect.bottom - rect1.bottom) - px));
+                            }
+                        });
+                    }
+                } else {
+                    //键盘隐藏
+                    root.scrollTo(0, 0);
+                }
+            }
+        });
+    }
+>>>>>>> gwang
 }

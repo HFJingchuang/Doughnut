@@ -49,9 +49,10 @@ public class QRUtils {
      * @throws WriterException
      */
     public static Bitmap createQRCode(String content, int widthAndHeight, Bitmap.Config config) throws WriterException {
-        Hashtable<EncodeHintType, String> hints = new Hashtable<>();
+        Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-        BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, widthAndHeight, widthAndHeight);
+        hints.put(EncodeHintType.MARGIN, 0);
+        BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, widthAndHeight, widthAndHeight, hints);
 
         int width = matrix.getWidth();
         int height = matrix.getHeight();

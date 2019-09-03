@@ -1,5 +1,6 @@
 package com.doughnut.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -49,20 +50,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Locale userLocale = LanguageUtil.getUserLocale(this);
-        //系统语言改变了应用保持之前设置的语言
-        if (userLocale != null) {
-            Locale.setDefault(userLocale);
-            Configuration configuration = new Configuration(newConfig);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                configuration.setLocale(userLocale);
-                createConfigurationContext(configuration);
-            } else {
-                configuration.locale = userLocale;
-            }
-            getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+    protected void attachBaseContext(Context base) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Locale locale = LanguageUtil.getUserLocale(base);
+            super.attachBaseContext(LanguageUtil.updateLocale(base, locale));
+        } else {
+            super.attachBaseContext(base);
         }
     }
 
@@ -72,8 +65,7 @@ public class BaseActivity extends AppCompatActivity {
             case "EVENT_REFRESH_LANGUAGE":
                 Locale locale = LanguageUtil.getUserLocale(this);
                 LanguageUtil.updateLocale(this, locale);
-//                recreate();//刷新界面
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, LanguageActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 overridePendingTransition(0, 0);

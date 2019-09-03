@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Util {
@@ -215,5 +217,19 @@ public class Util {
     public static String formatWithComma(long amunot) {
         DecimalFormat df = new DecimalFormat("#,###");
         return df.format(amunot);
+    }
+
+    /**
+     * 验证输入数目格式
+     */
+    public static boolean verifyAmount(String amount) {
+        String trim = amount.replaceAll("0|\\.", "");
+        if (!TextUtils.isEmpty(trim)) {
+            String regex = "^([1-9][\\d]{0,7}|0)(\\.[\\d]{1,2})?$";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(amount);
+            return m.matches();
+        }
+        return false;
     }
 }

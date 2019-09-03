@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -122,12 +123,20 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             TextView mTvName;
             TextView mTvTime;
             TextView mTvLabel;
+            ImageView mImgQR;
 
             public VH(View v) {
                 super(v);
                 mTvBalance = itemView.findViewById(R.id.tv_balance);
                 mTvBalanceCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvAddress = itemView.findViewById(R.id.tv_wallet_address);
+                mImgQR = itemView.findViewById(R.id.img_qr);
+                mImgQR.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        WalletQRActivity.startTokenReceiveActivity(WalletManageActivity.this, walletList.get(getAdapterPosition()));
+                    }
+                });
                 mTvName = itemView.findViewById(R.id.tv_wallet_name);
                 mTvTime = itemView.findViewById(R.id.tv_wallet_time);
                 mTvLabel = itemView.findViewById(R.id.tv_label);

@@ -55,7 +55,8 @@ public class LanguageUtil {
     public static String getUserSelect(Context pContext) {
         String fileName = pContext.getPackageName() + "_" + "LANGUAGE";
         SharedPreferences preferences = pContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String select = preferences.getString(SELECT, "auto");
+        Locale locale = LanguageUtil.getUserLocale(pContext);
+        String select = preferences.getString(SELECT, locale.getLanguage());
         return select;
     }
 
@@ -67,13 +68,13 @@ public class LanguageUtil {
      *    
      */
     public static Locale getCurrentLocale(Context pContext) {
-        Locale Locale;
+        Locale locale;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Locale = pContext.getResources().getConfiguration().getLocales().get(0);
+            locale = pContext.getResources().getConfiguration().getLocales().get(0);
         } else {
-            Locale = pContext.getResources().getConfiguration().locale;
+            locale = pContext.getResources().getConfiguration().locale;
         }
-        return Locale;
+        return locale;
     }
 
     /**
@@ -114,17 +115,15 @@ public class LanguageUtil {
      * @param pNewUserLocale    
      */
     public static Context updateLocale(Context pContext, Locale pNewUserLocale) {
-        Context updateContext;
         Configuration configuration = pContext.getResources().getConfiguration();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             configuration.setLocale(pNewUserLocale);
-            updateContext = pContext.createConfigurationContext(configuration);
+            pContext.createConfigurationContext(configuration);
         } else {
             configuration.locale = pNewUserLocale;
-            updateContext = pContext;
         }
         pContext.getResources().updateConfiguration(configuration, pContext.getResources().getDisplayMetrics());
-        return updateContext;
+        return pContext;
     }
 
     /**

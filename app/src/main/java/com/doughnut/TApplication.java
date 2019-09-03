@@ -2,6 +2,7 @@ package com.doughnut;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 
@@ -58,12 +59,12 @@ public class TApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Locale locale = LanguageUtil.getUserLocale(base);
-            super.attachBaseContext(LanguageUtil.updateLocale(base, locale));
-        } else {
-            super.attachBaseContext(base);
-        }
+        super.attachBaseContext(base);
         MultiDex.install(base);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 }

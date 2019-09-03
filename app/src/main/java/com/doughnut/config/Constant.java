@@ -19,6 +19,7 @@ public class Constant {
     public final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
     public final static String TOEKN_AMOUNT = "Token_Amount";
     public final static String TOEKN_NAME = "Token_Name";
+    public final static String MEMO = "Memo";
 
     public final static String PRIVATE_KEY = "Private_Key";
     public final static String KEY_STORE = "Key_Store";

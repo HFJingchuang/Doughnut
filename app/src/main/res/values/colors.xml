@@ -65,6 +65,8 @@
     <color name="color_item_node">#FFEEEEF2</color>
     <color name="color_create_btn">#969696</color>
     <color name="color_psd_tips">#F55758</color>
-
+    <color name="color_receive_node">#FFF5F6FB</color>
+    <color name="color_receive_hint">#FF888888</color>
+    <color name="color_btn_transfer">#FF969696</color>
 
 </resources>
