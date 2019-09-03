@@ -18,53 +18,95 @@
         android:paddingLeft="@dimen/dimen_content_padding"
         android:paddingRight="@dimen/dimen_content_padding">
 
+
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 
-            <!--<TextView-->
-                <!--style="@style/Style.WalletCreateTitle"-->
-                <!--android:text="@string/enter_title_wallet_name" />-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_24"
+                android:textColor="@color/color_currency_name"
+                android:textStyle="bold"
+                android:text="@string/enter_title_create_wallet" />
+        </LinearLayout>
 
             <EditText
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/shape_dialog_edt"
                 android:id="@+id/edt_wallet_name"
-                style="@style/Style.Edit.WalletCreate"
+                android:paddingLeft="17dp"
                 android:hint="@string/enter_hint_wallet_name" />
-        </LinearLayout>
 
-        <View style="@style/Style.Line" />
-
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-                <!--style="@style/Style.WalletCreateTitle"-->
-                <!--android:text="@string/enter_title_password" />｀-->
+        <TextView
+            android:id="@+id/alert_wallet_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:text=""
+            android:textColor="@color/color_psd_tips"
+            android:textSize="@dimen/text_size_11"
+            android:textStyle="bold" />
 
             <EditText
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:inputType="textPassword"
+                android:background="@drawable/shape_dialog_edt"
                 android:id="@+id/edt_wallet_pwd"
-                style="@style/Style.Edit.WalletCreate.Pwd"
-                android:hint="@string/enter_hint_password" />
-        </LinearLayout>
+                android:paddingLeft="17dp"
+                android:hint="@string/enter_hint_password"/>
 
-        <View style="@style/Style.Line" />
-
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <!--<TextView-->
-                <!--style="@style/Style.WalletCreateTitle"-->
-                <!--android:text="@string/enter_title_verify" />-->
+        <TextView
+            android:id="@+id/alert_psd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:text="8-64位大小写字母、数字组合密码"
+            android:textColor="@color/color_psd_tips"
+            android:textSize="@dimen/text_size_11"
+            android:textStyle="bold" />
 
             <EditText
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:inputType="textPassword"
+                android:background="@drawable/shape_dialog_edt"
                 android:id="@+id/edt_wallet_pwd_confirm"
-                style="@style/Style.Edit.WalletCreate.Pwd"
+                android:paddingLeft="17dp"
                 android:hint="@string/enter_hint_verify" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/alert_psd_rep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:text=""
+            android:textColor="@color/color_psd_tips"
+            android:textSize="@dimen/text_size_11"
+            android:textStyle="bold" />
 
-        <View style="@style/Style.Line" />
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@drawable/shape_dialog_btn"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/text_size_18"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:text="@string/btn_create_wallet_done" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
@@ -83,11 +125,15 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="13sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_confirm"
-            style="@style/Style.Btn.Theme"
-            android:layout_marginTop="50dp"
-            android:text="@string/btn_create_wallet_done" />
+        <TextView
+            android:id="@+id/alert_service_terms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:text=""
+            android:textColor="@color/color_psd_tips"
+            android:textSize="@dimen/text_size_11"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

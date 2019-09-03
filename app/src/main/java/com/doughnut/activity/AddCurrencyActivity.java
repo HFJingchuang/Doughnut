@@ -36,14 +36,13 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_currency);
 
-        mTitleBar = (TitleBar) findViewById(R.id.title_bar);
-        mTitleBar.setTitle(getString(R.string.content_add_currency_type));
+        mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setRightTextColor(R.color.white);
+        mTitleBar.setLeftTextColor(R.color.white);
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
+        mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
+        mTitleBar.setTitle("添加币种");
         mTitleBar.setTitleBarClickListener(this);
-
-
-
     }
 
     @Override
@@ -67,7 +66,7 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-    public static void startLanguageActivity(Context from) {
+    public static void startActivity(Context from) {
         Intent intent = new Intent(from, AddCurrencyActivity.class);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);

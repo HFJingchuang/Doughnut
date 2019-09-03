@@ -63,5 +63,8 @@
     <color name="color_edt_add_node">#fff4f5f6</color>
     <color name="color_dialog_confirm">#FF3B6CA6</color>
     <color name="color_item_node">#FFEEEEF2</color>
+    <color name="color_create_btn">#969696</color>
+    <color name="color_psd_tips">#F55758</color>
+
 
 </resources>

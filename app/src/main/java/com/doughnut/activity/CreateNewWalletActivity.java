@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.Constant;
-import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 
@@ -28,7 +27,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm;
     private ImageView mImgServiceTerms;
-    private TextView mTvServiceTerms;
+    private TextView mTvServiceTerms, mTVAlertWalletName, mTVAlertPsd, mTVAlertPsdRep, mTVAlertServiceTerms;
 
     private Button mBtnConfirm;
 
@@ -64,6 +63,11 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         mTvServiceTerms.setText(Html.fromHtml(getString(R.string.content_read_service)));
         mTvServiceTerms.setOnClickListener(this);
         mBtnConfirm = findViewById(R.id.btn_confirm);
+
+        mTVAlertWalletName = findViewById(R.id.alert_wallet_name);
+        mTVAlertPsd = findViewById(R.id.alert_psd);
+        mTVAlertPsdRep = findViewById(R.id.alert_psd_rep);
+        mTVAlertServiceTerms = findViewById(R.id.alert_service_terms);
 
         mBtnConfirm.setOnClickListener(this);
     }
@@ -133,32 +137,52 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         boolean readedTerms = mImgServiceTerms.isSelected();
 
         if (TextUtils.isEmpty(walletName)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_name), "OK");
+            // TODO
+            mTVAlertWalletName.setText(R.string.dialog_content_no_wallet_name);
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_name), "OK");
             return false;
+        } else {
+            mTVAlertWalletName.setText("");
         }
         if (TextUtils.isEmpty(walletPwd)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_password), "OK");
+            mTVAlertPsd.setText(R.string.dialog_content_no_password);
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_password), "OK");
             return false;
+        } else {
+            mTVAlertPsd.setText("8-64位大小写字母、数字组合密码");
         }
 
         if (TextUtils.isEmpty(walletPwdRepeat)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_verify_password), "OK");
+            mTVAlertPsdRep.setText(R.string.dialog_content_no_verify_password);
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_verify_password), "OK");
             return false;
+        } else {
+            mTVAlertPsdRep.setText("");
         }
 
         if (!TextUtils.equals(walletPwdRepeat, walletPwd)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_passwords_unmatch), "OK");
+            mTVAlertPsdRep.setText(R.string.dialog_content_passwords_unmatch);
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_passwords_unmatch), "OK");
             return false;
+        } else {
+            mTVAlertPsdRep.setText("");
         }
 
-        if (walletPwd.length() < 8) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_short_password), "OK");
+        if (!walletPwd.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9]{8,64}$")) {
+
+            mTVAlertPsd.setText("8-64位大小写字母、数字组合密码");
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_password), "OK");
             return false;
+        } else {
+            mTVAlertPsd.setText("8-64位大小写字母、数字组合密码");
         }
 
         if (!readedTerms) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_read_service), "OK");
+            mTVAlertServiceTerms.setText(R.string.dialog_content_no_read_service);
+//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_read_service), "OK");
             return false;
+        } else {
+            mTVAlertServiceTerms.setText("");
         }
 
         return true;

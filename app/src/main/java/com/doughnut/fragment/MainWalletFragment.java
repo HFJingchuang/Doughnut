@@ -269,7 +269,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 //                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
                 break;
             case R.id.add_asset:
-                AddCurrencyActivity.startLanguageActivity(mContext);
+                AddCurrencyActivity.startActivity(mContext);
                 break;
             case R.id.view_see:
                 this.isHidden = !isHidden;
