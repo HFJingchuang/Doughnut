@@ -31,17 +31,20 @@ import java.util.List;
 public class TransactionDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     private TitleBar mTitleBar;
-    private TextView mTvTransactionStatus;
-    private TextView mTvCount;
-    private TextView mTvSender;
-    private TextView mTvReceiver;
+    private TextView mTvHash;
+    private TextView mTvType;
+    private TextView mTvFrom;
+    private TextView mTvTo;
+    private TextView mTvAmount;
+    private TextView mTvTransferAmount;
+    private TextView mTvValue;
+    private TextView mTvTransferValue;
+    private TextView mTvTransferType;
     private TextView mTvGas;
-    private TextView mTvInfo;
-    private TextView mTvTransactionId;
-    private TextView mTvTransactionTime;
-    private TextView mTvCopyUrl;
+    private TextView mTvTime;
+    private TextView mTvResult;
+    private TextView mTvMemo;
 
-    private ImageView mImgTransactionQrCode;
     private GsonUtil transactionData;
     private static Transactions mTransactions;
 
@@ -61,6 +64,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_transaction_details));
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -68,22 +72,19 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             }
         });
 
-        mTvTransactionStatus = findViewById(R.id.tv_transaction_status);
-        mTvCount = findViewById(R.id.tv_transaction_count);
-        mTvSender = findViewById(R.id.tv_send_address);
-        mTvSender.setOnClickListener(this);
-
-        mTvReceiver = findViewById(R.id.tv_receive_address);
-        mTvReceiver.setOnClickListener(this);
-
+        mTvHash = findViewById(R.id.tv_hash);
+        mTvType = findViewById(R.id.tv_type);
+        mTvFrom = findViewById(R.id.tv_from);
+        mTvTo = findViewById(R.id.tv_to);
+        mTvAmount = findViewById(R.id.tv_amount);
+        mTvTransferAmount = findViewById(R.id.tv_transfer_amount);
+        mTvValue = findViewById(R.id.tv_value);
+        mTvTransferValue = findViewById(R.id.tv_transfer_value);
+        mTvTransferType = findViewById(R.id.tv_transfer_type);
         mTvGas = findViewById(R.id.tv_gas);
-        mTvInfo = findViewById(R.id.tv_info);
-        mTvTransactionId = findViewById(R.id.tv_transaction_id);
-        mTvTransactionId.setOnClickListener(this);
-        mTvTransactionTime = findViewById(R.id.tv_transaction_time);
-        mTvCopyUrl = findViewById(R.id.tv_copy_transaction_url);
-        mTvCopyUrl.setOnClickListener(this);
-        mImgTransactionQrCode = findViewById(R.id.img_transaction_qrcode);
+        mTvTime = findViewById(R.id.tv_time);
+        mTvResult = findViewById(R.id.tv_result);
+        mTvMemo = findViewById(R.id.tv_memo);
 
         updateData();
     }
@@ -94,16 +95,16 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         String address = WalletSp.getInstance(this, "").getCurrentWallet();
         switch (mTransactions.getType()) {
             case "sent":
-                mTvCount.setText("-" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
-                mTvCount.setTextColor(getResources().getColor(R.color.common_red));
-                mTvReceiver.setText(mTransactions.getCounterparty());
-                mTvSender.setText(address);
+                mTvAmount.setText("-" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
+                mTvAmount.setTextColor(getResources().getColor(R.color.common_red));
+                mTvTo.setText(mTransactions.getCounterparty());
+                mTvFrom.setText(address);
                 break;
             case "received":
-                mTvCount.setText("+" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
-                mTvCount.setTextColor(getResources().getColor(R.color.common_blue));
-                mTvSender.setText(mTransactions.getCounterparty());
-                mTvReceiver.setText(address);
+                mTvAmount.setText("+" + mTransactions.getAmount().getValue() + " " + mTransactions.getAmount().getCurrency());
+                mTvAmount.setTextColor(getResources().getColor(R.color.common_blue));
+                mTvFrom.setText(mTransactions.getCounterparty());
+                mTvTo.setText(address);
                 break;
             case "offernew":
                 String getsCur = mTransactions.getGets().getCurrency();
@@ -133,25 +134,25 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         }
                     }
                     if (getsAmount.equals(new BigDecimal("0")) || paysAmount.equals(new BigDecimal("0"))) {
-                        mTvCount.setText(mTransactions.getGets().getValue() + " " + getsCur + " -> " + mTransactions.getPays().getValue() + " " + paysCur);
-                        mTvReceiver.setText("---");
+                        mTvAmount.setText(mTransactions.getGets().getValue() + " " + getsCur + " -> " + mTransactions.getPays().getValue() + " " + paysCur);
+                        mTvTo.setText("---");
                     } else {
-                        mTvReceiver.setText(receiver);
-                        mTvCount.setText(paysAmount.stripTrailingZeros().toPlainString() + " " + getsCur + " -> " + getsAmount.stripTrailingZeros().toPlainString() + " " + paysCur);
+                        mTvTo.setText(receiver);
+                        mTvAmount.setText(paysAmount.stripTrailingZeros().toPlainString() + " " + getsCur + " -> " + getsAmount.stripTrailingZeros().toPlainString() + " " + paysCur);
                     }
-                    mTvSender.setText(address);
+                    mTvFrom.setText(address);
                 }
-                mTvCount.setTextColor(getResources().getColor(R.color.common_green));
+                mTvAmount.setTextColor(getResources().getColor(R.color.common_green));
                 break;
             case "offercancel":
                 if (mTransactions.getGets() != null && mTransactions.getPays() != null) {
-                    mTvCount.setText(mTransactions.getGets().getValue() + " " + mTransactions.getGets().getCurrency() + " -> " + mTransactions.getPays().getValue() + " " + mTransactions.getPays().getCurrency());
+                    mTvAmount.setText(mTransactions.getGets().getValue() + " " + mTransactions.getGets().getCurrency() + " -> " + mTransactions.getPays().getValue() + " " + mTransactions.getPays().getCurrency());
                 } else {
-                    mTvCount.setText("---");
+                    mTvAmount.setText("---");
                 }
-                mTvCount.setTextColor(getResources().getColor(R.color.common_green));
-                mTvSender.setText(address);
-                mTvReceiver.setText("---");
+                mTvAmount.setTextColor(getResources().getColor(R.color.common_green));
+                mTvFrom.setText(address);
+                mTvTo.setText("---");
                 break;
             case "offereffect":
                 BigDecimal getsAmount1 = new BigDecimal("0");
@@ -177,11 +178,11 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     String payCurrency = mTransactions.getEffects().getJSONObject(0).getJSONObject("paid").getString("currency");
                     String getCurrency = mTransactions.getEffects().getJSONObject(0).getJSONObject("got").getString("currency");
-                    mTvSender.setText(receiver);
-                    mTvCount.setText(paysAmount1.stripTrailingZeros().toPlainString() + " " + payCurrency + " -> " + getsAmount1.stripTrailingZeros().toPlainString() + " " + getCurrency);
+                    mTvFrom.setText(receiver);
+                    mTvAmount.setText(paysAmount1.stripTrailingZeros().toPlainString() + " " + payCurrency + " -> " + getsAmount1.stripTrailingZeros().toPlainString() + " " + getCurrency);
                 }
-                mTvReceiver.setText(address);
-                mTvCount.setTextColor(getResources().getColor(R.color.common_green));
+                mTvFrom.setText(address);
+                mTvAmount.setTextColor(getResources().getColor(R.color.common_green));
                 break;
             default:
                 // TODO parse other type
@@ -193,20 +194,20 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             for (int i = 0; i < memos.size(); i++) {
                 info = info + memos.get(i).getMemoData() + "\n";
             }
-            mTvInfo.setText(info);
+            mTvMemo.setText(info);
         }
         mTvGas.setText(new BigDecimal(mTransactions.getFee()).stripTrailingZeros().toPlainString() + " SWT");
-        mTvTransactionId.setText(mTransactions.getHash());
+        mTvHash.setText(mTransactions.getHash());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(mTransactions.getDate().longValue() * 1000);
         String sim = formatter.format(date);
-        mTvTransactionTime.setText(sim);
+        mTvTime.setText(sim);
         if ("tesSUCCESS".equals(mTransactions.getResult())) {
-            mTvTransactionStatus.setText("成功");
-            mTvTransactionStatus.setTextColor(getResources().getColor(R.color.common_green));
+            mTvResult.setText("成功");
+            mTvResult.setTextColor(getResources().getColor(R.color.common_green));
         } else {
-            mTvTransactionStatus.setText("失败");
-            mTvTransactionStatus.setTextColor(getResources().getColor(R.color.common_red));
+            mTvResult.setText("失败");
+            mTvResult.setTextColor(getResources().getColor(R.color.common_red));
         }
     }
 
@@ -217,27 +218,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         context.startActivity(intent);
     }
 
-    private void createQRCode(String transactionUrl) {
-        try {
-            Bitmap bitmap = QRUtils.createQRCode(transactionUrl, getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
-            mImgTransactionQrCode.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onClick(View v) {
-        if (v == mTvCopyUrl) {
-        } else if (v == mTvSender) {
-            Util.clipboard(TransactionDetailsActivity.this, "", mTvSender.getText().toString());
-            ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_send_address_copied))
-            ;
-        } else if (v == mTvReceiver) {
-            Util.clipboard(TransactionDetailsActivity.this, "", mTvReceiver.getText().toString());
-            ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_receive_address_copied))
-            ;
-        } else if (v == mTvTransactionId) {
-        }
+
     }
 }
