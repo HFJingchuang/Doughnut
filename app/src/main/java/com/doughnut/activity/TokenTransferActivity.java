@@ -6,32 +6,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.android.jtblk.client.Wallet;
 import com.android.jtblk.utils.CheckUtils;
-import com.contrarywind.adapter.WheelAdapter;
-import com.contrarywind.listener.OnItemSelectedListener;
-import com.contrarywind.view.WheelView;
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
-import com.doughnut.dialog.EditDialog;
-import com.doughnut.dialog.OrderDetailDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,12 +40,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
     public final static String TAG = "TokenTransferActivity";
     private TitleBar mTitleBar;
-    private WheelView mWhTokenName;
-    private TextView mTvGas;
-    private EditText mEdtWalletAddress, mEdtTransferNum, mEdtTransferRemark;
-    private Button mBtnNext;
-    private double mGasPrice = 0.0f;
-    private List<String> tokenEntries;
+    private TextView mTvTokenName, mTvBalance, mTvErrAddr, mTvErrAmount;
+    private EditText mEdtWalletAddress, mEdtTransferNum, mEdtMemo;
+    private Button mBtnConfirm;
+    private LinearLayout mLayoutToken;
+    private String mBalance;
 
     private final static int SCAN_REQUEST_CODE = 10001;
 
@@ -54,13 +53,15 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer_token);
         initView();
+        initData();
     }
 
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setTitle(getString(R.string.titleBar_transfer));
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setRightDrawable(R.drawable.ic_pop_item_scan);
+        mTitleBar.setRightDrawable(R.drawable.ic_scan);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -72,60 +73,157 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 startActivityForResult(new Intent(TokenTransferActivity.this, CaptureActivity.class), SCAN_REQUEST_CODE);
             }
         });
-
-        mEdtWalletAddress = findViewById(R.id.edt_wallet_address);
-
-        mEdtTransferNum = findViewById(R.id.edt_transfer_num);
-        mWhTokenName = findViewById(R.id.wh_token_name);
-
-        //准备数据
-        tokenEntries = new ArrayList<>();
-        tokenEntries.clear();
-        tokenEntries.add("SWT");
-        tokenEntries.add("CNT");
-        tokenEntries.add("MOAC");
-        tokenEntries.add("JCC");
-        tokenEntries.add("CSP");
-        mWhTokenName.setAdapter(new ArrayWheelAdapter(tokenEntries));
-        mWhTokenName.setOnItemSelectedListener(new OnItemSelectedListener() {
+        mTvErrAddr = findViewById(R.id.tv_err_address);
+        mTvErrAmount = findViewById(R.id.tv_err_amount);
+        mEdtWalletAddress = findViewById(R.id.edt_address);
+        mEdtWalletAddress.requestFocus();
+        mEdtWalletAddress.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemSelected(int index) {
-                Toast.makeText(TokenTransferActivity.this, "" + tokenEntries.get(index), Toast.LENGTH_SHORT).show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isTransfer();
+                if (mTvErrAddr.isShown()) {
+                    mTvErrAddr.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mEdtWalletAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String address = mEdtWalletAddress.getText().toString();
+                    if (!TextUtils.isEmpty(address)) {
+                        String currentAddr = WalletSp.getInstance(TokenTransferActivity.this, "").getCurrentWallet();
+                        if (TextUtils.equals(currentAddr, address)) {
+                            mTvErrAddr.setText(getString(R.string.tv_err_address1));
+                            mTvErrAddr.setVisibility(View.VISIBLE);
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mEdtWalletAddress.requestFocus();
+                                }
+                            });
+                            return;
+                        }
+                        boolean isValidAddress = Wallet.isValidAddress(address);
+                        if (!isValidAddress) {
+                            mTvErrAddr.setVisibility(View.VISIBLE);
+                            mTvErrAddr.setText(getString(R.string.tv_err_address));
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mEdtWalletAddress.requestFocus();
+                                }
+                            });
+                        }
+                    }
+                }
             }
         });
 
-//        mGas = mWalletUtil.getRecommendGas(mGas, defaultToken);
+        mEdtTransferNum = findViewById(R.id.edt_amount);
+        InputFilter[] filters = {new CashierInputFilter()};
+        mEdtTransferNum.setFilters(filters);
+        mEdtTransferNum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        mTvGas = findViewById(R.id.tv_transfer_gas);
-        mTvGas.setOnClickListener(this);
-//        mWalletUtil.gasPrice(new WCallback() {
-//            @Override
-//            public void onGetWResult(int ret, GsonUtil extra) {
-//                if (ret == 0) {
-//                    mGasPrice = extra.getDouble("gasPrice", 0.0);
-//                    mWalletUtil.calculateGasInToken(mGas, mGasPrice, defaultToken, new WCallback() {
-//                        @Override
-//                        public void onGetWResult(int ret, GsonUtil extra) {
-//                            mTvGas.setText(extra.getString("gas", ""));
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//        DecimalFormat df = new DecimalFormat("#.00000000");
-//        mEdtTransferNum.setText(mAmount > 0.0f ? df.format(mAmount).toString() : "");
+            }
 
-        mEdtTransferRemark = findViewById(R.id.edt_transfer_remark);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isTransfer();
+                if (mTvErrAmount.isShown()) {
+                    mTvErrAmount.setVisibility(View.INVISIBLE);
+                }
+            }
 
-        mBtnNext = findViewById(R.id.btn_next);
+            @Override
+            public void afterTextChanged(Editable s) {
 
-        mBtnNext.setOnClickListener(this);
+            }
+        });
+        mEdtTransferNum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
 
+                    String input = mEdtTransferNum.getText().toString();
+                    if (!TextUtils.isEmpty(input)) {
+                        BigDecimal balance = new BigDecimal(mBalance);
+                        BigDecimal amount = new BigDecimal(input);
+                        if (balance.compareTo(amount) < 0) {
+                            mTvErrAmount.setVisibility(View.VISIBLE);
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mEdtTransferNum.requestFocus();
+                                }
+                            });
+                        }
+
+                    }
+                }
+            }
+        });
+        mTvTokenName = findViewById(R.id.tv_token_name);
+        mTvBalance = findViewById(R.id.tv_balance);
+        mLayoutToken = findViewById(R.id.layout_token);
+        mLayoutToken.setOnClickListener(this);
+        mEdtMemo = findViewById(R.id.edt_memo);
+        mEdtMemo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isTransfer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mBtnConfirm = findViewById(R.id.btn_send);
+        mBtnConfirm.setOnClickListener(this);
+    }
+
+    private void initData() {
         if (getIntent() != null) {
-            mEdtWalletAddress.setText(getIntent().getStringExtra(Constant.RECEIVE_ADDRESS_KEY));
-            mEdtTransferNum.setText(getIntent().getStringExtra(Constant.TOEKN_AMOUNT));
-            mWhTokenName.setCurrentItem(getIntent().getIntExtra(Constant.TOEKN_NAME, 0));
+            String address = getIntent().getStringExtra(Constant.RECEIVE_ADDRESS_KEY);
+            if (!TextUtils.isEmpty(address)) {
+                mEdtWalletAddress.setText(address);
+            }
+            String amount = getIntent().getStringExtra(Constant.TOEKN_AMOUNT);
+            if (!TextUtils.isEmpty(amount)) {
+                mEdtTransferNum.setText(amount);
+            }
+            String token = getIntent().getStringExtra(Constant.TOEKN_NAME);
+            if (!TextUtils.isEmpty(token)) {
+                mTvTokenName.setText(token);
+            }
+
+            String memo = getIntent().getStringExtra(Constant.MEMO);
+            if (!TextUtils.isEmpty(memo)) {
+                mEdtMemo.setText(memo);
+            }
         }
+
+        String currentAddr = WalletSp.getInstance(this, "").getCurrentWallet();
+        mBalance = WalletManager.getInstance(this).getSWTBalance(currentAddr);
+        mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, "SWTC"));
     }
 
     @Override
@@ -140,7 +238,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     //swt
 //                    handleSwtScanResult(scanResult);
                     GsonUtil res = new GsonUtil(scanResult);
-                    startTokenTransferActivity(this, res.getString(Constant.RECEIVE_ADDRESS_KEY, ""), res.getString(Constant.TOEKN_AMOUNT, ""), res.getInt(Constant.TOEKN_NAME, 0));
+                    startTokenTransferActivity(this, res.getString(Constant.RECEIVE_ADDRESS_KEY, ""), res.getString(Constant.TOEKN_AMOUNT, ""), res.getString(Constant.TOEKN_NAME, ""), res.getString(Constant.MEMO, ""));
                 }
             }
         }
@@ -149,20 +247,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_next:
-                if (paramCheck()) {
-                    OrderDetailDialog orderDetailDialog = new OrderDetailDialog(TokenTransferActivity.this,
-                            new OrderDetailDialog.onConfirmOrderListener() {
-                                @Override
-                                public void onConfirmOrder() {
-                                    verifyPwd();
-                                }
-                            }, mEdtWalletAddress.getText().toString(),
-                            mGasPrice, 0, Util.parseDouble(mEdtTransferNum.getText().toString()), tokenEntries.get(mWhTokenName.getCurrentItem()), mEdtTransferRemark.getText().toString());
-                    orderDetailDialog.show();
-                }
+            case R.id.btn_confirm:
+                // todo 验证密码并转账
                 break;
-            case R.id.tv_transfer_gas:
+            case R.id.layout_token:
+                // todo 选择转账token
                 break;
         }
     }
@@ -182,16 +271,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 //            }
 //        }, "", "transaction");
 //        editDialog.show();
-    }
-
-    public void sendTranscation() {
-        String hash = WalletManager.getInstance(this).transfer("", WalletSp.getInstance(this, "").getCurrentWallet(), mEdtWalletAddress.getText().toString(),
-                "", "", mEdtTransferNum.getText().toString(), mEdtTransferRemark.getText().toString());
-        if (!isValidHash(hash)) {
-            ToastUtil.toast(this, "交易已发送，请等待链上确认，仅需几秒时间。。");
-        } else {
-            ToastUtil.toast(this, "交易发送失败" + "\n" + hash);
-        }
     }
 
     private boolean isValidHash(String hash) {
@@ -234,38 +313,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     }
 
     private void updateBtnToTranferingState() {
-        mBtnNext.setEnabled(false);
-        mBtnNext.setText(getString(R.string.btn_transferring));
+        mBtnConfirm.setEnabled(false);
+        mBtnConfirm.setText(getString(R.string.btn_transferring));
     }
 
     private void resetTranferBtn() {
-        mBtnNext.setEnabled(true);
-        mBtnNext.setText(getString(R.string.btn_next));
-    }
-
-
-    class ArrayWheelAdapter implements WheelAdapter {
-        private List<String> mList;
-
-        public ArrayWheelAdapter(List<String> pList) {
-            this.mList = pList;
-        }
-
-        @Override
-        public int getItemsCount() {
-            return this.mList.size();
-        }
-
-        @Override
-        public Object getItem(int index) {
-            return this.mList.get(index);
-        }
-
-        @Override
-        public int indexOf(Object o) {
-            return mList.indexOf(o);
-
-        }
+        mBtnConfirm.setEnabled(true);
+        mBtnConfirm.setText(getString(R.string.btn_next));
     }
 
     /**
@@ -274,11 +328,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      * @param context
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress,
-                                                  String amount, int token) {
+                                                  String amount, String token, String memo) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(Constant.RECEIVE_ADDRESS_KEY, receiveAddress);
         intent.putExtra(Constant.TOEKN_AMOUNT, amount);
         intent.putExtra(Constant.TOEKN_NAME, token);
+        intent.putExtra(Constant.MEMO, memo);
         context.startActivity(intent);
     }
 
@@ -290,6 +345,16 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     public static void startTokenTransferActivity(Context context) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         context.startActivity(intent);
+    }
+
+    private void isTransfer() {
+        String receiveAddr = mEdtWalletAddress.getText().toString();
+        String amount = mEdtTransferNum.getText().toString();
+        if (!TextUtils.isEmpty(receiveAddr) && !TextUtils.isEmpty(amount) && !mTvErrAmount.isShown() && !mTvErrAddr.isShown()) {
+            mBtnConfirm.setEnabled(true);
+        } else {
+            mBtnConfirm.setEnabled(false);
+        }
     }
 
 }

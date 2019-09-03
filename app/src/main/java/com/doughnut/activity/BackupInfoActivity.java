@@ -13,7 +13,7 @@ import com.doughnut.base.WalletInfoManager;
 import com.doughnut.view.TitleBar;
 
 
-public class BackupInfoActivity  extends BaseActivity implements View.OnClickListener {
+public class BackupInfoActivity extends BaseActivity implements View.OnClickListener {
 
     private TitleBar mTitleBar;
     private TextView mTvbtn_next;
@@ -31,7 +31,7 @@ public class BackupInfoActivity  extends BaseActivity implements View.OnClickLis
         mTitleBar.setTitle(getString(R.string.titleBar_backup_wallet));
 
         // 下一步按钮
-        mTvbtn_next = findViewById(R.id.btn_next);
+        mTvbtn_next = findViewById(R.id.tv_next);
         mTvbtn_next.setOnClickListener(this);
     }
 
