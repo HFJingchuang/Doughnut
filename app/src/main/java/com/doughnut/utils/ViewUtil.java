@@ -5,21 +5,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-<<<<<<< HEAD
-=======
 import android.graphics.Rect;
 import android.text.Layout;
->>>>>>> gwang
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-<<<<<<< HEAD
-=======
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
->>>>>>> gwang
 
 import com.doughnut.R;
 import com.doughnut.activity.StartBakupActivity;
@@ -107,8 +101,6 @@ public class ViewUtil {
     }
 
 
-<<<<<<< HEAD
-=======
     /**
      * 替换TextView的省略号{...}为星号{***}
      *
@@ -183,5 +175,4 @@ public class ViewUtil {
             }
         });
     }
->>>>>>> gwang
 }
