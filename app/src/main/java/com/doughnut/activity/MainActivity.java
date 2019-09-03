@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,15 +40,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        mMainViewPager.setCurrentItem(getIntent().getIntExtra("pageIndex", 0));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-//            ViewUtil.showBakupDialog(MainActivity.this, WalletInfoManager.getInstance().getCurrentWallet(), false,
-//                    true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-//        }
     }
 
     @Override
@@ -60,8 +58,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(false);
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startMainActivityForIndex(Context context, int pageIndex) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("pageIndex", pageIndex);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

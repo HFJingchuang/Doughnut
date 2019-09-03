@@ -21,6 +21,7 @@ import com.android.jtblk.utils.CheckUtils;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.EditDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
@@ -248,7 +249,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
-                // todo 验证密码并转账
+                sendTranscation();
                 break;
             case R.id.layout_token:
                 // todo 选择转账token
@@ -256,60 +257,24 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void verifyPwd() {
-//        EditDialog editDialog = new EditDialog(TokenTransferActivity.this, new EditDialog.PwdResultListener() {
-//            @Override
-//            public void authPwd(String tag, boolean result, String key) {
-//                if (TextUtils.equals(tag, "transaction")) {
-//                    if (result) {
-////                        pwdRight();
-//                        sendTranscation();
-//                    } else {
-//                        ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_order_password_incorrect));
-//                    }
-//                }
-//            }
-//        }, "", "transaction");
-//        editDialog.show();
-    }
-
-    private boolean isValidHash(String hash) {
-        final String HASH_RE = "^[A-F0-9]{64}$";
-        Pattern pattern = Pattern.compile(HASH_RE);
-        Matcher matcher = pattern.matcher(hash);
-        return matcher.matches();
-    }
-
-    private boolean paramCheck() {
-
-        String address = mEdtWalletAddress.getText().toString();
-        String num = mEdtTransferNum.getText().toString();
-
-//        if (TextUtils.isEmpty(mTvToken.getText().toString())) {
-//            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_choose_token), "OK");
-//            return false;
-//        }
-        if (TextUtils.isEmpty(address)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_address), "OK");
-            return false;
-        }
-
-        if (TextUtils.equals(address, WalletSp.getInstance(this, "").getCurrentWallet())) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_receive_address_incorrect), "OK");
-            return false;
-        }
-
-        if (!CheckUtils.isValidAddress(address)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_address_format_incorrect), "OK");
-            return false;
-        }
-
-
-        if ((TextUtils.isEmpty(num) || Util.parseDouble(num) <= 0.0f)) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_amount_incorrect), "OK");
-            return false;
-        }
-        return true;
+    private void sendTranscation() {
+        String currentAddr = WalletSp.getInstance(TokenTransferActivity.this, "").getCurrentWallet();
+        new EditDialog(this, currentAddr)
+                .setDialogConfirmText(R.string.dialog_btn_confirm)
+                .setDialogConfirmColor(R.color.color_dialog_confirm)
+                .setResultListener(new EditDialog.PwdResultListener() {
+                    @Override
+                    public void authPwd(boolean result, String key) {
+                        if (result) {
+                            String to = mEdtWalletAddress.getText().toString();
+                            String token = mTvTokenName.getText().toString();
+                            String issue = "";// todo 获取issue
+                            String value = mEdtTransferNum.getText().toString();
+                            String memo = mEdtMemo.getText().toString();
+                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, issue, value, memo);
+                        }
+                    }
+                }).show();
     }
 
     private void updateBtnToTranferingState() {

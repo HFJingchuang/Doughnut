@@ -2,10 +2,8 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,10 +18,8 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
 
     private TitleBar mTitleBar;
 
-    private RelativeLayout mLayoutAuto;
     private RelativeLayout mLayoutLanguageZh;
     private RelativeLayout mLayoutLanguageEn;
-    private ImageView mImageAuto;
     private ImageView mImageChinese;
     private ImageView mImageEnglish;
 
@@ -35,12 +31,9 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setTitle(getString(R.string.title_languages));
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setRightTextColor(R.color.white);
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setTitleBarClickListener(this);
 
-        mLayoutAuto = (RelativeLayout) findViewById(R.id.layout_auto);
-        mLayoutAuto.setOnClickListener(this);
-        mImageAuto = (ImageView) mLayoutAuto.findViewById(R.id.img_auto);
         mLayoutLanguageZh = (RelativeLayout) findViewById(R.id.layout_chinese);
         mImageChinese = (ImageView) mLayoutLanguageZh.findViewById(R.id.img_chinese);
         mLayoutLanguageZh.setOnClickListener(this);
@@ -63,23 +56,24 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
             LanguageUtil.saveUserSelect(this, Locale.ENGLISH.getLanguage());
             imageShow(Locale.ENGLISH.getLanguage());
             LanguageUtil.saveUserLocale(this, Locale.ENGLISH);
-        } else {
-            LanguageUtil.saveUserSelect(this, "auto");
-            imageShow("auto");
-            Locale locale;
-            Configuration configuration = Resources.getSystem().getConfiguration();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                locale = configuration.getLocales().get(0);
-            } else {
-                locale = configuration.locale;
-            }
-            LanguageUtil.saveUserLocale(this, locale);
         }
     }
 
     @Override
     public void onLeftClick(View v) {
+        MainActivity.startMainActivityForIndex(this, 2);
         finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            MainActivity.startMainActivityForIndex(this, 2);
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
 
@@ -101,19 +95,12 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
 
     private void imageShow(String select) {
         switch (select) {
-            case "zh":
-                mImageAuto.setVisibility(View.GONE);
-                mImageChinese.setVisibility(View.VISIBLE);
-                mImageEnglish.setVisibility(View.GONE);
-                break;
             case "en":
-                mImageAuto.setVisibility(View.GONE);
-                mImageChinese.setVisibility(View.GONE);
                 mImageEnglish.setVisibility(View.VISIBLE);
-                break;
-            case "auto":
-                mImageAuto.setVisibility(View.VISIBLE);
                 mImageChinese.setVisibility(View.GONE);
+                break;
+            default:
+                mImageChinese.setVisibility(View.VISIBLE);
                 mImageEnglish.setVisibility(View.GONE);
                 break;
         }
