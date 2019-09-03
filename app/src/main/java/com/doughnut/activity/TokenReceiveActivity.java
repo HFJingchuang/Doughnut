@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -23,6 +25,7 @@ import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletSp;
 
@@ -46,6 +49,8 @@ public class TokenReceiveActivity extends BaseActivity {
     private RelativeLayout mLayoutCopy;
     private LinearLayout mLayoutSave;
     private LinearLayout mLayoutToken;
+    private LinearLayout mLayoutRoot;
+    private ScrollView mViewScroll;
     private String mAddress;
 
     @Override
@@ -60,6 +65,8 @@ public class TokenReceiveActivity extends BaseActivity {
     }
 
     private void initView() {
+        mLayoutRoot = findViewById(R.id.root_view);
+        mViewScroll = findViewById(R.id.view_scroll);
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
         mTitleBar.setTitleBarBackColor(R.color.color_detail_receive);
@@ -76,7 +83,24 @@ public class TokenReceiveActivity extends BaseActivity {
         mImgQrShadow = findViewById(R.id.img_qrcode_shadow);
         mImgQrShadow.setVisibility(View.GONE);
         mEdtAmount = findViewById(R.id.receive_amount);
+        InputFilter[] filters = {new CashierInputFilter()};
         mEdtAmount.requestFocus();
+        mEdtAmount.setFilters(filters);
+        mEdtAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                createQRCode();
+            }
+        });
         mTvAddress = findViewById(R.id.receive_address);
         mTvWalletName = findViewById(R.id.tv_wallet_name);
         mTvTokenName = findViewById(R.id.tv_token_name);
@@ -102,6 +126,7 @@ public class TokenReceiveActivity extends BaseActivity {
                 AddCurrencyActivity.startLanguageActivity(TokenReceiveActivity.this);
             }
         });
+        ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);
         createQRCode();
     }
 
@@ -114,22 +139,6 @@ public class TokenReceiveActivity extends BaseActivity {
         ViewUtil.EllipsisTextView(mTvAddress);
         mTvWalletName.setText(WalletSp.getInstance(this, mAddress).getName());
         ViewUtil.EllipsisTextView(mTvWalletName);
-        mEdtAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                createQRCode();
-            }
-        });
     }
 
     private void createQRCode() {
