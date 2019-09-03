@@ -39,6 +39,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private TextView mAddressTv;
     private TextView mNameTv;
     private ImageView mImgQR;
+    private String currentWallet;
 
     public static MainUserFragment newInstance() {
         Bundle args = new Bundle();
