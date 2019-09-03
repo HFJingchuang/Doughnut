@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,7 +63,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         } else if (view == mTvDeleteWallet) {
             deleteWallet();
         } else if (view == mTvExportWallet) {
-            importWallet();
+            ExportWallet();
         } else if (view == mLayoutCopy) {
             Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
@@ -144,7 +143,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                 }).show();
     }
 
-    private void importWallet() {
+    private void ExportWallet() {
         new EditDialog(this, mWalletAddress)
                 .setDialogConfirmText(R.string.dialog_btn_confirm)
                 .setDialogConfirmColor(R.color.color_dialog_confirm)
@@ -152,7 +151,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void authPwd(boolean result, String key) {
                         if (result) {
-                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this);
+                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, key);
                         }
                     }
                 }).show();

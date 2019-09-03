@@ -20,6 +20,9 @@ public class Constant {
     public final static String TOEKN_AMOUNT = "Token_Amount";
     public final static String TOEKN_NAME = "Token_Name";
 
+    public final static String PRIVATE_KEY = "Private_Key";
+    public final static String KEY_STORE = "Key_Store";
+
     //common sp
     public final static String common_prefs = "common_prefs";
     public final static String asset_visible_key = "asset_visible";
