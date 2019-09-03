@@ -216,7 +216,7 @@
     <string name="btn_collect">收款</string>
     <string name="btn_recent_transactions">最近交易记录</string>btn_me
     <string name="enter_title_collect_amount">收款金额</string>
-    <string name="enter_hint_collect_amount">请设置收款金额</string>
+    <string name="enter_hint_collect_amount">请输入收款金额</string>
     <string name="content_asset">我的资产(¥)</string>
     <string name="btn_import">开始导入</string>
     <string name="btn_node">节点设置</string>

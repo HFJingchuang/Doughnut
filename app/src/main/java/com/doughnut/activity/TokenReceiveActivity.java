@@ -3,7 +3,6 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,26 +12,21 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
-import com.contrarywind.adapter.WheelAdapter;
-import com.contrarywind.listener.OnItemSelectedListener;
-import com.contrarywind.view.WheelView;
 import com.doughnut.R;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletSp;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 public class TokenReceiveActivity extends BaseActivity {
@@ -47,9 +41,12 @@ public class TokenReceiveActivity extends BaseActivity {
     private ImageView mImgQrShadow;
     private EditText mEdtAmount;
     private TextView mTvAddress;
-    private ImageView mImgCopyAddress;
-    private WheelView mWhTokenName;
-    private Map<String, String> tokenEntries;
+    private TextView mTvWalletName;
+    private TextView mTvTokenName;
+    private RelativeLayout mLayoutCopy;
+    private LinearLayout mLayoutSave;
+    private LinearLayout mLayoutToken;
+    private String mAddress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,8 +61,10 @@ public class TokenReceiveActivity extends BaseActivity {
 
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
+        mTitleBar.setTitleBarBackColor(R.color.color_detail_receive);
         mTitleBar.setTitle(getString(R.string.titleBar_collect));
+        mTitleBar.setTitleTextColor(R.color.white);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -77,31 +76,44 @@ public class TokenReceiveActivity extends BaseActivity {
         mImgQrShadow = findViewById(R.id.img_qrcode_shadow);
         mImgQrShadow.setVisibility(View.GONE);
         mEdtAmount = findViewById(R.id.receive_amount);
+        mEdtAmount.requestFocus();
         mTvAddress = findViewById(R.id.receive_address);
-        mImgCopyAddress = findViewById(R.id.img_copy);
-        mImgCopyAddress.setOnClickListener(new View.OnClickListener() {
+        mTvWalletName = findViewById(R.id.tv_wallet_name);
+        mTvTokenName = findViewById(R.id.tv_token_name);
+        mLayoutCopy = findViewById(R.id.layout_copy);
+        mLayoutCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Util.clipboard(TokenReceiveActivity.this, "", mTvAddress.getText().toString());
+                Util.clipboard(TokenReceiveActivity.this, "", mAddress);
                 ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_wallet_address_copied));
             }
         });
-        //准备数据
-        getAllTokens();
-        mWhTokenName = findViewById(R.id.wh_token_name);
-        mWhTokenName.setAdapter(new ArrayWheelAdapter(tokenEntries.keySet()));
-        mWhTokenName.setOnItemSelectedListener(new OnItemSelectedListener() {
+        mLayoutSave = findViewById(R.id.layout_save);
+        mLayoutSave.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(int index) {
-                createQRCode();
+            public void onClick(View v) {
+                //todo 保存图片
+            }
+        });
+        mLayoutToken = findViewById(R.id.layout_token);
+        mLayoutToken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddCurrencyActivity.startLanguageActivity(TokenReceiveActivity.this);
             }
         });
         createQRCode();
     }
 
     private void initData() {
-        final String address = WalletSp.getInstance(this, "").getCurrentWallet();
-        mTvAddress.setText(address);
+        mAddress = WalletSp.getInstance(this, "").getCurrentWallet();
+        mTvAddress.setText(mAddress);
+        if (!TextUtils.isEmpty(mToken)) {
+            mTvTokenName.setText(mToken);
+        }
+        ViewUtil.EllipsisTextView(mTvAddress);
+        mTvWalletName.setText(WalletSp.getInstance(this, mAddress).getName());
+        ViewUtil.EllipsisTextView(mTvWalletName);
         mEdtAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -131,47 +143,11 @@ public class TokenReceiveActivity extends BaseActivity {
                 BigDecimal amount = new BigDecimal(amountStr);
                 gsonUtil.putString(Constant.TOEKN_AMOUNT, amount.stripTrailingZeros().toPlainString());
             }
-            gsonUtil.putInt(Constant.TOEKN_NAME, mWhTokenName.getCurrentItem());
             Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
         } catch (Exception e) {
             ToastUtil.toast(TokenReceiveActivity.this, "数量格式不正确");
         }
-    }
-
-    class ArrayWheelAdapter implements WheelAdapter {
-        private List<String> mList = new ArrayList<>();
-
-        public ArrayWheelAdapter(Set<String> set) {
-            this.mList.clear();
-            this.mList.addAll(set);
-        }
-
-        @Override
-        public int getItemsCount() {
-            return this.mList.size();
-        }
-
-        @Override
-        public Object getItem(int index) {
-            return this.mList.get(index);
-        }
-
-        @Override
-        public int indexOf(Object o) {
-            return mList.indexOf(o);
-
-        }
-    }
-
-    /**
-     * 获取所有tokens
-     */
-    public void getAllTokens() {
-        String fileName = getPackageName() + "_tokens";
-        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String tokens = sharedPreferences.getString("tokens", "");
-        tokenEntries = JSONObject.parseObject(tokens, Map.class);
     }
 
     /**
