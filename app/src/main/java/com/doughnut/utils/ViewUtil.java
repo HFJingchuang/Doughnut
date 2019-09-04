@@ -120,8 +120,8 @@ public class ViewUtil {
                     int ellipsisCount = layout.getEllipsisCount(lines - 1);
                     if (ellipsisCount == 0) return;
                     String showText = textView.getText().toString();
-                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 1);
-                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 1);
+                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 2);
+                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 2);
                     textView.setText(startStr + "***" + endStr);
                     isfirstRunning = false;
                 }
