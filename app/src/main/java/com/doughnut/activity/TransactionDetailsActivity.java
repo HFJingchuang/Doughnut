@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import com.doughnut.R;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
-import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.view.TitleBar;
 import com.doughnut.view.indicator.LinePagerIndicatorDecoration;
 import com.doughnut.wallet.WConstant;
@@ -32,8 +32,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import static com.doughnut.view.RecyclerViewSpacesItemDecoration.LEFT_DECORATION;
 
 
 public class TransactionDetailsActivity extends BaseActivity implements View.OnClickListener {
@@ -63,6 +61,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private RelativeLayout mLayoutFrom;
     private RelativeLayout mLayoutTo;
     private RelativeLayout mLayoutToV;
+    private RelativeLayout mLayoutType;
     private RecyclerView mRecyclerView;
     private TransactionInfoAdapter mTransactionInfoAdapter;
     private JSONArray mEffects = new JSONArray();
@@ -132,7 +131,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvTurnoverValue = findViewById(R.id.tv_turnover_value);
         mTvTurnoverValueToken = findViewById(R.id.tv_turnover_value_token);
 
+        mLayoutType = findViewById(R.id.layout_transfer_type);
         mTvTransferType = findViewById(R.id.tv_transfer_type);
+
         mTvGas = findViewById(R.id.tv_gas);
         mTvTime = findViewById(R.id.tv_time);
         mTvResult = findViewById(R.id.tv_result);
@@ -156,11 +157,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     class TransactionInfoAdapter extends RecyclerView.Adapter<TransactionInfoAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            private LinearLayout mLayoutRoot;
             private TextView mTvTitleIndex;
             private TextView mTvIndex;
             private TextView mTvEntrustAmount, mTvEntrustToken, mTvPayAmount, mTvPayToken;
             private TextView mTvValue, mTvValueToken;
+            private TextView mTvType;
+            private ImageView mImgType;
             private TextView mTvTo;
             private String mTo;
 
@@ -182,7 +184,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         ToastUtil.toast(TransactionDetailsActivity.this, "交易对家地址已复制");
                     }
                 });
-                mLayoutRoot = itemView.findViewById(R.id.layout_root);
+                mTvType = findViewById(R.id.tv_type);
+                mImgType = findViewById(R.id.img_type);
             }
         }
 
@@ -197,8 +200,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             if (mEffects == null) {
                 return;
             }
-//            changItemWidth(holder.mLayoutRoot, position);
-
             JSONObject item = mEffects.getJSONObject(position);
             JSONObject pays = item.getJSONObject("paid");
             JSONObject gets = item.getJSONObject("got");
@@ -260,18 +261,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             }
             return 0;
         }
-
-//        // 动态改变item宽度
-//        private void changItemWidth(LinearLayout root, int position) {
-//            int length = getItemCount();
-//            if (length > 1) {
-//                if (position != length - 1) {
-//                    ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
-//                    layoutParams.width = ViewUtil.getWindowWidth(TransactionDetailsActivity.this) - ViewUtil.dip2px(TransactionDetailsActivity.this, 30);
-//                    root.setLayoutParams(layoutParams);
-//                }
-//            }
-//        }
     }
 
     private void updateData() {
@@ -507,8 +496,24 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvHash.setText(mTransactions.getHash());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(mTransactions.getDate().longValue() * 1000);
-        String sim = formatter.format(date);
-        mTvTime.setText(sim);
+        String time = formatter.format(date);
+        mTvTime.setText(time);
+
+//        String type;
+//        if (TextUtils.isEmpty(mTransactions.getOffertype())) {
+//            type = mTransactions.getOffertype();
+//            mTvTransferType.setText("买入");
+//        } else {
+//            type = mTransactions.getType();
+//            mTvTransferType.setText("卖出");
+//        }
+//
+//        if (TextUtils.equals("buy", type)) {
+//            mLayoutType.setVisibility(View.VISIBLE);
+//        } else if (TextUtils.equals("sell", type)) {
+//            mLayoutType.setVisibility(View.VISIBLE);
+//        }
+
         if ("tesSUCCESS".equals(mTransactions.getResult())) {
             mTvResult.setText("交易成功");
             mTvResult.setTextColor(getResources().getColor(R.color.color_detail_receive));

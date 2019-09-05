@@ -94,6 +94,7 @@ public class TransactionRecordActivity extends BaseActivity implements
         mRecyclerView = findViewById(R.id.view_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
+
         mSmartRefreshLayout = (SmartRefreshLayout) findViewById(R.id.layout_refresh);
         mSmartRefreshLayout.autoRefresh();
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
