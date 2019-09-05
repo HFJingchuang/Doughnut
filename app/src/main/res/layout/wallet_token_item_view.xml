@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="66dp"
-    android:background="@drawable/shape_dialog_edt"
+    android:background="@drawable/shape_balance_coins"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/dimen_content_padding"

@@ -23,6 +23,7 @@ import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.R;
 import com.doughnut.activity.AddCurrencyActivity;
 import com.doughnut.activity.CreateNewWalletActivity;
+import com.doughnut.activity.CreateSuccessActivity;
 import com.doughnut.activity.TokenDetailsActivity;
 import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
@@ -282,6 +283,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.create_wallet:
                 CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
+//                CreateSuccessActivity.startCreateSuccessActivity(mContext);
                 break;
             case R.id.import_wallet:
                 WalletImportActivity.startImportWalletActivity(mContext);

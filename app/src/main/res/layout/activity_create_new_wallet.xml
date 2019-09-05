@@ -31,76 +31,124 @@
         </LinearLayout>
 
             <EditText
+                android:id="@+id/edt_wallet_name"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/shape_dialog_edt"
-                android:id="@+id/edt_wallet_name"
                 android:paddingLeft="17dp"
                 android:hint="@string/enter_hint_wallet_name" />
+                <TextView
+                    android:id="@+id/err_wallet_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/dialog_content_no_wallet_name"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="@dimen/text_size_8"
+                    android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/alert_wallet_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="8dp"
-            android:text=""
-            android:textColor="@color/color_psd_tips"
-            android:textSize="@dimen/text_size_11"
-            android:textStyle="bold" />
-
-            <EditText
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:inputType="textPassword"
-                android:background="@drawable/shape_dialog_edt"
-                android:id="@+id/edt_wallet_pwd"
-                android:paddingLeft="17dp"
-                android:hint="@string/enter_hint_password"/>
+                android:layout_height="60dp"
+                android:background="@drawable/shape_dialog_edt">
+                <EditText
+                    android:id="@+id/edt_wallet_pwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/shape_dialog_edt"
+                    android:inputType="textPassword"
+                    android:paddingLeft="17dp"
+                    android:hint="@string/enter_hint_password"/>
+                <LinearLayout
+                    android:id="@+id/show_psd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/alert_psd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="8dp"
-            android:text="8-64位大小写字母、数字组合密码"
-            android:textColor="@color/color_psd_tips"
-            android:textSize="@dimen/text_size_11"
-            android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/img_show_psd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:src="@drawable/ic_close_eyes" />
+                </LinearLayout>
+            </RelativeLayout>
+                <TextView
+                    android:id="@+id/err_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:paddingLeft="10dp"
+                    android:text="8-64位大小写字母、数字组合密码"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="@dimen/text_size_8"
+                    android:visibility="invisible" />
+                <TextView
+                    android:id="@+id/alert_psd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="8-64位大小写字母、数字组合密码"
+                    android:textColor="@color/color_psd_tips"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="bold"
+                    android:visibility="visible"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/shape_dialog_edt">
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:inputType="textPassword"
-                android:background="@drawable/shape_dialog_edt"
                 android:id="@+id/edt_wallet_pwd_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:inputType="textPassword"
+                android:background="@drawable/shape_dialog_edt"
                 android:paddingLeft="17dp"
                 android:hint="@string/enter_hint_verify" />
-        <TextView
-            android:id="@+id/alert_psd_rep"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="8dp"
-            android:text=""
-            android:textColor="@color/color_psd_tips"
-            android:textSize="@dimen/text_size_11"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/show_psd_rep"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/img_show_rep_psd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_close_eyes" />
+            </LinearLayout>
+        </RelativeLayout>
+                <TextView
+                    android:id="@+id/err_psd_rep"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/dialog_content_passwords_unmatch"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="@dimen/text_size_8"
+                    android:visibility="invisible" />
+
 
         <Button
             android:id="@+id/btn_confirm"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:background="@drawable/shape_dialog_btn"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/text_size_18"
-            android:textStyle="bold"
+            android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            android:text="@string/btn_create_wallet_done" />
+            android:background="@drawable/selector_btn_transfer"
+            android:enabled="false"
+            android:text="@string/btn_create_wallet_done"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -127,13 +175,14 @@
         </LinearLayout>
         <TextView
             android:id="@+id/alert_service_terms"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="8dp"
-            android:text=""
-            android:textColor="@color/color_psd_tips"
-            android:textSize="@dimen/text_size_11"
-            android:textStyle="bold" />
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="10dp"
+            android:text="@string/dialog_content_no_read_service"
+            android:textColor="@color/color_detail_send"
+            android:textSize="@dimen/text_size_8"
+            android:visibility="invisible" />
+
     </LinearLayout>
 </LinearLayout>

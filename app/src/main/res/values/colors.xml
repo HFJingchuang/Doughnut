@@ -52,6 +52,7 @@
     <!-- 资产管理 -->
     <color name="color_wallet_name">#021933</color>
     <color name="color_currency_name">#021E38</color>
+    <color name="color_currency_name1">#03021E38</color>
 
 
     <color name="color_copy">#3B6CA6</color>
@@ -68,5 +69,8 @@
     <color name="color_receive_node">#FFF5F6FB</color>
     <color name="color_receive_hint">#FF888888</color>
     <color name="color_btn_transfer">#FF969696</color>
+    <color name="color_wallet_success">#888888</color>
+    <color name="color_btn_backup">#383B3E</color>
+
 
 </resources>
