@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.text.Layout;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,8 +122,8 @@ public class ViewUtil {
                     int ellipsisCount = layout.getEllipsisCount(lines - 1);
                     if (ellipsisCount == 0) return;
                     String showText = textView.getText().toString();
-                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 1);
-                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 1);
+                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 2);
+                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 2);
                     textView.setText(startStr + "***" + endStr);
                     isfirstRunning = false;
                 }
@@ -174,5 +176,29 @@ public class ViewUtil {
                 }
             }
         });
+    }
+
+    /**
+     * 获取屏幕宽度
+     *
+     * @param context
+     * @return
+     */
+    public static int getWindowWidth(Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        return dm.widthPixels;
+    }
+
+    /**
+     * 获取屏幕高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getWindowHight(Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        return dm.heightPixels;
     }
 }

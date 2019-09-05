@@ -437,6 +437,7 @@ public class WalletManager implements IWallet {
 
     /**
      * 获取所有的token时价
+     *
      * @param dataList
      * @param v1
      * @param v2
@@ -463,91 +464,90 @@ public class WalletManager implements IWallet {
                             JccdexInfo jccdexInfo = JccdexInfo.getInstance();
                             jccdexInfo.setmBaseUrl(jccUrl);
                             if (dataList != null && dataList.size() != 0) {
-                                    // 获取时价
-                                    jccdexInfo.requestAllTickers(new JCallback() {
-                                        BigDecimal values = new BigDecimal(0.00);
-                                        BigDecimal swtPrice = new BigDecimal(0.00);
-                                        BigDecimal number = new BigDecimal(0.00);
-                                        @Override
-                                        public void onResponse(String code, String response) {
-                                            if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
-                                                GsonUtil res = new GsonUtil(response);
-                                                GsonUtil data = res.getObject("data");
-                                                GsonUtil gsonUtil = data.getArray("SWT-CNY");
-                                                swtPrice = new BigDecimal(gsonUtil.getString(1,"0"));
-                                                for (int i=0; i<dataList.size(); i++) {
-                                                    Line line = (Line)dataList.get(i);
-                                                    // 数量
-                                                    String balance = line.getBalance();
-                                                    // 币种
-                                                    String currency = line.getCurrency();
+                                // 获取时价
+                                jccdexInfo.requestAllTickers(new JCallback() {
+                                    BigDecimal values = new BigDecimal(0.00);
+                                    BigDecimal swtPrice = new BigDecimal(0.00);
+                                    BigDecimal number = new BigDecimal(0.00);
 
-                                                    String currency_cny = currency + "-CNY";
+                                    @Override
+                                    public void onResponse(String code, String response) {
+                                        if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                            GsonUtil res = new GsonUtil(response);
+                                            GsonUtil data = res.getObject("data");
+                                            GsonUtil gsonUtil = data.getArray("SWT-CNY");
+                                            swtPrice = new BigDecimal(gsonUtil.getString(1, "0"));
+                                            for (int i = 0; i < dataList.size(); i++) {
+                                                Line line = (Line) dataList.get(i);
+                                                // 数量
+                                                String balance = line.getBalance();
+                                                // 币种
+                                                String currency = line.getCurrency();
 
-                                                    BigDecimal price = new BigDecimal(0);
-                                                    GsonUtil currencyLst = data.getArray(currency_cny);
-                                                    if (currencyLst != null) {
-                                                        price = new BigDecimal(currencyLst.getString(1,"0"));
+                                                String currency_cny = currency + "-CNY";
+
+                                                BigDecimal price = new BigDecimal(0);
+                                                GsonUtil currencyLst = data.getArray(currency_cny);
+                                                if (currencyLst != null) {
+                                                    price = new BigDecimal(currencyLst.getString(1, "0"));
+
+                                                }
+                                                // 当前币种总价值
+                                                BigDecimal value = new BigDecimal(balance).multiply(price, new MathContext(2));
+                                                values = values.add(value);
+                                            }
+                                            number = values.divide(swtPrice, 1, 2);
+                                            AppConfig.postOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (v2 == null) {
+                                                        if (isHidden) {
+                                                            v1.setText("***");
+                                                        } else {
+                                                            v1.setText(String.format("%.2f", values));
+                                                        }
+                                                    } else {
+                                                        if (isHidden) {
+                                                            v1.setText("***");
+                                                            v2.setText("**");
+                                                        } else {
+                                                            String balanceStr = values.toPlainString();
+                                                            String[] balanceArr = balanceStr.split("\\.");
+                                                            v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                            v2.setText(balanceArr[1]);
+                                                        }
+                                                    }
+
+                                                    if (v4 == null) {
+                                                        if (isHidden) {
+                                                            v3.setText("***");
+                                                        } else {
+                                                            v3.setText(String.format("%.2f", number));
+                                                        }
+                                                    } else {
+                                                        if (isHidden) {
+                                                            v3.setText("***");
+                                                            v4.setText("**");
+                                                        } else {
+                                                            String balanceStr = number.toPlainString();
+                                                            String[] balanceArr = balanceStr.split("\\.");
+                                                            v3.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                            v4.setText(balanceArr[1]);
+                                                        }
 
                                                     }
-                                                    // 当前币种总价值
-                                                    BigDecimal value = new BigDecimal(balance).multiply(price, new MathContext(2));
-                                                    values = values.add(value);
+
                                                 }
-                                                    number = values.divide(swtPrice, 1, 2);
-                                                    AppConfig.postOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-
-                                                            if (v2 == null) {
-                                                                if (isHidden) {
-                                                                    v1.setText("***");
-                                                                } else {
-                                                                    v1.setText(String.format("%.2f", values));
-                                                                }
-                                                            } else {
-                                                                if (isHidden) {
-                                                                    v1.setText("***");
-                                                                    v2.setText("**");
-                                                                } else {
-                                                                    String balanceStr = values.toPlainString();
-                                                                    String[] balanceArr = balanceStr.split("\\.");
-                                                                    v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                                    v2.setText(balanceArr[1]);
-                                                                }
-                                                            }
-
-                                                            if (v4 == null) {
-                                                                if (isHidden) {
-                                                                    v3.setText("***");
-                                                                }  else {
-                                                                    v3.setText(String.format("%.2f", number));
-                                                                }
-                                                            } else {
-                                                                if(isHidden) {
-                                                                    v3.setText("***");
-                                                                    v4.setText("**");
-                                                                } else {
-                                                                    String balanceStr = number.toPlainString();
-                                                                    String[] balanceArr = balanceStr.split("\\.");
-                                                                    v3.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                                    v4.setText(balanceArr[1]);
-                                                                }
-
-                                                            }
-
-                                                        }
-                                                    });
-
-//                                                }
-                                            }
+                                            });
                                         }
+                                    }
 
-                                        @Override
-                                        public void onFail(Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
+                                    @Override
+                                    public void onFail(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
                             }
 
                         }

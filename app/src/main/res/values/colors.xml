@@ -71,6 +71,6 @@
     <color name="color_btn_transfer">#FF969696</color>
     <color name="color_wallet_success">#888888</color>
     <color name="color_btn_backup">#383B3E</color>
-
+    <color name="color_decoration_inactive">#FFC7C7CC</color>
 
 </resources>

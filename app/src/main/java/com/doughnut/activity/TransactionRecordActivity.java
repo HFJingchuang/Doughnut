@@ -260,6 +260,7 @@ public class TransactionRecordActivity extends BaseActivity implements
             Date date = new Date(tr.getDate().longValue() * 1000);
             String sim = formatter.format(date);
             holder.mTvTransactionTime.setText(sim);
+            ViewUtil.EllipsisTextView(holder.mTvTransactionAddress);
         }
 
         @Override
