@@ -5,27 +5,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.android.jtblk.client.bean.AmountInfo;
 import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
-import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.view.TitleBar;
+import com.doughnut.view.indicator.LinePagerIndicatorDecoration;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletSp;
 
@@ -33,6 +32,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static com.doughnut.view.RecyclerViewSpacesItemDecoration.LEFT_DECORATION;
 
 
 public class TransactionDetailsActivity extends BaseActivity implements View.OnClickListener {
@@ -140,8 +141,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mRecyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 10, 0, 0, 0));
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration(this));
+
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerView);
+
         mTransactionInfoAdapter = new TransactionInfoAdapter();
         mRecyclerView.setAdapter(mTransactionInfoAdapter);
 
@@ -192,7 +197,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             if (mEffects == null) {
                 return;
             }
-            changItemWidth(holder.mLayoutRoot, position);
+//            changItemWidth(holder.mLayoutRoot, position);
 
             JSONObject item = mEffects.getJSONObject(position);
             JSONObject pays = item.getJSONObject("paid");
@@ -256,17 +261,17 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             return 0;
         }
 
-        // 动态改变item宽度
-        private void changItemWidth(LinearLayout root, int position) {
-            int length = getItemCount();
-            if (length > 1) {
-                if (position != length - 1) {
-                    ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
-                    layoutParams.width = ViewUtil.getWindowWidth(TransactionDetailsActivity.this) - ViewUtil.dip2px(TransactionDetailsActivity.this, 30);
-                    root.setLayoutParams(layoutParams);
-                }
-            }
-        }
+//        // 动态改变item宽度
+//        private void changItemWidth(LinearLayout root, int position) {
+//            int length = getItemCount();
+//            if (length > 1) {
+//                if (position != length - 1) {
+//                    ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
+//                    layoutParams.width = ViewUtil.getWindowWidth(TransactionDetailsActivity.this) - ViewUtil.dip2px(TransactionDetailsActivity.this, 30);
+//                    root.setLayoutParams(layoutParams);
+//                }
+//            }
+//        }
     }
 
     private void updateData() {
