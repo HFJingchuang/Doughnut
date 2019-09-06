@@ -44,7 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="交易明细"
+                        android:text="@string/title_transfer_detail"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -72,7 +72,7 @@
                             android:id="@+id/tv_index_tmp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="序号"
+                            android:text="@string/tv_index"
                             android:textColor="@color/color_receive_hint"
                             android:textSize="13sp" />
 
@@ -95,13 +95,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/tv_type_tmp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="方向"
+                            android:text="@string/tv_side"
                             android:textColor="@color/color_receive_hint"
                             android:textSize="13sp" />
 
@@ -136,16 +137,16 @@
                             android:id="@+id/tv_entrust_amount_tmp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="交易内容"
+                            android:text="@string/tv_transfer_content"
                             android:textColor="@color/color_receive_hint"
                             android:textSize="13sp" />
 
                         <TextView
-                            android:id="@+id/tv_entrust_amount"
+                            android:id="@+id/tv_pay_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
-                            android:layout_toLeftOf="@+id/tv_entrust_token"
+                            android:layout_toLeftOf="@+id/tv_pay_token"
                             android:layout_toRightOf="@+id/tv_entrust_amount_tmp"
                             android:gravity="center|right"
                             android:textColor="@color/color_dialog_confirm"
@@ -153,7 +154,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tv_entrust_token"
+                            android:id="@+id/tv_pay_token"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
@@ -169,25 +170,25 @@
                             android:id="@+id/tv_right"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toLeftOf="@+id/tv_pay_amount"
+                            android:layout_toLeftOf="@+id/tv_entrust_amount"
                             android:gravity="center"
                             android:text="\u2192"
                             android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tv_pay_amount"
+                            android:id="@+id/tv_entrust_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
-                            android:layout_toLeftOf="@+id/tv_pay_token"
+                            android:layout_toLeftOf="@+id/tv_entrust_token"
                             android:gravity="center"
                             android:textColor="@color/color_dialog_confirm"
                             android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tv_pay_token"
+                            android:id="@+id/tv_entrust_token"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
@@ -210,7 +211,7 @@
                             android:id="@+id/tv_value_tmp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="交易价格"
+                            android:text="@string/tv_transfer_price"
                             android:textColor="@color/color_receive_hint"
                             android:textSize="13sp" />
 
@@ -251,7 +252,7 @@
                             android:id="@+id/tv_to_tmp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="交易对家"
+                            android:text="@string/tv_transfer_to"
                             android:textColor="@color/color_receive_hint"
                             android:textSize="13sp" />
 

@@ -75,7 +75,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="当前交易哈希值"
+                                    android:text="@string/tv_hash"
                                     android:textColor="@color/color_detail_address"
                                     android:textSize="17sp"
                                     android:textStyle="bold" />
@@ -113,7 +113,7 @@
                                 android:id="@+id/tv_type_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易类型"
+                                android:text="@string/tv_transfer_type"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -141,7 +141,7 @@
                                 android:id="@+id/tv_from_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易发起方"
+                                android:text="@string/tv_transfer_from"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -187,7 +187,7 @@
                                 android:id="@+id/tv_amount_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="转账金额"
+                                android:text="@string/tv_transfer_amount"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -230,16 +230,16 @@
                                 android:id="@+id/tv_entrust_amount_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="委托金额"
+                                android:text="@string/tv_entrust_amount"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
                             <TextView
-                                android:id="@+id/tv_entrust_amount"
+                                android:id="@+id/tv_pay_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="20dp"
-                                android:layout_toLeftOf="@+id/tv_entrust_token"
+                                android:layout_toLeftOf="@+id/tv_pay_token"
                                 android:layout_toRightOf="@+id/tv_entrust_amount_tmp"
                                 android:gravity="center|right"
                                 android:textColor="@color/color_dialog_confirm"
@@ -247,7 +247,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_entrust_token"
+                                android:id="@+id/tv_pay_token"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="5dp"
@@ -263,25 +263,25 @@
                                 android:id="@+id/tv_right"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/tv_pay_amount"
+                                android:layout_toLeftOf="@+id/tv_entrust_amount"
                                 android:gravity="center"
                                 android:text="\u2192"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_pay_amount"
+                                android:id="@+id/tv_entrust_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="5dp"
-                                android:layout_toLeftOf="@+id/tv_pay_token"
+                                android:layout_toLeftOf="@+id/tv_entrust_token"
                                 android:gravity="center"
                                 android:textColor="@color/color_dialog_confirm"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_pay_token"
+                                android:id="@+id/tv_entrust_token"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
@@ -319,7 +319,7 @@
                                 android:id="@+id/tv_value_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="委托价格"
+                                android:text="@string/tv_entrust_price"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -360,7 +360,7 @@
                                 android:id="@+id/tv_to_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易对家"
+                                android:text="@string/tv_transfer_to"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -406,16 +406,16 @@
                                 android:id="@+id/tv_turnover_amount_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="成交金额"
+                                android:text="@string/tv_turnover_amount"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
                             <TextView
-                                android:id="@+id/tv_turnover_amount"
+                                android:id="@+id/tv_turnover_pay_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="20dp"
-                                android:layout_toLeftOf="@+id/tv_turnover_token"
+                                android:layout_toLeftOf="@+id/tv_turnover_pay_token"
                                 android:layout_toRightOf="@+id/tv_turnover_amount_tmp"
                                 android:gravity="center|right"
                                 android:textColor="@color/color_dialog_confirm"
@@ -423,7 +423,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_turnover_token"
+                                android:id="@+id/tv_turnover_pay_token"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="5dp"
@@ -439,25 +439,25 @@
                                 android:id="@+id/tv_turnover_right"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/tv_turnover_pay_amount"
+                                android:layout_toLeftOf="@+id/tv_turnover_amount"
                                 android:gravity="center"
                                 android:text="\u2192"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_turnover_pay_amount"
+                                android:id="@+id/tv_turnover_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="5dp"
-                                android:layout_toLeftOf="@+id/tv_turnover_pay_token"
+                                android:layout_toLeftOf="@+id/tv_turnover_token"
                                 android:gravity="center"
                                 android:textColor="@color/color_dialog_confirm"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_turnover_pay_token"
+                                android:id="@+id/tv_turnover_token"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
@@ -481,7 +481,7 @@
                                 android:id="@+id/tv_turnover_value_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="成交价格"
+                                android:text="@string/tv_turnover_price"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -520,7 +520,7 @@
                                 android:id="@+id/tv_transfer_type_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易方式"
+                                android:text="@string/tv_transfer_side"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -546,7 +546,7 @@
                                 android:id="@+id/tv_gas_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="燃料费用"
+                                android:text="@string/tv_gas"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -584,7 +584,7 @@
                                 android:id="@+id/tv_time_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易时间"
+                                android:text="@string/tv_transfer_time"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -610,7 +610,7 @@
                                 android:id="@+id/tv_result_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易结果"
+                                android:text="@string/tv_transfer_result"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
@@ -636,7 +636,7 @@
                                 android:id="@+id/tv_memo_tmp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="交易备注"
+                                android:text="@string/tv_transfer_memo"
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 

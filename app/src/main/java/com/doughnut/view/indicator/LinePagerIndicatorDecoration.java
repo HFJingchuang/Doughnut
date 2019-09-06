@@ -132,11 +132,11 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
 
             // draw the cut off highlight
             rectF.left = highlightStart + partialLength;
-            rectF.right = indicatorStartX + itemWidth;
+            rectF.right = highlightStart + itemWidth;
             c.drawRoundRect(rectF, mIndicatorItemRadius, mIndicatorItemRadius, mPaint);
 
             // draw the highlight overlapping to the next item as well
-            if (highlightPosition < itemCount - 1 && progress > 0.3F) {
+            if (highlightPosition < itemCount - 1 && progress > 0.5F) {
                 highlightStart += itemWidth;
                 rectF.left = highlightStart;
                 rectF.right = highlightStart + partialLength;
