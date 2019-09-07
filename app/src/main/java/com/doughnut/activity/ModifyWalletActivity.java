@@ -12,7 +12,6 @@ import com.doughnut.R;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
-import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
@@ -64,9 +63,9 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         } else if (view == mTvDeleteWallet) {
             deleteWallet();
         } else if (view == mTvExportWallet) {
-            importWallet();
+            ExportWallet();
         } else if (view == mLayoutCopy) {
-            Util.clipboard(ModifyWalletActivity.this, "", mWalletAddress);
+            Util.clipboard(ModifyWalletActivity.this, "", mTvWalletAddress.getText().toString());
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
         } else if (view == mLayoutEdt) {
             changeWalletName();
@@ -104,10 +103,8 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletBalance = findViewById(R.id.tv_wallet_balance);
         mTvWalletBalanceCNY = findViewById(R.id.tv_balance_CNY);
         mTvWalletAddress = (TextView) findViewById(R.id.tv_wallet_address);
-        ViewUtil.EllipsisTextView(mTvWalletAddress);
 
         mTvWalletName = (TextView) findViewById(R.id.tv_wallet_name);
-        ViewUtil.EllipsisTextView(mTvWalletName);
 
         mLayoutModifyPwd = (RelativeLayout) findViewById(R.id.layout_modify_pwd);
         mLayoutModifyPwd.setOnClickListener(this);
@@ -146,7 +143,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                 }).show();
     }
 
-    private void importWallet() {
+    private void ExportWallet() {
         new EditDialog(this, mWalletAddress)
                 .setDialogConfirmText(R.string.dialog_btn_confirm)
                 .setDialogConfirmColor(R.color.color_dialog_confirm)
@@ -154,7 +151,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void authPwd(boolean result, String key) {
                         if (result) {
-                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this);
+                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, key);
                         }
                     }
                 }).show();
@@ -173,7 +170,6 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                         if (result) {
                             WalletSp.getInstance(ModifyWalletActivity.this, mWalletAddress).setName(key);
                             mTvWalletName.setText(key);
-                            ViewUtil.EllipsisTextView(mTvWalletName);
                             mTitleBar.setTitle(key);
                         }
                     }

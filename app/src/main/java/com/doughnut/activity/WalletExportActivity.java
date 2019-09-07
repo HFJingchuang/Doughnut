@@ -33,6 +33,8 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
 
+    private static String passWord;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +57,11 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
 
     }
 
-    public static void startExportWalletActivity(Context from) {
+    public static void startExportWalletActivity(Context from, String key) {
         Intent intent = new Intent(from, WalletExportActivity.class);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);
+        passWord = key;
     }
 
     /**
@@ -115,7 +118,7 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
             }
         });
 
-        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
+        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager(), this.passWord));
         pageSelected(PRIVATEKEY_INDEX);
     }
 
@@ -141,12 +144,15 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {
 
-        public MainViewPagerAdapter(FragmentManager fm) {
+        private final String passWord;
+        public MainViewPagerAdapter(FragmentManager fm, String passWord) {
             super(fm);
+            this.passWord = passWord;
         }
 
         private Fragment[] mFragments = new Fragment[]{
-                PrivateKeyExpFragment.newInstance(),
+                // TODO
+                PrivateKeyExpFragment.newInstance("11111111"),
                 KeyStoreExpFragment.newInstance()
 
         };

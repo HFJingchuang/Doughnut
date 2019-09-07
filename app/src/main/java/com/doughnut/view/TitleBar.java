@@ -141,7 +141,6 @@ public class TitleBar extends LinearLayout implements View.OnClickListener {
         }
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(text);
-        ViewUtil.EllipsisTextView(mTvTitle);
         mImgTitle.setVisibility(View.GONE);
     }
 
