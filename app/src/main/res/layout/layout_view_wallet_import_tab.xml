@@ -27,12 +27,11 @@
             <TextView
                 android:id="@+id/tv_tab_privatekey"
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="@string/tab_privateKey"
                 android:textColor="@color/selector_maintab_item_textcolor"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -51,8 +50,7 @@
                 android:layout_marginTop="2dp"
                 android:text="@string/tab_keyStore"
                 android:textColor="@color/selector_maintab_item_textcolor"
-                android:textSize="15sp"
-                android:textStyle="bold"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
     </LinearLayout>

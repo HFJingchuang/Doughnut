@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">@color/color_theme</color>
     <color name="backgroud_gray">#f9f9f9</color>
     <color name="tab_text_color_unselected">#c7c7c7</color>
-    <color name="tab_text_color_selected">#021E38</color>
+    <color name="tab_text_color_selected">#2890fe</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="modify_wallet_bottom_textcolor">#929da6</color>
@@ -52,10 +52,7 @@
     <!-- 资产管理 -->
     <color name="color_wallet_name">#021933</color>
     <color name="color_currency_name">#021E38</color>
-    <color name="color_currency_name1">#03021E38</color>
 
-
-    <color name="color_copy">#3B6CA6</color>
     <color name="color_detail_address">#FF021E38</color>
     <color name="color_detail_time">#FFA6A9AD</color>
     <color name="color_detail_receive">#FF27B498</color>
@@ -64,13 +61,9 @@
     <color name="color_edt_add_node">#fff4f5f6</color>
     <color name="color_dialog_confirm">#FF3B6CA6</color>
     <color name="color_item_node">#FFEEEEF2</color>
-    <color name="color_create_btn">#969696</color>
-    <color name="color_psd_tips">#F55758</color>
     <color name="color_receive_node">#FFF5F6FB</color>
     <color name="color_receive_hint">#FF888888</color>
     <color name="color_btn_transfer">#FF969696</color>
-    <color name="color_wallet_success">#888888</color>
-    <color name="color_btn_backup">#383B3E</color>
     <color name="color_decoration_inactive">#FFC7C7CC</color>
 
 </resources>

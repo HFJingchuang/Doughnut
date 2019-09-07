@@ -63,6 +63,7 @@ public class NodeCustomDialog extends BaseDialog implements View.OnClickListener
 
     private void initView() {
         mEdtNode = findViewById(R.id.edt_node);
+        mEdtNode.requestFocus();
         mTvErr = findViewById(R.id.tv_err);
         mEdtNode.addTextChangedListener(new TextWatcher() {
             @Override

@@ -4,11 +4,11 @@
     <string name="enter_title_block">钱包体系</string>
     <string name="enter_hint_choose_block">请选择钱包体系</string>
     <string name="enter_title_wallet_name">钱包名称</string>
-    <string name="enter_hint_wallet_name">输入钱包名称</string>
+    <string name="enter_hint_wallet_name">请输入钱包名称</string>
     <string name="enter_title_password">设置密码</string>
-    <string name="enter_hint_password">设置钱包密码</string>
+    <string name="enter_hint_password">请输入密码,至少8位</string>
     <string name="enter_title_verify">确认密码</string>
-    <string name="enter_hint_verify">确认密码</string>
+    <string name="enter_hint_verify">请确认密码</string>
     <string name="enter_title_prompt">提示信息</string>
     <string name="enter_hint_prompt">可不填</string>
     <string name="btn_create_wallet_done">创建钱包</string>
@@ -277,7 +277,6 @@
     <string name="title_change_name">修改名称</string>
     <string name="title_change_name_hint">请输入新的钱包名称</string>
     <string name="tv_wallet_address">钱包地址</string>
-    <string name="enter_title_create_wallet">创建SWTC公链钱包</string>
     <string name="tv_memo">转账信息备注</string>
     <string name="tv_balance">余额：%1$s %2$s</string>
     <string name="tv_send_tip">请输入收款地址/扫码转账</string>

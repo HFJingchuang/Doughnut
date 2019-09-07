@@ -22,6 +22,7 @@ import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.activity.WalletQRActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletSp;
 
 
@@ -114,7 +115,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutRight) {
             mLayoutRight.setClickable(false);
             ModifyWalletActivity.startModifyWalletActivity(getActivity(),
-                    mAddressTv.getText().toString());
+                    currentWallet);
         } else if (view == mLayoutReceive) {
             mLayoutReceive.setClickable(false);
             TokenReceiveActivity.startTokenReceiveActivity(getActivity(), "");
@@ -158,9 +159,11 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void setWalletInfo() {
-        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+        currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
         mAddressTv.setText(currentWallet);
+        ViewUtil.EllipsisTextView(mAddressTv);
         mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
+        ViewUtil.EllipsisTextView(mNameTv);
     }
 
 }

@@ -16,65 +16,42 @@
                 android:id="@+id/tv_privatekey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_currency_name"
-                android:background="@color/color_white"
+                android:textColor="@color/black"
+                android:background="@drawable/shape_privatekey_copy_content"
                 android:padding="5dp"
-                android:textSize="18sp"
+                android:textSize="13sp"
                 android:text="lajsdlfjldfjlasdfjlkasjdflkasjdflkjsajsjslkdfjaslkdfjlksdfjlsadfjlasjdfl"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textStyle="bold"
                 />
-        <LinearLayout
-            android:id="@+id/layout_edt"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="140dp"
-                android:src="@drawable/ic_copy" />
             <TextView
                 android:id="@+id/tv_copy_privatekey"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_export_privatekey_btnbg"
+                android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:gravity="center"
                 android:text="@string/dialog_btn_copy_private_key"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
-                android:textSize="12sp"
-                android:textColor="@color/color_copy"
-                android:textStyle="bold"
+                android:textColor="@color/white"
                 />
-        </LinearLayout>
-　
-        <LinearLayout
+
+        <TextView
+            android:id="@+id/tv_privatekeyImg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:id="@+id/privateKey_qr"
-                    android:layout_width="166dp"
-                    android:layout_height="166dp" />
-
-                <ImageView
-                    android:id="@+id/img_qrcode_shadow"
-                    android:layout_width="166dp"
-                    android:layout_height="166dp"
-                    android:background="#56000000" />
-
-            </FrameLayout>
-        </LinearLayout>
+            android:textColor="@color/black"
+            android:background="@drawable/shape_privatekey_copy_content"
+            android:padding="5dp"
+            android:textSize="13sp"
+            android:text="lajsdlfjldfjlasdfjlkasjdflkasjdflkjsajsjslkdfjaslkdfjlksdfjlsadfjlasjdfl"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
         <TextView
             android:id="@+id/tv_copy_privatekeyImg"
             android:layout_width="match_parent"
