@@ -54,8 +54,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/radio_selected"
-            android:src="@drawable/ic_images_common_loading" />
+            android:layout_toLeftOf="@+id/radio_selected" />
 
         <RadioButton
             android:id="@+id/radio_selected"

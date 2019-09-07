@@ -28,6 +28,8 @@ import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WConstant;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.internal.PaintDrawable;
+import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.stealthcopter.networktools.Ping;
@@ -230,6 +232,10 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mTvNodeName = itemView.findViewById(R.id.tv_node_name);
                 mTvNodePing = itemView.findViewById(R.id.tv_ping);
                 mImgLoad = itemView.findViewById(R.id.img_ping);
+                ProgressDrawable mProgressDrawable = new ProgressDrawable();
+                mProgressDrawable.setColor(0xff666666);
+                mProgressDrawable.start();
+                mImgLoad.setImageDrawable(mProgressDrawable);
                 mRadioSelected = itemView.findViewById(R.id.radio_selected);
                 mRadioSelected.setClickable(false);
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
@@ -374,6 +380,10 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mTvNodeName = itemView.findViewById(R.id.tv_node_name);
                 mTvNodePing = itemView.findViewById(R.id.tv_ping);
                 mImgLoad = itemView.findViewById(R.id.img_ping);
+                ProgressDrawable mProgressDrawable = new ProgressDrawable();
+                mProgressDrawable.setColor(0xff666666);
+                mProgressDrawable.start();
+                mImgLoad.setImageDrawable(mProgressDrawable);
                 mRadioSelected = itemView.findViewById(R.id.radio_selected);
                 mRadioSelected.setClickable(false);
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {

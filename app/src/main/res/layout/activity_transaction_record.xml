@@ -43,7 +43,11 @@
         app:srlEnableOverScrollBounce="false"
         app:srlEnableOverScrollDrag="false">
 
-        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+        <!--<com.scwang.smartrefresh.layout.header.ClassicsHeader-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+
+        <com.doughnut.view.DoughnutHeaderView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
