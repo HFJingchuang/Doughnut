@@ -5,18 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.Marker;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
+import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -39,11 +44,13 @@ public class TransactionRecordActivity extends BaseActivity implements
     private TitleBar mTitleBar;
 
     private RecyclerView mRecyclerView;
+    private LinearLayout mLayoutEmpty;
+
     private TransactionRecordAdapter mAdapter;
     private Marker marker;
     private List<Transactions> transactions;
-
-    private LinearLayout mLayoutEmpty;
+    private String currentAddr;
+    private final int SCALE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +63,6 @@ public class TransactionRecordActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        String currentWallet = WalletSp.getInstance(this, "").getCurrentWallet();
-        mTitleBar.setTitle(WalletSp.getInstance(this, currentWallet).getName());
-        if (mAdapter != null) {
-            mSmartRefreshLayout.autoRefresh();
-        }
     }
 
     @Override
@@ -83,9 +85,7 @@ public class TransactionRecordActivity extends BaseActivity implements
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setLeftTextColor(R.color.white);
         mTitleBar.setTitleTextColor(R.color.color_detail_address);
-        mTitleBar.setRightDrawable(R.drawable.ic_changewallet);
         mTitleBar.setTitle(getString(R.string.tv_transferdetail));
-        mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
         mTitleBar.setTitleBarClickListener(this);
 
         mLayoutEmpty = findViewById(R.id.layout_no_transfer);
@@ -118,6 +118,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                 getHistoryMore();
             }
         });
+        currentAddr = WalletSp.getInstance(this, "").getCurrentWallet();
     }
 
     public static void startTransactionRecordActivity(Context context) {
@@ -126,24 +127,10 @@ public class TransactionRecordActivity extends BaseActivity implements
         context.startActivity(intent);
     }
 
-    private boolean isReadyForPullEnd() {
-        try {
-            int lastVisiblePosition = mRecyclerView.getChildAdapterPosition(
-                    mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
-            if (lastVisiblePosition >= mRecyclerView.getAdapter().getItemCount() - 1) {
-                return mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1)
-                        .getBottom() <= mRecyclerView.getBottom();
-            }
-        } catch (Throwable e) {
-        }
-
-        return false;
-    }
-
     class TransactionRecordAdapter extends RecyclerView.Adapter<TransactionRecordAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            LinearLayout mLayoutItem;
+            RelativeLayout mLayoutItem;
             ImageView mImgIcon;
             TextView mTvTransactionAddress;
             TextView mTvTransactionTime;
@@ -161,8 +148,8 @@ public class TransactionRecordActivity extends BaseActivity implements
                 });
                 mImgIcon = itemView.findViewById(R.id.img_icon);
                 mTvTransactionAddress = itemView.findViewById(R.id.tv_transaction_address);
-                mTvTransactionTime = itemView.findViewById(R.id.tv_transaction_time);
                 mTvTransactionCount = itemView.findViewById(R.id.tv_transaction_count);
+                mTvTransactionTime = itemView.findViewById(R.id.tv_transaction_time);
             }
         }
 
@@ -184,84 +171,96 @@ public class TransactionRecordActivity extends BaseActivity implements
                 case "sent":
                     holder.mImgIcon.setImageResource(R.drawable.ic_transfer_send);
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
-                    holder.mTvTransactionCount.setText("-" + tr.getAmount().getValue() + " " + tr.getAmount().getCurrency());
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.color_detail_send));
+
+                    String paysH = "<font color=\"#F55758\">" + "-" + Util.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
+                    String paysCurH = "<font color=\"#021E38\">" + tr.getAmount().getCurrency() + "</font>";
+                    holder.mTvTransactionCount.setText(Html.fromHtml(paysH.concat(paysCurH)));
                     break;
                 case "received":
                     holder.mImgIcon.setImageResource(R.drawable.ic_transfer_receive);
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
-                    holder.mTvTransactionCount.setText("+" + tr.getAmount().getValue() + " " + tr.getAmount().getCurrency());
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.color_detail_receive));
+
+                    String paysH1 = "<font color=\"#27B498\">" + "+" + Util.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
+                    String paysCurH1 = "<font color=\"#021E38\">" + tr.getAmount().getCurrency() + "</font>";
+                    holder.mTvTransactionCount.setText(Html.fromHtml(paysH1.concat(paysCurH1)));
                     break;
                 case "offernew":
                     holder.mImgIcon.setImageResource(R.drawable.ic_offer_new);
-                    holder.mTvTransactionAddress.setText("挂单创建");
+                    holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offernew));
+
                     String getsCur = tr.getGets().getCurrency();
                     String paysCur = tr.getPays().getCurrency();
                     BigDecimal getsAmount = new BigDecimal("0");
                     BigDecimal paysAmount = new BigDecimal("0");
                     if (tr.getEffects() != null) {
                         for (int i = 0; i < tr.getEffects().size(); i++) {
-                            pays = tr.getEffects().getJSONObject(i).getJSONObject("paid");
-                            gets = tr.getEffects().getJSONObject(i).getJSONObject("got");
+                            JSONObject effect = tr.getEffects().getJSONObject(i);
+                            pays = effect.getJSONObject("paid");
+                            gets = effect.getJSONObject("got");
                             if (pays != null && gets != null) {
                                 String currency = pays.getString("currency");
-                                if (TextUtils.equals(currency, getsCur)) {
+                                if (TextUtils.equals(currency, paysCur)) {
                                     paysAmount = paysAmount.add(new BigDecimal(pays.getString("value")));
                                 }
                                 currency = gets.getString("currency");
-                                if (TextUtils.equals(currency, paysCur)) {
+                                if (TextUtils.equals(currency, getsCur)) {
                                     getsAmount = getsAmount.add(new BigDecimal(gets.getString("value")));
                                 }
                             }
                         }
                         if (getsAmount.equals(new BigDecimal("0")) || paysAmount.equals(new BigDecimal("0"))) {
-                            holder.mTvTransactionCount.setText(tr.getGets().getValue() + " " + getsCur + " -> " + tr.getPays().getValue() + " " + paysCur);
+                            holder.mTvTransactionCount.setText(formatHtml(Util.formatAmount(tr.getPays().getValue(), SCALE), paysCur, Util.formatAmount(tr.getGets().getValue(), SCALE), getsCur));
                         } else {
-                            holder.mTvTransactionCount.setText(paysAmount.stripTrailingZeros().toPlainString() + " " + getsCur + " -> " + getsAmount.stripTrailingZeros().toPlainString() + " " + paysCur);
+                            String entrustAmount = Util.formatAmount(getsAmount.stripTrailingZeros().toPlainString(), SCALE);
+                            String payAmount = Util.formatAmount(paysAmount.stripTrailingZeros().toPlainString(), SCALE);
+                            holder.mTvTransactionCount.setText(formatHtml(payAmount, paysCur, entrustAmount, getsCur));
+
                         }
                     }
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
                     break;
                 case "offercancel":
                     holder.mImgIcon.setImageResource(R.drawable.ic_offer_cancel);
-                    holder.mTvTransactionAddress.setText("挂单取消");
+                    holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offercancel));
                     if (tr.getGets() != null && tr.getPays() != null) {
-                        holder.mTvTransactionCount.setText(tr.getGets().getValue() + " " + tr.getGets().getCurrency() + " -> " + tr.getPays().getValue() + " " + tr.getPays().getCurrency());
+                        String entrustAmount = Util.formatAmount(tr.getGets().getValue(), SCALE);
+                        String entrustToken = tr.getGets().getCurrency();
+                        String payAmount = Util.formatAmount(tr.getPays().getValue(), SCALE);
+                        String payToken = tr.getPays().getCurrency();
+                        holder.mTvTransactionCount.setText(formatHtml(payAmount, payToken, entrustAmount, entrustToken));
                     } else {
                         holder.mTvTransactionCount.setText("---");
                     }
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
                     break;
                 case "offereffect":
+                    holder.mImgIcon.setImageResource(R.drawable.ic_offer_cancel);
+                    holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offercancel));
+
                     holder.mImgIcon.setImageResource(R.drawable.ic_offer_effect);
-                    BigDecimal getsAmount1 = new BigDecimal("0");
-                    BigDecimal paysAmount1 = new BigDecimal("0");
                     if (tr.getEffects() != null) {
                         for (int i = 0; i < tr.getEffects().size(); i++) {
-                            pays = tr.getEffects().getJSONObject(i).getJSONObject("paid");
-                            gets = tr.getEffects().getJSONObject(i).getJSONObject("got");
-                            if (pays != null && gets != null) {
-                                paysAmount1 = paysAmount1.add(new BigDecimal(pays.getString("value")));
-                                getsAmount1 = getsAmount1.add(new BigDecimal(gets.getString("value")));
+                            JSONObject effect = tr.getEffects().getJSONObject(i);
+                            String addr = effect.getJSONObject("counterparty").getString("account");
+                            if (TextUtils.equals(addr, currentAddr)) {
+                                pays = effect.getJSONObject("paid");
+                                gets = effect.getJSONObject("got");
+                                if (pays != null && gets != null) {
+                                    holder.mTvTransactionCount.setText(formatHtml(Util.formatAmount(gets.getString("value"), SCALE), gets.getString("currency"), Util.formatAmount(pays.getString("value"), SCALE), pays.getString("currency")));
+                                }
                             }
                         }
-                        String payCurrency = tr.getEffects().getJSONObject(0).getJSONObject("paid").getString("currency");
-                        String getCurrency = tr.getEffects().getJSONObject(0).getJSONObject("got").getString("currency");
-                        holder.mTvTransactionCount.setText(paysAmount1.stripTrailingZeros().toPlainString() + " " + payCurrency + " -> " + getsAmount1.stripTrailingZeros().toPlainString() + " " + getCurrency);
                     }
-                    holder.mTvTransactionAddress.setText(tr.getEffects().getJSONObject(0).getJSONObject("counterparty").getString("account"));
-                    holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_green));
+                    holder.mTvTransactionAddress.setText(tr.getCounterparty());
                     break;
                 default:
                     // TODO parse other type
                     break;
             }
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
             Date date = new Date(tr.getDate().longValue() * 1000);
             String sim = formatter.format(date);
             holder.mTvTransactionTime.setText(sim);
-            ViewUtil.EllipsisTextView(holder.mTvTransactionAddress);
+            String address = holder.mTvTransactionAddress.getText().toString();
+            holder.mTvTransactionAddress.setText(EllipsizeAddress(address));
         }
 
         @Override
@@ -306,4 +305,21 @@ public class TransactionRecordActivity extends BaseActivity implements
         mSmartRefreshLayout.finishLoadMore();
     }
 
+    private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {
+        String paysH = "<font color=\"#3B6CA6\">" + paysValue + " </font>";
+        String paysCurH = "<font color=\"#021E38\">" + paysCur + " </font>";
+        String right = "<font color=\"#A6A9AD\">" + "\u2192" + " </font>";
+        String getsH = "<font color=\"#3B6CA6\">" + getsValue + " </font>";
+        String getsCurH = "<font color=\"#021E38\">" + getsCur + "</font>";
+        return Html.fromHtml(paysH.concat(paysCurH).concat(right).concat(getsH).concat(getsCurH));
+    }
+
+    private String EllipsizeAddress(String address) {
+        if (Wallet.isValidAddress(address)) {
+            String startStr = address.substring(0, 4);
+            String endStr = address.substring(address.length() - 4);
+            return startStr + "***" + endStr;
+        }
+        return address;
+    }
 }

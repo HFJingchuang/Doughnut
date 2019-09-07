@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroud_gray">
+    android:background="@color/backgroud_gray"
+    android:orientation="vertical">
 
     <com.doughnut.view.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <View
-        android:id="@+id/view_split"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_below="@+id/title_bar"
-        android:background="@color/color_split" />
-
 
     <LinearLayout
         android:id="@+id/layout_no_transfer"
@@ -66,4 +59,4 @@
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-</RelativeLayout>
+</LinearLayout>

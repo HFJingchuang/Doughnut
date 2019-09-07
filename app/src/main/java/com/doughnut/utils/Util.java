@@ -239,18 +239,22 @@ public class Util {
     }
 
     /**
-     * 格式化数字，保留6位小数，以便于画面显示
+     * 格式化数字，截取小数位，以便于画面显示
      *
      * @param amountStr
+     * @param scale
      * @return
      */
-    public static String formtAmount(String amountStr) {
+    public static String formatAmount(String amountStr, int scale) {
         try {
             BigDecimal amount = new BigDecimal(amountStr);
-            return amount.setScale(6, BigDecimal.ROUND_HALF_UP).stripTrailingZeros().toPlainString();
+            BigDecimal amountF = amount.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            if (amountF.compareTo(BigDecimal.ZERO) != 0) {
+                return amountF.stripTrailingZeros().toPlainString();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return amountStr;
     }
 }

@@ -4,37 +4,38 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="15dp">
+    android:paddingVertical="10dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layout_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginHorizontal="20dp">
 
         <ImageView
             android:id="@+id/img_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp" />
+            android:layout_centerVertical="true" />
 
         <LinearLayout
+            android:id="@+id/layout_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/img_icon"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_transaction_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
-                android:maxWidth="120dp"
                 android:singleLine="true"
                 android:textColor="@color/color_detail_address"
-                android:textSize="17sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_transaction_time"
@@ -45,16 +46,20 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
+
         <TextView
             android:id="@+id/tv_transaction_count"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:textSize="17sp" />
-
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="2dp"
+            android:layout_toRightOf="@+id/layout_address"
+            android:gravity="right|center"
+            android:textColor="@color/color_detail_address"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

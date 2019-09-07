@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
@@ -70,6 +71,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private String currentAddr;
     private String mFrom;
     private String mTo;
+    private final int SCALE = 4;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,16 +220,16 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 String addr = item.getJSONObject("counterparty").getString("account");
                 holder.mTo = addr;
                 holder.mTvTo.setText(addr);
-                ViewUtil.EllipsisTextView(mTvTo);
+                ViewUtil.EllipsisTextView(holder.mTvTo);
 
                 String currency = pays.getString("currency");
                 String paysCount = pays.getString("value");
-                holder.mTvPayAmount.setText(Util.formtAmount(paysCount));
+                holder.mTvPayAmount.setText(Util.formatAmount(paysCount, SCALE));
                 holder.mTvPayToken.setText(currency);
 
                 currency = gets.getString("currency");
                 String getsCount = gets.getString("value");
-                holder.mTvEntrustAmount.setText(Util.formtAmount(getsCount));
+                holder.mTvEntrustAmount.setText(Util.formatAmount(getsCount, SCALE));
                 holder.mTvEntrustToken.setText(currency);
 
                 String price = item.getString("price");
@@ -268,7 +270,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             case "sent":
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
-                mTvAmount.setText(Util.formtAmount(mTransactions.getAmount().getValue()));
+                mTvAmount.setText(Util.formatAmount(mTransactions.getAmount().getValue(), SCALE));
                 mTvToken.setText(mTransactions.getAmount().getCurrency());
                 mTo = mTransactions.getCounterparty();
                 mTvTo.setText(mTo);
@@ -279,7 +281,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             case "received":
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
-                mTvAmount.setText(Util.formtAmount(mTransactions.getAmount().getValue()));
+                mTvAmount.setText(Util.formatAmount(mTransactions.getAmount().getValue(), SCALE));
                 mTvToken.setText(mTransactions.getAmount().getCurrency());
                 mFrom = mTransactions.getCounterparty();
                 mTvFrom.setText(mFrom);
@@ -324,9 +326,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         String paysValue = paysAmount.stripTrailingZeros().toPlainString();
                         String getsValue = getsAmount.stripTrailingZeros().toPlainString();
                         mLayoutTurnoverAmount.setVisibility(View.VISIBLE);
-                        mTvTurnoverAmount.setText(Util.formtAmount(getsValue));
+                        mTvTurnoverAmount.setText(Util.formatAmount(getsValue, SCALE));
                         mTvTurnoverToken.setText(getsCur);
-                        mTvTurnoverPayAmount.setText(Util.formtAmount(paysValue));
+                        mTvTurnoverPayAmount.setText(Util.formatAmount(paysValue, SCALE));
                         mTvTurnoverPayToken.setText(paysCur);
 
                         // 成交价格
@@ -347,7 +349,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
-                            mTvTurnoverValue.setText(price);
+                            mTvTurnoverValue.setText(Util.formatAmount(price, SCALE));
                             mTvTurnoverValueToken.setText(token);
                         }
                     }
@@ -356,9 +358,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
                     mLayoutEntrustAmount.setVisibility(View.VISIBLE);
-                    mTvEntrustAmount.setText(Util.formtAmount(getsValue));
+                    mTvEntrustAmount.setText(Util.formatAmount(getsValue, SCALE));
                     mTvEntrustToken.setText(getsCur);
-                    mTvPayAmount.setText(Util.formtAmount(paysValue));
+                    mTvPayAmount.setText(Util.formatAmount(paysValue, SCALE));
                     mTvPayToken.setText(paysCur);
 
                     // 委托价格
@@ -379,7 +381,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
-                        mTvValue.setText(price);
+                        mTvValue.setText(Util.formatAmount(price, SCALE));
                         mTvValueToken.setText(token);
                     }
 
@@ -395,9 +397,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String paysValue = mTransactions.getPays().getValue();
                     String getsToken = mTransactions.getGets().getCurrency();
                     String paysToken = mTransactions.getPays().getCurrency();
-                    mTvEntrustAmount.setText(Util.formtAmount(getsValue));
+                    mTvEntrustAmount.setText(Util.formatAmount(getsValue, SCALE));
                     mTvEntrustToken.setText(getsToken);
-                    mTvPayAmount.setText(Util.formtAmount(paysValue));
+                    mTvPayAmount.setText(Util.formatAmount(paysValue, SCALE));
                     mTvPayToken.setText(paysToken);
 
                     // 委托价格
@@ -426,8 +428,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mTvFrom.setText(mFrom);
                 getsCur = mTransactions.getGets().getCurrency();
                 paysCur = mTransactions.getPays().getCurrency();
-                getsAmount = new BigDecimal("0");
-                paysAmount = new BigDecimal("0");
+                BigDecimal getsAmount1 = new BigDecimal("0");
+                BigDecimal paysAmount1 = new BigDecimal("0");
                 if (mTransactions.getEffects() != null) {
                     mEffects = mTransactions.getEffects();
                     for (int i = mEffects.size() - 1; i >= 0; i--) {
@@ -450,12 +452,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                                 String currency = pays.getString("currency");
                                 String paysCount = pays.getString("value");
                                 if (TextUtils.equals(currency, paysCur)) {
-                                    paysAmount = paysAmount.add(new BigDecimal(paysCount));
+                                    paysAmount1 = paysAmount1.add(new BigDecimal(paysCount));
                                 }
                                 currency = gets.getString("currency");
                                 String getsCount = gets.getString("value");
                                 if (TextUtils.equals(currency, getsCur)) {
-                                    getsAmount = getsAmount.add(new BigDecimal(getsCount));
+                                    getsAmount1 = getsAmount1.add(new BigDecimal(getsCount));
                                 }
                             } else {
                                 mEffects.remove(i);
@@ -470,13 +472,13 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
 
                     // 成交
-                    if (getsAmount.compareTo(new BigDecimal(0)) != 0 && paysAmount.compareTo(new BigDecimal(0)) != 0) {
-                        String paysValue = paysAmount.stripTrailingZeros().toPlainString();
-                        String getsValue = getsAmount.stripTrailingZeros().toPlainString();
+                    if (getsAmount1.compareTo(new BigDecimal(0)) != 0 && paysAmount1.compareTo(new BigDecimal(0)) != 0) {
+                        String paysValue = paysAmount1.stripTrailingZeros().toPlainString();
+                        String getsValue = getsAmount1.stripTrailingZeros().toPlainString();
                         mLayoutTurnoverAmount.setVisibility(View.VISIBLE);
-                        mTvTurnoverAmount.setText(Util.formtAmount(getsValue));
+                        mTvTurnoverAmount.setText(Util.formatAmount(getsValue, SCALE));
                         mTvTurnoverToken.setText(getsCur);
-                        mTvTurnoverPayAmount.setText(Util.formtAmount(paysValue));
+                        mTvTurnoverPayAmount.setText(Util.formatAmount(paysValue, SCALE));
                         mTvTurnoverPayToken.setText(paysCur);
 
                         // 成交价格
@@ -497,7 +499,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
-                            mTvTurnoverValue.setText(price);
+                            mTvTurnoverValue.setText(Util.formatAmount(price, SCALE));
                             mTvTurnoverValueToken.setText(token);
                         }
                     }
@@ -506,9 +508,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
                     mLayoutEntrustAmount.setVisibility(View.VISIBLE);
-                    mTvEntrustAmount.setText(Util.formtAmount(getsValue));
+                    mTvEntrustAmount.setText(Util.formatAmount(getsValue, SCALE));
                     mTvEntrustToken.setText(getsCur);
-                    mTvPayAmount.setText(Util.formtAmount(paysValue));
+                    mTvPayAmount.setText(Util.formatAmount(paysValue, SCALE));
                     mTvPayToken.setText(paysCur);
 
                     // 委托价格
@@ -529,7 +531,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
-                        mTvValue.setText(price);
+                        mTvValue.setText(Util.formatAmount(price, SCALE));
                         mTvValueToken.setText(token);
                     }
                 }
@@ -604,5 +606,14 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         } else {
             return "";
         }
+    }
+
+    private String EllipsizeAddress(String address) {
+        if (Wallet.isValidAddress(address)) {
+            String startStr = address.substring(0, 7);
+            String endStr = address.substring(address.length() - 7);
+            return startStr + "***" + endStr;
+        }
+        return address;
     }
 }
