@@ -213,7 +213,7 @@ public class TitleBar extends LinearLayout implements View.OnClickListener {
     }
 
     public void setTitleBarBackColor(int id) {
-//        mLayoutTitleBar.setBackgroundColor(id);
         mLayoutTitleBar.setBackgroundResource(id);
     }
+
 }

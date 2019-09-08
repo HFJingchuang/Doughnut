@@ -320,4 +320,5 @@
     <string name="srl_header_loading">Loading…</string>
     <string name="srl_header_finish">Refresh Success</string>
     <string name="srl_header_failed">Refresh Failed</string>
+    <string name="tv_album">Album</string>
 </resources>

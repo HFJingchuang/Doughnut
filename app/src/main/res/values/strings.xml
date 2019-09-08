@@ -121,7 +121,7 @@
     <string name="dialog_content_phone_status">手机状态</string>
     <string name="toast_no_messages">空信息</string>
     <string name="dialog_content_wallet_security">为了您的钱包安全，请备份钱包</string>
-    <string name="titleBar_scan">扫描</string>
+    <string name="titleBar_scan">扫码</string>
     <string name="dialog_content_scanning">正在扫描...</string>
     <string name="content_about_token_pocket">TokenPocket是一款移动端轻钱包APP，它旨在为普通用户提供一款安全放心，简单好用，功能强大的数字资产钱包应用</string>
     <string name="btn_user_agreement">使用协议</string>
@@ -320,4 +320,5 @@
     <string name="srl_header_release">释放立即刷新</string>
     <string name="srl_header_finish">刷新完成</string>
     <string name="srl_header_failed">刷新失败</string>
+    <string name="tv_album">相册</string>
 </resources>

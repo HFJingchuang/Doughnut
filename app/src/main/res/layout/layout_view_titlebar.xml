@@ -70,6 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|right"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:visibility="invisible" />
 
         <ImageView

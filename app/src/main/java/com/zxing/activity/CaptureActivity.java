@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -18,8 +19,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.doughnut.utils.ViewUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.doughnut.R;
@@ -37,13 +42,14 @@ import java.util.Vector;
 /**
  * 二维码扫描
  */
-public class CaptureActivity extends BaseActivity implements Callback {
+public class CaptureActivity extends BaseActivity implements Callback, View.OnClickListener {
 
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
     private Vector<BarcodeFormat> decodeFormats;
     private InactivityTimer inactivityTimer;
     private MediaPlayer mediaPlayer;
+    private ImageView mImgLight;
     private String characterSet;
     private boolean hasSurface;
     private boolean playBeep;
@@ -55,6 +61,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private static final int PARSE_BARCODE_FAIL = 303;
     private ProgressDialog mProgress;
     private String photo_path;
+    private boolean isLight = false;
 
     public static void navToActivity(Activity context, int requestCode) {
         Intent intent = new Intent(context, CaptureActivity.class);
@@ -75,14 +82,24 @@ public class CaptureActivity extends BaseActivity implements Callback {
         inactivityTimer = new InactivityTimer(this);
 
         TitleBar mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
+        mTitleBar.setTitleBarBackColor(R.color.transparent);
         mTitleBar.setTitle(getString(R.string.titleBar_scan));
+        mTitleBar.setRightText(R.string.tv_album);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
                 finish();
             }
+
+            @Override
+            public void onRightClick(View view) {
+                // todo 相册选择
+            }
         });
+
+        mImgLight = findViewById(R.id.img_light);
+        mImgLight.setOnClickListener(this);
     }
 
     private Handler mHandler = new Handler() {
@@ -169,7 +186,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }
         initBeepSound();
         vibrate = true;
-
     }
 
     @Override
@@ -231,6 +247,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
+            Rect rect = CameraManager.get().getFramingRect();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mImgLight.getLayoutParams();
+            int screenHight = ViewUtil.getWindowHight(this);
+            layoutParams.topMargin = rect.bottom + (screenHight - ViewUtil.dip2px(this, 50) - rect.bottom) / 3;
+            mImgLight.setLayoutParams(layoutParams);
         }
 
     }
@@ -300,4 +321,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
     };
 
 
+    @Override
+    public void onClick(View v) {
+        if (v == mImgLight) {
+            if (isLight) {
+                CameraManager.get().closeLight();
+                isLight = false;
+            } else {
+                CameraManager.get().openLight();
+                isLight = true;
+            }
+        }
+    }
 }
