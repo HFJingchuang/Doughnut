@@ -28,7 +28,6 @@ import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WConstant;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.internal.PaintDrawable;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -224,6 +223,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
             TextView mTvNodePing;
             ImageView mImgLoad;
             RadioButton mRadioSelected;
+            ProgressDrawable mProgressDrawable;
 
             public VH(View v) {
                 super(v);
@@ -232,9 +232,8 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mTvNodeName = itemView.findViewById(R.id.tv_node_name);
                 mTvNodePing = itemView.findViewById(R.id.tv_ping);
                 mImgLoad = itemView.findViewById(R.id.img_ping);
-                ProgressDrawable mProgressDrawable = new ProgressDrawable();
+                mProgressDrawable = new ProgressDrawable();
                 mProgressDrawable.setColor(0xff666666);
-                mProgressDrawable.start();
                 mImgLoad.setImageDrawable(mProgressDrawable);
                 mRadioSelected = itemView.findViewById(R.id.radio_selected);
                 mRadioSelected.setClickable(false);
@@ -291,6 +290,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 holder.mRadioSelected.setChecked(false);
                 holder.mLayoutItem.setActivated(false);
             }
+            holder.mProgressDrawable.start();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -325,6 +325,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                                             }
                                             holder.mTvNodePing.setVisibility(View.VISIBLE);
                                             holder.mImgLoad.setVisibility(View.GONE);
+                                            holder.mProgressDrawable.stop();
                                         }
                                     });
                                 }
@@ -342,6 +343,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                                     holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
                                     holder.mTvNodePing.setVisibility(View.VISIBLE);
                                     holder.mImgLoad.setVisibility(View.GONE);
+                                    holder.mProgressDrawable.stop();
                                 }
                             });
                         }
@@ -372,6 +374,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
             TextView mTvNodePing;
             ImageView mImgLoad;
             RadioButton mRadioSelected;
+            ProgressDrawable mProgressDrawable;
 
             public VH(View v) {
                 super(v);
@@ -380,9 +383,8 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 mTvNodeName = itemView.findViewById(R.id.tv_node_name);
                 mTvNodePing = itemView.findViewById(R.id.tv_ping);
                 mImgLoad = itemView.findViewById(R.id.img_ping);
-                ProgressDrawable mProgressDrawable = new ProgressDrawable();
+                mProgressDrawable = new ProgressDrawable();
                 mProgressDrawable.setColor(0xff666666);
-                mProgressDrawable.start();
                 mImgLoad.setImageDrawable(mProgressDrawable);
                 mRadioSelected = itemView.findViewById(R.id.radio_selected);
                 mRadioSelected.setClickable(false);
@@ -439,6 +441,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 holder.mRadioSelected.setChecked(false);
                 holder.mLayoutItem.setActivated(false);
             }
+            holder.mProgressDrawable.start();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -473,6 +476,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                                             }
                                             holder.mTvNodePing.setVisibility(View.VISIBLE);
                                             holder.mImgLoad.setVisibility(View.GONE);
+                                            holder.mProgressDrawable.stop();
                                         }
                                     });
                                 }
@@ -490,6 +494,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                                     holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
                                     holder.mTvNodePing.setVisibility(View.VISIBLE);
                                     holder.mImgLoad.setVisibility(View.GONE);
+                                    holder.mProgressDrawable.stop();
                                 }
                             });
                         }

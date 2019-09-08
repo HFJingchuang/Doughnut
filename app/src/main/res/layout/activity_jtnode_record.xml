@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                <com.doughnut.view.DoughnutRefreshLayout
                     android:id="@+id/layout_refresh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -53,11 +53,7 @@
                     app:srlEnableLoadMoreWhenContentNotFull="false"
                     app:srlEnableOverScrollBounce="false"
                     app:srlEnableOverScrollDrag="false">
-
-                    <com.scwang.smartrefresh.layout.header.ClassicsHeader
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
+                    
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/view_recycler"
                         android:layout_width="match_parent"
@@ -68,7 +64,7 @@
                         android:layout_height="wrap_content"
                         app:srlTextLoading="@string/footer_loading" />
 
-                </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                </com.doughnut.view.DoughnutRefreshLayout>
 
                 <TextView
                     android:id="@+id/tv_add_node"

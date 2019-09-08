@@ -314,4 +314,10 @@
     <string name="tv_transfer_time">交易时间</string>
     <string name="tv_transfer_result">交易结果</string>
     <string name="tv_transfer_memo">交易备注</string>
+    <string name="srl_header_pulling">下拉可以刷新</string>
+    <string name="srl_header_refreshing">正在刷新…</string>
+    <string name="srl_header_loading">等待底部加载完成…</string>
+    <string name="srl_header_release">释放立即刷新</string>
+    <string name="srl_header_finish">刷新完成</string>
+    <string name="srl_header_failed">刷新失败</string>
 </resources>

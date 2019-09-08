@@ -19,12 +19,6 @@ import com.scwang.smartrefresh.layout.internal.InternalAbstract;
 
 public class DoughnutHeaderView extends InternalAbstract {
 
-    public static String REFRESH_HEADER_PULLING = "下拉可以刷新";//"下拉可以刷新";
-    public static String REFRESH_HEADER_LOADING = "正在加载...";//"正在加载...";
-    public static String REFRESH_HEADER_RELEASE = "释放立即刷新";
-    public static String REFRESH_HEADER_FINISH = "刷新成功";//"刷新完成";
-    public static String REFRESH_HEADER_FAILED = "刷新失败";//"刷新失败";
-    
     private TextView mTitleText;
     private ImageView mAnimationImg;
     private AnimationDrawable mAnimationDrawable;
@@ -55,9 +49,9 @@ public class DoughnutHeaderView extends InternalAbstract {
     @Override
     public int onFinish(@NonNull RefreshLayout layout, boolean success) {
         if (success) {
-            mTitleText.setText(REFRESH_HEADER_FINISH);
+            mTitleText.setText(getResources().getString(R.string.srl_header_finish));
         } else {
-            mTitleText.setText(REFRESH_HEADER_FAILED);
+            mTitleText.setText(getResources().getString(R.string.srl_header_failed));
         }
         super.onFinish(layout, success);
         return 500; //延迟500毫秒之后再弹回
@@ -74,13 +68,13 @@ public class DoughnutHeaderView extends InternalAbstract {
         switch (newState) {
             case PullDownToRefresh: //下拉过程
                 mAnimationDrawable.start();
-                mTitleText.setText(REFRESH_HEADER_PULLING);
+                mTitleText.setText(getResources().getString(R.string.srl_header_pulling));
                 break;
             case ReleaseToRefresh: //松开刷新
-                mTitleText.setText(REFRESH_HEADER_RELEASE);
+                mTitleText.setText(getResources().getString(R.string.srl_header_release));
                 break;
             case Refreshing: //loading中
-                mTitleText.setText(REFRESH_HEADER_LOADING);
+                mTitleText.setText(getResources().getString(R.string.srl_header_loading));
                 break;
         }
     }

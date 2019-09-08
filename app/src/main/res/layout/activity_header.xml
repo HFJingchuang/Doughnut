@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:background="@color/split_color"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -18,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="ssss"
         android:textColor="@color/color_receive_hint"
         android:textSize="15sp" />
 </LinearLayout>
