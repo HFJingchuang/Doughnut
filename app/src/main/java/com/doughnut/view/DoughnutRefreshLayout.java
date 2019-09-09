@@ -9,6 +9,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 public class DoughnutRefreshLayout extends SmartRefreshLayout {
 
     DoughnutHeaderView mHeaderView;
+    DoughnutFooterView mFooterView;
 
     public DoughnutRefreshLayout(Context context) {
         this(context, null);
@@ -25,5 +26,9 @@ public class DoughnutRefreshLayout extends SmartRefreshLayout {
         mHeaderView = new DoughnutHeaderView(context, attrs, defStyleAttr);
         mHeaderView.setLayoutParams(layoutParams);
         addView(mHeaderView, 0);
+
+        mFooterView = new DoughnutFooterView(context, attrs, defStyleAttr);
+        mFooterView.setLayoutParams(layoutParams);
+        addView(mFooterView, -1);
     }
 }

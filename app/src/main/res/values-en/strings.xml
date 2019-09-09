@@ -320,6 +320,13 @@
     <string name="srl_header_loading">Loading…</string>
     <string name="srl_header_finish">Refresh Success</string>
     <string name="srl_header_failed">Refresh Failed</string>
+    <string name="srl_footer_pulling">Pull Up To Load More</string>
+    <string name="srl_footer_release">Release To Load More</string>
+    <string name="srl_footer_loading">Loading…</string>
+    <string name="srl_footer_refreshing">Wait For Refreshing…</string>
+    <string name="srl_footer_finish">Load Success</string>
+    <string name="srl_footer_failed">Load Failed</string>
+    <string name="srl_footer_nothing">No More Data</string>
     <string name="tv_album">Album</string>
     <string name="toast_qr_err">QR code Error!</string>
     <string name="toast_qr_fail">Scanning failure!</string>

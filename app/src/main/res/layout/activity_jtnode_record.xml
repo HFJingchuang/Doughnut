@@ -53,16 +53,11 @@
                     app:srlEnableLoadMoreWhenContentNotFull="false"
                     app:srlEnableOverScrollBounce="false"
                     app:srlEnableOverScrollDrag="false">
-                    
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/view_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
-
-                    <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:srlTextLoading="@string/footer_loading" />
 
                 </com.doughnut.view.DoughnutRefreshLayout>
 

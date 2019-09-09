@@ -12,39 +12,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshInternal;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
 import com.scwang.smartrefresh.layout.internal.InternalAbstract;
 
-public class DoughnutHeaderView extends InternalAbstract implements RefreshHeader {
+public class DoughnutFooterView extends InternalAbstract implements RefreshFooter {
 
     private TextView mTitleText;
     private ImageView mAnimationImg;
     private AnimationDrawable mAnimationDrawable;
-    private AnimationDrawable mAnimationDrawableLoad;
+    private boolean mNoMoreData = false;
 
-    protected DoughnutHeaderView(@NonNull View wrapped) {
+    protected DoughnutFooterView(@NonNull View wrapped) {
         super(wrapped);
     }
 
-    public DoughnutHeaderView(Context context, AttributeSet attrs) {
+    public DoughnutFooterView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    protected DoughnutHeaderView(@NonNull View wrappedView, @Nullable RefreshInternal wrappedInternal) {
+    protected DoughnutFooterView(@NonNull View wrappedView, @Nullable RefreshInternal wrappedInternal) {
         super(wrappedView, wrappedInternal);
     }
 
-    protected DoughnutHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    protected DoughnutFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.from(context).inflate(R.layout.activity_header, this);
+        View view = layoutInflater.from(context).inflate(R.layout.activity_footer, this);
         mTitleText = view.findViewById(R.id.tv_status);
         mAnimationImg = (ImageView) view.findViewById(R.id.img_header);
-        mAnimationDrawable = (AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.anim_loading);
-        mAnimationDrawableLoad = (AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.anim_refresh);
+        mAnimationDrawable = (AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.anim_refresh);
         mAnimationImg.setImageDrawable(mAnimationDrawable);
     }
 
@@ -56,7 +55,7 @@ public class DoughnutHeaderView extends InternalAbstract implements RefreshHeade
             mTitleText.setText(getResources().getString(R.string.srl_header_failed));
         }
         super.onFinish(layout, success);
-        mAnimationDrawableLoad.stop();
+        stop();
         return 500; //延迟500毫秒之后再弹回
     }
 
@@ -69,18 +68,15 @@ public class DoughnutHeaderView extends InternalAbstract implements RefreshHeade
     @Override
     public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
         switch (newState) {
-            case PullDownToRefresh: //下拉过程
+            case PullUpToLoad:
                 start();
-                mTitleText.setText(getResources().getString(R.string.srl_header_pulling));
+                mTitleText.setText(getResources().getString(R.string.srl_footer_pulling));
                 break;
-            case ReleaseToRefresh: //松开刷新
-                mTitleText.setText(getResources().getString(R.string.srl_header_release));
+            case LoadReleased:
+                mTitleText.setText(getResources().getString(R.string.srl_footer_loading));
                 break;
-            case Refreshing: //loading中
-                stop();
-                mAnimationImg.setImageDrawable(mAnimationDrawableLoad);
-                mAnimationDrawableLoad.start();
-                mTitleText.setText(getResources().getString(R.string.srl_header_loading));
+            case Refreshing:
+                mTitleText.setText(getResources().getString(R.string.srl_footer_finish));
                 break;
         }
     }
@@ -89,7 +85,7 @@ public class DoughnutHeaderView extends InternalAbstract implements RefreshHeade
      * 开始
      */
     protected void start() {
-        if (mAnimationDrawable != null && !mAnimationDrawable.isRunning()) {
+        if (!mNoMoreData && mAnimationDrawable != null && !mAnimationDrawable.isRunning()) {
             mAnimationImg.setImageDrawable(mAnimationDrawable);
             mAnimationDrawable.start();
         }
@@ -99,8 +95,23 @@ public class DoughnutHeaderView extends InternalAbstract implements RefreshHeade
      * 结束
      */
     protected void stop() {
-        if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
+        if (!mNoMoreData && mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
             mAnimationDrawable.stop();
         }
+    }
+
+    @Override
+    public boolean setNoMoreData(boolean noMoreData) {
+        if (mNoMoreData != noMoreData) {
+            mNoMoreData = noMoreData;
+            if (noMoreData) {
+                mAnimationImg.setVisibility(GONE);
+                mTitleText.setText(getResources().getString(R.string.srl_footer_nothing));
+            } else {
+                mAnimationImg.setVisibility(VISIBLE);
+                mTitleText.setText(getResources().getString(R.string.srl_footer_pulling));
+            }
+        }
+        return true;
     }
 }

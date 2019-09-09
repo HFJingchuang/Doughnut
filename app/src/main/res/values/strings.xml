@@ -320,6 +320,13 @@
     <string name="srl_header_release">释放立即刷新</string>
     <string name="srl_header_finish">刷新完成</string>
     <string name="srl_header_failed">刷新失败</string>
+    <string name="srl_footer_pulling">上拉加载更多</string>
+    <string name="srl_footer_release">释放立即加载</string>
+    <string name="srl_footer_loading">正在加载…</string>
+    <string name="srl_footer_refreshing">等待头部刷新完成…</string>
+    <string name="srl_footer_finish">加载完成</string>
+    <string name="srl_footer_failed">加载失败</string>
+    <string name="srl_footer_nothing">没有更多数据了</string>
     <string name="tv_album">相册</string>
     <string name="toast_qr_err">错误的二维码！</string>
     <string name="toast_qr_fail">扫码失败！</string>
