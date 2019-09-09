@@ -323,4 +323,7 @@
     <string name="tv_album">Album</string>
     <string name="toast_qr_err">QR code Error!</string>
     <string name="toast_qr_fail">Scanning failure!</string>
+    <string name="toast_amount_format_err">Incorrect number format</string>
+    <string name="toast_save_success">Save Successfully</string>
+    <string name="toast_save_fail">Save Failed</string>
 </resources>

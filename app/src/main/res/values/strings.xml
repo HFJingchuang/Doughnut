@@ -323,4 +323,7 @@
     <string name="tv_album">相册</string>
     <string name="toast_qr_err">错误的二维码！</string>
     <string name="toast_qr_fail">扫码失败！</string>
+    <string name="toast_amount_format_err">数量格式不正确</string>
+    <string name="toast_save_success">保存成功</string>
+    <string name="toast_save_fail">保存失败</string>
 </resources>

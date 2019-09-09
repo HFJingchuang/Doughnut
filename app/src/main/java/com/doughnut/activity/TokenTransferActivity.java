@@ -154,7 +154,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     if (!TextUtils.isEmpty(input)) {
                         BigDecimal balance = new BigDecimal(mBalance);
                         BigDecimal amount = new BigDecimal(input);
-                        if (balance.compareTo(amount) < 0) {
+                        if (balance.compareTo(amount) < 0 && !mTvErrAddr.isShown()) {
                             mTvErrAmount.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
@@ -203,8 +203,15 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             String amount = getIntent().getStringExtra(Constant.TOEKN_AMOUNT);
             if (!TextUtils.isEmpty(amount)) {
                 mEdtTransferNum.setText(amount);
-                mEdtTransferNum.requestFocus();
-                mEdtTransferNum.setSelection(amount.length());
+                if (!mTvErrAddr.isShown()) {
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtTransferNum.requestFocus();
+                            mEdtTransferNum.setSelection(amount.length());
+                        }
+                    });
+                }
             }
             String token = getIntent().getStringExtra(Constant.TOEKN_NAME);
             if (!TextUtils.isEmpty(token)) {
