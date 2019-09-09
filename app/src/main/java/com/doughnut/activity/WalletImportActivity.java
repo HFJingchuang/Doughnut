@@ -1,5 +1,6 @@
 package com.doughnut.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.doughnut.R;
 import com.doughnut.fragment.KeyStoreImpFragment;
 import com.doughnut.fragment.PrivateKeyImpFragment;
 import com.doughnut.view.TitleBar;
+import com.zxing.activity.CaptureActivity;
 
 
 public class WalletImportActivity extends BaseActivity implements View.OnClickListener {
@@ -30,8 +33,16 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     private TextView mTvPrivateKey;
 
+    private EditText mEditPrivateKey;
+
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
+
+    private String selectedTab;
+
+    private Context mContext;
+
+    private Integer SCAN_CODE=101;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +87,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initView() {
+
         initViewPager();
     }
 
@@ -83,13 +95,23 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(R.string.titleBar_import_wallet);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
                 onBackPressed();
             }
         });
+        mTitleBar.setTitle(R.string.titleBar_import_wallet);
+        mTitleBar.setTitleTextColor(R.color.color_currency_name);
+        mTitleBar.setRightDrawable(R.drawable.ic_scan);
+//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
+//            @Override
+//            public void onRightClick(View view) {
+//                Intent intent = new Intent(WalletImportActivity.this, CaptureActivity.class);
+//                startActivityForResult(intent, SCAN_CODE);
+//
+//            }
+//        });
         //tab
         mLayoutTabPrivateKey = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
         mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
@@ -97,6 +119,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         mLayoutTabKeyStore.setOnClickListener(this);
 
 
+        mEditPrivateKey = findViewById(R.id.edt_private_key);
         mTvPrivateKey = (TextView) findViewById(R.id.tv_tab_privatekey);
         mTvKeyStore = (TextView) findViewById(R.id.tv_tab_keystore);
 
@@ -123,16 +146,26 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         pageSelected(PRIVATEKEY_INDEX);
     }
 
-
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == Activity.RESULT_OK && data != null) {
+//            String result = data.getStringExtra("scan_result");
+//            if (!result.isEmpty()) {
+//                mEditPrivateKey.setText(result);
+//            }
+//        }
+//    }
 
     private void pageSelected(int position) {
         resetTab();
         switch (position) {
             case PRIVATEKEY_INDEX:
                 mTvPrivateKey.setSelected(true);
+                selectedTab = "private";
                 break;
             case KEYSTORE_INDEX:
                 mTvKeyStore.setSelected(true);
+                selectedTab = "keystore";
                 break;
         }
     }

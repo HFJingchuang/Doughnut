@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="49dp"
-    android:background="@color/white"
+    android:background="@drawable/shape_dialog_bg"
     android:orientation="vertical">
 
     <View
@@ -31,7 +31,7 @@
                 android:layout_marginTop="2dp"
                 android:text="@string/tab_privateKey"
                 android:textColor="@color/selector_maintab_item_textcolor"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -51,7 +51,7 @@
                 android:layout_marginTop="2dp"
                 android:text="@string/tab_keyStore"
                 android:textColor="@color/selector_maintab_item_textcolor"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
         </LinearLayout>
 

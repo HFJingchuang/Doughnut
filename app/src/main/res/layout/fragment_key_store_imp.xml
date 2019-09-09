@@ -12,69 +12,130 @@
         android:paddingLeft="@dimen/dimen_content_padding"
         android:paddingRight="@dimen/dimen_content_padding">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_13"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/color_keyStore_tips"
+            android:text="复制粘贴钱包Keystore文件内容至输入框，或点击扫描 Keystore内容的二维码录入输入框"/>
         <EditText
             android:id="@+id/keyStore_text"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/shape_importwallet_privatkey"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_dialog_edt"
             android:hint="@string/content_keyStore"
-            android:padding="5dp"
+            android:padding="17dp"
             android:textColor="@color/common_black_fontcolor"
-            android:textSize="14sp"
-            android:text=""/>
+            android:textSize="17sp"
+            android:text="" />
 
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <EditText
-                android:id="@+id/edt_wallet_name"
-                style="@style/Style.Edit.WalletCreate"
-                android:hint="@string/enter_hint_wallet_name" />
-        </LinearLayout>
-
-        <View style="@style/Style.Line" />
-
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <EditText
-                android:id="@+id/edt_wallet_pwd"
-                style="@style/Style.Edit.WalletCreate.Pwd"
-                android:hint="@string/enter_hint_keyStore_Pwd" />
-        </LinearLayout>
-
-        <View style="@style/Style.Line" />
-
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/edt_wallet_name"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_dialog_edt"
+            android:paddingLeft="17dp"
+            android:hint="@string/enter_hint_wallet_name" />
+        <TextView
+            android:id="@+id/err_wallet_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="10dp"
+            android:text="@string/dialog_content_no_wallet_name"
+            android:textColor="@color/color_detail_send"
+            android:textSize="@dimen/text_size_8"
+            android:visibility="invisible" />
 
-            <ImageView
-                android:id="@+id/img_service_terms"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/selector_service_terms" />
-
-            <TextView
-                android:id="@+id/tv_service_terms"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/shape_dialog_edt">
+            <EditText
+                android:id="@+id/edt_wallet_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/shape_dialog_edt"
+                android:inputType="textPassword"
+                android:paddingLeft="17dp"
+                android:hint="@string/enter_hint_password"/>
+            <LinearLayout
+                android:id="@+id/show_psd"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:textSize="13sp" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img_show_psd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_close_eyes" />
+            </LinearLayout>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/err_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:paddingLeft="10dp"
+            android:text="8-64位大小写字母、数字组合密码"
+            android:textColor="@color/color_detail_send"
+            android:textSize="@dimen/text_size_8"
+            android:visibility="invisible" />
+
+
 
         <Button
             android:id="@+id/btn_confirm"
-            style="@style/Style.Btn.Theme"
-            android:layout_marginTop="50dp"
-            android:text="@string/btn_import_wallet" />
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/selector_btn_transfer"
+            android:enabled="false"
+            android:text="@string/btn_import_wallet"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/img_service_terms"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/selector_service_terms" />
+
+        <TextView
+            android:id="@+id/tv_service_terms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:textSize="13sp" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/alert_service_terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:paddingLeft="10dp"
+        android:text="@string/dialog_content_no_read_service"
+        android:textColor="@color/color_detail_send"
+        android:textSize="@dimen/text_size_8"
+        android:visibility="invisible" />
 </LinearLayout>

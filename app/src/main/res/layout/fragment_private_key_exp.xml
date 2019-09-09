@@ -12,20 +12,20 @@
         android:paddingLeft="@dimen/dimen_content_padding"
         android:paddingRight="@dimen/dimen_content_padding">
 
-            <TextView
-                android:id="@+id/tv_privatekey"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_currency_name"
-                android:background="@color/color_white"
-                android:padding="5dp"
-                android:textSize="18sp"
-                android:text="lajsdlfjldfjlasdfjlkasjdflkasjdflkjsajsjslkdfjaslkdfjlksdfjlsadfjlasjdfl"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textStyle="bold"
-                />
+        <TextView
+            android:id="@+id/tv_privatekey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_currency_name"
+            android:background="@color/color_white"
+            android:padding="5dp"
+            android:textSize="18sp"
+            android:text="lajsdlfjldfjlasdfjlkasjdflkasjdflkjsajsjslkdfjaslkdf"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:textStyle="bold"
+            />
         <LinearLayout
             android:id="@+id/layout_edt"
             android:layout_width="wrap_content"
@@ -34,8 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="140dp"
-                android:src="@drawable/ic_copy" />
+                android:layout_marginLeft="120dp"
+                android:src="@drawable/ic_down" />
             <TextView
                 android:id="@+id/tv_copy_privatekey"
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="20dp"
                 android:gravity="center"
-                android:text="@string/dialog_btn_copy_private_key"
+                android:text="@string/btn_export_keyStore"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
                 android:textSize="12sp"
@@ -51,7 +51,7 @@
                 android:textStyle="bold"
                 />
         </LinearLayout>
-　
+        　
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,16 +75,17 @@
 
             </FrameLayout>
         </LinearLayout>
+
         <TextView
             android:id="@+id/tv_copy_privatekeyImg"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/shape_export_privatekey_btnbg"
+            android:layout_height="48dp"
+            android:background="@drawable/shape_btn_export"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:gravity="center"
-            android:text="@string/btn_export_private_key"
-            android:layout_marginTop="10dp"
+            android:text="@string/btn_QR_code_export"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="15dp"
             android:textColor="@color/white"
             />

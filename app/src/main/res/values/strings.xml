@@ -229,7 +229,7 @@
     <string name="select_keyStore_import">keyStore导入</string>
     <string name="select_QR_code_import">二维码图片导入</string>
     <string name="enter_title_private_key">钱包私钥</string>
-    <string name="enter_hint_private_key">请输入钱包私钥</string>
+    <string name="enter_hint_private_key">输入或扫码获得私钥号码</string>
     <string name="content_keyStore">keyStore文本内容</string>
     <string name="select_privateKey_export">导出私钥</string>
     <string name="select_keyStore_export">导出keyStore</string>
@@ -287,4 +287,8 @@
     <string name="tv_err_address1">转入和转出钱包地址不能为同一个</string>
     <string name="tv_share">分享给他人进行收款</string>
     <string name="tv_save">保存二维码</string>
+    <string name="tips_content_no_private_key">私钥不能为空</string>
+    <string name="dialog_import_success">钱包导入成功！</string>
+    <string name="btn_QR_code_export">导出二维码</string>
+    <string name="btn_export_keyStore">导出keyStore文件</string>
 </resources>

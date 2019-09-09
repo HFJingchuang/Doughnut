@@ -29,7 +29,7 @@
                android:layout_weight="1.0">
 
                <EditText
-                   android:id="@+id/edt_private_key"
+                   android:id="@+id/edt_private_key1"
                    style="@style/Style.Edit.WalletCreate"
                    android:hint="@string/enter_hint_private_key"
                    />

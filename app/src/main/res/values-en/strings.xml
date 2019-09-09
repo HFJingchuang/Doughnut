@@ -229,7 +229,7 @@
     <string name="select_keyStore_import">keyStore import</string>
     <string name="select_QR_code_import">QR code import</string>
     <string name="enter_title_private_key">private key</string>
-    <string name="enter_hint_private_key">Please enter the private key</string>
+    <string name="enter_hint_private_key">Enter or scan to get the private key</string>
     <string name="content_keyStore">KeyStore Text content</string>
     <string name="select_privateKey_export">Export Private Key</string>
     <string name="select_keyStore_export">Export keyStore</string>
@@ -287,4 +287,8 @@
     <string name="tv_err_address1">Inbound and outbound wallet addresses cannot be the same</string>
     <string name="tv_share">Share and collect money for others</string>
     <string name="tv_save">Save QR code</string>
+    <string name="tips_content_no_private_key">Private key cannot be empty</string>
+    <string name="dialog_import_success">Wallet Import Successful！</string>
+    <string name="btn_QR_code_export">Export QR code</string>
+    <string name="btn_export_keyStore">Export keyStore file</string>
 </resources>

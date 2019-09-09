@@ -81,8 +81,10 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
     private void initViewPager() {
 
         mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
         mTitleBar.setTitle(R.string.titleBar_export_wallet);
+        mTitleBar.setTitleTextColor(R.color.color_white);
+        mTitleBar.setTitleBarBackColor(R.color.color_copy);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -152,8 +154,8 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
 
         private Fragment[] mFragments = new Fragment[]{
                 // TODO
-                PrivateKeyExpFragment.newInstance("11111111"),
-                KeyStoreExpFragment.newInstance()
+                PrivateKeyExpFragment.newInstance("1230Hello"),
+                KeyStoreExpFragment.newInstance("1230Hello")
 
         };
 

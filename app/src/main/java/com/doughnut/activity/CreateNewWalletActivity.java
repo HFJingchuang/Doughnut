@@ -77,7 +77,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isCreate();
+                        isCreateWallet();
                         if (mTvErrWalletName.isShown()) {
                             mTvErrWalletName.setVisibility(View.INVISIBLE);
                         }
@@ -135,7 +135,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isCreate();
+                        isCreateWallet();
                         if (mTvErrPassword.isShown()) {
                             mTvErrPassword.setVisibility(View.INVISIBLE);
                         }
@@ -178,7 +178,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isCreate();
+                        isCreateWallet();
                         if (mTvPsdRep.isShown()) {
                             mTvPsdRep.setVisibility(View.INVISIBLE);
                         }
@@ -269,7 +269,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
             // 勾选框
             case R.id.img_service_terms:
                 mImgServiceTerms.setSelected(!mImgServiceTerms.isSelected());
-                isCreate();
+                isCreateWallet();
                 break;
             // 跳转服务条款页面
             case R.id.tv_service_terms:
@@ -334,7 +334,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         }
     }
 
-    private void isCreate() {
+    private void isCreateWallet() {
         String walletName = mEdtWalletName.getText().toString();
         String passWord  = mEdtWalletPwd.getText().toString();
         String passwordConfim  = mEdtWalletPwdConfirm.getText().toString();
