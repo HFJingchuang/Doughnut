@@ -321,4 +321,6 @@
     <string name="srl_header_finish">Refresh Success</string>
     <string name="srl_header_failed">Refresh Failed</string>
     <string name="tv_album">Album</string>
+    <string name="toast_qr_err">QR code Error!</string>
+    <string name="toast_qr_fail">Scanning failure!</string>
 </resources>

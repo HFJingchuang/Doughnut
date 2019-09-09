@@ -19,24 +19,33 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.doughnut.utils.ViewUtil;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
 import com.doughnut.R;
 import com.doughnut.activity.BaseActivity;
+import com.doughnut.activity.TokenTransferActivity;
+import com.doughnut.config.Constant;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
+import com.doughnut.utils.ToastUtil;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.zxing.camera.CameraManager;
 import com.zxing.decoding.CaptureActivityHandler;
 import com.zxing.decoding.InactivityTimer;
 import com.zxing.view.ViewfinderView;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -95,6 +104,17 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             @Override
             public void onRightClick(View view) {
                 // todo 相册选择
+                PictureSelector.create(CaptureActivity.this)
+                        .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                        .imageSpanCount(4)// 每行显示个数
+                        .selectionMode(PictureConfig.SINGLE)// 多选 or 单选
+                        .previewImage(true)// 是否可预览图片
+                        .isCamera(false)// 是否显示拍照按钮
+                        .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                        .enableCrop(false)// 是否裁剪
+                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+                        .openClickSound(false)// 是否开启点击声音
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
             }
         });
 
@@ -116,10 +136,8 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
                     break;
                 default:
                     break;
-
             }
         }
-
     };
 
 
@@ -135,6 +153,9 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
                     }
                     cursor.close();
 
+                    if (TextUtils.isEmpty(photo_path)) {
+                        return;
+                    }
                     mProgress = new ProgressDialog(CaptureActivity.this);
                     mProgress.setMessage(getString(R.string.dialog_content_scanning));
                     mProgress.setCancelable(false);
@@ -157,9 +178,39 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
                             }
                         }
                     }).start();
-
                     break;
+                case PictureConfig.CHOOSE_REQUEST:
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    if (selectList != null && selectList.size() > 0) {
+                        photo_path = selectList.get(0).getPath();
+                    }
 
+                    if (TextUtils.isEmpty(photo_path)) {
+                        return;
+                    }
+                    mProgress = new ProgressDialog(CaptureActivity.this);
+                    mProgress.setMessage(getString(R.string.dialog_content_scanning));
+                    mProgress.setCancelable(false);
+                    mProgress.show();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Result result = QRUtils.scanningImage(photo_path);
+                            if (result != null) {
+                                Message m = mHandler.obtainMessage();
+                                m.what = PARSE_BARCODE_SUC;
+                                m.obj = result.getText();
+                                mHandler.sendMessage(m);
+                            } else {
+                                Message m = mHandler.obtainMessage();
+                                m.what = PARSE_BARCODE_FAIL;
+                                m.obj = "Scan failed!";
+                                mHandler.sendMessage(m);
+                            }
+                        }
+                    }).start();
+                    break;
             }
         }
     }
@@ -213,12 +264,26 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
 
     private void onResultHandler(String resultString) {
         if (TextUtils.isEmpty(resultString)) {
-            Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
+            ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail));
             return;
         }
-        Intent intent = new Intent();
-        intent.putExtra("scan_result", resultString);
-        setResult(RESULT_OK, intent);
+
+        try {
+            GsonUtil result = new GsonUtil(resultString);
+            List<String> keys = result.getKey();
+            if (keys.contains(Constant.RECEIVE_ADDRESS_KEY) && keys.contains(Constant.TOEKN_AMOUNT) && keys.contains(Constant.TOEKN_AMOUNT)) {
+                String address = result.getString(Constant.RECEIVE_ADDRESS_KEY, "");
+                String amount = result.getString(Constant.TOEKN_AMOUNT, "");
+                String tokenName = result.getString(Constant.TOEKN_AMOUNT, "");
+                TokenTransferActivity.startTokenTransferActivity(this, address, amount, tokenName);
+            } else {
+                ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_err));
+                return;
+            }
+        } catch (Exception e) {
+            ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail));
+            return;
+        }
         CaptureActivity.this.finish();
     }
 

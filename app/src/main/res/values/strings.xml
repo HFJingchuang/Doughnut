@@ -321,4 +321,6 @@
     <string name="srl_header_finish">刷新完成</string>
     <string name="srl_header_failed">刷新失败</string>
     <string name="tv_album">相册</string>
+    <string name="toast_qr_err">错误的二维码！</string>
+    <string name="toast_qr_fail">扫码失败！</string>
 </resources>

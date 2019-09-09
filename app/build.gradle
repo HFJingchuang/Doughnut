@@ -5,7 +5,7 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.doughnut"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.0"
@@ -26,6 +26,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
     }
     aaptOptions {
         //对png进行优化检查
@@ -64,5 +67,6 @@ dependencies {
     implementation 'com.contrarywind:wheelview:4.0.9'
     implementation 'com.github.stealthcopter:AndroidNetworkTools:0.4.3'
     implementation 'com.github.JCCDex:jcc_rpc_java:2.4'
-    implementation  'com.yanzhenjie:recyclerview-swipe:1.1.2'
+    implementation 'com.yanzhenjie:recyclerview-swipe:1.1.2'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.4'
 }

@@ -75,7 +75,9 @@ public class TokenReceiveActivity extends BaseActivity {
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                onBackPressed();
+//                onBackPressed();
+                MainActivity.startMainActivityForIndex(TokenReceiveActivity.this, 2);
+                finish();
             }
         });
 
@@ -127,7 +129,6 @@ public class TokenReceiveActivity extends BaseActivity {
             }
         });
         ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);
-        createQRCode();
     }
 
     private void initData() {
@@ -139,19 +140,21 @@ public class TokenReceiveActivity extends BaseActivity {
         ViewUtil.EllipsisTextView(mTvAddress);
         mTvWalletName.setText(WalletSp.getInstance(this, mAddress).getName());
         ViewUtil.EllipsisTextView(mTvWalletName);
+        createQRCode();
     }
 
     private void createQRCode() {
         String amountStr = mEdtAmount.getText().toString();
         try {
             GsonUtil gsonUtil = new GsonUtil("{}");
-            gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, mTvAddress.getText().toString());
+            gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, mAddress);
             if (TextUtils.isEmpty(amountStr)) {
                 gsonUtil.putString(Constant.TOEKN_AMOUNT, "");
             } else {
                 BigDecimal amount = new BigDecimal(amountStr);
                 gsonUtil.putString(Constant.TOEKN_AMOUNT, amount.stripTrailingZeros().toPlainString());
             }
+            gsonUtil.putString(Constant.TOEKN_NAME, mTvTokenName.getText().toString());
             Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
         } catch (Exception e) {

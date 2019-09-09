@@ -44,7 +44,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
                     Intent installIntent = new Intent(Intent.ACTION_VIEW);
                     Uri uri;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileProvider", file);
+                        uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".doughnutFileProvider", file);
                         installIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } else {
                         uri = Uri.fromFile(file);
