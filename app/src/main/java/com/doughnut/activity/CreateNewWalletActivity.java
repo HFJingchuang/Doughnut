@@ -1,3 +1,4 @@
+
 package com.doughnut.activity;
 
 import android.content.Context;
@@ -258,11 +259,11 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 //                    Intent intent = new Intent(this, WalletManageActivity.class);
 //                    startActivity(intent);
 
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    this.finish();
+//                    Intent intent = new Intent(this, MainActivity.class);
+//                    startActivity(intent);
+//                    this.finish();
 
-//                    CreateSuccessActivity.startCreateSuccessActivity(this);
+                    CreateSuccessActivity.startCreateSuccessActivity(this);
                 }
                 break;
             // 勾选框
@@ -313,7 +314,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                 isShowPsd = false;
 
             } else {
-                imgShowPsd.setImageResource(R.drawable.ic_see);
+                imgShowPsd.setImageResource(R.drawable.ic_see_blue);
                 mEdtWalletPwd.setInputType(128);
                 isShowPsd = true;
 
@@ -360,6 +361,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 //        boolean readedTerms = mImgServiceTerms.isSelected();
 //
 //        if (TextUtils.isEmpty(walletName)) {
+//            // TODO
 ////            mTVAlertWalletName.setText(R.string.dialog_content_no_wallet_name);
 ////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_name), "OK");
 //            return false;
