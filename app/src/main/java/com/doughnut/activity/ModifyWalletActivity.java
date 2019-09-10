@@ -154,7 +154,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void authPwd(boolean result, String key) {
                         if (result) {
-                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this);
+                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, key);
                         }
                     }
                 }).show();

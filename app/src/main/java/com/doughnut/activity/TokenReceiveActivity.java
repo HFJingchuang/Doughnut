@@ -133,7 +133,7 @@ public class TokenReceiveActivity extends BaseActivity {
         mLayoutToken.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddCurrencyActivity.startLanguageActivity(TokenReceiveActivity.this);
+                AddCurrencyActivity.startActivity(TokenReceiveActivity.this);
             }
         });
         ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);

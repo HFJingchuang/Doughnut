@@ -1,14 +1,17 @@
 package com.doughnut.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.wallet.WalletManager;
@@ -22,11 +25,16 @@ public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickL
 
     private Context mContext;
 
+    private ImageView mTvPrivatekeyImg, mTvQRImg;
 
-    public static PrivateKeyExpFragment newInstance() {
+    private static String password;
+
+
+    public static PrivateKeyExpFragment newInstance(String password) {
         Bundle args = new Bundle();
         PrivateKeyExpFragment fragment = new PrivateKeyExpFragment();
         fragment.setArguments(args);
+        fragment.password = password;
         return fragment;
     }
 
@@ -43,15 +51,39 @@ public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickL
         initView(view);
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK && data != null) {
-//            String result = data.getStringExtra("scan_result");
-//            if (!result.isEmpty()) {
-//                mEPrivateKey.setText(result);
-//            }
-//        }
-//    }
+    /**
+     * 画面初期化
+     *
+     * @param view
+     */
+    private void initView(View view) {
+
+        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+        String privateKey = WalletManager.getInstance(mContext).getPrivateKey(password, currentWallet);
+
+        mTvPrivatekey = view.findViewById(R.id.tv_privatekey);
+
+        mTvCopyPrivatekey = view.findViewById(R.id.tv_copy_privatekey);
+        mTvCopyPrivatekey.setOnClickListener(this);
+
+        mTvPrivatekey.setText(privateKey);
+
+        mTvPrivatekeyImg = view.findViewById(R.id.privateKey_qr);
+        mTvQRImg = view.findViewById(R.id.img_qrcode_shadow);
+
+        createQRCode(privateKey);
+    }
+
+    private void createQRCode(String privateKey) {
+        try {
+            Bitmap bitmap = QRUtils.createQRCode(privateKey, getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
+            mTvQRImg.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            ToastUtil.toast(mContext, "格式不正确");
+        }
+    }
+
+
 
     @Override
     public void onResume() {
@@ -74,25 +106,6 @@ public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickL
         }
     }
 
-
-    /**
-     * 画面初期化
-     *
-     * @param view
-     */
-    private void initView(View view) {
-
-        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
-        String privateKey = WalletManager.getInstance(mContext).getPrivateKey("11111111", currentWallet);
-
-        mTvPrivatekey = view.findViewById(R.id.tv_privatekey);
-
-        mTvCopyPrivatekey = view.findViewById(R.id.tv_copy_privatekey);
-        mTvCopyPrivatekey.setOnClickListener(this);
-
-        mTvPrivatekey.setText(privateKey);
-
-    }
 }
 
 
