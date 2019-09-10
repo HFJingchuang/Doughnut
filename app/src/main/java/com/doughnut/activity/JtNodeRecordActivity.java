@@ -534,7 +534,6 @@ public class JtNodeRecordActivity extends BaseActivity implements
         publicNodesCustom.clear();
         String fileName = JtNodeRecordActivity.this.getPackageName() + "_customNode";
         SharedPreferences sharedPreferences = JtNodeRecordActivity.this.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         String nodes = sharedPreferences.getString("nodes", "");
         List<String> nodeList;
         if (!TextUtils.isEmpty(nodes)) {
@@ -588,7 +587,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
     }
 
     /**
-     * 去消默认节点选中
+     * 取消默认节点选中
      */
     private void cancelDefaultNode() {
         NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
@@ -600,7 +599,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
     }
 
     /**
-     * 去消自定义节点选中
+     * 取消自定义节点选中
      */
     private void cancelCustomNode() {
         NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);

@@ -1,91 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swiperefreshlayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/wallet_toolbar_layout"
-            tools:visibility="visible" />
-
-        <android.support.design.card.MaterialCardView
-            android:id="@+id/main_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:fitsSystemWindows="true"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="4dp">
-
-            <include
-                layout="@layout/wallet_collapsing_layout"
-                tools:visibility="visible" />
-
-        </android.support.design.card.MaterialCardView>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/my_asset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="@string/content_my_asset"
-                android:textColor="@color/color_wallet_name"
-                android:textSize="@dimen/text_size_14"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="220dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_add_cur" />
-                <TextView
-                    android:id="@+id/add_asset"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/content_add_asset"
-                    android:textColor="@color/color_wallet_name"
-                    android:textSize="@dimen/text_size_13"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
-            android:id="@+id/mainwallet_recycleview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"></com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
-    </LinearLayout>
-
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <include
-        android:id="@+id/empty_view"
-        layout="@layout/layout_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        layout="@layout/wallet_toolbar_layout"
+        tools:visibility="visible" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+    <com.doughnut.view.DoughnutRefreshLayout
+        android:id="@+id/layout_smart_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/main_appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:fitsSystemWindows="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp">
+
+                <include
+                    layout="@layout/wallet_collapsing_layout"
+                    tools:visibility="visible" />
+
+            </android.support.design.card.MaterialCardView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:id="@+id/my_asset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/content_my_asset"
+                    android:textColor="@color/color_wallet_name"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center|right"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_add_cur" />
+
+                    <TextView
+                        android:id="@+id/add_asset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content_add_asset"
+                        android:textColor="@color/color_wallet_name"
+                        android:textSize="@dimen/text_size_13"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </RelativeLayout>
+
+
+            <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                android:id="@+id/mainwallet_recycleview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </LinearLayout>
+    </com.doughnut.view.DoughnutRefreshLayout>
+</LinearLayout>

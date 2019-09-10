@@ -338,5 +338,6 @@
     <string name="toast_save_success">保存成功</string>
     <string name="toast_save_fail">保存失败</string>
     <string name="enter_title_create_wallet">创建SWTC公链钱包</string>
+    <string name="tv_hide">隐藏</string>
 
 </resources>

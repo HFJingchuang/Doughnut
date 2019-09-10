@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
+import com.android.jtblk.client.bean.Line;
 import com.android.jtblk.client.bean.Marker;
 
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ public interface IWallet {
 
     void getTokenPrice(String base, BigDecimal balance, TextView v1, TextView v2);
 
-    void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4, Boolean isHidden);
+    void getAllTokenPrice(List<Line> dataList, TextView v1, TextView v2, TextView v3, TextView v4, Boolean isHidden);
 
     void getAllTokens();
 }

@@ -24,6 +24,7 @@ public class Constant {
     //common sp
     public final static String common_prefs = "common_prefs";
     public final static String asset_visible_key = "asset_visible";
+    public final static String HIDE_TOKEN = "_hide_token_";
 
     //什么是私钥
     public final static String privatekey_intro_url = "";

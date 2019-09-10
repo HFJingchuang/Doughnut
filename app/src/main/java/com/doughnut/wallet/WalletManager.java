@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
-import com.android.jtblk.client.bean.Account;
 import com.android.jtblk.client.bean.AccountInfo;
 import com.android.jtblk.client.bean.AccountOffers;
 import com.android.jtblk.client.bean.AccountRelations;
@@ -408,9 +407,11 @@ public class WalletManager implements IWallet {
                                                         v1.setText(String.format("%.2f", value));
                                                     } else {
                                                         String balanceStr = value.toPlainString();
-                                                        String[] balanceArr = balanceStr.split("\\.");
-                                                        v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                        v2.setText(balanceArr[1]);
+                                                        if (balanceStr.contains(".")) {
+                                                            String[] balanceArr = balanceStr.split("\\.");
+                                                            v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                            v2.setText(balanceArr[1]);
+                                                        }
                                                     }
                                                 }
                                             });
@@ -439,13 +440,28 @@ public class WalletManager implements IWallet {
      * 获取所有的token时价
      *
      * @param dataList
-     * @param v1
-     * @param v2
-     * @param v3
-     * @param v4
+     * @param mTvBalanceCny
+     * @param mTvBalanceCnyDec
+     * @param mTvBalance
+     * @param mTvBalanceDec
      */
     @Override
-    public void getAllTokenPrice(List dataList, TextView v1, TextView v2, TextView v3, TextView v4, Boolean isHidden) {
+    public void getAllTokenPrice(List<Line> dataList, TextView mTvBalanceCny, TextView mTvBalanceCnyDec, TextView mTvBalance, TextView mTvBalanceDec, Boolean isHidden) {
+        if (isHidden) {
+            if (mTvBalanceCnyDec != null) {
+                mTvBalanceCny.setText("***");
+            }
+            if (mTvBalanceCny != null) {
+                mTvBalanceCnyDec.setText("");
+            }
+            if (mTvBalance != null) {
+                mTvBalance.setText("***");
+            }
+            if (mTvBalanceDec != null) {
+                mTvBalanceDec.setText("");
+            }
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -466,9 +482,11 @@ public class WalletManager implements IWallet {
                             if (dataList != null && dataList.size() != 0) {
                                 // 获取时价
                                 jccdexInfo.requestAllTickers(new JCallback() {
+                                    // 钱包总价值
                                     BigDecimal values = new BigDecimal(0.00);
-                                    BigDecimal swtPrice = new BigDecimal(0.00);
+                                    // 钱包折换总SWT
                                     BigDecimal number = new BigDecimal(0.00);
+                                    BigDecimal swtPrice = new BigDecimal(0.00);
 
                                     @Override
                                     public void onResponse(String code, String response) {
@@ -483,6 +501,8 @@ public class WalletManager implements IWallet {
                                                 String balance = line.getBalance();
                                                 // 币种
                                                 String currency = line.getCurrency();
+                                                // 冻结
+                                                String freeze = line.getLimit();
 
                                                 String currency_cny = currency + "-CNY";
 
@@ -492,50 +512,36 @@ public class WalletManager implements IWallet {
                                                     price = new BigDecimal(currencyLst.getString(1, "0"));
 
                                                 }
+
                                                 // 当前币种总价值
-                                                BigDecimal value = new BigDecimal(balance).multiply(price, new MathContext(2));
+                                                BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(freeze));
+                                                BigDecimal value = sum.multiply(price, new MathContext(2));
                                                 values = values.add(value);
                                             }
                                             number = values.divide(swtPrice, 1, 2);
                                             AppConfig.postOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-
-                                                    if (v2 == null) {
-                                                        if (isHidden) {
-                                                            v1.setText("***");
-                                                        } else {
-                                                            v1.setText(String.format("%.2f", values));
-                                                        }
-                                                    } else {
-                                                        if (isHidden) {
-                                                            v1.setText("***");
-                                                            v2.setText("**");
-                                                        } else {
-                                                            String balanceStr = values.toPlainString();
+                                                    if (mTvBalanceCnyDec != null && mTvBalanceCny != null) {
+                                                        String balanceStr = values.stripTrailingZeros().toPlainString();
+                                                        if (balanceStr.contains(".")) {
                                                             String[] balanceArr = balanceStr.split("\\.");
-                                                            v1.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                            v2.setText(balanceArr[1]);
+                                                            mTvBalanceCny.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                            if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                                mTvBalanceCnyDec.setText("." + balanceArr[1]);
+                                                            }
                                                         }
                                                     }
 
-                                                    if (v4 == null) {
-                                                        if (isHidden) {
-                                                            v3.setText("***");
-                                                        } else {
-                                                            v3.setText(String.format("%.2f", number));
-                                                        }
-                                                    } else {
-                                                        if (isHidden) {
-                                                            v3.setText("***");
-                                                            v4.setText("**");
-                                                        } else {
-                                                            String balanceStr = number.toPlainString();
+                                                    if (mTvBalanceDec != null && mTvBalance != null) {
+                                                        String balanceStr = number.stripTrailingZeros().toPlainString();
+                                                        if (balanceStr.contains(".")) {
                                                             String[] balanceArr = balanceStr.split("\\.");
-                                                            v3.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                            v4.setText(balanceArr[1]);
+                                                            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                            if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                                mTvBalanceDec.setText("." + balanceArr[1]);
+                                                            }
                                                         }
-
                                                     }
 
                                                 }
