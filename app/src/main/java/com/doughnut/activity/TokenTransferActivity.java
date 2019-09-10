@@ -1,7 +1,6 @@
 
 package com.doughnut.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,15 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.jtblk.client.Wallet;
-import com.android.jtblk.utils.CheckUtils;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
-import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.ToastUtil;
-import com.doughnut.utils.Util;
-import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -33,8 +27,6 @@ import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
@@ -66,12 +58,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
+                MainActivity.startMainActivityForIndex(TokenTransferActivity.this, 2);
                 finish();
             }
 
             @Override
             public void onRightClick(View view) {
-                startActivityForResult(new Intent(TokenTransferActivity.this, CaptureActivity.class), SCAN_REQUEST_CODE);
+                startActivity(new Intent(TokenTransferActivity.this, CaptureActivity.class));
             }
         });
         mTvErrAddr = findViewById(R.id.tv_err_address);
@@ -157,12 +150,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-
                     String input = mEdtTransferNum.getText().toString();
                     if (!TextUtils.isEmpty(input)) {
                         BigDecimal balance = new BigDecimal(mBalance);
                         BigDecimal amount = new BigDecimal(input);
-                        if (balance.compareTo(amount) < 0) {
+                        if (balance.compareTo(amount) < 0 && !mTvErrAddr.isShown()) {
                             mTvErrAmount.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
@@ -206,43 +198,35 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             String address = getIntent().getStringExtra(Constant.RECEIVE_ADDRESS_KEY);
             if (!TextUtils.isEmpty(address)) {
                 mEdtWalletAddress.setText(address);
+                mEdtWalletAddress.setSelection(address.length());
             }
             String amount = getIntent().getStringExtra(Constant.TOEKN_AMOUNT);
             if (!TextUtils.isEmpty(amount)) {
                 mEdtTransferNum.setText(amount);
+                if (!mTvErrAddr.isShown()) {
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtTransferNum.requestFocus();
+                            mEdtTransferNum.setSelection(amount.length());
+                        }
+                    });
+                }
             }
             String token = getIntent().getStringExtra(Constant.TOEKN_NAME);
             if (!TextUtils.isEmpty(token)) {
                 mTvTokenName.setText(token);
             }
 
-            String memo = getIntent().getStringExtra(Constant.MEMO);
-            if (!TextUtils.isEmpty(memo)) {
-                mEdtMemo.setText(memo);
-            }
+//            String memo = getIntent().getStringExtra(Constant.MEMO);
+//            if (!TextUtils.isEmpty(memo)) {
+//                mEdtMemo.setText(memo);
+//            }
         }
 
         String currentAddr = WalletSp.getInstance(this, "").getCurrentWallet();
         mBalance = WalletManager.getInstance(this).getSWTBalance(currentAddr);
         mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, "SWTC"));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SCAN_REQUEST_CODE) {
-                //扫描到地址
-                String scanResult = data.getStringExtra("result");
-                if (TextUtils.isEmpty(scanResult)) {
-                    ToastUtil.toast(this, getString(R.string.toast_scan_failure));
-                } else {
-                    //swt
-//                    handleSwtScanResult(scanResult);
-                    GsonUtil res = new GsonUtil(scanResult);
-                    startTokenTransferActivity(this, res.getString(Constant.RECEIVE_ADDRESS_KEY, ""), res.getString(Constant.TOEKN_AMOUNT, ""), res.getString(Constant.TOEKN_NAME, ""), res.getString(Constant.MEMO, ""));
-                }
-            }
-        }
     }
 
     @Override
@@ -293,12 +277,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      * @param context
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress,
-                                                  String amount, String token, String memo) {
+                                                  String amount, String token) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(Constant.RECEIVE_ADDRESS_KEY, receiveAddress);
         intent.putExtra(Constant.TOEKN_AMOUNT, amount);
         intent.putExtra(Constant.TOEKN_NAME, token);
-        intent.putExtra(Constant.MEMO, memo);
         context.startActivity(intent);
     }
 

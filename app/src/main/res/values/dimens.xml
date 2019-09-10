@@ -9,10 +9,7 @@
     <dimen name="dimen_qr_width">200dp</dimen>
     <dimen name="dimen_wallet_action_width">141dp</dimen>
     <dimen name="dimen_mnue_width">100dp</dimen>
-    <dimen name="dimen_mnue_1_width">80dp</dimen>
-    <dimen name="text_size_8">8sp</dimen>
-    <dimen name="text_size_9">9sp</dimen>
-    <dimen name="text_size_10">10sp</dimen>
+    <dimen name="dimen_mnue_1_width">600dp</dimen>
     <dimen name="text_size_11">11sp</dimen>
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_13">13sp</dimen>
@@ -22,7 +19,6 @@
     <dimen name="text_size_17">17sp</dimen>
     <dimen name="text_size_18">18sp</dimen>
     <dimen name="text_size_21">21sp</dimen>
-    <dimen name="text_size_24">24sp</dimen>
     <dimen name="text_size_39">39pt</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

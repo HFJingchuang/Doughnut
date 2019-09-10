@@ -25,6 +25,7 @@ import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
@@ -299,12 +300,12 @@ public final class CameraManager {
      */
     /*
      * public Point[] convertResultPoints(ResultPoint[] points) { Rect frame =
-	 * getFramingRectInPreview(); int count = points.length; Point[] output =
-	 * new Point[count]; for (int x = 0; x < count; x++) { output[x] = new
-	 * Point(); output[x].x = frame.left + (int) (points[x].getX() + 0.5f);
-	 * output[x].y = frame.top + (int) (points[x].getY() + 0.5f); } return
-	 * output; }
-	 */
+     * getFramingRectInPreview(); int count = points.length; Point[] output =
+     * new Point[count]; for (int x = 0; x < count; x++) { output[x] = new
+     * Point(); output[x].x = frame.left + (int) (points[x].getX() + 0.5f);
+     * output[x].y = frame.top + (int) (points[x].getY() + 0.5f); } return
+     * output; }
+     */
 
     /**
      * A factory method to build the appropriate LuminanceSource object based on
@@ -365,6 +366,18 @@ public final class CameraManager {
             parameter.setFlashMode(Parameters.FLASH_MODE_OFF);
             camera.setParameters(parameter);
         }
+    }
+
+    public float getfilletWith(float size, int type) {
+        float msize = 0;
+        switch (type) {
+            case TypedValue.COMPLEX_UNIT_DIP:
+                msize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, context.getResources().getDisplayMetrics());
+            case TypedValue.COMPLEX_UNIT_SP:
+                msize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, context.getResources().getDisplayMetrics());
+
+        }
+        return msize;
     }
 
 }

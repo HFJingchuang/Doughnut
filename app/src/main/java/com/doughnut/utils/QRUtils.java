@@ -22,6 +22,7 @@ import com.zxing.decoding.RGBLuminanceSource;
 import java.util.Hashtable;
 
 import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 
 public class QRUtils {
@@ -62,6 +63,8 @@ public class QRUtils {
             for (int x = 0; x < width; x++) {
                 if (matrix.get(x, y)) {
                     pixels[y * width + x] = BLACK; //0xff000000
+                } else {
+                    pixels[y * width + x] = WHITE;
                 }
             }
         }

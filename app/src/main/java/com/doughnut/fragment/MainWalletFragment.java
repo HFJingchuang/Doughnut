@@ -23,7 +23,6 @@ import com.android.jtblk.client.bean.AccountRelations;
 import com.doughnut.R;
 import com.doughnut.activity.AddCurrencyActivity;
 import com.doughnut.activity.CreateNewWalletActivity;
-import com.doughnut.activity.CreateSuccessActivity;
 import com.doughnut.activity.TokenDetailsActivity;
 import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
@@ -42,7 +41,6 @@ import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.TokenImageLoader;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
-import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -162,7 +160,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mViewSee.setOnClickListener(this);
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
 
-        mRecycleView.addItemDecoration(new RecyclerViewSpacesItemDecoration(mContext, 10));
         mRecycleView.setSwipeMenuCreator(swipeMenuCreator);
 
         ///
@@ -226,14 +223,18 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         @Override
         public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
             int width = getResources().getDimensionPixelSize(R.dimen.dimen_mnue_width);
+
+            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+            // 2. 指定具体的高，比如80;
+            // 3. WRAP_CONTENT，自身高度，不推荐;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            // 添加右侧的菜单，如果不添加，则右侧不会出现菜单。
+
+            // 添加右侧的，如果不添加，则右侧不会出现菜单。
             {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity())
-                        .setBackground(R.drawable.shape_delete_bg)
-                        .setText(R.string.tv_delete)
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
+                        .setText("删除")
                         .setTextColor(Color.WHITE)
-                        .setTextSize(15)
+                        .setTextSize(16)
                         .setWidth(width)
                         .setHeight(height);
                 swipeRightMenu.addMenuItem(deleteItem);
@@ -270,7 +271,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 //                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
                 break;
             case R.id.add_asset:
-                AddCurrencyActivity.startActivity(mContext);
+                AddCurrencyActivity.startLanguageActivity(mContext);
+                break;
+            case R.id.create_wallet:
+                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
+                break;
+            case R.id.import_wallet:
+                WalletImportActivity.startImportWalletActivity(mContext);
                 break;
             case R.id.view_see:
                 this.isHidden = !isHidden;
@@ -280,14 +287,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     mTvOpenEyes.setImageResource(R.drawable.ic_see);
                 }
                 mAdapter.refresh();
-                break;
-            case R.id.create_wallet:
-                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
-//                CreateSuccessActivity.startCreateSuccessActivity(mContext);
-                break;
-            case R.id.import_wallet:
-                WalletImportActivity.startImportWalletActivity(mContext);
-                break;
         }
     }
 

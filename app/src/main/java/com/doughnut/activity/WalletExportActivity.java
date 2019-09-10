@@ -33,8 +33,6 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
 
-    private static String passWord;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +55,10 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
 
     }
 
-    public static void startExportWalletActivity(Context from, String key) {
+    public static void startExportWalletActivity(Context from) {
         Intent intent = new Intent(from, WalletExportActivity.class);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);
-        passWord = key;
     }
 
     /**
@@ -84,7 +81,7 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
         mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
         mTitleBar.setTitle(R.string.titleBar_export_wallet);
         mTitleBar.setTitleTextColor(R.color.color_white);
-        mTitleBar.setTitleBarBackColor(R.color.color_copy);
+        mTitleBar.setTitleBarBackColor(R.color.color_currency_name);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -120,7 +117,7 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
             }
         });
 
-        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager(), this.passWord));
+        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
         pageSelected(PRIVATEKEY_INDEX);
     }
 
@@ -146,16 +143,16 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {
 
-        private final String passWord;
-        public MainViewPagerAdapter(FragmentManager fm, String passWord) {
+        public MainViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.passWord = passWord;
         }
 
         private Fragment[] mFragments = new Fragment[]{
                 // TODO
-                PrivateKeyExpFragment.newInstance("1230Hello"),
+                PrivateKeyExpFragment.newInstance(),
                 KeyStoreExpFragment.newInstance("1230Hello")
+//                PrivateKeyExpFragment.newInstance(),
+//                KeyStoreExpFragment.newInstance()
 
         };
 

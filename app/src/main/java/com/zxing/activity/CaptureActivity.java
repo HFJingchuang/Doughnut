@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -18,32 +19,46 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
 import com.doughnut.R;
 import com.doughnut.activity.BaseActivity;
+import com.doughnut.activity.TokenTransferActivity;
+import com.doughnut.config.Constant;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
+import com.doughnut.utils.ToastUtil;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.zxing.camera.CameraManager;
 import com.zxing.decoding.CaptureActivityHandler;
 import com.zxing.decoding.InactivityTimer;
 import com.zxing.view.ViewfinderView;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Vector;
 
 /**
  * 二维码扫描
  */
-public class CaptureActivity extends BaseActivity implements Callback {
+public class CaptureActivity extends BaseActivity implements Callback, View.OnClickListener {
 
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
     private Vector<BarcodeFormat> decodeFormats;
     private InactivityTimer inactivityTimer;
     private MediaPlayer mediaPlayer;
+    private ImageView mImgLight;
     private String characterSet;
     private boolean hasSurface;
     private boolean playBeep;
@@ -55,6 +70,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private static final int PARSE_BARCODE_FAIL = 303;
     private ProgressDialog mProgress;
     private String photo_path;
+    private boolean isLight = false;
 
     public static void navToActivity(Activity context, int requestCode) {
         Intent intent = new Intent(context, CaptureActivity.class);
@@ -75,14 +91,35 @@ public class CaptureActivity extends BaseActivity implements Callback {
         inactivityTimer = new InactivityTimer(this);
 
         TitleBar mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
+        mTitleBar.setTitleBarBackColor(R.color.transparent);
         mTitleBar.setTitle(getString(R.string.titleBar_scan));
+        mTitleBar.setRightText(R.string.tv_album);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
                 finish();
             }
+
+            @Override
+            public void onRightClick(View view) {
+                // todo 相册选择
+                PictureSelector.create(CaptureActivity.this)
+                        .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                        .imageSpanCount(4)// 每行显示个数
+                        .selectionMode(PictureConfig.SINGLE)// 多选 or 单选
+                        .previewImage(true)// 是否可预览图片
+                        .isCamera(false)// 是否显示拍照按钮
+                        .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                        .enableCrop(false)// 是否裁剪
+                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+                        .openClickSound(false)// 是否开启点击声音
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+            }
         });
+
+        mImgLight = findViewById(R.id.img_light);
+        mImgLight.setOnClickListener(this);
     }
 
     private Handler mHandler = new Handler() {
@@ -99,10 +136,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     break;
                 default:
                     break;
-
             }
         }
-
     };
 
 
@@ -118,6 +153,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     }
                     cursor.close();
 
+                    if (TextUtils.isEmpty(photo_path)) {
+                        return;
+                    }
                     mProgress = new ProgressDialog(CaptureActivity.this);
                     mProgress.setMessage(getString(R.string.dialog_content_scanning));
                     mProgress.setCancelable(false);
@@ -140,9 +178,39 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             }
                         }
                     }).start();
-
                     break;
+                case PictureConfig.CHOOSE_REQUEST:
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    if (selectList != null && selectList.size() > 0) {
+                        photo_path = selectList.get(0).getPath();
+                    }
 
+                    if (TextUtils.isEmpty(photo_path)) {
+                        return;
+                    }
+                    mProgress = new ProgressDialog(CaptureActivity.this);
+                    mProgress.setMessage(getString(R.string.dialog_content_scanning));
+                    mProgress.setCancelable(false);
+                    mProgress.show();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Result result = QRUtils.scanningImage(photo_path);
+                            if (result != null) {
+                                Message m = mHandler.obtainMessage();
+                                m.what = PARSE_BARCODE_SUC;
+                                m.obj = result.getText();
+                                mHandler.sendMessage(m);
+                            } else {
+                                Message m = mHandler.obtainMessage();
+                                m.what = PARSE_BARCODE_FAIL;
+                                m.obj = "Scan failed!";
+                                mHandler.sendMessage(m);
+                            }
+                        }
+                    }).start();
+                    break;
             }
         }
     }
@@ -169,7 +237,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
         }
         initBeepSound();
         vibrate = true;
-
     }
 
     @Override
@@ -197,12 +264,26 @@ public class CaptureActivity extends BaseActivity implements Callback {
 
     private void onResultHandler(String resultString) {
         if (TextUtils.isEmpty(resultString)) {
-            Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
+            ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail));
             return;
         }
-        Intent intent = new Intent();
-        intent.putExtra("scan_result", resultString);
-        setResult(RESULT_OK, intent);
+
+        try {
+            GsonUtil result = new GsonUtil(resultString);
+            List<String> keys = result.getKey();
+            if (keys.contains(Constant.RECEIVE_ADDRESS_KEY) && keys.contains(Constant.TOEKN_AMOUNT) && keys.contains(Constant.TOEKN_AMOUNT)) {
+                String address = result.getString(Constant.RECEIVE_ADDRESS_KEY, "");
+                String amount = result.getString(Constant.TOEKN_AMOUNT, "");
+                String tokenName = result.getString(Constant.TOEKN_AMOUNT, "");
+                TokenTransferActivity.startTokenTransferActivity(this, address, amount, tokenName);
+            } else {
+                ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_err));
+                return;
+            }
+        } catch (Exception e) {
+            ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail));
+            return;
+        }
         CaptureActivity.this.finish();
     }
 
@@ -231,6 +312,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
+            Rect rect = CameraManager.get().getFramingRect();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mImgLight.getLayoutParams();
+            int screenHight = ViewUtil.getWindowHight(this);
+            layoutParams.topMargin = rect.bottom + (screenHight - ViewUtil.dip2px(this, 50) - rect.bottom) / 3;
+            mImgLight.setLayoutParams(layoutParams);
         }
 
     }
@@ -300,4 +386,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
     };
 
 
+    @Override
+    public void onClick(View v) {
+        if (v == mImgLight) {
+            if (isLight) {
+                CameraManager.get().closeLight();
+                isLight = false;
+            } else {
+                CameraManager.get().openLight();
+                isLight = true;
+            }
+        }
+    }
 }

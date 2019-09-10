@@ -112,6 +112,7 @@ public class ViewUtil {
         ViewTreeObserver observer = textView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             boolean isfirstRunning = true;
+            int cut = 2;
 
             @Override
             public void onGlobalLayout() {
@@ -120,10 +121,14 @@ public class ViewUtil {
                 if (textView != null && layout != null) {
                     int lines = layout.getLineCount();
                     int ellipsisCount = layout.getEllipsisCount(lines - 1);
-                    if (ellipsisCount == 0) return;
+                    if (ellipsisCount == 0) {
+                        return;
+                    } else if (ellipsisCount < 3) {
+                        cut = 4;
+                    }
                     String showText = textView.getText().toString();
-                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - 2);
-                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + 2);
+                    String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - cut);
+                    String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + cut);
                     textView.setText(startStr + "***" + endStr);
                     isfirstRunning = false;
                 }

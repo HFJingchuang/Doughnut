@@ -4,7 +4,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_copy"
+    android:background="@color/color_export_wallet"
     android:orientation="vertical">
 
     <com.doughnut.view.TitleBar
@@ -38,3 +38,4 @@
         android:layout_below="@id/title_bar"
         />
 </LinearLayout>
+

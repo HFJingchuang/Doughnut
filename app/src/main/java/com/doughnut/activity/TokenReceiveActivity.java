@@ -4,6 +4,7 @@ package com.doughnut.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.GsonUtil;
+import com.doughnut.utils.ImageUtils;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
@@ -75,7 +77,8 @@ public class TokenReceiveActivity extends BaseActivity {
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                onBackPressed();
+                MainActivity.startMainActivityForIndex(TokenReceiveActivity.this, 2);
+                finish();
             }
         });
 
@@ -116,18 +119,24 @@ public class TokenReceiveActivity extends BaseActivity {
         mLayoutSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo 保存图片
+                BitmapDrawable bmpDrawable = (BitmapDrawable) mImgQr.getDrawable();
+                Bitmap bitmap = bmpDrawable.getBitmap();
+                Boolean saved = ImageUtils.saveImageToGallery(TokenReceiveActivity.this, bitmap);
+                if (saved) {
+                    ToastUtil.toast(TokenReceiveActivity.this, getResources().getString(R.string.toast_save_success));
+                } else {
+                    ToastUtil.toast(TokenReceiveActivity.this, getResources().getString(R.string.toast_save_fail));
+                }
             }
         });
         mLayoutToken = findViewById(R.id.layout_token);
         mLayoutToken.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddCurrencyActivity.startActivity(TokenReceiveActivity.this);
+                AddCurrencyActivity.startLanguageActivity(TokenReceiveActivity.this);
             }
         });
         ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);
-        createQRCode();
     }
 
     private void initData() {
@@ -139,23 +148,25 @@ public class TokenReceiveActivity extends BaseActivity {
         ViewUtil.EllipsisTextView(mTvAddress);
         mTvWalletName.setText(WalletSp.getInstance(this, mAddress).getName());
         ViewUtil.EllipsisTextView(mTvWalletName);
+        createQRCode();
     }
 
     private void createQRCode() {
         String amountStr = mEdtAmount.getText().toString();
         try {
             GsonUtil gsonUtil = new GsonUtil("{}");
-            gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, mTvAddress.getText().toString());
+            gsonUtil.putString(Constant.RECEIVE_ADDRESS_KEY, mAddress);
             if (TextUtils.isEmpty(amountStr)) {
                 gsonUtil.putString(Constant.TOEKN_AMOUNT, "");
             } else {
                 BigDecimal amount = new BigDecimal(amountStr);
                 gsonUtil.putString(Constant.TOEKN_AMOUNT, amount.stripTrailingZeros().toPlainString());
             }
+            gsonUtil.putString(Constant.TOEKN_NAME, mTvTokenName.getText().toString());
             Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
         } catch (Exception e) {
-            ToastUtil.toast(TokenReceiveActivity.this, "数量格式不正确");
+            ToastUtil.toast(TokenReceiveActivity.this, getResources().getString(R.string.toast_amount_format_err));
         }
     }
 

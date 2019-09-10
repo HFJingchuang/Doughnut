@@ -213,7 +213,12 @@ public class Util {
         }
     }
 
-    // 数字每隔三位加个逗号
+    /**
+     * 数字每隔三位加个逗号
+     *
+     * @param amunot
+     * @return
+     */
     public static String formatWithComma(long amunot) {
         DecimalFormat df = new DecimalFormat("#,###");
         return df.format(amunot);
@@ -231,5 +236,25 @@ public class Util {
             return m.matches();
         }
         return false;
+    }
+
+    /**
+     * 格式化数字，截取小数位，以便于画面显示
+     *
+     * @param amountStr
+     * @param scale
+     * @return
+     */
+    public static String formatAmount(String amountStr, int scale) {
+        try {
+            BigDecimal amount = new BigDecimal(amountStr);
+            BigDecimal amountF = amount.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            if (amountF.compareTo(BigDecimal.ZERO) != 0) {
+                return amountF.stripTrailingZeros().toPlainString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return amountStr;
     }
 }

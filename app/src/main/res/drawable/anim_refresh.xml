@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item
+        android:drawable="@drawable/ic_refresh_00000"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00001"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00002"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00003"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00004"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00006"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00007"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00008"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00009"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00010"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00011"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00012"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00013"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00014"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00015"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00016"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00017"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00018"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00019"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00020"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00021"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00022"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00023"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00024"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00025"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00026"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00027"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00028"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00029"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00030"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00031"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00032"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00033"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00034"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00035"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00036"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00037"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00038"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00039"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00040"
+        android:duration="45" />
+    <item
+        android:drawable="@drawable/ic_refresh_00041"
+        android:duration="45" />
+</animation-list>

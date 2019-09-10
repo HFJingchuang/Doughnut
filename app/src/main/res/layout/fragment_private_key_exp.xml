@@ -47,7 +47,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
                 android:textSize="12sp"
-                android:textColor="@color/color_copy"
+                android:textColor="@color/color_export_wallet"
                 android:textStyle="bold"
                 />
         </LinearLayout>

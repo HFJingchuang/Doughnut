@@ -5,7 +5,7 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.doughnut"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.0"
@@ -26,6 +26,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
     }
     aaptOptions {
         //对png进行优化检查
@@ -57,12 +60,13 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation('com.github.HFJingchuang:jch-jingtum-lib-android:1.0.4', {
+    implementation('com.github.HFJingchuang:jch-jingtum-lib-android:1.0.8', {
         exclude group: 'junit'
     })
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
     implementation 'com.contrarywind:wheelview:4.0.9'
     implementation 'com.github.stealthcopter:AndroidNetworkTools:0.4.3'
     implementation 'com.github.JCCDex:jcc_rpc_java:2.4'
-    implementation  'com.yanzhenjie:recyclerview-swipe:1.1.2'
+    implementation 'com.yanzhenjie:recyclerview-swipe:1.1.2'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.4'
 }
