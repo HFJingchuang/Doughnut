@@ -35,7 +35,6 @@ import com.doughnut.utils.DefaultItemDecoration;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.ToastUtil;
-import com.doughnut.utils.TokenImageLoader;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
@@ -44,7 +43,6 @@ import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
@@ -57,6 +55,8 @@ import com.zxing.activity.CaptureActivity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -225,7 +225,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 showActionMenuPop();
                 break;
             case R.id.add_asset:
-                AddCurrencyActivity.startLanguageActivity(mContext);
+                AddCurrencyActivity.startActivity(mContext);
                 break;
             case R.id.create_wallet:
                 CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
@@ -395,6 +395,39 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 dataList.clear();
                 dataList.addAll(accountRelations.getLines());
             }
+            // 获取将显示的币种
+            List<String> currencys = new ArrayList<>();
+            for (int i = 0; i < dataList.size(); i++) {
+                currencys.add(dataList.get(i).getCurrency());
+            }
+
+            List<String> selects = getSelectToken();
+            for (int i = 0; i < selects.size(); i++) {
+                String token = selects.get(i);
+                if (!currencys.contains(token)) {
+                    Line line = new Line();
+                    line.setCurrency(token);
+                    dataList.add(line);
+                }
+            }
+
+            Collections.sort(dataList, new Comparator<Line>() {
+                @Override
+                public int compare(Line o1, Line o2) {
+                    String cur1 = o1.getCurrency();
+                    String cur2 = o2.getCurrency();
+                    boolean b1 = Util.isStartWithNumber(cur1);
+                    boolean b2 = Util.isStartWithNumber(cur2);
+                    if (b1 && !b2) {
+                        return 1;
+                    } else if (!b1 && b2) {
+                        return -1;
+                    } else {
+                        return cur1.compareTo(cur2);
+                    }
+                }
+            });
+
             deleteHideToken();
             GsonUtil extra = new GsonUtil(dataList);
 
@@ -429,10 +462,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
-            holder.mTvTokenName.setText(data.getString("currency", "ETH"));
+            String currency = data.getString("currency", "");
+            holder.mTvTokenName.setText(currency);
+            ViewUtil.EllipsisTextView(holder.mTvTokenName);
+            holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             if (!isHidden) {
                 try {
-                    String currency = data.getString("currency", "0");
                     String balance = Util.formatAmount(data.getString("balance", "0"), 2);
                     String balanceFreeze = Util.formatAmount(data.getString("limit", "0"), 2);
                     BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(balanceFreeze));
@@ -479,10 +514,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      * @param index
      */
     private void hideToken(int index) {
-        String fileName = getContext().getPackageName() + Constant.HIDE_TOKEN + mCurrentWallet;
+        String fileName = getContext().getPackageName() + Constant.SELECT_TOKEN + mCurrentWallet;
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        String tokens = sharedPreferences.getString("tokens", "");
+        String tokens = sharedPreferences.getString("hide", "");
         List<String> tokenList;
         if (TextUtils.isEmpty(tokens)) {
             tokenList = new ArrayList();
@@ -496,7 +531,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         }
         tokenList.add(dataList.get(index).getCurrency());
-        editor.putString("tokens", tokenList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+        editor.putString("hide", tokenList.toString().replace("[", "").replace("]", "").replace(" ", ""));
         editor.apply();
     }
 
@@ -504,9 +539,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      * 显示时，去除被隐藏的token
      */
     private void deleteHideToken() {
-        String fileName = getContext().getPackageName() + Constant.HIDE_TOKEN + mCurrentWallet;
+        String fileName = getContext().getPackageName() + Constant.SELECT_TOKEN + mCurrentWallet;
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String tokens = sharedPreferences.getString("tokens", "");
+        String tokens = sharedPreferences.getString("hide", "");
         List<String> tokenList;
         if (!TextUtils.isEmpty(tokens)) {
             if (tokens.contains(",")) {
@@ -524,5 +559,25 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 }
             }
         }
+    }
+
+    /**
+     * 显示时，获取用户添加的币种
+     */
+    private List<String> getSelectToken() {
+        String fileName = getContext().getPackageName() + Constant.SELECT_TOKEN + mCurrentWallet;
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String tokens = sharedPreferences.getString("select", "");
+        List<String> tokenList = new ArrayList<>();
+        if (!TextUtils.isEmpty(tokens)) {
+            if (tokens.contains(",")) {
+                List<String> arrList = Arrays.asList(tokens.split(","));
+                tokenList = new ArrayList(arrList);
+            } else {
+                tokenList = new ArrayList();
+                tokenList.add(tokens);
+            }
+        }
+        return tokenList;
     }
 }

@@ -5,6 +5,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.doughnut.R;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -256,5 +258,136 @@ public class Util {
             e.printStackTrace();
         }
         return amountStr;
+    }
+
+    /**
+     * 判断字符串是不是以数字开头
+     */
+    public static boolean isStartWithNumber(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str.charAt(0) + "");
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 匹配币种图标
+     *
+     * @param token
+     * @return
+     */
+    public static int getTokenIcon(String token) {
+        int icon;
+        switch (token) {
+            case "BGT":
+                icon = R.drawable.bgt;
+                break;
+            case "BIC":
+                icon = R.drawable.bic;
+                break;
+            case "JBIZ":
+                icon = R.drawable.biz;
+                break;
+            case "JBTC":
+                icon = R.drawable.btc;
+                break;
+            case "JCALL":
+                icon = R.drawable.call;
+                break;
+            case "JCKM":
+                icon = R.drawable.ckm;
+                break;
+            case "CNY":
+                icon = R.drawable.cnt;
+                break;
+            case "CSP":
+                icon = R.drawable.cspc;
+                break;
+            case "JDABT":
+                icon = R.drawable.dabt;
+                break;
+            case "ECP":
+                icon = R.drawable.ecp;
+                break;
+            case "JEKT":
+                icon = R.drawable.ekt;
+                break;
+            case "JEOS":
+                icon = R.drawable.eos;
+            case "JETH":
+                icon = R.drawable.eth;
+                break;
+            case "JFST":
+                icon = R.drawable.fst;
+                break;
+            case "KGALAXY":
+                icon = R.drawable.galaxy;
+                break;
+            case "GDC":
+                icon = R.drawable.gdc;
+                break;
+            case "JGSGC":
+                icon = R.drawable.gsgc;
+                break;
+            case "HJT":
+                icon = R.drawable.hjt;
+                break;
+            case "HNT":
+                icon = R.drawable.hnt;
+                break;
+            case "HPT":
+                icon = R.drawable.hpt;
+                break;
+            case "JHT":
+                icon = R.drawable.ht;
+                break;
+            case "JJCC":
+                icon = R.drawable.jcc;
+                break;
+            case "JMOAC":
+                icon = R.drawable.moac;
+                break;
+            case "JMONA":
+                icon = R.drawable.mona;
+                break;
+            case "MYT":
+                icon = R.drawable.myt;
+                break;
+            case "SEAA":
+                icon = R.drawable.seaa;
+                break;
+            case "JSLASH":
+                icon = R.drawable.slash;
+                break;
+            case "JSNRC":
+                icon = R.drawable.snrc;
+                break;
+            case "JSTM":
+                icon = R.drawable.stm;
+                break;
+            case "SWT":
+                icon = R.drawable.swtc;
+                break;
+            case "JUSDT":
+                icon = R.drawable.usdt;
+                break;
+            case "UST":
+                icon = R.drawable.ust;
+                break;
+            case "VCC":
+                icon = R.drawable.vcc;
+                break;
+            case "JXRP":
+                icon = R.drawable.xrp;
+                break;
+            case "YUT":
+                icon = R.drawable.yut;
+                break;
+            default:
+                icon = R.drawable.icon_default;
+        }
+        return icon;
     }
 }

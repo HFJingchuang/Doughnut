@@ -19,11 +19,14 @@
         android:id="@+id/token_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="11dp"
+        android:layout_marginLeft="10dp"
+        android:ellipsize="middle"
+        android:maxEms="6"
+        android:singleLine="true"
         android:textColor="@color/color_detail_address"
         android:textSize="@dimen/text_size_14"
         android:textStyle="bold"
-        tools:text="BTC" />
+        tools:text="" />
 
     <RelativeLayout
         android:layout_width="match_parent"

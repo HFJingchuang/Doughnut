@@ -419,6 +419,13 @@ public class WalletManager implements IWallet {
                                                 }
                                             });
                                         }
+                                    } else {
+                                        AppConfig.postOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                v1.setText("0.00");
+                                            }
+                                        });
                                     }
                                 }
 
@@ -502,10 +509,16 @@ public class WalletManager implements IWallet {
                                                 Line line = (Line) dataList.get(i);
                                                 // 数量
                                                 String balance = line.getBalance();
+                                                if (TextUtils.isEmpty(balance)) {
+                                                    balance = "0";
+                                                }
                                                 // 币种
                                                 String currency = line.getCurrency();
                                                 // 冻结
                                                 String freeze = line.getLimit();
+                                                if (TextUtils.isEmpty(freeze)) {
+                                                    freeze = "0";
+                                                }
 
                                                 BigDecimal price = new BigDecimal(0);
                                                 if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
@@ -597,15 +610,7 @@ public class WalletManager implements IWallet {
                             }
                         }
                     }
-                    Map<String, String> sortTokenMap = new TreeMap<>(new Comparator<String>() {
-                        @Override
-                        public int compare(String o1, String o2) {
-                            return o1.compareTo(o2);
-                        }
-                    });
-                    sortTokenMap.putAll(tokenMap);
-
-                    String JStr = JSON.toJSONString(sortTokenMap);
+                    String JStr = JSON.toJSONString(tokenMap);
                     // 本地保存tokens
                     String fileName = mContext.getPackageName() + "_tokens";
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
