@@ -258,11 +258,11 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 //                    Intent intent = new Intent(this, WalletManageActivity.class);
 //                    startActivity(intent);
 
-//                    Intent intent = new Intent(this, MainActivity.class);
-//                    startActivity(intent);
-//                    this.finish();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    this.finish();
 
-                    CreateSuccessActivity.startCreateSuccessActivity(this);
+//                    CreateSuccessActivity.startCreateSuccessActivity(this);
                 }
                 break;
             // 勾选框

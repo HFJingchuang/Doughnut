@@ -337,4 +337,5 @@
     <string name="toast_amount_format_err">Incorrect number format</string>
     <string name="toast_save_success">Save Successfully</string>
     <string name="toast_save_fail">Save Failed</string>
+    <string name="enter_title_create_wallet">Creating SWTC Public Chain Wallet</string>
 </resources>

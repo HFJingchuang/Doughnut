@@ -119,7 +119,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
             isShowPsd = false;
 
         } else {
-            mImgShowPsd.setImageResource(R.drawable.ic_see1);
+            mImgShowPsd.setImageResource(R.drawable.ic_see_blue);
             mEWalletPwd.setInputType(128);
             isShowPsd = true;
         }

@@ -379,7 +379,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 isShowPsd = false;
 
             } else {
-                mImgShowPsd.setImageResource(R.drawable.ic_see1);
+                mImgShowPsd.setImageResource(R.drawable.ic_see_blue);
                 mTvWalletPwd.setInputType(128);
                 isShowPsd = true;
 
@@ -392,7 +392,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 isShowPsdRep = false;
 
             } else {
-                mImgShowRepPsd.setImageResource(R.drawable.ic_see1);
+                mImgShowRepPsd.setImageResource(R.drawable.ic_see_blue);
                 mTvWalletPwdConfirm.setInputType(128);
                 isShowPsdRep = true;
             }

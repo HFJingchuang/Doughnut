@@ -48,7 +48,7 @@
             android:paddingLeft="10dp"
             android:text="@string/dialog_content_no_wallet_name"
             android:textColor="@color/color_detail_send"
-            android:textSize="@dimen/text_size_8"
+            android:textSize="@dimen/text_size_11"
             android:visibility="invisible" />
 
         <RelativeLayout
