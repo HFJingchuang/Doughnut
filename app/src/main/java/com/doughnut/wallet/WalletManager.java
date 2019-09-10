@@ -22,6 +22,7 @@ import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
 import com.doughnut.config.AppConfig;
+import com.doughnut.config.Constant;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.GsonUtil;
@@ -30,6 +31,8 @@ import com.jccdex.rpc.api.JccConfig;
 import com.jccdex.rpc.api.JccdexInfo;
 import com.jccdex.rpc.base.JCallback;
 import com.jccdex.rpc.url.JccdexUrl;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -504,21 +507,23 @@ public class WalletManager implements IWallet {
                                                 // 冻结
                                                 String freeze = line.getLimit();
 
-                                                String currency_cny = currency + "-CNY";
-
                                                 BigDecimal price = new BigDecimal(0);
-                                                GsonUtil currencyLst = data.getArray(currency_cny);
-                                                if (currencyLst != null) {
-                                                    price = new BigDecimal(currencyLst.getString(1, "0"));
+                                                if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
+                                                    price = BigDecimal.ONE;
+                                                } else {
+                                                    String currency_cny = currency + "-CNY";
+                                                    GsonUtil currencyLst = data.getArray(currency_cny);
+                                                    if (currencyLst != null) {
+                                                        price = new BigDecimal(currencyLst.getString(1, "0"));
 
+                                                    }
                                                 }
-
                                                 // 当前币种总价值
                                                 BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(freeze));
                                                 BigDecimal value = sum.multiply(price, new MathContext(2));
                                                 values = values.add(value);
                                             }
-                                            number = values.divide(swtPrice, 1, 2);
+                                            number = values.divide(swtPrice, 2, BigDecimal.ROUND_HALF_UP);
                                             AppConfig.postOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {

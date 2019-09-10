@@ -39,10 +39,12 @@ import com.doughnut.utils.TokenImageLoader;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
@@ -52,6 +54,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -426,14 +429,27 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
-            TokenImageLoader.displayImage(data.getString("icon_url", ""), holder.mImgTokenIcon,
-                    TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth,
-                            R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("currency", "ETH"));
             if (!isHidden) {
-                holder.mTvTokenCount.setText("" + Util.parseDouble(data.getString("balance", "0")));
+                try {
+                    String currency = data.getString("currency", "0");
+                    String balance = Util.formatAmount(data.getString("balance", "0"), 2);
+                    String balanceFreeze = Util.formatAmount(data.getString("limit", "0"), 2);
+                    BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(balanceFreeze));
+                    if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
+                        holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), 2));
+                    } else {
+                        WalletManager.getInstance(getContext()).getTokenPrice(currency, sum, holder.mTvCNY, null);
+                    }
+                    holder.mTvTokenCount.setText(balance);
+                    holder.mTvTokenFreeze.setText(balanceFreeze);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 holder.mTvTokenCount.setText("***");
+                holder.mTvCNY.setText("***");
+                holder.mTvTokenFreeze.setText("***");
             }
         }
 
@@ -444,15 +460,15 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         class TokenViewHolder extends BaseRecyclerViewHolder {
             ImageView mImgTokenIcon;
             TextView mTvTokenName;
-            TextView mTvTokenCount;
-            TextView mTvTokenAsset;
+            TextView mTvCNY, mTvTokenCount, mTvTokenFreeze;
 
             public TokenViewHolder(View itemView) {
                 super(itemView);
                 mImgTokenIcon = itemView.findViewById(R.id.token_icon);
                 mTvTokenName = itemView.findViewById(R.id.token_name);
+                mTvCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvTokenCount = itemView.findViewById(R.id.token_count);
-                mTvTokenAsset = itemView.findViewById(R.id.token_asset);
+                mTvTokenFreeze = itemView.findViewById(R.id.token_freeze);
             }
         }
     }

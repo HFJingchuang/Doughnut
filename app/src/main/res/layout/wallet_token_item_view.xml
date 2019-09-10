@@ -26,45 +26,106 @@
         tools:text="BTC" />
 
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_weight="1.0"
         android:gravity="right">
 
-        <TextView
+        <ImageView
+            android:id="@+id/img_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/token_count"
-            android:text="¥"
-            android:textColor="@color/color_detail_address"
-            android:textSize="@dimen/text_size_14"
-            android:textStyle="bold" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/token_count"
+        <LinearLayout
+            android:id="@+id/layout_count"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/color_detail_address"
-            android:textSize="@dimen/text_size_14"
-            android:textStyle="bold"
-            tools:text="" />
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical">
 
-        <!--<TextView-->
-        <!--android:id="@+id/token_asset"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="3dp"-->
-        <!--android:ellipsize="end"-->
-        <!--android:singleLine="true"-->
-        <!--android:textColor="@color/color_text_80"-->
-        <!--android:textSize="@dimen/text_size_14"-->
-        <!--tools:text="≈ ¥ 120" />-->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="right|center">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/tv_balance_cny"
+                    android:text="¥"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_balance_cny"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center|right"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/token_count"
+                    android:text="@string/tv_vailed"
+
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_12" />
+
+                <TextView
+                    android:id="@+id/token_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/tv_freeze"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_12" />
+
+                <TextView
+                    android:id="@+id/tv_freeze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/token_freeze"
+                    android:text="@string/tv_freeze"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_12" />
+
+                <TextView
+                    android:id="@+id/token_freeze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_12" />
+            </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>
