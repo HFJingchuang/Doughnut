@@ -2,7 +2,6 @@
 package com.doughnut.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -238,7 +237,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
                 break;
             case R.id.import_wallet:
-                WalletImportActivity.startImportWalletActivity(mContext);
+                WalletImportActivity.startWalletImportActivity(mContext);
                 break;
             case R.id.view_see:
                 this.isHidden = !isHidden;

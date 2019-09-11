@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.Constant;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
 
@@ -40,7 +41,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        mMainViewPager.setCurrentItem(getIntent().getIntExtra("pageIndex", 0));
+        mMainViewPager.setCurrentItem(getIntent().getIntExtra(Constant.PAGE_INDEX, 0));
     }
 
     @Override
@@ -76,7 +77,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public static void startMainActivityForIndex(Context context, int pageIndex) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("pageIndex", pageIndex);
+        intent.putExtra(Constant.PAGE_INDEX, pageIndex);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

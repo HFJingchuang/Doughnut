@@ -1,6 +1,5 @@
 package com.doughnut.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.Constant;
 import com.doughnut.fragment.KeyStoreImpFragment;
 import com.doughnut.fragment.PrivateKeyImpFragment;
 import com.doughnut.view.TitleBar;
@@ -37,27 +37,41 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
-
-    private String selectedTab;
-
-    private Context mContext;
-
-    private Integer SCAN_CODE=101;
+    
+    private Fragment[] mFragments = new Fragment[]{
+            PrivateKeyImpFragment.newInstance(""),
+            KeyStoreImpFragment.newInstance("")
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_import);
         initView();
+        if (getIntent() != null) {
+            int index = getIntent().getIntExtra(Constant.PAGE_INDEX, 0);
+            String importKey = getIntent().getStringExtra(Constant.IMPORT_KEY);
+            if (index == 0) {
+                mFragments = new Fragment[]{
+                        PrivateKeyImpFragment.newInstance(importKey),
+                        KeyStoreImpFragment.newInstance("")
+
+                };
+            } else {
+                mFragments = new Fragment[]{
+                        PrivateKeyImpFragment.newInstance(""),
+                        KeyStoreImpFragment.newInstance(importKey)
+
+                };
+            }
+            mMainViewPager.getAdapter().notifyDataSetChanged();
+            mMainViewPager.setCurrentItem(index);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-//            ViewUtil.showBakupDialog(MainActivity.this, WalletInfoManager.getInstance().getCurrentWallet(), false,
-//                    true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-//        }
     }
 
     @Override
@@ -70,18 +84,16 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     }
 
-    public static void startImportWalletActivity(Context from) {
+    public static void startWalletImportActivity(Context from) {
         Intent intent = new Intent(from, WalletImportActivity.class);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);
     }
 
-    /**
-     * 前画面跳转用
-     * @param context
-     */
-    public static void startWalletImportActivity(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
+    public static void startWalletImportActivity(Context context, int pageIndex, String importKey) {
+        Intent intent = new Intent(context, WalletImportActivity.class);
+        intent.putExtra(Constant.PAGE_INDEX, pageIndex);
+        intent.putExtra(Constant.IMPORT_KEY, importKey);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -104,14 +116,18 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         mTitleBar.setTitle(R.string.titleBar_import_wallet);
         mTitleBar.setTitleTextColor(R.color.color_currency_name);
         mTitleBar.setRightDrawable(R.drawable.ic_scan);
-//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
-//            @Override
-//            public void onRightClick(View view) {
-//                Intent intent = new Intent(WalletImportActivity.this, CaptureActivity.class);
-//                startActivityForResult(intent, SCAN_CODE);
-//
-//            }
-//        });
+        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
+            @Override
+            public void onRightClick(View view) {
+                CaptureActivity.startCaptureActivity(WalletImportActivity.this);
+            }
+
+            @Override
+            public void onLeftClick(View view) {
+                MainActivity.startMainActivity(WalletImportActivity.this);
+            }
+        });
+
         //tab
         mLayoutTabPrivateKey = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
         mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
@@ -146,26 +162,14 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         pageSelected(PRIVATEKEY_INDEX);
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK && data != null) {
-//            String result = data.getStringExtra("scan_result");
-//            if (!result.isEmpty()) {
-//                mEditPrivateKey.setText(result);
-//            }
-//        }
-//    }
-
     private void pageSelected(int position) {
         resetTab();
         switch (position) {
             case PRIVATEKEY_INDEX:
                 mTvPrivateKey.setSelected(true);
-                selectedTab = "private";
                 break;
             case KEYSTORE_INDEX:
                 mTvKeyStore.setSelected(true);
-                selectedTab = "keystore";
                 break;
         }
     }
@@ -176,16 +180,9 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     }
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {
-
         public MainViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
-        private Fragment[] mFragments = new Fragment[]{
-                PrivateKeyImpFragment.newInstance(),
-                KeyStoreImpFragment.newInstance()
-
-        };
 
         @Override
         public Fragment getItem(int position) {

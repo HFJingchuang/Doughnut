@@ -1,14 +1,16 @@
 package com.doughnut.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -23,29 +26,39 @@ import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.utils.PWDUtils;
+import com.doughnut.view.SubCharSequence;
 import com.doughnut.wallet.WalletManager;
 
 
-public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickListener{
+public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickListener {
 
-    private ImageView mImgServiceTerms, mImgShowPsd, mImgShowRepPsd;
-    private TextView mTvServiceTerms, mTvErrPrivateKey, mTvErrWalletName, mTVErrPassword, mTvErrPsdRep, mTvAlertServiceTerms;
-
-    private LinearLayout mTvShowPsd, mTvShowPsdRep;
-
-    private EditText mTvPrivateKey, mTvWalletName, mTvWalletPwd, mTvWalletPwdConfirm;
-
+    private RadioButton mRadioRead;
+    private EditText mEdtPrivateKey, mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm;
+    private TextView mTvPolicy, mTvErrPassword, mTvErrPasswordRep;
+    private ImageView mImgShowRepPwd, mImgShowPwd;
+    private LinearLayout mTvShowPwd, mTvShowPwdRep, mLayoutRead;
     private Button mBtnConfirm;
-    private Integer SCAN_CODE=101;
 
     private Context mContext;
+    private boolean isErr;
+    private TransformationMethod transformationMethod = new TransformationMethod() {
+        @Override
+        public void onFocusChanged(View view, CharSequence sourceText, boolean focused, int direction, Rect previouslyFocusedRect) {
+            // TODO Auto-generated method stub
 
-//    private TitleBar mTitleBar;
+        }
 
-    private boolean isShowPsd, isShowPsdRep;
+        @Override
+        public CharSequence getTransformation(CharSequence source, View view) {
+            // TODO Auto-generated method stub
+            return new SubCharSequence(source);
+        }
+    };
 
-    public static PrivateKeyImpFragment newInstance() {
+    public static PrivateKeyImpFragment newInstance(String importKey) {
         Bundle args = new Bundle();
+        args.putString(Constant.IMPORT_KEY, importKey);
         PrivateKeyImpFragment fragment = new PrivateKeyImpFragment();
         fragment.setArguments(args);
         return fragment;
@@ -61,68 +74,43 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mContext = getActivity();
-        initView(view);
+        isErr = false;
+        if (getArguments() != null) {
+            initView(view, getArguments().getString(Constant.IMPORT_KEY));
+        } else {
+            initView(view, "");
+        }
     }
 
     /**
      * 画面初期化
+     *
      * @param view
      */
-    private void initView(View view) {
+    private void initView(View view, String importKey) {
 
-//        mimg_scan = view.findViewById(R.id.img_scan);
-//        mimg_scan.setOnClickListener(this);
-//        mTitleBar = view.findViewById(R.id.title_bar);
-//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
-//            @Override
-//            public void onRightClick(View view) {
-//                Intent intent = new Intent(mContext, CaptureActivity.class);
-//                startActivityForResult(intent, SCAN_CODE);
-//
-//            }
-//        });
-        mImgServiceTerms = view.findViewById(R.id.img_service_terms);
-        mImgServiceTerms.setOnClickListener(this);
-        mTvServiceTerms = view.findViewById(R.id.tv_service_terms);
-        mTvServiceTerms.setText(Html.fromHtml(getString(R.string.content_read_service)));
-        mTvServiceTerms.setOnClickListener(this);
+        mEdtPrivateKey = view.findViewById(R.id.edt_private_key);
+        mEdtWalletName = view.findViewById(R.id.edt_wallet_name);
+        if (!TextUtils.isEmpty(importKey)) {
+            mEdtPrivateKey.setText(importKey);
+            mEdtWalletName.requestFocus();
+        } else {
+            mEdtPrivateKey.requestFocus();
+        }
 
-        mTvPrivateKey = view.findViewById(R.id.edt_private_key);
-        mTvPrivateKey.requestFocus();
-        mTvPrivateKey.addTextChangedListener(
-                new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isImportWallet();
-                        if (mTvErrPrivateKey.isShown()) {
-                            mTvErrPrivateKey.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                }
-        );
-        mTvPrivateKey.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mEdtWalletName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    String address = mTvPrivateKey.getText().toString();
-                    if (!TextUtils.isEmpty(address)) {
-                    }
+                    isImportWallet();
                 }
             }
         });
 
-        mTvWalletName = view.findViewById(R.id.edt_wallet_name);
-        mTvWalletName.addTextChangedListener(
+        mEdtWalletPwd = view.findViewById(R.id.edt_wallet_pwd);
+        mEdtWalletPwd.setTransformationMethod(transformationMethod);
+        mTvErrPassword = view.findViewById(R.id.tv_pwd_tips);
+        mEdtWalletPwd.addTextChangedListener(
                 new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -131,9 +119,8 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isImportWallet();
-                        if (mTvErrWalletName.isShown()) {
-                            mTvErrWalletName.setVisibility(View.INVISIBLE);
+                        if (isErr) {
+                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_tips));
                         }
                     }
 
@@ -143,63 +130,36 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                     }
                 }
         );
-        mTvWalletName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mEdtWalletPwd.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    String address = mTvWalletName.getText().toString();
-                    if (!TextUtils.isEmpty(address)) {
-                    }
-                }
-            }
-        });
-
-        mTvWalletPwd = view.findViewById(R.id.edt_wallet_pwd);
-        mTvWalletPwd.addTextChangedListener(
-                new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isImportWallet();
-                        if (mTVErrPassword.isShown()) {
-                            mTVErrPassword.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                }
-        );
-        mTvWalletPwd.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String passWord = mTvWalletPwd.getText().toString();
+                    String passWord = mEdtWalletPwd.getText().toString();
                     if (!TextUtils.isEmpty(passWord)) {
-                        if (!passWord.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9]{8,64}$")) {
-//                            mTVErrPassword.setText("8-64位大小写字母、数字组合密码");
-                            mTVErrPassword.setVisibility(View.VISIBLE);
+                        boolean isValid = PWDUtils.verifyPasswordFormat(passWord);
+                        if (!isValid) {
+                            isErr = true;
+                            mEdtWalletPwd.setText("");
+                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_err));
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mTvWalletPwd.requestFocus();
+                                    mEdtWalletPwd.requestFocus();
                                 }
                             });
-                            return;
+                        } else {
+                            isErr = false;
                         }
                     }
+                    isImportWallet();
                 }
             }
         });
 
-        mTvWalletPwdConfirm = view.findViewById(R.id.edt_wallet_pwd_confirm);
-        mTvWalletPwdConfirm.addTextChangedListener(
+        mEdtWalletPwdConfirm = view.findViewById(R.id.edt_wallet_pwd_confirm);
+        mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
+        mTvErrPasswordRep = view.findViewById(R.id.tv_pwd_rep_tips);
+        mEdtWalletPwdConfirm.addTextChangedListener(
                 new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -208,10 +168,10 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isImportWallet();
-                        if (mTvErrPsdRep.isShown()) {
-                            mTvErrPsdRep.setVisibility(View.INVISIBLE);
+                        if (mTvErrPasswordRep.isShown()) {
+                            mTvErrPasswordRep.setVisibility(View.GONE);
                         }
+                        isImportWallet();
                     }
 
                     @Override
@@ -220,59 +180,61 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                     }
                 }
         );
-        mTvWalletPwdConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mEdtWalletPwdConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    String passWord = mTvWalletPwd.getText().toString();
-                    String passwordConfim = mTvWalletPwdConfirm.getText().toString();
+                    String passWord = mEdtWalletPwd.getText().toString();
+                    String passwordConfim = mEdtWalletPwdConfirm.getText().toString();
                     if (!TextUtils.isEmpty(passwordConfim)) {
-                        if (!passwordConfim.equals(passWord)) {
-//                            mTvPsdRep.setText(getString(R.string.dialog_content_passwords_unmatch));
-                            mTvErrPsdRep.setVisibility(View.VISIBLE);
+                        if (!TextUtils.isEmpty(passWord) && !TextUtils.equals(passwordConfim, passWord)) {
+                            mEdtWalletPwdConfirm.setText("");
+                            mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
+                            mTvErrPasswordRep.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mTvWalletPwdConfirm.requestFocus();
+                                    mEdtWalletPwdConfirm.requestFocus();
                                 }
                             });
-                            return;
+                        } else {
+                            boolean isValid = PWDUtils.verifyPasswordFormat(passwordConfim);
+                            if (!isValid) {
+                                mEdtWalletPwdConfirm.setText("");
+                                mTvErrPasswordRep.setText(getResources().getString(R.string.tv_pwd_err));
+                                mTvErrPasswordRep.setVisibility(View.VISIBLE);
+                                AppConfig.postOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mEdtWalletPwdConfirm.requestFocus();
+                                    }
+                                });
+                            }
+
                         }
                     }
+                    isImportWallet();
                 }
             }
         });
 
-
+        mRadioRead = view.findViewById(R.id.radio_read);
+        mLayoutRead = view.findViewById(R.id.layout_read);
+        mLayoutRead.setOnClickListener(this);
+        mTvPolicy = view.findViewById(R.id.tv_policy);
+        mTvPolicy.setText(Html.fromHtml(getString(R.string.content_read_service)));
+        mTvPolicy.setOnClickListener(this);
         mBtnConfirm = view.findViewById(R.id.btn_confirm);
+
+        mTvShowPwd = view.findViewById(R.id.show_pwd);
+        mTvShowPwd.setOnClickListener(this);
+        mTvShowPwdRep = view.findViewById(R.id.show_pwd_rep);
+        mTvShowPwdRep.setOnClickListener(this);
+
+        mImgShowPwd = view.findViewById(R.id.img_show_pwd);
+        mImgShowRepPwd = view.findViewById(R.id.img_show_pwd_rep);
+
         mBtnConfirm.setOnClickListener(this);
-
-        mImgShowPsd = view.findViewById(R.id.img_show_psd);
-        mImgShowPsd.setOnClickListener(this);
-
-        mImgShowRepPsd = view.findViewById(R.id.img_show_rep_psd);
-        mImgShowRepPsd.setOnClickListener(this);
-
-        mTvErrPrivateKey = view.findViewById(R.id.err_private_key);
-        mTvErrPrivateKey.setOnClickListener(this);
-
-        mTvErrWalletName = view.findViewById(R.id.err_wallet_name);
-        mTvErrWalletName.setOnClickListener(this);
-
-        mTVErrPassword = view.findViewById(R.id.err_password);
-        mTVErrPassword.setOnClickListener(this);
-
-        mTvErrPsdRep = view.findViewById(R.id.err_psd_rep);
-        mTvErrPsdRep.setOnClickListener(this);
-
-        mTvAlertServiceTerms = view.findViewById(R.id.alert_service_terms);
-        mTvAlertServiceTerms.setOnClickListener(this);
-
-        mTvShowPsd = view.findViewById(R.id.show_pwd);
-        mTvShowPsd.setOnClickListener(this);
-
-        mTvShowPsdRep = view.findViewById(R.id.show_psd_rep);
-        mTvShowPsdRep.setOnClickListener(this);
 
     }
 
@@ -280,39 +242,29 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
      * 判断导入按钮是受可点击
      */
     private void isImportWallet() {
-        String privateKey = mTvPrivateKey.getText().toString();
-        String walletName = mTvWalletName.getText().toString();
-        String passWord  = mTvWalletPwd.getText().toString();
-        String passwordConfim  = mTvWalletPwdConfirm.getText().toString();
-        boolean readedTerms = mImgServiceTerms.isSelected();
+        String privateKey = mEdtPrivateKey.getText().toString();
+        String walletName = mEdtWalletName.getText().toString();
+        String passWord = mEdtWalletPwd.getText().toString();
+        String passwordConfim = mEdtWalletPwdConfirm.getText().toString();
+        boolean isRead = mRadioRead.isChecked();
 
-        if (!TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && !TextUtils.isEmpty(passwordConfim)
-                && passWord.equals(passwordConfim) && readedTerms) {
+        if (!TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && !isErr
+                && !TextUtils.isEmpty(passwordConfim) && !mTvErrPasswordRep.isShown()
+                && passWord.equals(passwordConfim) && isRead) {
             mBtnConfirm.setEnabled(true);
+            mBtnConfirm.setClickable(true);
         } else {
             mBtnConfirm.setEnabled(false);
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            String result = data.getStringExtra("scan_result");
-            if (!result.isEmpty()) {
-                mTvPrivateKey.setText(result);
-            }
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-//        mLayoutManageWallet.setClickable(true);
-//        mLayoutRecordTransaction.setClickable(true);
-//        mLayoutNotification.setClickable(true);
-//        mLayoutHelp.setClickable(true);
-//        mLayoutAbout.setClickable(true);
-//        mLayoutLanguage.setClickable(true);
+        mBtnConfirm.setClickable(true);
+        mEdtPrivateKey.requestFocus();
+        mEdtPrivateKey.setSelection(mEdtPrivateKey.getText().toString().length());
+
     }
 
     @Override
@@ -320,139 +272,45 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
         switch (view.getId()) {
             // 导入按钮
             case R.id.btn_confirm:
-//                if (paramCheck()) {
-                    String privateKey = mTvPrivateKey.getText().toString();
-                    String walletName = mTvWalletName.getText().toString();
-                    String walletPwd = mTvWalletPwd.getText().toString();
-                    // 导入钱包
-                    importWallet(privateKey, walletName, walletPwd);
-                    // TODO 暂时跳转到钱包管理
-//                    Intent intent = new Intent(this, WalletManageActivity.class);
-//                    startActivity(intent);
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    startActivity(intent);
-//                ImportSuccessDialog pwdDialog = new ImportSuccessDialog(mContext);
-//                pwdDialog.show();
-//                    this.finish();
-//                }
+                mBtnConfirm.setClickable(false);
+                String privateKey = mEdtPrivateKey.getText().toString();
+                String walletName = mEdtWalletName.getText().toString();
+                String walletPwd = mEdtWalletPwd.getText().toString();
+
+                WalletManager walletManager = WalletManager.getInstance(mContext);
+                walletManager.importWalletWithKey(walletPwd, privateKey, walletName);
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
                 break;
             // 勾选框
-            case R.id.img_service_terms:
-                mImgServiceTerms.setSelected(!mImgServiceTerms.isSelected());
+            case R.id.layout_read:
+                mRadioRead.setChecked(!mRadioRead.isChecked());
                 isImportWallet();
                 break;
             // 跳转服务条款页面
-            case R.id.tv_service_terms:
+            case R.id.tv_policy:
                 gotoServiceTermPage();
                 break;
-            case R.id.img_scan:
-//                Intent intent=new Intent(mContext, CaptureActivity.class);
-//                startActivityForResult(intent,SCAN_CODE);
-                break;
             case R.id.show_pwd:
-                showPassWord("password");
+                mImgShowPwd.setSelected(!mImgShowPwd.isSelected());
+                if (mImgShowPwd.isSelected()) {
+                    mEdtWalletPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtWalletPwd.setTransformationMethod(transformationMethod);
+                }
+                mEdtWalletPwd.setSelection(mEdtWalletPwd.getText().length());
                 break;
-            case R.id.show_psd_rep:
-                showPassWord("passwordConfim");
+            case R.id.show_pwd_rep:
+                mImgShowRepPwd.setSelected(!mImgShowRepPwd.isSelected());
+                if (mImgShowRepPwd.isSelected()) {
+                    mEdtWalletPwdConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
+                }
+                mEdtWalletPwdConfirm.setSelection(mEdtWalletPwdConfirm.getText().length());
                 break;
         }
     }
-
-
-    /**
-     * 判断密码显示隐藏
-     *
-     * @param type
-     */
-    private void showPassWord(String type) {
-        if ("password".equals(type)) {
-            // 密码是否显示(是)
-            if (isShowPsd) {
-                mImgShowPsd.setImageResource(R.drawable.ic_close_eyes);
-                mTvWalletPwd.setInputType(129);
-                isShowPsd = false;
-
-            } else {
-                mImgShowPsd.setImageResource(R.drawable.ic_open_eyes);
-                mTvWalletPwd.setInputType(128);
-                isShowPsd = true;
-
-            }
-        } else if ("passwordConfim".equals(type)) {
-            // 密码确认是否显示(是)
-            if (isShowPsdRep) {
-                mImgShowRepPsd.setImageResource(R.drawable.ic_close_eyes);
-                mTvWalletPwdConfirm.setInputType(129);
-                isShowPsdRep = false;
-
-            } else {
-                mImgShowRepPsd.setImageResource(R.drawable.ic_open_eyes);
-                mTvWalletPwdConfirm.setInputType(128);
-                isShowPsdRep = true;
-            }
-        }
-    }
-
-    /**
-     * 导入钱包
-     * @param walletName
-     * @param walletPwd
-     */
-    private void importWallet(final String  privateKey, final String walletName, final String walletPwd) {
-
-        WalletManager walletManager =  WalletManager.getInstance(mContext);
-        // 创建钱包
-        walletManager.importWalletWithKey(walletPwd, privateKey, walletName);
-    }
-
-//    /**
-//     * 前端页面校验
-//     * @return
-//     */
-//    private boolean paramCheck() {
-//
-//        String privateKey = mTvPrivateKey.getText().toString();
-//        String walletName = mTvWalletName.getText().toString();
-//        String walletPwd = mTvWalletPwd.getText().toString();
-//        String walletPwdRepeat = mTvWalletPwdConfirm.getText().toString();
-//        boolean readedTerms = mImgServiceTerms.isSelected();
-//
-//        if (TextUtils.isEmpty(privateKey)) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_private_key), "OK");
-//            return false;
-//        }
-//
-//        if (TextUtils.isEmpty(walletName)) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_wallet_name), "OK");
-//            return false;
-//        }
-//        if (TextUtils.isEmpty(walletPwd)) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_password), "OK");
-//            return false;
-//        }
-//
-//        if (TextUtils.isEmpty(walletPwdRepeat)) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_verify_password), "OK");
-//            return false;
-//        }
-//
-//        if (!TextUtils.equals(walletPwdRepeat, walletPwd)) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_passwords_unmatch), "OK");
-//            return false;
-//        }
-//
-//        if (walletPwd.length() < 8) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_short_password), "OK");
-//            return false;
-//        }
-//
-//        if (!readedTerms) {
-//            ViewUtil.showSysAlertDialog(mContext, getString(R.string.dialog_content_no_read_service), "OK");
-//            return false;
-//        }
-//
-//        return true;
-//    }
 
     /**
      * 跳转服务条款页面

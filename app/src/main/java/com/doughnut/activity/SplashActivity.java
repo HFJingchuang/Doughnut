@@ -55,7 +55,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         }
         // 导入钱包按钮点击事件
         else if (v == mTvImportWallet) {
-            WalletImportActivity.startImportWalletActivity(this);
+            WalletImportActivity.startWalletImportActivity(this);
         }
     }
 

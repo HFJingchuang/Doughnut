@@ -24,9 +24,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.activity.BaseActivity;
 import com.doughnut.activity.TokenTransferActivity;
+import com.doughnut.activity.WalletImportActivity;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
@@ -275,15 +278,45 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
         }
 
         try {
+
+            // 钱包地址=>跳转转账页面
+            if (Wallet.isValidAddress(resultString)) {
+                TokenTransferActivity.startTokenTransferActivity(this, resultString, "", "");
+                CaptureActivity.this.finish();
+                return;
+            }
+
+            // 钱包私钥=>跳转私钥导入页面
+            if (Wallet.isValidSecret(resultString)) {
+                WalletImportActivity.startWalletImportActivity(this, 0, resultString);
+                CaptureActivity.this.finish();
+                return;
+            }
+
             GsonUtil result = new GsonUtil(resultString);
             List<String> keys = result.getKey();
+
+            // 跳转转账页面
             if (keys.contains(Constant.RECEIVE_ADDRESS_KEY) && keys.contains(Constant.TOEKN_AMOUNT) && keys.contains(Constant.TOEKN_AMOUNT)) {
                 String address = result.getString(Constant.RECEIVE_ADDRESS_KEY, "");
                 String amount = result.getString(Constant.TOEKN_AMOUNT, "");
                 String tokenName = result.getString(Constant.TOEKN_AMOUNT, "");
                 TokenTransferActivity.startTokenTransferActivity(this, address, amount, tokenName);
+            }
+            // JSON格式字符串=>跳转KeyStore导入页面
+            else if (result.isValid()) {
+                WalletImportActivity.startWalletImportActivity(this, 1, resultString);
             } else {
                 ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_err));
+                // 2秒后重新扫描
+                AppConfig.postDelayOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (handler != null) {
+                            handler.restartPreviewAndDecode();
+                        }
+                    }
+                }, 2000);
                 return;
             }
         } catch (Exception e) {

@@ -43,8 +43,9 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
 
     private boolean isShowPsd;
 
-    public static KeyStoreImpFragment newInstance() {
+    public static KeyStoreImpFragment newInstance(String importKey) {
         Bundle args = new Bundle();
+        args.putString(Constant.IMPORT_KEY, importKey);
         KeyStoreImpFragment fragment = new KeyStoreImpFragment();
         fragment.setArguments(args);
         return fragment;
@@ -80,16 +81,16 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
             // 导入按钮
             case R.id.btn_confirm:
 //                if (paramCheck()) {
-                    String keyStore = mEKeyStore.getText().toString();
-                    String walletName = mEWalletName.getText().toString();
-                    String walletPwd = mEWalletPwd.getText().toString();
-                    // 导入钱包
-                    importWallet(keyStore, walletName, walletPwd);
-                    // TODO 暂时跳转到钱包管理
+                String keyStore = mEKeyStore.getText().toString();
+                String walletName = mEWalletName.getText().toString();
+                String walletPwd = mEWalletPwd.getText().toString();
+                // 导入钱包
+                importWallet(keyStore, walletName, walletPwd);
+                // TODO 暂时跳转到钱包管理
 //                    Intent intent = new Intent(this, WalletManageActivity.class);
 //                    startActivity(intent);
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    startActivity(intent);
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
 //                }
                 break;
             // 勾选框
@@ -126,6 +127,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
 
     /**
      * 画面初期化
+     *
      * @param view
      */
     private void initView(View view) {
@@ -256,7 +258,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
     private void isImportWallet() {
         String keyStore = mEKeyStore.getText().toString();
         String walletName = mEWalletName.getText().toString();
-        String passWord  = mEWalletPwd.getText().toString();
+        String passWord = mEWalletPwd.getText().toString();
         boolean readedTerms = mImgServiceTerms.isSelected();
         if (!TextUtils.isEmpty(keyStore) && !TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord)
                 && passWord.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9]{8,64}$") && readedTerms) {
@@ -317,12 +319,13 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
 
     /**
      * 导入钱包
+     *
      * @param walletName
      * @param walletPwd
      */
-    private void importWallet(final String  keyStore, final String walletName, final String walletPwd) {
+    private void importWallet(final String keyStore, final String walletName, final String walletPwd) {
 
-        WalletManager walletManager =  WalletManager.getInstance(mContext);
+        WalletManager walletManager = WalletManager.getInstance(mContext);
         // 导入钱包
         walletManager.importKeysStore(keyStore, walletName);
 //         获取钱包私钥

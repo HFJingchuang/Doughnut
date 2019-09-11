@@ -118,7 +118,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void gotoImportWallet() {
-        WalletImportActivity.startImportWalletActivity(this);
+        WalletImportActivity.startWalletImportActivity(this);
     }
 
     class WalletRecordAdapter extends RecyclerView.Adapter<WalletRecordAdapter.VH> {

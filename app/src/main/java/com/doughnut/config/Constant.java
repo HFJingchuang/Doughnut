@@ -14,6 +14,8 @@ public class Constant {
     public final static String wpk = "wpk";
     public final static String baked = "baked";
     public final static String words = "words";
+    public final static String IMPORT_KEY = "importKey";
+    public final static String PAGE_INDEX = "pageIndex";
 
 
     public final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
