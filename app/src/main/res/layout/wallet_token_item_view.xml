@@ -89,7 +89,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/token_count"
                     android:text="@string/tv_vailed"
 
@@ -112,7 +111,6 @@
                     android:id="@+id/tv_freeze"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/token_freeze"
                     android:text="@string/tv_freeze"
                     android:textColor="@color/color_detail_address"

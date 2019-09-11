@@ -141,6 +141,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:src="@drawable/ic_add" />
 
                 <TextView
@@ -148,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:text="创建"
+                    android:text="@string/tv_create"
                     android:textColor="@color/white"
                     android:textSize="11sp" />
 
@@ -163,6 +164,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:src="@drawable/ic_insert" />
 
                 <TextView
@@ -170,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:text="导入"
+                    android:text="@string/tv_import"
                     android:textColor="@color/white"
                     android:textSize="11sp" />
 

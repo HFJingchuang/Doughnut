@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -24,12 +23,10 @@ import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.activity.AddCurrencyActivity;
 import com.doughnut.activity.CreateNewWalletActivity;
-import com.doughnut.activity.TokenDetailsActivity;
 import com.doughnut.activity.WalletImportActivity;
+import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
-import com.doughnut.base.BlockChainData;
-import com.doughnut.base.WalletInfoManager;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.DefaultItemDecoration;
 import com.doughnut.utils.GsonUtil;
@@ -67,15 +64,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private SmartRefreshLayout mSmartRefreshLayout;
     private SwipeRecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
-    private View mWalletAction, mViewSee;
-    private TextView mTvWalletName, mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
-    private LinearLayout mTvCreateWallet, mTvImportWallet, mLayoutScan;
+    private View mViewSee;
+    private TextView mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
+    private LinearLayout mTvCreateWallet, mTvImportWallet, mLayoutScan, mLayoutName;
     private ImageView mTvOpenEyes;
+    private TextView mTvWalletName;
 
-    private String unit = "¥";
     private Context mContext;
-    private TextView mNameTv;
-
     private List<Line> dataList;
     private String mCurrentWallet;
     private boolean isHidden;
@@ -101,12 +96,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         dataList = new ArrayList();
         isHidden = false;
         isTokenHidden = false;
-        mCurrentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
         initView(view);
     }
 
     private void initView(View view) {
-        mNameTv = view.findViewById(R.id.tv_wallet_name);
+        mTvWalletName = view.findViewById(R.id.tv_wallet_name);
+        mLayoutName = view.findViewById(R.id.layout_name);
+        mLayoutName.setOnClickListener(this);
 
         //下拉刷新
         mSmartRefreshLayout = view.findViewById(R.id.layout_smart_refresh);
@@ -117,10 +113,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mAdapter.refresh();
             }
         });
-
-        mWalletAction = view.findViewById(R.id.wallet_menu_action);
-        mTvWalletName = view.findViewById(R.id.tv_wallet_name);
-        setWalletName();
 
         mTvBalance = view.findViewById(R.id.tv_balance);
         mTvBalanceDec = view.findViewById(R.id.tv_balance_decimal);
@@ -166,7 +158,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycleView.setAdapter(mAdapter);
 
-        mTvWalletName.setOnClickListener(this);
         mLayoutScan = view.findViewById(R.id.layout_scan);
         mLayoutScan.setOnClickListener(this);
 
@@ -223,11 +214,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
     };
 
-    private void setWalletInfo() {
-        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
-        mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -241,8 +227,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             return;
         }
         switch (view.getId()) {
-            case R.id.tv_wallet_name:
-                showWalletMenuPop();
+            case R.id.layout_name:
+                WalletManageActivity.startModifyWalletActivity(getContext(), true);
                 break;
             case R.id.layout_scan:
                 showActionMenuPop();
@@ -267,33 +253,22 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
     }
 
-
-    /**
-     * 显示钱包菜单pop
-     */
-    private void showWalletMenuPop() {
-//        if (walletMenuPop == null) {q
-//            walletMenuPop = new WalletMenuPop(getActivity());
-//            walletMenuPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//                @Override
-//                public void onDismiss() {
-//                    mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0,
-//                            R.drawable.ic_arrow_down, 0);
-//                    refreshWallet();
-//                }
-//            });
-//        }
-//        walletMenuPop.setData();
-//        walletMenuPop.showAsDropDown(mTvWalletName);
-//        mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0, R.drawable.ic_arrow_up, 0);
-    }
-
     /**
      * 界面刷新功能
      */
     private void refreshWallet() {
-        setWalletName();
+        setWalletInfo();
+        dataList.clear();
         mAdapter.refresh();
+    }
+
+    /**
+     * 获取当前钱包
+     */
+    private void setWalletInfo() {
+        mCurrentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
+        mTvWalletName.setText(WalletSp.getInstance(getContext(), mCurrentWallet).getName());
+        ViewUtil.EllipsisTextView(mTvWalletName);
     }
 
 
@@ -303,19 +278,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private void showActionMenuPop() {
         Intent intent = new Intent(mContext, CaptureActivity.class);
         startActivityForResult(intent, SCAN_REQUEST_CODE);
-    }
-
-
-    private void update() {
-        setWalletName();
-    }
-
-    private void setWalletName() {
-        BlockChainData.Block block = BlockChainData.getInstance().getBolckByHid(WalletInfoManager.getInstance().getWalletType());
-        if (block != null) {
-            mTvWalletName.setText(WalletInfoManager.getInstance().getWname() +
-                    "(" + block.desc + ")");
-        }
     }
 
     private boolean isReadyForPullEnd() {
@@ -332,56 +294,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         return false;
     }
 
-    private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
-        @Override
-        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-            float fraction = Math.abs(verticalOffset * 1.0f) / appBarLayout.getTotalScrollRange();
-            if (fraction < 0.5f) {
-                if (mTvWalletName.getVisibility() != View.VISIBLE) {
-                    mTvWalletName.setVisibility(View.VISIBLE);
-                    mWalletAction.setVisibility(View.GONE);
-                }
-                if (fraction < 0.3) {
-                    mTvWalletName.setAlpha(1);
-                } else {
-                    mTvWalletName.setAlpha(1 - (float) ((fraction - 0.3) * 5));
-                }
-            } else {
-                if (mWalletAction.getVisibility() != View.VISIBLE) {
-                    mTvWalletName.setVisibility(View.GONE);
-                    mWalletAction.setVisibility(View.VISIBLE);
-                }
-                if (fraction > 0.7) {
-                    mWalletAction.setAlpha(1);
-                } else {
-                    mWalletAction.setAlpha((float) ((fraction - 0.5) * 5));
-                }
-            }
-            if (verticalOffset >= 0) {
-                if (!mSmartRefreshLayout.isEnabled()) {
-                    mSmartRefreshLayout.setEnabled(true);
-                }
-            } else {
-                if (mSmartRefreshLayout.isEnabled()) {
-                    mSmartRefreshLayout.setEnabled(false);
-                }
-            }
-        }
-    };
-
     class MainTokenRecycleViewAdapter extends BaseRecycleAdapter<String, RecyclerView.ViewHolder> {
 
         private boolean mHasMore = true;
-        private int mPageIndex = 0;
-        private final static int PAGE_SIZE = 10;
-
-        private BaseRecyclerViewHolder.ItemClickListener mItemClickListener =
-                new BaseRecyclerViewHolder.ItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        gotoTokenDetail(MainTokenRecycleViewAdapter.this.getItem(position));
-                    }
-                };
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -398,11 +313,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         @Override
         public void loadData(final String params, final boolean loadmore) {
-            if (!loadmore) {
-                mPageIndex = 0;
-            } else {
-                mPageIndex++;
-            }
             if (loadmore && !mHasMore) {
                 return;
             }
@@ -464,8 +374,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
 
         private void handleTokenRequestResult(final String params, final boolean loadmore, GsonUtil json) {
-            GsonUtil data = json.getObject("data", "{}");
-            unit = data.getString("unit", "¥");
             GsonUtil tokens = json;
             if (!loadmore) {
                 //第一页
@@ -474,9 +382,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 if (tokens.getLength() > 0) {
                     addData(tokens);
                 }
-            }
-            if (!loadmore) {
-                update();
             }
             mHasMore = false;
             if (mDataLoadingListener != null) {
@@ -509,10 +414,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 holder.mTvCNY.setText("***");
                 holder.mTvTokenFreeze.setText("***");
             }
-        }
-
-        private void gotoTokenDetail(GsonUtil data) {
-            TokenDetailsActivity.NavToActivity(getActivity(), data.toString(), unit);
         }
 
         class TokenViewHolder extends BaseRecyclerViewHolder {

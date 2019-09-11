@@ -37,12 +37,17 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     private WalletRecordAdapter mAdapter;
 
     private List<String> walletList = new ArrayList<>();
+    private boolean isChange;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managerwallet);
+        isChange = false;
+        if (getIntent() != null) {
+            isChange = getIntent().getBooleanExtra("isChange", false);
+        }
         initView();
     }
 
@@ -52,8 +57,9 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         getWallets();
     }
 
-    public static void startModifyWalletActivity(Context context) {
+    public static void startModifyWalletActivity(Context context, boolean isChange) {
         Intent intent = new Intent(context, WalletManageActivity.class);
+        intent.putExtra("isChange", isChange);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -62,7 +68,11 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
 
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(getString(R.string.titleBar_manage_wallet));
+        if (isChange) {
+            mTitleBar.setTitle(getResources().getString(R.string.title_change_wallet));
+        } else {
+            mTitleBar.setTitle(getString(R.string.titleBar_manage_wallet));
+        }
         mTitleBar.setTitleTextColor(R.color.black);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.white));
         mTitleBar.setTitleBarClickListener(this);
@@ -146,8 +156,13 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ModifyWalletActivity.startModifyWalletActivity(WalletManageActivity.this,
-                                walletList.get(getAdapterPosition()));
+                        if (isChange) {
+                            WalletSp.getInstance(WalletManageActivity.this, "").setCurrentWallet(walletList.get(getAdapterPosition()));
+                            WalletManageActivity.this.finish();
+                        } else {
+                            ModifyWalletActivity.startModifyWalletActivity(WalletManageActivity.this,
+                                    walletList.get(getAdapterPosition()));
+                        }
                     }
                 });
             }

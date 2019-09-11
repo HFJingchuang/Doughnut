@@ -22,7 +22,6 @@ import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
 import com.doughnut.config.AppConfig;
-import com.doughnut.config.Constant;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.GsonUtil;
@@ -32,12 +31,9 @@ import com.jccdex.rpc.api.JccdexInfo;
 import com.jccdex.rpc.base.JCallback;
 import com.jccdex.rpc.url.JccdexUrl;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -471,6 +467,20 @@ public class WalletManager implements IWallet {
                 mTvBalanceDec.setText("");
             }
             return;
+        } else if (dataList == null || dataList.size() == 0) {
+            if (mTvBalanceCnyDec != null) {
+                mTvBalanceCny.setText("0.00");
+            }
+            if (mTvBalanceCny != null) {
+                mTvBalanceCnyDec.setText("");
+            }
+            if (mTvBalance != null) {
+                mTvBalance.setText("0.00");
+            }
+            if (mTvBalanceDec != null) {
+                mTvBalanceDec.setText("");
+            }
+            return;
         }
         new Thread(new Runnable() {
             @Override
@@ -489,90 +499,89 @@ public class WalletManager implements IWallet {
                             final JccdexUrl jccUrl = new JccdexUrl(infoHosts.getString(index, ""), true);
                             JccdexInfo jccdexInfo = JccdexInfo.getInstance();
                             jccdexInfo.setmBaseUrl(jccUrl);
-                            if (dataList != null && dataList.size() != 0) {
-                                // 获取时价
-                                jccdexInfo.requestAllTickers(new JCallback() {
-                                    // 钱包总价值
-                                    BigDecimal values = new BigDecimal(0.00);
-                                    // 钱包折换总SWT
-                                    BigDecimal number = new BigDecimal(0.00);
-                                    BigDecimal swtPrice = new BigDecimal(0.00);
+                            // 获取时价
+                            jccdexInfo.requestAllTickers(new JCallback() {
+                                // 钱包总价值
+                                BigDecimal values = new BigDecimal(0.00);
+                                // 钱包折换总SWT
+                                BigDecimal number = new BigDecimal(0.00);
+                                BigDecimal swtPrice = new BigDecimal(0.00);
 
-                                    @Override
-                                    public void onResponse(String code, String response) {
-                                        if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
-                                            GsonUtil res = new GsonUtil(response);
-                                            GsonUtil data = res.getObject("data");
-                                            GsonUtil gsonUtil = data.getArray("SWT-CNY");
-                                            swtPrice = new BigDecimal(gsonUtil.getString(1, "0"));
-                                            for (int i = 0; i < dataList.size(); i++) {
-                                                Line line = (Line) dataList.get(i);
-                                                // 数量
-                                                String balance = line.getBalance();
-                                                if (TextUtils.isEmpty(balance)) {
-                                                    balance = "0";
-                                                }
-                                                // 币种
-                                                String currency = line.getCurrency();
-                                                // 冻结
-                                                String freeze = line.getLimit();
-                                                if (TextUtils.isEmpty(freeze)) {
-                                                    freeze = "0";
-                                                }
-
-                                                BigDecimal price = new BigDecimal(0);
-                                                if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
-                                                    price = BigDecimal.ONE;
-                                                } else {
-                                                    String currency_cny = currency + "-CNY";
-                                                    GsonUtil currencyLst = data.getArray(currency_cny);
-                                                    if (currencyLst != null) {
-                                                        price = new BigDecimal(currencyLst.getString(1, "0"));
-
-                                                    }
-                                                }
-                                                // 当前币种总价值
-                                                BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(freeze));
-                                                BigDecimal value = sum.multiply(price, new MathContext(2));
-                                                values = values.add(value);
+                                @Override
+                                public void onResponse(String code, String response) {
+                                    if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                        GsonUtil res = new GsonUtil(response);
+                                        GsonUtil data = res.getObject("data");
+                                        GsonUtil gsonUtil = data.getArray("SWT-CNY");
+                                        swtPrice = new BigDecimal(gsonUtil.getString(1, "0"));
+                                        for (int i = 0; i < dataList.size(); i++) {
+                                            Line line = (Line) dataList.get(i);
+                                            // 数量
+                                            String balance = line.getBalance();
+                                            if (TextUtils.isEmpty(balance)) {
+                                                balance = "0";
                                             }
-                                            number = values.divide(swtPrice, 2, BigDecimal.ROUND_HALF_UP);
-                                            AppConfig.postOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (mTvBalanceCnyDec != null && mTvBalanceCny != null) {
-                                                        String balanceStr = values.stripTrailingZeros().toPlainString();
-                                                        if (balanceStr.contains(".")) {
-                                                            String[] balanceArr = balanceStr.split("\\.");
-                                                            mTvBalanceCny.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                            if (!TextUtils.isEmpty(balanceArr[1])) {
-                                                                mTvBalanceCnyDec.setText("." + balanceArr[1]);
-                                                            }
-                                                        }
-                                                    }
+                                            // 币种
+                                            String currency = line.getCurrency();
+                                            // 冻结
+                                            String freeze = line.getLimit();
+                                            if (TextUtils.isEmpty(freeze)) {
+                                                freeze = "0";
+                                            }
 
-                                                    if (mTvBalanceDec != null && mTvBalance != null) {
-                                                        String balanceStr = number.stripTrailingZeros().toPlainString();
-                                                        if (balanceStr.contains(".")) {
-                                                            String[] balanceArr = balanceStr.split("\\.");
-                                                            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                                            if (!TextUtils.isEmpty(balanceArr[1])) {
-                                                                mTvBalanceDec.setText("." + balanceArr[1]);
-                                                            }
-                                                        }
-                                                    }
+                                            BigDecimal price = new BigDecimal(0);
+                                            if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
+                                                price = BigDecimal.ONE;
+                                            } else {
+                                                String currency_cny = currency + "-CNY";
+                                                GsonUtil currencyLst = data.getArray(currency_cny);
+                                                if (currencyLst != null) {
+                                                    price = new BigDecimal(currencyLst.getString(1, "0"));
 
                                                 }
-                                            });
+                                            }
+                                            // 当前币种总价值
+                                            BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(freeze));
+                                            BigDecimal value = sum.multiply(price, new MathContext(2));
+                                            values = values.add(value);
                                         }
-                                    }
+                                        number = values.divide(swtPrice, 2, BigDecimal.ROUND_HALF_UP);
+                                        AppConfig.postOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (mTvBalanceCnyDec != null && mTvBalanceCny != null) {
+                                                    String balanceStr = values.stripTrailingZeros().toPlainString();
+                                                    if (balanceStr.contains(".")) {
+                                                        String[] balanceArr = balanceStr.split("\\.");
+                                                        mTvBalanceCny.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                        if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                            mTvBalanceCnyDec.setText("." + balanceArr[1]);
+                                                        }
+                                                    }
+                                                }
 
-                                    @Override
-                                    public void onFail(Exception e) {
-                                        e.printStackTrace();
+                                                if (mTvBalanceDec != null && mTvBalance != null) {
+                                                    String balanceStr = number.stripTrailingZeros().toPlainString();
+                                                    if (balanceStr.contains(".")) {
+                                                        String[] balanceArr = balanceStr.split("\\.");
+                                                        mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                                        if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                            mTvBalanceDec.setText("." + balanceArr[1]);
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        });
                                     }
-                                });
-                            }
+                                }
+
+                                @Override
+                                public void onFail(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
 
                         }
                     }

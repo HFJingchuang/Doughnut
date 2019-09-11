@@ -96,7 +96,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View view) {
         if (view == mLayoutManageWallet) {
             mLayoutManageWallet.setClickable(false);
-            WalletManageActivity.startModifyWalletActivity(getActivity());
+            WalletManageActivity.startModifyWalletActivity(getActivity(), false);
         } else if (view == mLayoutRecordTransaction) {
             mLayoutRecordTransaction.setClickable(false);
             TransactionRecordActivity.startTransactionRecordActivity(getActivity());

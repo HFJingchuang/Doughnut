@@ -121,12 +121,12 @@ public class ViewUtil {
                 if (textView != null && layout != null) {
                     int lines = layout.getLineCount();
                     int ellipsisCount = layout.getEllipsisCount(lines - 1);
+                    String showText = textView.getText().toString();
                     if (ellipsisCount == 0) {
                         return;
-                    } else if (ellipsisCount < 3) {
+                    } else if (ellipsisCount < 3 && (showText.length() - ellipsisCount) / 2 > 4) {
                         cut = 4;
                     }
-                    String showText = textView.getText().toString();
                     String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - cut);
                     String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + cut);
                     textView.setText(startStr + "***" + endStr);

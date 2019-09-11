@@ -6,17 +6,34 @@
     android:background="@color/white"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_wallet_name"
+    <LinearLayout
+        android:id="@+id/layout_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:gravity="center|left"
-        android:text=""
-        android:textColor="@color/color_wallet_name"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:visibility="visible" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_wallet_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:ellipsize="middle"
+            android:maxEms="8"
+            android:singleLine="true"
+            android:textColor="@color/color_wallet_name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="bottom"
+            android:layout_toRightOf="@+id/tv_wallet_name"
+            android:background="@drawable/shape_trigon" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/wallet_menu_action"
@@ -35,8 +52,8 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_marginRight="5dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
             android:src="@drawable/ic_scan_black" />
     </LinearLayout>
 </RelativeLayout>

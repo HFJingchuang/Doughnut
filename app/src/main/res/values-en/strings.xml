@@ -343,4 +343,7 @@
     <string name="tv_freeze">Frozen：</string>
     <string name="tv_vailed">Available：</string>
     <string name="tv_token_search">&#160;&#160;&#160;Search</string>
+    <string name="title_change_wallet">Change Wallet</string>
+    <string name="tv_create">Create</string>
+    <string name="tv_import">Import</string>
 </resources>

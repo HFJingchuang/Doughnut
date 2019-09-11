@@ -343,5 +343,8 @@
     <string name="tv_freeze">冻结：</string>
     <string name="tv_vailed">可用：</string>
     <string name="tv_token_search">&#160;&#160;&#160;搜索币种</string>
+    <string name="title_change_wallet">选择钱包</string>
+    <string name="tv_create">创建</string>
+    <string name="tv_import">导入</string>
 
 </resources>
