@@ -3,22 +3,28 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.utils.PWDUtils;
+import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 
@@ -28,21 +34,33 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
     public final static String TAG = "CreateNewWalletActivity";
 
     private TitleBar mTitleBar;
-
+    private RadioButton mRadioRead;
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm;
-    private ImageView mImgServiceTerms, imgShowRepPsd, imgShowPsd;
-    private TextView mTvServiceTerms, mTVAlertWalletName, mTVAlertPsd, mTVAlertPsdRep, mTVAlertServiceTerms, mTvErrWalletName, mTvErrPassword, mTvPsdRep, mTvAlertServiceTerms;
-
-    private LinearLayout mTvShowPsd, mTvShowPsdRep;
-
+    private TextView mTvPolicy, mTvErrPassword, mTvErrPasswordRep;
+    private ImageView mImgShowRepPwd, mImgShowPwd;
+    private LinearLayout mTvShowPwd, mTvShowPwdRep, mLayoutRead;
     private Button mBtnConfirm;
-    private boolean isShowPsd, isShowPsdRep;
 
+    private boolean isErr;
+    private TransformationMethod transformationMethod = new TransformationMethod() {
+        @Override
+        public void onFocusChanged(View view, CharSequence sourceText, boolean focused, int direction, Rect previouslyFocusedRect) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public CharSequence getTransformation(CharSequence source, View view) {
+            // TODO Auto-generated method stub
+            return new SubCharSequence(source);
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_wallet);
+        isErr = false;
         initView();
     }
 
@@ -57,75 +75,24 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                onBackPressed();
+                finish();
             }
         });
 
-        mTvErrWalletName = findViewById(R.id.err_wallet_name);
-        mTvErrPassword = findViewById(R.id.err_password);
-        mTvPsdRep = findViewById(R.id.err_psd_rep);
-        mTvAlertServiceTerms = findViewById(R.id.alert_service_terms);
-
         mEdtWalletName = findViewById(R.id.edt_wallet_name);
         mEdtWalletName.requestFocus();
-        mEdtWalletName.addTextChangedListener(
-                new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isCreateWallet();
-                        if (mTvErrWalletName.isShown()) {
-                            mTvErrWalletName.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                }
-        );
         mEdtWalletName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    String address = mEdtWalletName.getText().toString();
-                    if (!TextUtils.isEmpty(address)) {
-//                        String currentAddr = WalletSp.getInstance(CreateNewWalletActivity.this, "").getCurrentWallet();
-//                        if (TextUtils.equals(currentAddr, address)) {
-//                            mTvErrWalletName.setText(getString(R.string.tv_err_address1));
-//                            mTvErrWalletName.setVisibility(View.VISIBLE);
-//                            AppConfig.postOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    mEdtWalletName.requestFocus();
-//                                }
-//                            });
-//                            return;
-//                        }
-//                        boolean isValidAddress = Wallet.isValidAddress(address);
-//                        if (!isValidAddress) {
-//                            mTvErrWalletName.setVisibility(View.VISIBLE);
-//                            mTvErrWalletName.setText(getString(R.string.tv_err_address));
-//                            AppConfig.postOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    mEdtWalletName.requestFocus();
-//                                }
-//                            });
-//                        }
-                    }
+                    isCreateWallet();
                 }
             }
         });
 
-
-
         mEdtWalletPwd = findViewById(R.id.edt_wallet_pwd);
+        mEdtWalletPwd.setTransformationMethod(transformationMethod);
+        mTvErrPassword = findViewById(R.id.tv_pwd_tips);
         mEdtWalletPwd.addTextChangedListener(
                 new TextWatcher() {
                     @Override
@@ -135,9 +102,8 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isCreateWallet();
-                        if (mTvErrPassword.isShown()) {
-                            mTvErrPassword.setVisibility(View.INVISIBLE);
+                        if (isErr) {
+                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_tips));
                         }
                     }
 
@@ -153,22 +119,29 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                 if (!hasFocus) {
                     String passWord = mEdtWalletPwd.getText().toString();
                     if (!TextUtils.isEmpty(passWord)) {
-                        if (!passWord.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9]{8,64}$")) {
-                            mTvErrPassword.setText("8-64位大小写字母、数字组合密码");
-                            mTvErrPassword.setVisibility(View.VISIBLE);
+                        boolean isValid = PWDUtils.verifyPasswordFormat(passWord);
+                        if (!isValid) {
+                            isErr = true;
+                            mEdtWalletPwd.setText("");
+                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_err));
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     mEdtWalletPwd.requestFocus();
                                 }
                             });
-                            return;
+                        } else {
+                            isErr = false;
                         }
                     }
+                    isCreateWallet();
                 }
             }
         });
+
         mEdtWalletPwdConfirm = findViewById(R.id.edt_wallet_pwd_confirm);
+        mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
+        mTvErrPasswordRep = findViewById(R.id.tv_pwd_rep_tips);
         mEdtWalletPwdConfirm.addTextChangedListener(
                 new TextWatcher() {
                     @Override
@@ -178,10 +151,10 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        isCreateWallet();
-                        if (mTvPsdRep.isShown()) {
-                            mTvPsdRep.setVisibility(View.INVISIBLE);
+                        if (mTvErrPasswordRep.isShown()) {
+                            mTvErrPasswordRep.setVisibility(View.GONE);
                         }
+                        isCreateWallet();
                     }
 
                     @Override
@@ -197,43 +170,52 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                     String passWord = mEdtWalletPwd.getText().toString();
                     String passwordConfim = mEdtWalletPwdConfirm.getText().toString();
                     if (!TextUtils.isEmpty(passwordConfim)) {
-                        if (!passwordConfim.equals(passWord)) {
-                            mTvPsdRep.setText(getString(R.string.dialog_content_passwords_unmatch));
-                            mTvPsdRep.setVisibility(View.VISIBLE);
+                        if (!TextUtils.isEmpty(passWord) && !TextUtils.equals(passwordConfim, passWord)) {
+                            mEdtWalletPwdConfirm.setText("");
+                            mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
+                            mTvErrPasswordRep.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     mEdtWalletPwdConfirm.requestFocus();
                                 }
                             });
-                            return;
+                        } else {
+                            boolean isValid = PWDUtils.verifyPasswordFormat(passwordConfim);
+                            if (!isValid) {
+                                mEdtWalletPwdConfirm.setText("");
+                                mTvErrPasswordRep.setText(getResources().getString(R.string.tv_pwd_err));
+                                mTvErrPasswordRep.setVisibility(View.VISIBLE);
+                                AppConfig.postOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mEdtWalletPwdConfirm.requestFocus();
+                                    }
+                                });
+                            }
+
                         }
                     }
+                    isCreateWallet();
                 }
             }
         });
 
-
-
-        mImgServiceTerms = findViewById(R.id.img_service_terms);
-        mImgServiceTerms.setOnClickListener(this);
-        mTvServiceTerms = findViewById(R.id.tv_service_terms);
-        mTvServiceTerms.setText(Html.fromHtml(getString(R.string.content_read_service)));
-        mTvServiceTerms.setOnClickListener(this);
+        mRadioRead = findViewById(R.id.radio_read);
+        mLayoutRead = findViewById(R.id.layout_read);
+        mLayoutRead.setOnClickListener(this);
+        mTvPolicy = findViewById(R.id.tv_policy);
+        mTvPolicy.setText(Html.fromHtml(getString(R.string.content_read_service)));
+        mTvPolicy.setOnClickListener(this);
         mBtnConfirm = findViewById(R.id.btn_confirm);
 
-//        mTVAlertWalletName = findViewById(R.id.alert_wallet_name);
-        mTVAlertPsd = findViewById(R.id.alert_psd);
-//        mTVAlertPsdRep = findViewById(R.id.alert_psd_rep);
-        mTVAlertServiceTerms = findViewById(R.id.alert_service_terms);
+        mTvShowPwd = findViewById(R.id.show_pwd);
+        mTvShowPwd.setOnClickListener(this);
+        mTvShowPwdRep = findViewById(R.id.show_pwd_rep);
+        mTvShowPwdRep.setOnClickListener(this);
 
-        mTvShowPsd = findViewById(R.id.show_psd);
-        mTvShowPsd.setOnClickListener(this);
-        mTvShowPsdRep = findViewById(R.id.show_psd_rep);
-        mTvShowPsdRep.setOnClickListener(this);
-
-        imgShowPsd = findViewById(R.id.img_show_psd);
-        imgShowRepPsd = findViewById(R.id.img_show_rep_psd);
+        mImgShowPwd = findViewById(R.id.img_show_pwd);
+        mImgShowRepPwd = findViewById(R.id.img_show_pwd_rep);
 
         mBtnConfirm.setOnClickListener(this);
     }
@@ -248,38 +230,39 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         switch (view.getId()) {
             // 创建钱包按钮
             case R.id.btn_confirm:
-                if (true) {
-                    String walletName = mEdtWalletName.getText().toString();
-                    String walletPwd = mEdtWalletPwd.getText().toString();
-                    // 创建钱包
-                    createWallet(walletName, walletPwd);
-                    //
-//                    Intent intent = new Intent(this, BackupStartActivity.class);
-//                    startActivity(intent);
-//                    Intent intent = new Intent(this, WalletManageActivity.class);
-//                    startActivity(intent);
-
-//                    Intent intent = new Intent(this, MainActivity.class);
-//                    startActivity(intent);
-//                    this.finish();
-
-                    CreateSuccessActivity.startCreateSuccessActivity(this);
-                }
+                mBtnConfirm.setClickable(false);
+                String walletName = mEdtWalletName.getText().toString();
+                String walletPwd = mEdtWalletPwd.getText().toString();
+                // 创建钱包
+                createWallet(walletName, walletPwd);
+                CreateSuccessActivity.startCreateSuccessActivity(this);
                 break;
             // 勾选框
-            case R.id.img_service_terms:
-                mImgServiceTerms.setSelected(!mImgServiceTerms.isSelected());
+            case R.id.layout_read:
+                mRadioRead.setChecked(!mRadioRead.isChecked());
                 isCreateWallet();
                 break;
             // 跳转服务条款页面
-            case R.id.tv_service_terms:
+            case R.id.tv_policy:
                 gotoServiceTermPage();
                 break;
-            case R.id.show_psd:
-                showPassWord("password");
+            case R.id.show_pwd:
+                mImgShowPwd.setSelected(!mImgShowPwd.isSelected());
+                if (mImgShowPwd.isSelected()) {
+                    mEdtWalletPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtWalletPwd.setTransformationMethod(transformationMethod);
+                }
+                mEdtWalletPwd.setSelection(mEdtWalletPwd.getText().length());
                 break;
-            case R.id.show_psd_rep:
-                showPassWord("passwordConfim");
+            case R.id.show_pwd_rep:
+                mImgShowRepPwd.setSelected(!mImgShowRepPwd.isSelected());
+                if (mImgShowRepPwd.isSelected()) {
+                    mEdtWalletPwdConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
+                }
+                mEdtWalletPwdConfirm.setSelection(mEdtWalletPwdConfirm.getText().length());
                 break;
         }
     }
@@ -299,118 +282,23 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         walletManager.getPrivateKey(walletPwd, walletName);
     }
 
-
     /**
-     * 判断密码显示隐藏
-     *
-     * @param type
+     * 创建钱包选项check
      */
-    private void showPassWord(String type) {
-        if ("password".equals(type)) {
-            // 密码是否显示(是)
-            if (isShowPsd) {
-                imgShowPsd.setImageResource(R.drawable.ic_close_eyes);
-                mEdtWalletPwd.setInputType(129);
-                isShowPsd = false;
-
-            } else {
-                imgShowPsd.setImageResource(R.drawable.ic_see_blue);
-                mEdtWalletPwd.setInputType(128);
-                isShowPsd = true;
-
-            }
-        } else if ("passwordConfim".equals(type)) {
-            // 密码确认是否显示(是)
-            if (isShowPsdRep) {
-                imgShowRepPsd.setImageResource(R.drawable.ic_close_eyes);
-                mEdtWalletPwdConfirm.setInputType(129);
-                isShowPsdRep = false;
-
-            } else {
-                imgShowRepPsd.setImageResource(R.drawable.ic_see_blue);
-                mEdtWalletPwdConfirm.setInputType(128);
-                isShowPsdRep = true;
-            }
-        }
-    }
-
     private void isCreateWallet() {
         String walletName = mEdtWalletName.getText().toString();
-        String passWord  = mEdtWalletPwd.getText().toString();
-        String passwordConfim  = mEdtWalletPwdConfirm.getText().toString();
-        boolean readedTerms = mImgServiceTerms.isSelected();
+        String passWord = mEdtWalletPwd.getText().toString();
+        String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
+        boolean isRead = mRadioRead.isChecked();
 
-        if (!TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && !TextUtils.isEmpty(passwordConfim)
-                && passWord.equals(passwordConfim) && readedTerms) {
+        if (!TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && !isErr
+                && !TextUtils.isEmpty(passwordConfirm) && !mTvErrPasswordRep.isShown() && isRead) {
             mBtnConfirm.setEnabled(true);
+            mBtnConfirm.setClickable(true);
         } else {
             mBtnConfirm.setEnabled(false);
         }
     }
-
-    /**
-     * 前端页面校验
-     *
-     * @return
-     */
-//    private boolean paramCheck() {
-//
-//        String walletName = mEdtWalletName.getText().toString();
-//        String walletPwd = mEdtWalletPwd.getText().toString();
-//        String walletPwdRepeat = mEdtWalletPwdConfirm.getText().toString();
-//        boolean readedTerms = mImgServiceTerms.isSelected();
-//
-//        if (TextUtils.isEmpty(walletName)) {
-//            // TODO
-////            mTVAlertWalletName.setText(R.string.dialog_content_no_wallet_name);
-////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_name), "OK");
-//            return false;
-//        } else {
-//            mTVAlertWalletName.setText("");
-//        }
-//        if (TextUtils.isEmpty(walletPwd)) {
-////            mTVAlertPsd.setText(R.string.dialog_content_no_password);
-////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_password), "OK");
-//            return false;
-//        } else {
-//            mTVAlertPsd.setText("8-64位大小写字母、数字组合密码");
-//        }
-//
-//        if (TextUtils.isEmpty(walletPwdRepeat)) {
-//            mTVAlertPsdRep.setText(R.string.dialog_content_no_verify_password);
-////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_verify_password), "OK");
-//            return false;
-//        } else {
-//            mTVAlertPsdRep.setText("");
-//        }
-//
-//        if (!TextUtils.equals(walletPwdRepeat, walletPwd)) {
-////            mTVAlertPsdRep.setText(R.string.dialog_content_passwords_unmatch);
-////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_passwords_unmatch), "OK");
-//            return false;
-//        } else {
-//            mTVAlertPsdRep.setText("");
-//        }
-//
-//        if (!walletPwd.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9]{8,64}$")) {
-//
-//            mTVAlertPsd.setText("8-64位大小写字母、数字组合密码");
-////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_password), "OK");
-//            return false;
-//        } else {
-//            mTVAlertPsd.setText("8-64位大小写字母、数字组合密码");
-//        }
-//
-//        if (!readedTerms) {
-//            mTVAlertServiceTerms.setText(R.string.dialog_content_no_read_service);
-////            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_read_service), "OK");
-//            return false;
-//        } else {
-//            mTVAlertServiceTerms.setText("");
-//        }
-//
-//        return true;
-//    }
 
     /**
      * 跳转服务条款页面

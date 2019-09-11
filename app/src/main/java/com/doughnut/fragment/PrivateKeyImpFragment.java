@@ -20,16 +20,10 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.activity.MainActivity;
-import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
-import com.doughnut.dialog.DeleteDialog;
-import com.doughnut.dialog.ImportSuccessDialog;
-import com.doughnut.utils.ViewUtil;
-import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
-import com.zxing.activity.CaptureActivity;
 
 
 public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickListener{
@@ -274,7 +268,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
         mTvAlertServiceTerms = view.findViewById(R.id.alert_service_terms);
         mTvAlertServiceTerms.setOnClickListener(this);
 
-        mTvShowPsd = view.findViewById(R.id.show_psd);
+        mTvShowPsd = view.findViewById(R.id.show_pwd);
         mTvShowPsd.setOnClickListener(this);
 
         mTvShowPsdRep = view.findViewById(R.id.show_psd_rep);
@@ -355,7 +349,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
 //                Intent intent=new Intent(mContext, CaptureActivity.class);
 //                startActivityForResult(intent,SCAN_CODE);
                 break;
-            case R.id.show_psd:
+            case R.id.show_pwd:
                 showPassWord("password");
                 break;
             case R.id.show_psd_rep:
@@ -379,7 +373,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 isShowPsd = false;
 
             } else {
-                mImgShowPsd.setImageResource(R.drawable.ic_see_blue);
+                mImgShowPsd.setImageResource(R.drawable.ic_open_eyes);
                 mTvWalletPwd.setInputType(128);
                 isShowPsd = true;
 
@@ -392,7 +386,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 isShowPsdRep = false;
 
             } else {
-                mImgShowRepPsd.setImageResource(R.drawable.ic_see_blue);
+                mImgShowRepPsd.setImageResource(R.drawable.ic_open_eyes);
                 mTvWalletPwdConfirm.setInputType(128);
                 isShowPsdRep = true;
             }

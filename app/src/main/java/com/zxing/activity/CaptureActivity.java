@@ -2,6 +2,7 @@ package com.zxing.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -44,7 +45,6 @@ import com.zxing.decoding.InactivityTimer;
 import com.zxing.view.ViewfinderView;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Vector;
 
@@ -76,6 +76,12 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
         Intent intent = new Intent(context, CaptureActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void startCaptureActivity(Context context) {
+        Intent intent = new Intent(context, CaptureActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
     /**

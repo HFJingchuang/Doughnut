@@ -51,17 +51,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.WalletImportActivity" />
-        <activity android:name=".activity.WalletManageActivity" /> <!-- <activity android:name=".activity.WallwtManageActivity" /> -->
-        <activity android:name=".activity.BackupStartActivity" />
-        <activity android:name=".activity.BackupInfoActivity" />
-        <activity android:name=".activity.ReceivablesActivity" />
-        <activity android:name=".activity.TransferAccountsActivity" />
-        <activity android:name=".activity.CreateNewWalletActivity" />
-        <activity android:name=".activity.QrCodeImportActivity" />
-        <activity android:name=".activity.PrivateKeyImportActivity" />
-        <activity android:name=".activity.KeyStoreImportActivity" />
-        <activity android:name=".activity.ImportWalletSelectActivity" />
+
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -71,6 +61,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.WalletImportActivity" />
+        <activity android:name=".activity.WalletManageActivity" /> <!-- <activity android:name=".activity.WallwtManageActivity" /> -->
+        <activity android:name=".activity.BackupStartActivity" />
+        <activity android:name=".activity.BackupInfoActivity" />
+        <activity android:name=".activity.ReceivablesActivity" />
+        <activity android:name=".activity.TransferAccountsActivity" />
+        <activity
+            android:name=".activity.CreateNewWalletActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity android:name=".activity.QrCodeImportActivity" />
+        <activity android:name=".activity.PrivateKeyImportActivity" />
+        <activity android:name=".activity.KeyStoreImportActivity" />
+        <activity android:name=".activity.ImportWalletSelectActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTask"
@@ -90,10 +94,6 @@
         <activity
             android:name=".activity.WebBrowserActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.CreateWalletActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activity.ChooseWalletBlockActivity"
             android:screenOrientation="portrait" />

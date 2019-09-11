@@ -59,8 +59,6 @@ import java.util.List;
 
 public class MainWalletFragment extends BaseFragment implements View.OnClickListener {
 
-    private final static int SCAN_REQUEST_CODE = 10001;
-
     private SmartRefreshLayout mSmartRefreshLayout;
     private SwipeRecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
@@ -231,7 +229,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 WalletManageActivity.startModifyWalletActivity(getContext(), true);
                 break;
             case R.id.layout_scan:
-                showActionMenuPop();
+                CaptureActivity.startCaptureActivity(getContext());
                 break;
             case R.id.add_asset:
                 AddCurrencyActivity.startActivity(mContext);
@@ -269,15 +267,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mCurrentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
         mTvWalletName.setText(WalletSp.getInstance(getContext(), mCurrentWallet).getName());
         ViewUtil.EllipsisTextView(mTvWalletName);
-    }
-
-
-    /**
-     * 显示功能菜单pop
-     */
-    private void showActionMenuPop() {
-        Intent intent = new Intent(mContext, CaptureActivity.class);
-        startActivityForResult(intent, SCAN_REQUEST_CODE);
     }
 
     private boolean isReadyForPullEnd() {

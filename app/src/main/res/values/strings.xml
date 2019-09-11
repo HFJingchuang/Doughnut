@@ -103,7 +103,7 @@
     <string name="dialog_btn_not_switch">不切换</string>
     <string name="dialog_btn_switch">立即切换</string>
     <string name="content_my_asset">我的资产</string>
-    <string name="content_read_service"><![CDATA[<font color=\'#565d67\'>我已经仔细阅读并同意</font><font color=\'#2890FE\'>服务及隐私条款</font>]]></string>
+    <string name="content_read_service"><![CDATA[<font color=\'#021E38\'>我已经仔细阅读并同意</font><font color=\'#3B6CA6\'>《服务及隐私条款》</font>]]></string>
     <string name="titleBar_user_agreement">用户使用协议</string>
     <string name="dialog_title_no_private_key">私钥不能为空</string>
     <string name="dialog_title_key_format_incorrect">私钥格式错误</string>
@@ -346,5 +346,7 @@
     <string name="title_change_wallet">选择钱包</string>
     <string name="tv_create">创建</string>
     <string name="tv_import">导入</string>
+    <string name="tv_pwd_tips">8-64位大小写字母、数字组合密码</string>
+    <string name="tv_pwd_err">密码格式不正确，请重新输入！</string>
 
 </resources>

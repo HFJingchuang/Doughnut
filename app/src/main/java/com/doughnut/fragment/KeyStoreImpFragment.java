@@ -22,7 +22,6 @@ import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
-import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 
@@ -102,7 +101,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
             case R.id.tv_service_terms:
                 gotoServiceTermPage();
                 break;
-            case R.id.show_psd:
+            case R.id.show_pwd:
                 showPassWord();
                 break;
         }
@@ -119,7 +118,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
             isShowPsd = false;
 
         } else {
-            mImgShowPsd.setImageResource(R.drawable.ic_see_blue);
+            mImgShowPsd.setImageResource(R.drawable.ic_open_eyes);
             mEWalletPwd.setInputType(128);
             isShowPsd = true;
         }
@@ -245,7 +244,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
         mTvAlertServiceTerms = view.findViewById(R.id.alert_service_terms);
         mImgShowPsd = view.findViewById(R.id.img_show_psd);
 
-        mTvShowPsd = view.findViewById(R.id.show_psd);
+        mTvShowPsd = view.findViewById(R.id.show_pwd);
         mTvShowPsd.setOnClickListener(this);
 
 

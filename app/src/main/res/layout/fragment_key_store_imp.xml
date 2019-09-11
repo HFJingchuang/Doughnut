@@ -64,7 +64,7 @@
                 android:paddingLeft="17dp"
                 android:hint="@string/enter_hint_password"/>
             <LinearLayout
-                android:id="@+id/show_psd"
+                android:id="@+id/show_pwd"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"

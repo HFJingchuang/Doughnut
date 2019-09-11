@@ -13,7 +13,6 @@ import com.doughnut.view.TBWebCore;
 import com.doughnut.view.TitleBar;
 
 
-
 public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBarClickListener {
 
     private final static String TAG = "WebBrowserActivity";
@@ -34,9 +33,10 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
             mTitle = getIntent().getStringExtra("TITLE");
             TLog.d(TAG, "mUrl:" + mUrl);
         }
-        mWebCore =  findViewById(R.id.web_core);
-        mTitleBar =  findViewById(R.id.title_bar);
+        mWebCore = findViewById(R.id.web_core);
+        mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setTitle(mTitle);
+        mTitleBar.setTitleBarBackColor(R.color.color_detail_address);
         mTitleBar.setTitleTextColor(R.color.white);
         mTitleBar.setLeftDrawable(R.drawable.ic_close);
         mTitleBar.setRightDrawable(R.drawable.ic_refresh);

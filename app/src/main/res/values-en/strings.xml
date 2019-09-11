@@ -103,7 +103,7 @@
     <string name="dialog_btn_not_switch">No</string>
     <string name="dialog_btn_switch">Yes</string>
     <string name="content_my_asset">My Asset</string>
-    <string name="content_read_service"><![CDATA[<font color=\'#565d67\'>I have read and agree to</font><font color=\'#2890FE\'>\ the Terms and Privacy Policy.</font>]]></string>
+    <string name="content_read_service"><![CDATA[<font color=\'#021E38\'>I have read and agree to</font><font color=\'#3B6CA6\'>\ the Terms and Privacy Policy.</font>]]></string>
     <string name="titleBar_user_agreement">User Agreement</string>
     <string name="dialog_title_no_private_key">Enter your private key</string>
     <string name="dialog_title_key_format_incorrect">Private key format incorrect</string>
@@ -346,4 +346,6 @@
     <string name="title_change_wallet">Change Wallet</string>
     <string name="tv_create">Create</string>
     <string name="tv_import">Import</string>
+    <string name="tv_pwd_tips">8-64 lowercase letters and numeric combination passwords</string>
+    <string name="tv_pwd_err">The password format is incorrect. Please retype it</string>
 </resources>
