@@ -156,40 +156,45 @@ public class WalletManager implements IWallet {
      * 导入二维码图片
      *
      * @param qrImage
+     * @param password
      * @param name
      * @return
      */
     @Override
-    public String importQRImage(Bitmap qrImage, String name) {
+    public boolean importQRImage(Bitmap qrImage, String password, String name) {
         try {
             String keyStore = QRGenerator.decodeQrImage(qrImage);
-            return importKeysStore(keyStore, name);
+            return importKeysStore(keyStore, password, name);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return false;
     }
 
     /**
      * 导入KeyStore
      *
      * @param keyStore
+     * @param password
      * @param name
      * @return
      */
     @Override
-    public String importKeysStore(String keyStore, String name) {
+    public boolean importKeysStore(String keyStore, String password, String name) {
         try {
             KeyStoreFile keyStoreFile = KeyStoreFile.parse(keyStore);
             String address = keyStoreFile.getAddress();
             if (Wallet.isValidAddress(address)) {
-                WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
-                return address;
+                String privateKey = getPrivateKey(password, address);
+                if (Wallet.isValidSecret(privateKey)) {
+                    WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return false;
     }
 
     /**
@@ -255,7 +260,7 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public AccountTx getTansferHishory(String address, Integer limit, Marker marker) {
+    public AccountTx getTransferHistory(String address, Integer limit, Marker marker) {
         try {
             AccountTx bean = JtServer.getInstance(mContext).getRemote().requestAccountTx(address, limit, marker);
             return bean;
@@ -573,6 +578,19 @@ public class WalletManager implements IWallet {
 
                                             }
                                         });
+                                    } else {
+                                        if (mTvBalanceCnyDec != null) {
+                                            mTvBalanceCny.setText("---");
+                                        }
+                                        if (mTvBalanceCny != null) {
+                                            mTvBalanceCnyDec.setText("");
+                                        }
+                                        if (mTvBalance != null) {
+                                            mTvBalance.setText("---");
+                                        }
+                                        if (mTvBalanceDec != null) {
+                                            mTvBalanceDec.setText("");
+                                        }
                                     }
                                 }
 
@@ -581,8 +599,19 @@ public class WalletManager implements IWallet {
                                     e.printStackTrace();
                                 }
                             });
-
-
+                        } else {
+                            if (mTvBalanceCnyDec != null) {
+                                mTvBalanceCny.setText("---");
+                            }
+                            if (mTvBalanceCny != null) {
+                                mTvBalanceCnyDec.setText("");
+                            }
+                            if (mTvBalance != null) {
+                                mTvBalance.setText("---");
+                            }
+                            if (mTvBalanceDec != null) {
+                                mTvBalanceDec.setText("");
+                            }
                         }
                     }
 

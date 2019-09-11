@@ -21,15 +21,15 @@ public interface IWallet {
 
     String importWalletWithKey(String password, String privateKey, String name);
 
-    String importQRImage(Bitmap qrImage, String name);
+    boolean importQRImage(Bitmap qrImage, String password, String name);
 
-    String importKeysStore(String keyStore, String name);
+    boolean importKeysStore(String keyStore, String password, String name);
 
     String getPrivateKey(String password, String address);
 
     String transfer(String password, String from, String to, String token, String issuer, String value, String memo);
 
-    AccountTx getTansferHishory(String address, Integer limit, Marker marker);
+    AccountTx getTransferHistory(String address, Integer limit, Marker marker);
 
     AccountRelations getBalance(String address);
 

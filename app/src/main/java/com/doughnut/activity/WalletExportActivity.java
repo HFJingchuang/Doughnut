@@ -13,11 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.Constant;
 import com.doughnut.fragment.KeyStoreExpFragment;
 import com.doughnut.fragment.PrivateKeyExpFragment;
 import com.doughnut.view.TitleBar;
 
-public class WalletExportActivity  extends BaseActivity implements View.OnClickListener  {
+public class WalletExportActivity extends BaseActivity implements View.OnClickListener {
 
     private final static int PRIVATEKEY_INDEX = 0;
     private final static int KEYSTORE_INDEX = 1;
@@ -33,12 +34,24 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
 
-    private static String passWord;
+    private Fragment[] mFragments = new Fragment[]{
+            PrivateKeyExpFragment.newInstance("", ""),
+            KeyStoreExpFragment.newInstance("")
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_export);
+        if (getIntent() != null) {
+            String walletAddress = getIntent().getStringExtra(Constant.WALLET_ADDRESS);
+            String privateKey = getIntent().getStringExtra(Constant.PRIVATE_KEY);
+            mFragments = new Fragment[]{
+                    PrivateKeyExpFragment.newInstance(walletAddress, privateKey),
+                    KeyStoreExpFragment.newInstance(walletAddress)
+
+            };
+        }
         initView();
     }
 
@@ -57,21 +70,12 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
 
     }
 
-    public static void startExportWalletActivity(Context from, String key) {
+    public static void startExportWalletActivity(Context from, String address, String key) {
         Intent intent = new Intent(from, WalletExportActivity.class);
+        intent.putExtra(Constant.WALLET_ADDRESS, address);
+        intent.putExtra(Constant.PRIVATE_KEY, key);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);
-        passWord = key;
-    }
-
-    /**
-     * 前画面跳转用
-     * @param context
-     */
-    public static void startWalletExportActivity(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
     }
 
     private void initView() {
@@ -120,10 +124,9 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
             }
         });
 
-        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager(), this.passWord));
+        mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
         pageSelected(PRIVATEKEY_INDEX);
     }
-
 
 
     private void pageSelected(int position) {
@@ -145,19 +148,10 @@ public class WalletExportActivity  extends BaseActivity implements View.OnClickL
     }
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {
-
-        private final String passWord;
-        public MainViewPagerAdapter(FragmentManager fm, String passWord) {
+        
+        public MainViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.passWord = passWord;
         }
-
-        private Fragment[] mFragments = new Fragment[]{
-                // TODO
-                PrivateKeyExpFragment.newInstance("1230Hello"),
-                KeyStoreExpFragment.newInstance("1230Hello")
-
-        };
 
         @Override
         public Fragment getItem(int position) {

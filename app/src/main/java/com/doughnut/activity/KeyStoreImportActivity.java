@@ -107,7 +107,7 @@ public class KeyStoreImportActivity extends BaseActivity implements View.OnClick
 
         WalletManager walletManager =  WalletManager.getInstance(this);
         // 导入钱包
-        walletManager.importKeysStore(keyStore, walletName);
+//        walletManager.importKeysStore(keyStore, walletName);
 //         获取钱包私钥
 //        walletManager.getPrivateKey(walletPwd,walletName);
     }

@@ -8,54 +8,67 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dimen_content_padding"
-        android:paddingRight="@dimen/dimen_content_padding">
+        android:layout_marginHorizontal="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_wallet_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:ellipsize="middle"
+            android:gravity="center"
+            android:maxEms="15"
+            android:singleLine="true"
+            android:textColor="@color/color_receive_hint"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_keystore"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/color_currency_name"
-            android:background="@color/color_white"
-            android:padding="5dp"
-            android:textSize="18sp"
-            android:text="lajsdlfjldfjlasdfjlkasjdflkasjdflkjsajsjslkdfjaslkdf"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:textStyle="bold"
-            />
+            android:layout_height="160dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="top"
+            android:textColor="@color/color_detail_address"
+            android:textSize="18sp" />
+
+
         <LinearLayout
-            android:id="@+id/layout_edt"
+            android:id="@+id/layout_copy"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <ImageView
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="120dp"
-                android:src="@drawable/ic_down" />
-            <TextView
-                android:id="@+id/tv_down_keyStore"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:text="@string/btn_export_keyStore"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="15dp"
-                android:textSize="12sp"
-                android:textColor="@color/color_export_wallet"
-                android:textStyle="bold"
-                />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_copy" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="复制私钥"
+                    android:textColor="@color/color_export_wallet"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
-        　
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
             android:gravity="center">
+
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,31 +76,38 @@
                 android:layout_marginBottom="20dp">
 
                 <ImageView
-                    android:id="@+id/keyStore_qr"
-                    android:layout_width="166dp"
-                    android:layout_height="166dp" />
-
-                <ImageView
                     android:id="@+id/img_qrcode_shadow"
-                    android:layout_width="166dp"
-                    android:layout_height="166dp"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:background="#56000000" />
 
+                <ImageView
+                    android:id="@+id/img_qr"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp" />
             </FrameLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_copy_keyStoreImg"
+        <LinearLayout
+            android:id="@+id/layout_export"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:background="@drawable/shape_btn_export"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:text="@string/btn_QR_code_export"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="15dp"
-            android:textColor="@color/white"
-            />
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_down_white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="导出二维码"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

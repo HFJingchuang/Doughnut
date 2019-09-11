@@ -2,39 +2,42 @@ package com.doughnut.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.Constant;
+import com.doughnut.utils.ImageUtils;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
-import com.doughnut.wallet.WalletManager;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletSp;
-
 
 public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickListener {
 
 
-    private TextView mTvPrivatekey, mTvCopyPrivatekey;
+    private TextView mTvWalletName, mTvPrivateKey;
+    private ImageView mImgQR;
+    private LinearLayout mLayoutExport, mLayoutCopy;
 
     private Context mContext;
+    private String mPrivateKey;
 
-    private ImageView mTvPrivatekeyImg, mTvQRImg;
-
-    private static String password;
-
-
-    public static PrivateKeyExpFragment newInstance(String password) {
+    public static PrivateKeyExpFragment newInstance(String walletAddress, String privateKey) {
         Bundle args = new Bundle();
+        args.putString(Constant.PRIVATE_KEY, privateKey);
+        args.putString(Constant.WALLET_ADDRESS, walletAddress);
         PrivateKeyExpFragment fragment = new PrivateKeyExpFragment();
         fragment.setArguments(args);
-        fragment.password = password;
         return fragment;
     }
 
@@ -58,54 +61,65 @@ public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickL
      */
     private void initView(View view) {
 
-        String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
-        String privateKey = WalletManager.getInstance(mContext).getPrivateKey(password, currentWallet);
+        mTvWalletName = view.findViewById(R.id.tv_wallet_name);
+        mTvPrivateKey = view.findViewById(R.id.tv_private_key);
+        if (getArguments() != null) {
+            String walletAddress = getArguments().getString(Constant.WALLET_ADDRESS);
+            String walletName = WalletSp.getInstance(getContext(), walletAddress).getName();
+            mPrivateKey = getArguments().getString(Constant.PRIVATE_KEY);
+            if (!TextUtils.isEmpty(walletName)) {
+                mTvWalletName.setText(walletName);
+                ViewUtil.EllipsisTextView(mTvWalletName);
+            }
+            if (!TextUtils.isEmpty(mPrivateKey)) {
+                mTvPrivateKey.setText(mPrivateKey);
+                ViewUtil.EllipsisTextView(mTvPrivateKey);
+            }
+        }
 
-        mTvPrivatekey = view.findViewById(R.id.tv_privatekey);
+        mImgQR = view.findViewById(R.id.img_qr);
 
-        mTvCopyPrivatekey = view.findViewById(R.id.tv_copy_privatekey);
-        mTvCopyPrivatekey.setOnClickListener(this);
+        mLayoutCopy = view.findViewById(R.id.layout_copy);
+        mLayoutCopy.setOnClickListener(this);
+        mLayoutExport = view.findViewById(R.id.layout_export);
+        mLayoutExport.setOnClickListener(this);
 
-        mTvPrivatekey.setText(privateKey);
-
-        mTvPrivatekeyImg = view.findViewById(R.id.privateKey_qr);
-        mTvQRImg = view.findViewById(R.id.img_qrcode_shadow);
-
-        createQRCode(privateKey);
+        createQRCode();
     }
 
-    private void createQRCode(String privateKey) {
+    private void createQRCode() {
         try {
-            Bitmap bitmap = QRUtils.createQRCode(privateKey, getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
-            mTvQRImg.setImageBitmap(bitmap);
+            Bitmap bitmap = QRUtils.createQRCode(mPrivateKey, getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
+            mImgQR.setImageBitmap(bitmap);
         } catch (Exception e) {
-            ToastUtil.toast(mContext, "格式不正确");
+            ToastUtil.toast(mContext, getResources().getString(R.string.toast_qr_create_fail));
         }
     }
-
 
 
     @Override
     public void onResume() {
         super.onResume();
-//        mLayoutManageWallet.setClickable(true);
-//        mLayoutRecordTransaction.setClickable(true);
-//        mLayoutNotification.setClickable(true);
-//        mLayoutHelp.setClickable(true);
-//        mLayoutAbout.setClickable(true);
-//        mLayoutLanguage.setClickable(true);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_copy_privatekey:
-                Util.clipboard(getContext(), "", mTvPrivatekey.getText().toString());
-                ToastUtil.toast(getContext(), getContext().getString(R.string.toast_private_key_copied));
+            case R.id.layout_copy:
+                Util.clipboard(getContext(), "", mPrivateKey);
+                ToastUtil.toast(getContext(), getResources().getString(R.string.toast_private_key_copied));
                 break;
+            case R.id.layout_export:
+                BitmapDrawable bmpDrawable = (BitmapDrawable) mImgQR.getDrawable();
+                Bitmap bitmap = bmpDrawable.getBitmap();
+                Boolean saved = ImageUtils.saveImageToGallery(getContext(), bitmap);
+                if (saved) {
+                    ToastUtil.toast(getContext(), getResources().getString(R.string.toast_save_success));
+                } else {
+                    ToastUtil.toast(getContext(), getResources().getString(R.string.toast_save_fail));
+                }
         }
     }
-
 }
 
 

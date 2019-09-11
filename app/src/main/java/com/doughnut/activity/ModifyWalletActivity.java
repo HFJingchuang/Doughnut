@@ -64,7 +64,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         } else if (view == mTvDeleteWallet) {
             deleteWallet();
         } else if (view == mTvExportWallet) {
-            importWallet();
+            exportWallet();
         } else if (view == mLayoutCopy) {
             Util.clipboard(ModifyWalletActivity.this, "", mWalletAddress);
             ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
@@ -146,7 +146,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                 }).show();
     }
 
-    private void importWallet() {
+    private void exportWallet() {
         new EditDialog(this, mWalletAddress)
                 .setDialogConfirmText(R.string.dialog_btn_confirm)
                 .setDialogConfirmColor(R.color.color_dialog_confirm)
@@ -154,7 +154,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void authPwd(boolean result, String key) {
                         if (result) {
-                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, key);
+                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, mWalletAddress, key);
                         }
                     }
                 }).show();

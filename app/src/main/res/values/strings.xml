@@ -94,6 +94,7 @@
     <string name="titleBar_message_center">消息中心</string>
     <string name="toast_update_default_wallet_failed">更新默认钱包失败</string>
     <string name="toast_private_key_copied">私钥已经复制到剪贴板</string>
+    <string name="toast_keystore_copied">KeyStore已经复制到剪贴板</string>
     <string name="titleBar_help_center">帮助中心</string>
     <string name="toast_scan_failure">扫描错误</string>
     <string name="toast_not_support_eth_wallet">当前不支持以太钱包</string>
@@ -230,7 +231,7 @@
     <string name="select_QR_code_import">二维码图片导入</string>
     <string name="enter_title_private_key">钱包私钥</string>
     <string name="enter_hint_private_key">输入或扫码获得私钥号码</string>
-    <string name="content_keyStore">keyStore文本内容</string>
+    <string name="content_keyStore">输入keyStore</string>
     <string name="select_privateKey_export">导出私钥</string>
     <string name="select_keyStore_export">导出keyStore</string>
     <string name="select_QR_code_export">导出二维码图片</string>
@@ -348,5 +349,6 @@
     <string name="tv_import">导入</string>
     <string name="tv_pwd_tips">8-64位大小写字母、数字组合密码</string>
     <string name="tv_pwd_err">密码格式不正确，请重新输入！</string>
+    <string name="toast_qr_create_fail">二维码生成失败</string>
 
 </resources>

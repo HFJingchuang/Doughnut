@@ -81,8 +81,8 @@ public class WalletTest {
         Assert.assertNull(WalletSp.getInstance(appContext, addr).getKeyStore());
 
         // 导入二维码
-        String addr1 = WalletManager.getInstance(appContext).importQRImage(qrBitmap, "test");
-        Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", addr);
+        boolean res = WalletManager.getInstance(appContext).importQRImage(qrBitmap, "123456", "test");
+        Assert.assertEquals(true, res);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountTx bean = WalletManager.getInstance(appContext).getTansferHishory(addr, new Integer("20"), null);
+        AccountTx bean = WalletManager.getInstance(appContext).getTransferHistory(addr, new Integer("20"), null);
         Assert.assertEquals(bean.getTransactions().size(), 20);
     }
 

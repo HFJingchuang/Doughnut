@@ -29,7 +29,7 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
         initView();
     }
 
-    private void initView(){
+    private void initView() {
 
         mTvGoback = findViewById(R.id.btn_go_back);
         mTvGoback.setOnClickListener(this);
@@ -55,12 +55,12 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
      */
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_go_back:
                 onBackPressed();
                 break;
             case R.id.btn_backup:
-                WalletExportActivity.startExportWalletActivity(this, "");
+                WalletExportActivity.startExportWalletActivity(this, "", "");
                 break;
             case R.id.text_skip:
                 MainActivity.startMainActivity(this);

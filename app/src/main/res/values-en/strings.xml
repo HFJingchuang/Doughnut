@@ -94,6 +94,7 @@
     <string name="titleBar_message_center">Message Center</string>
     <string name="toast_update_default_wallet_failed">Failed to update the default wallet</string>
     <string name="toast_private_key_copied">The private key has been copied to the clipboard</string>
+    <string name="toast_keystore_copied">The KeyStore has been copied to the clipboard</string>
     <string name="titleBar_help_center">Help Center</string>
     <string name="toast_scan_failure">Scan failure</string>
     <string name="toast_not_support_eth_wallet">No support for ETH wallet now</string>
@@ -348,4 +349,5 @@
     <string name="tv_import">Import</string>
     <string name="tv_pwd_tips">8-64 lowercase letters and numeric combination passwords</string>
     <string name="tv_pwd_err">The password format is incorrect. Please retype it</string>
+    <string name="toast_qr_create_fail">QR code generation failure</string>
 </resources>

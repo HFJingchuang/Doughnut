@@ -110,7 +110,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
                 mEdtPw.setText("");
                 mTvErr.setVisibility(View.VISIBLE);
             } else {
-                mPwdResultListener.authPwd(true, input);
+                mPwdResultListener.authPwd(true, oldKey);
                 dismiss();
             }
 

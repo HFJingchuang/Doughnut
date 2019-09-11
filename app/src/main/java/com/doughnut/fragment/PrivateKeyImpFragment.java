@@ -235,7 +235,6 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
         mImgShowRepPwd = view.findViewById(R.id.img_show_pwd_rep);
 
         mBtnConfirm.setOnClickListener(this);
-
     }
 
     /**

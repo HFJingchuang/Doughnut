@@ -282,7 +282,7 @@ public class TransactionRecordActivity extends BaseActivity implements
             transactions.clear();
         }
 
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, null);
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTransferHistory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, null);
         if (accountTx != null) {
             transactions = accountTx.getTransactions();
             marker = accountTx.getMarker();
@@ -294,7 +294,7 @@ public class TransactionRecordActivity extends BaseActivity implements
     }
 
     private void getHistoryMore() {
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTansferHishory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, marker);
+        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTransferHistory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, marker);
         if (accountTx != null) {
             transactions.addAll(accountTx.getTransactions());
             marker = accountTx.getMarker();
