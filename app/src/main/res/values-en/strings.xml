@@ -339,6 +339,7 @@
     <string name="toast_save_fail">Save Failed</string>
     <string name="enter_title_create_wallet">Creating SWTC Public Chain Wallet</string>
     <string name="tv_hide">Hide</string>
+    <string name="tv_show">Show All</string>
     <string name="tv_freeze">Frozen：</string>
     <string name="tv_vailed">Available：</string>
     <string name="tv_token_search">&#160;&#160;&#160;Search</string>

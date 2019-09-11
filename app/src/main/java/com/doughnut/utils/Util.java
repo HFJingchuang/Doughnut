@@ -368,6 +368,7 @@ public class Util {
                 icon = R.drawable.stm;
                 break;
             case "SWT":
+            case "SWTC":
                 icon = R.drawable.swtc;
                 break;
             case "JUSDT":

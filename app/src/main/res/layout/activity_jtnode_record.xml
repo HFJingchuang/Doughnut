@@ -72,7 +72,7 @@
                     android:textColor="@color/color_detail_time"
                     android:textSize="14sp" />
 
-                <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                <com.yanzhenjie.recyclerview.SwipeRecyclerView
                     android:id="@+id/view_recycler_custom"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

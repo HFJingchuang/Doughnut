@@ -44,12 +44,12 @@ import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
+import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
+import com.yanzhenjie.recyclerview.SwipeMenu;
+import com.yanzhenjie.recyclerview.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
@@ -65,7 +65,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private final static int SCAN_REQUEST_CODE = 10001;
 
     private SmartRefreshLayout mSmartRefreshLayout;
-    private SwipeMenuRecyclerView mRecycleView;
+    private SwipeRecyclerView mRecycleView;
     private MainTokenRecycleViewAdapter mAdapter;
     private View mWalletAction, mViewSee;
     private TextView mTvWalletName, mTvAddCurrency, mTvBalance, mTvBalanceDec, mTvBalanceCny, mTvBalanceCnyDec;
@@ -78,8 +78,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private List<Line> dataList;
     private String mCurrentWallet;
-
     private boolean isHidden;
+    private boolean isTokenHidden;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -100,6 +100,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mContext = getActivity();
         dataList = new ArrayList();
         isHidden = false;
+        isTokenHidden = false;
         mCurrentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
         initView(view);
     }
@@ -132,14 +133,21 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
         mRecycleView.addItemDecoration(new RecyclerViewSpacesItemDecoration(getContext(), 10));
         mRecycleView.setSwipeMenuCreator(swipeMenuCreator);
-
-        mRecycleView.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
+        mRecycleView.setOnItemMenuClickListener(new OnItemMenuClickListener() {
             @Override
-            public void onItemClick(SwipeMenuBridge menuBridge) {
-                int position = menuBridge.getAdapterPosition();//当前item的position
-                hideToken(position);
-                mAdapter.refresh();
+            public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {
                 menuBridge.closeMenu();
+                int direction = menuBridge.getPosition();
+                switch (direction) {
+                    case 0:
+                        hideToken(adapterPosition);
+                        break;
+                    case 1:
+                        clearHideToken();
+                        break;
+                }
+
+                mAdapter.refresh();
             }
         });
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -178,7 +186,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
      */
     private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
         @Override
-        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
+        public void onCreateMenu(SwipeMenu leftMenu, SwipeMenu rightMenu, int position) {
             int width = getResources().getDimensionPixelSize(R.dimen.dimen_mnue_width);
 
             // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
@@ -187,21 +195,36 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
 
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
-            {
+            if (isTokenHidden) {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
                         .setText(getResources().getString(R.string.tv_hide))
                         .setTextColor(Color.WHITE)
                         .setTextSize(16)
                         .setWidth(width)
                         .setHeight(height);
-                swipeRightMenu.addMenuItem(deleteItem);
+                rightMenu.addMenuItem(deleteItem);
+
+                SwipeMenuItem showItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_show_bg)
+                        .setText(getResources().getString(R.string.tv_show))
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(16)
+                        .setWidth(width)
+                        .setHeight(height);
+                rightMenu.addMenuItem(showItem);
+            } else {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_node_bg)
+                        .setText(getResources().getString(R.string.tv_hide))
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(16)
+                        .setWidth(width)
+                        .setHeight(height);
+                rightMenu.addMenuItem(deleteItem);
             }
         }
     };
 
     private void setWalletInfo() {
         String currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
-
         mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
     }
 
@@ -536,6 +559,18 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     /**
+     * 清除被隐藏的token
+     */
+    private void clearHideToken() {
+        String fileName = getContext().getPackageName() + Constant.SELECT_TOKEN + mCurrentWallet;
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("hide");
+        editor.apply();
+        isTokenHidden = false;
+    }
+
+    /**
      * 显示时，去除被隐藏的token
      */
     private void deleteHideToken() {
@@ -551,12 +586,16 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 tokenList = new ArrayList();
                 tokenList.add(tokens);
             }
-
-            for (int i = dataList.size() - 1; i >= 0; i--) {
-                String currency = dataList.get(i).getCurrency();
-                if (tokenList.contains(currency)) {
-                    dataList.remove(i);
+            if (tokenList.size() > 0) {
+                isTokenHidden = true;
+                for (int i = dataList.size() - 1; i >= 0; i--) {
+                    String currency = dataList.get(i).getCurrency();
+                    if (tokenList.contains(currency)) {
+                        dataList.remove(i);
+                    }
                 }
+            } else {
+                isTokenHidden = false;
             }
         }
     }

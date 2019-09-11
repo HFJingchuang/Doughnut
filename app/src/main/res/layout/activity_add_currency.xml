@@ -20,6 +20,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/shape_search"
         android:gravity="center"
+        android:inputType="textEmailAddress"
         android:textSize="15sp" />
 
     <android.support.v7.widget.RecyclerView

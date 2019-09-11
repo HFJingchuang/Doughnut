@@ -35,12 +35,12 @@ import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.PortScan;
 import com.stealthcopter.networktools.ping.PingResult;
 import com.stealthcopter.networktools.ping.PingStats;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
+import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
+import com.yanzhenjie.recyclerview.SwipeMenu;
+import com.yanzhenjie.recyclerview.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
@@ -58,7 +58,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
     private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
     private RecyclerView mRecyclerView;
-    private SwipeMenuRecyclerView mRecyclerViewCustom;
+    private SwipeRecyclerView mRecyclerViewCustom;
     private Button mBtnCustom;
     private NodeRecordAdapter mAdapter;
     private NodeRecordCustomAdapter mAdapterCustom;
@@ -168,11 +168,10 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mRecyclerViewCustom.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 15));
         mRecyclerViewCustom.setSwipeMenuCreator(swipeMenuCreator);
 
-        mRecyclerViewCustom.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
+        mRecyclerViewCustom.setOnItemMenuClickListener(new OnItemMenuClickListener() {
             @Override
-            public void onItemClick(SwipeMenuBridge menuBridge) {
-                int position = menuBridge.getAdapterPosition();
-                deleteCustomNode(position);
+            public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {
+                deleteCustomNode(adapterPosition);
                 menuBridge.closeMenu();
             }
         });
@@ -191,19 +190,19 @@ public class JtNodeRecordActivity extends BaseActivity implements
      */
     private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
         @Override
-        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int position) {
+        public void onCreateMenu(SwipeMenu leftMenu, SwipeMenu rightMenu, int position) {
             int width = ViewUtil.dip2px(JtNodeRecordActivity.this, 80);
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
 
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
             {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(JtNodeRecordActivity.this).setBackground(R.drawable.shape_delete_bg)
+                SwipeMenuItem deleteItem = new SwipeMenuItem(JtNodeRecordActivity.this).setBackground(R.drawable.shape_delete_node_bg)
                         .setText(getString(R.string.tv_delete))
                         .setTextColor(Color.WHITE)
                         .setTextSize(15)
                         .setWidth(width)
                         .setHeight(height);
-                swipeRightMenu.addMenuItem(deleteItem);
+                rightMenu.addMenuItem(deleteItem);
             }
         }
     };

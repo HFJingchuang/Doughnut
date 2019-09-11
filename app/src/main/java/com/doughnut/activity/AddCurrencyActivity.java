@@ -7,9 +7,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,6 +39,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class AddCurrencyActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
@@ -45,8 +49,9 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
     private EditText mEdtSearch;
     private RecyclerView mRecyclerView;
     private AddCurrencyAdapter mAdapter;
-    private List<Currency> currencys;
-    private List<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
+    private ArrayList<Currency> currencys;
+    private ArrayList<Currency> currencysCopy;
+    private ArrayList<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
     private String mCurrentWallet;
 
     @Override
@@ -76,6 +81,33 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
         ss.setSpan(span, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         mEdtSearch.setHint(ss);
+        mEdtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currencys.clear();
+                Pattern p = Pattern.compile(s.toString().toUpperCase());
+                for (int i = 0; i < currencysCopy.size(); i++) {
+                    Currency currency = currencysCopy.get(i);
+                    Matcher matcher = p.matcher(currency.getName().toUpperCase());
+                    if (matcher.find()) {
+                        currencys.add(currency);
+                    }
+                }
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         mEdtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -129,6 +161,7 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
             currencys.add(currency);
         }
         Collections.sort(currencys);
+        currencysCopy = (ArrayList<Currency>) currencys.clone();
     }
 
     @Override

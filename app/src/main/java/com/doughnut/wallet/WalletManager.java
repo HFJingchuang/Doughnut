@@ -607,6 +607,8 @@ public class WalletManager implements IWallet {
                             String[] token = tokens.getString(j, "").split("_");
                             if (token.length == 2) {
                                 tokenMap.put(token[0], token[1]);
+                            } else if (token.length == 1) {
+                                tokenMap.put(token[0], "");
                             }
                         }
                     }
