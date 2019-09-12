@@ -20,14 +20,12 @@ public interface IWallet {
     Bitmap exportWalletWithQR(String address, int widthAndHeight, int color);
 
     String importWalletWithKey(String password, String privateKey, String name);
-
-    boolean importQRImage(Bitmap qrImage, String password, String name);
-
+    
     boolean importKeysStore(String keyStore, String password, String name);
 
     String getPrivateKey(String password, String address);
 
-    String transfer(String password, String from, String to, String token, String issuer, String value, String memo);
+    String transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo);
 
     AccountTx getTransferHistory(String address, Integer limit, Marker marker);
 

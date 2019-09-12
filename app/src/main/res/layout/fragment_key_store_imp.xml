@@ -30,7 +30,8 @@
             android:background="@drawable/shape_dialog_edt"
             android:gravity="top"
             android:hint="@string/content_keyStore"
-            android:padding="17dp"
+            android:paddingHorizontal="15dp"
+            android:paddingTop="15dp"
             android:text=""
             android:textColor="@color/common_black_fontcolor"
             android:textColorHint="@color/color_decoration_inactive"
@@ -43,8 +44,9 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_dialog_edt"
             android:hint="@string/enter_hint_wallet_name"
-            android:paddingLeft="17sp"
-            android:textColorHint="@color/color_decoration_inactive" />
+            android:paddingLeft="15dp"
+            android:textColorHint="@color/color_decoration_inactive"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/err_wallet_name"
@@ -76,7 +78,7 @@
                     android:background="@drawable/shape_dialog_edt"
                     android:hint="@string/enter_hint_verify"
                     android:inputType="textPassword"
-                    android:paddingLeft="17dp"
+                    android:paddingLeft="15dp"
                     android:textColorHint="@color/color_decoration_inactive"
                     android:textSize="17sp" />
 

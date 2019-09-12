@@ -33,6 +33,7 @@ public class WalletTest {
     @Before
     public void changeServer() throws Exception {
         JtServer.getInstance(appContext).changeServer("ws://ts5.jingtum.com:5020");
+//        JtServer.getInstance(appContext).changeServer("ws://s.jingtum.com:5020");
     }
 
     @Test
@@ -69,23 +70,6 @@ public class WalletTest {
     }
 
     @Test
-    public void importQRImageTest() throws Exception {
-        // 生成二维码
-        String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        Bitmap qrBitmap = WalletManager.getInstance(appContext).exportWalletWithQR(addr, 500, Color.BLACK);
-
-        // 清楚本地钱包地址和keyStore
-        WalletSp.getInstance(appContext, addr).delete();
-        Assert.assertNull(WalletSp.getInstance(appContext, addr).getAddress());
-        Assert.assertNull(WalletSp.getInstance(appContext, addr).getKeyStore());
-
-        // 导入二维码
-        boolean res = WalletManager.getInstance(appContext).importQRImage(qrBitmap, "123456", "test");
-        Assert.assertEquals(true, res);
-    }
-
-    @Test
     public void getPrivateKeyTest() throws Exception {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
@@ -99,7 +83,7 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        String res = WalletManager.getInstance(appContext).transfer("123456", addr, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "钱包工具类：转账单元测试");
+        String res = WalletManager.getInstance(appContext).transfer("123456", addr, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "", "钱包工具类：转账单元测试");
         Assert.assertNotNull(res);
     }
 
@@ -108,8 +92,8 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountTx bean = WalletManager.getInstance(appContext).getTransferHistory(addr, new Integer("20"), null);
-        Assert.assertEquals(bean.getTransactions().size(), 20);
+        AccountTx bean = WalletManager.getInstance(appContext).getTransferHistory(addr, new Integer("10"), null);
+        Assert.assertEquals(10, bean.getTransactions().size());
     }
 
     @Test

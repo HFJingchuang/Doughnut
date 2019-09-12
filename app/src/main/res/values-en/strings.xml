@@ -350,4 +350,7 @@
     <string name="tv_pwd_tips">8-64 lowercase letters and numeric combination passwords</string>
     <string name="tv_pwd_err">The password format is incorrect. Please retype it</string>
     <string name="toast_qr_create_fail">QR code generation failure</string>
+    <string name="btn_export">EXPORT QR CODE</string>
+    <string name="btn_copy_keystore">Copy KeyStore</string>
+    <string name="btn_copy_privatekey">Copy PrivateKey</string>
 </resources>

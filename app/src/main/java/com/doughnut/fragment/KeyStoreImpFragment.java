@@ -10,6 +10,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.text.method.TransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,6 +104,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                     Intent intent = new Intent(mContext, MainActivity.class);
                     startActivity(intent);
                 } else {
+                    // todo 显示导入失败dialog？tips？
                     ToastUtil.toast(getContext(), "导入失败！！！");
                 }
                 break;
@@ -135,6 +137,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
      */
     private void initView(View view, String importKey) {
         mEKeyStore = view.findViewById(R.id.edt_keystore);
+        mEKeyStore.setMovementMethod(new ScrollingMovementMethod());
         mEdtWalletName = view.findViewById(R.id.edt_wallet_name);
         if (!TextUtils.isEmpty(importKey)) {
             mEKeyStore.setText(importKey);

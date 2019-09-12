@@ -255,7 +255,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String issue = "";// todo 获取issue
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, issue, value, memo);
+                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, issue, value, "", memo);
                         }
                     }
                 }).show();

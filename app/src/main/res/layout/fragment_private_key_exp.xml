@@ -15,7 +15,7 @@
             android:id="@+id/tv_wallet_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:ellipsize="middle"
             android:gravity="center"
             android:maxEms="15"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:ellipsize="middle"
             android:gravity="center"
             android:maxWidth="200dp"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:gravity="center"
-                    android:text="复制私钥"
+                    android:text="@string/btn_copy_privatekey"
                     android:textColor="@color/color_export_wallet"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -69,7 +69,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
+            android:layout_marginVertical="10dp"
             android:gravity="center">
 
             <FrameLayout
@@ -95,6 +95,7 @@
             android:id="@+id/layout_export"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginBottom="30dp"
             android:background="@drawable/shape_btn_export"
             android:gravity="center">
 
@@ -107,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="导出二维码"
+                android:text="@string/btn_export"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold" />

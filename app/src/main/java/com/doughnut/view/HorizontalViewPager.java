@@ -9,7 +9,7 @@ import android.view.View;
 import com.doughnut.utils.ViewUtil;
 
 /**
- * ScrollView 嵌套 ViewPager 显示空白及滑动冲突解决
+ * 解决 ScrollView 嵌套 ViewPager 显示空白及滑动冲突
  */
 public class HorizontalViewPager extends ViewPager {
     private int lastX = -1;
@@ -55,18 +55,15 @@ public class HorizontalViewPager extends ViewPager {
                 dealtX = 0;
                 dealtY = 0;
                 getParent().requestDisallowInterceptTouchEvent(true);
-                break;
             case MotionEvent.ACTION_MOVE:
                 dealtX += Math.abs(x - lastX);
                 dealtY += Math.abs(y - lastY);
                 lastX = x;
                 lastY = y;
-
                 // 拦截左右滑动
                 if (dealtX < dealtY) {
-                    getParent().requestDisallowInterceptTouchEvent(true);
-                } else {
                     getParent().requestDisallowInterceptTouchEvent(false);
+                } else {
                     return false;
                 }
                 break;
@@ -74,7 +71,6 @@ public class HorizontalViewPager extends ViewPager {
                 break;
             case MotionEvent.ACTION_UP:
                 break;
-
         }
         return super.dispatchTouchEvent(ev);
     }

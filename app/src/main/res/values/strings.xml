@@ -350,5 +350,8 @@
     <string name="tv_pwd_tips">8-64位大小写字母、数字组合密码</string>
     <string name="tv_pwd_err">密码格式不正确，请重新输入！</string>
     <string name="toast_qr_create_fail">二维码生成失败</string>
+    <string name="btn_export">导出二维码</string>
+    <string name="btn_copy_keystore">复制KeyStore</string>
+    <string name="btn_copy_privatekey">复制私钥</string>
 
 </resources>

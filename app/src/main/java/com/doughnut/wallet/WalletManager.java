@@ -41,7 +41,7 @@ import java.util.TreeMap;
 /**
  * 钱包管理类
  * <p>
- * 创建钱包、删除钱包、导出二维码图片、导入私钥、导入二维码图片、导入KeyStore、获取私钥、转账、获取交易记录、获取余额
+ * 创建钱包、删除钱包、导出二维码图片、导入私钥、导入KeyStore、获取私钥、转账、获取交易记录、获取余额
  */
 public class WalletManager implements IWallet {
 
@@ -153,25 +153,6 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 导入二维码图片
-     *
-     * @param qrImage
-     * @param password
-     * @param name
-     * @return
-     */
-    @Override
-    public boolean importQRImage(Bitmap qrImage, String password, String name) {
-        try {
-            String keyStore = QRGenerator.decodeQrImage(qrImage);
-            return importKeysStore(keyStore, password, name);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
      * 导入KeyStore
      *
      * @param keyStore
@@ -225,11 +206,12 @@ public class WalletManager implements IWallet {
      * @param token
      * @param issuer
      * @param value
+     * @param fee
      * @param memo
      * @return
      */
     @Override
-    public String transfer(String password, String from, String to, String token, String issuer, String value, String memo) {
+    public String transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
@@ -241,6 +223,9 @@ public class WalletManager implements IWallet {
             List<String> memos = new ArrayList<String>();
             memos.add(memo);
             tx.addMemo(memos);
+            if (!TextUtils.isEmpty(fee)) {
+                tx.setFee(fee);
+            }
             TransactionInfo bean = tx.submit();
             if (WConstant.RESULT_OK.equals(bean.getEngineResultCode())) {
                 return bean.getTxJson().getHash();
