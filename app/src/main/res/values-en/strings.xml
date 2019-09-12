@@ -353,4 +353,11 @@
     <string name="btn_export">EXPORT QR CODE</string>
     <string name="btn_copy_keystore">Copy KeyStore</string>
     <string name="btn_copy_privatekey">Copy PrivateKey</string>
+    <string name="tv_skip">Try it, skip it for a while.</string>
+    <string name="btn_backup">Backup Now</string>
+    <string name="tv_create_success">Create Success</string>
+    <string name="tv_suggestion">It is recommended that once the backup is completed, it will be resumed once again to ensure account safety, and then try to transfer and transfer small assets.</string>
+    <string name="tv_warning"><![CDATA[<font color=\'#888888\'>Centralization of purse keys is completely preserved by yourself, <strong></font><font color=\'#F55758\'>Once lost, it ca\'t be retrieved. </font></strong><font color=\'#888888\'>Make sure you have a backup before using it. Keep your wallet keys in a safe place.</font>]]></string>
+    <string name="title_warning">Warning</string>
+
 </resources>

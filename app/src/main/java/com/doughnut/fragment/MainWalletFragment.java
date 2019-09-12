@@ -135,7 +135,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         clearHideToken();
                         break;
                 }
-
                 mAdapter.refresh();
             }
         });

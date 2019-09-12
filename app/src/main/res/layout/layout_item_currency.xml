@@ -31,11 +31,14 @@
 
     <CheckBox
         android:id="@+id/tv_check"
+        style="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:button="@drawable/selector_btn_node" />
+        android:background="@color/transparent"
+        android:button="@drawable/selector_btn_node"
+        android:clickable="false" />
 
 </RelativeLayout>

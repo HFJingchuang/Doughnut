@@ -30,8 +30,8 @@ public class Currency implements Serializable, Comparable<Currency> {
         return isSelect;
     }
 
-    public void setSelect(boolean selcet) {
-        this.isSelect = selcet;
+    public void setSelect(boolean selecet) {
+        this.isSelect = selecet;
     }
 
     @Override

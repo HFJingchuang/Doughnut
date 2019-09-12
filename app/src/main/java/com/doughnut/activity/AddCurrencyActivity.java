@@ -13,16 +13,13 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.doughnut.R;
@@ -37,6 +34,7 @@ import com.doughnut.wallet.WalletSp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -49,17 +47,18 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
     private EditText mEdtSearch;
     private RecyclerView mRecyclerView;
     private AddCurrencyAdapter mAdapter;
-    private ArrayList<Currency> currencys;
-    private ArrayList<Currency> currencysCopy;
-    private ArrayList<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
+    private LinkedList<Currency> currencys;
+    private LinkedList<Currency> currencysCopy;
+    private LinkedList<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
     private String mCurrentWallet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_currency);
-        currencys = new ArrayList<>();
-        selectTokens = new ArrayList<>();
+        currencys = new LinkedList<>();
+        currencysCopy = new LinkedList<>();
+        selectTokens = new LinkedList<>();
         mCurrentWallet = WalletSp.getInstance(this, "").getCurrentWallet();
         initView();
     }
@@ -109,28 +108,6 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
-        mEdtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((actionId == 6 || actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) && event != null) {
-//                    // 先隐藏键盘
-//                    ((InputMethodManager) edit_barcode.getContext()
-//                            .getSystemService(Context.INPUT_METHOD_SERVICE))
-//                            .hideSoftInputFromWindow(mContext.getCurrentFocus().getWindowToken(),
-//                                    InputMethodManager.HIDE_NOT_ALWAYS);
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        String keyword = mEdtSearch.getText().toString().trim();
-                        if (keyword.equals("")) {
-                            Toast.makeText(AddCurrencyActivity.this, "请输入查询值", Toast.LENGTH_LONG).show();
-                            return false;
-                        }
-                        getRecord();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
         getRecord();
         mAdapter = new AddCurrencyAdapter();
         mRecyclerView = findViewById(R.id.view_recycler);
@@ -148,7 +125,7 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
      * 获取记录
      */
     private void getRecord() {
-        currencys = new ArrayList<>();
+        currencys = new LinkedList<>();
         // 本地保存tokens
         String fileName = getPackageName() + "_tokens";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
@@ -161,7 +138,7 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
             currencys.add(currency);
         }
         Collections.sort(currencys);
-        currencysCopy = (ArrayList<Currency>) currencys.clone();
+        currencysCopy = (LinkedList<Currency>) currencys.clone();
     }
 
     @Override
@@ -290,20 +267,22 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
                 hideList.add(hide);
             }
         }
-        selectList.addAll(selectTokens);
 
-        // 去掉先前隐藏的币种
-        if (hideList.size() > 0 && selectList.size() > 0) {
-            for (int i = selectList.size() - 1; i >= 0; i--) {
-                String token = selectList.get(i);
+        // 去掉先前隐藏的币种及重复币种不再添加显示
+        if (selectTokens.size() > 0) {
+            for (int i = selectTokens.size() - 1; i >= 0; i--) {
+                String token = selectTokens.get(i);
                 if (hideList.contains(token)) {
                     hideList.remove(token);
-                    selectList.remove(token);
+                    selectTokens.remove(token);
+                } else if (selectList.contains(token)) {
+                    selectTokens.remove(token);
                 }
             }
+            selectList.addAll(selectTokens);
+            editor.putString("select", selectList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+            editor.putString("hide", hideList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+            editor.apply();
         }
-        editor.putString("select", selectList.toString().replace("[", "").replace("]", "").replace(" ", ""));
-        editor.putString("hide", hideList.toString().replace("[", "").replace("]", "").replace(" ", ""));
-        editor.apply();
     }
 }

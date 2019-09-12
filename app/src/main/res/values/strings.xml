@@ -353,5 +353,11 @@
     <string name="btn_export">导出二维码</string>
     <string name="btn_copy_keystore">复制KeyStore</string>
     <string name="btn_copy_privatekey">复制私钥</string>
+    <string name="tv_skip">试用一下，暂时跳过</string>
+    <string name="btn_backup">立即备份</string>
+    <string name="tv_create_success">钱包创建成功！</string>
+    <string name="tv_suggestion">建议备份完成后立即恢复一次，以确保账户安全 ，然后尝试转入、转出小额资产开始使用</string>
+    <string name="tv_warning"><![CDATA[<font color=\'#888888\'>去中心化钱包密匙完全由您自己保存，</font><strong><font color=\'#F55758\'>一旦丢失 无法找回！</font></strong><font color=\'#888888\'>请使用前务必做好备份，将钱包密匙 保存大安全的地方</font>]]></string>
+    <string name="title_warning">注意事项</string>
 
 </resources>

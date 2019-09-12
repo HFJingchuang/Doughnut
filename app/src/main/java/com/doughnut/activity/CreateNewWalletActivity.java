@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
@@ -234,8 +235,13 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                 String walletName = mEdtWalletName.getText().toString();
                 String walletPwd = mEdtWalletPwd.getText().toString();
                 // 创建钱包
-                createWallet(walletName, walletPwd);
-                CreateSuccessActivity.startCreateSuccessActivity(this);
+                String address = createWallet(walletName, walletPwd);
+                if (Wallet.isValidAddress(address)) {
+                    String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
+                    CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
+                } else {
+                    // todo 创建失败提示
+                }
                 break;
             // 勾选框
             case R.id.layout_read:
@@ -272,14 +278,12 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
      *
      * @param walletName
      * @param walletPwd
+     * @return
      */
-    private void createWallet(final String walletName, final String walletPwd) {
-
+    private String createWallet(final String walletName, final String walletPwd) {
         WalletManager walletManager = WalletManager.getInstance(this);
         // 创建钱包
-        walletManager.createWallet(walletPwd, walletName);
-        // 获取钱包私钥
-        walletManager.getPrivateKey(walletPwd, walletName);
+        return walletManager.createWallet(walletPwd, walletName);
     }
 
     /**

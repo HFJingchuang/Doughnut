@@ -3,24 +3,19 @@ package com.doughnut.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.view.TitleBar;
+import com.doughnut.config.Constant;
 
 
 public class CreateSuccessActivity extends BaseActivity implements View.OnClickListener {
 
-    private TitleBar mTitleBar;
-
-    private ImageView mTvGoback;
-
-    private Button mTvBackup;
-
-    private TextView mTvSkip;
+    private Button mBtnBackup;
+    private TextView mTvWarning, mTvSkip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,22 +25,12 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initView() {
-
-        mTvGoback = findViewById(R.id.btn_go_back);
-        mTvGoback.setOnClickListener(this);
-        mTvBackup = findViewById(R.id.btn_backup);
-        mTvBackup.setOnClickListener(this);
-        mTvSkip = findViewById(R.id.text_skip);
+        mBtnBackup = findViewById(R.id.btn_backup);
+        mBtnBackup.setOnClickListener(this);
+        mTvWarning = findViewById(R.id.tv_warning);
+        mTvWarning.setText(Html.fromHtml(getString(R.string.tv_warning)));
+        mTvSkip = findViewById(R.id.tv_skip);
         mTvSkip.setOnClickListener(this);
-//        mTitleBar = findViewById(R.id.title_bar);
-//        mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
-//        mTitleBar.setTitle(R.string.btn_create_wallet);
-//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
-//            @Override
-//            public void onLeftClick(View view) {
-//                onBackPressed();
-//            }
-//        });
     }
 
     /**
@@ -56,23 +41,24 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_go_back:
-                onBackPressed();
-                break;
             case R.id.btn_backup:
-                WalletExportActivity.startExportWalletActivity(this, "", "");
+                if (getIntent() != null) {
+                    String address = getIntent().getStringExtra(Constant.WALLET_ADDRESS);
+                    String privateKey = getIntent().getStringExtra(Constant.PRIVATE_KEY);
+                    WalletExportActivity.startExportWalletActivity(this, address, privateKey);
+                }
                 break;
-            case R.id.text_skip:
+            case R.id.tv_skip:
                 MainActivity.startMainActivity(this);
                 break;
         }
     }
 
-    public static void startCreateSuccessActivity(Context from) {
-        Intent intent = new Intent(from, CreateSuccessActivity.class);
-        intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
-        from.startActivity(intent);
+    public static void startCreateSuccessActivity(Context context, String address, String privateKey) {
+        Intent intent = new Intent(context, CreateSuccessActivity.class);
+        intent.putExtra(Constant.WALLET_ADDRESS, address);
+        intent.putExtra(Constant.PRIVATE_KEY, privateKey);
+        intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
-
-
 }
