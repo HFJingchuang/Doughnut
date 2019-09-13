@@ -15,6 +15,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:overScrollMode="never"
         android:scrollbars="none">
 
         <LinearLayout
@@ -36,7 +37,8 @@
                 android:id="@+id/edt_wallet_name"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="40dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/shape_dialog_edt"
                 android:hint="@string/enter_hint_wallet_name"
@@ -94,7 +96,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="30dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -150,7 +152,6 @@
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-
                 android:background="@drawable/selector_btn_transfer"
                 android:enabled="false"
                 android:text="@string/btn_create_wallet_done"

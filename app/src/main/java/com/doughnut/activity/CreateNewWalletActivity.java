@@ -231,16 +231,30 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         switch (view.getId()) {
             // 创建钱包按钮
             case R.id.btn_confirm:
-                mBtnConfirm.setClickable(false);
-                String walletName = mEdtWalletName.getText().toString();
-                String walletPwd = mEdtWalletPwd.getText().toString();
-                // 创建钱包
-                String address = createWallet(walletName, walletPwd);
-                if (Wallet.isValidAddress(address)) {
-                    String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
-                    CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
+                String passWord = mEdtWalletPwd.getText().toString();
+                String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
+                if (TextUtils.equals(passWord, passwordConfirm)) {
+                    mBtnConfirm.setClickable(false);
+                    String walletName = mEdtWalletName.getText().toString();
+                    String walletPwd = mEdtWalletPwd.getText().toString();
+                    // 创建钱包
+                    String address = createWallet(walletName, walletPwd);
+                    if (Wallet.isValidAddress(address)) {
+                        String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
+                        CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
+                    } else {
+                        // todo 创建失败提示
+                    }
                 } else {
-                    // todo 创建失败提示
+                    mEdtWalletPwdConfirm.setText("");
+                    mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
+                    mTvErrPasswordRep.setVisibility(View.VISIBLE);
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtWalletPwdConfirm.requestFocus();
+                        }
+                    });
                 }
                 break;
             // 勾选框

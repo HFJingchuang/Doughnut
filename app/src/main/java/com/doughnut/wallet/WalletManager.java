@@ -137,19 +137,21 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public String importWalletWithKey(String password, String privateKey, String name) {
+    public boolean importWalletWithKey(String password, String privateKey, String name) {
         try {
             if (Wallet.isValidSecret(privateKey)) {
                 Wallet wallet = Wallet.fromSecret(privateKey);
                 KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
                 String address = keyStoreFile.getAddress();
-                WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
-                return address;
+                if (Wallet.isValidAddress(address)) {
+                    WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return false;
     }
 
     /**

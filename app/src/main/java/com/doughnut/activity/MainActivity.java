@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.ImportSuccessDialog;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
 
@@ -41,6 +42,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        if (getIntent() != null) {
+            boolean isImport = getIntent().getBooleanExtra(Constant.IMPORT_FLAG, false);
+            if (isImport) {
+                String walletName = getIntent().getStringExtra(Constant.WALLET_NAME);
+                ImportSuccessDialog importSuccessDialog = new ImportSuccessDialog(this, walletName);
+                importSuccessDialog.show();
+            }
+        }
         mMainViewPager.setCurrentItem(getIntent().getIntExtra(Constant.PAGE_INDEX, 0));
     }
 

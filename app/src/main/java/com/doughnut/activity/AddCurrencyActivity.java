@@ -69,7 +69,7 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         mTitleBar.setLeftTextColor(R.color.white);
         mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.common_blue));
-        mTitleBar.setTitle("添加币种");
+        mTitleBar.setTitle(getResources().getString(R.string.title_add_currency));
         mTitleBar.setTitleBarClickListener(this);
 
         mEdtSearch = findViewById(R.id.edit_search);

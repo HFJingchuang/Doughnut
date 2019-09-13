@@ -27,6 +27,7 @@ import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.PWDUtils;
+import com.doughnut.utils.ToastUtil;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.wallet.WalletManager;
 
@@ -276,10 +277,16 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 String walletName = mEdtWalletName.getText().toString();
                 String walletPwd = mEdtWalletPwd.getText().toString();
 
-                WalletManager walletManager = WalletManager.getInstance(mContext);
-                walletManager.importWalletWithKey(walletPwd, privateKey, walletName);
-                Intent intent = new Intent(mContext, MainActivity.class);
-                startActivity(intent);
+                boolean isSuccess = WalletManager.getInstance(mContext).importWalletWithKey(walletPwd, privateKey, walletName);
+                if (isSuccess) {
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    intent.putExtra(Constant.IMPORT_FLAG, true);
+                    intent.putExtra(Constant.WALLET_NAME, walletName);
+                    startActivity(intent);
+                } else {
+                    // todo 显示导入失败dialog？tips？
+                    ToastUtil.toast(getContext(), "导入失败！！！");
+                }
                 break;
             // 勾选框
             case R.id.layout_read:

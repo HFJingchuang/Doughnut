@@ -70,10 +70,8 @@ public class EditDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_dialog_pwd);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = -2;
-        lp.height = -2;
-        lp.x = 0;
-        lp.y = 0;
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
         getWindow().setAttributes(lp);
         getWindow().setBackgroundDrawableResource(R.color.transparent);

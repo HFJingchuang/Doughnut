@@ -359,5 +359,13 @@
     <string name="tv_suggestion">It is recommended that once the backup is completed, it will be resumed once again to ensure account safety, and then try to transfer and transfer small assets.</string>
     <string name="tv_warning"><![CDATA[<font color=\'#888888\'>Centralization of purse keys is completely preserved by yourself, <strong></font><font color=\'#F55758\'>Once lost, it ca\'t be retrieved. </font></strong><font color=\'#888888\'>Make sure you have a backup before using it. Keep your wallet keys in a safe place.</font>]]></string>
     <string name="title_warning">Warning</string>
+    <string name="title_add_currency">Add Currencies</string>
+    <string name="tv_dialog_name">Wallet Name：%1$s</string>
+    <string name="title_modify_pwd">Modify password</string>
+    <string name="tv_hint_current_pwd">Enter the old password</string>
+    <string name="tv_hint_new_pwd">Enter a new password</string>
+    <string name="tv_hint_new_rep">Retype your new password</string>
+    <string name="btn_done">Done</string>
+    <string name="tv_err_old_pwd">Wrong password, please re input!</string>
 
 </resources>

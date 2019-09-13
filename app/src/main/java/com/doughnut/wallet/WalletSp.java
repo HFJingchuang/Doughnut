@@ -148,7 +148,9 @@ public class WalletSp {
             editor.putString("wallets", walletList.toString().replace("[", "").replace("]", "").replace(" ", ""));
             editor.apply();
         }
-        setName(name);
+        if (!TextUtils.isEmpty(name)) {
+            setName(name);
+        }
         setCreateTime();
         setKeyStore(keyStore);
         setCurrentWallet(mAddress);

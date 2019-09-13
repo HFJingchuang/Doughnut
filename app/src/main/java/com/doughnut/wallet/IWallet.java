@@ -19,8 +19,8 @@ public interface IWallet {
 
     Bitmap exportWalletWithQR(String address, int widthAndHeight, int color);
 
-    String importWalletWithKey(String password, String privateKey, String name);
-    
+    boolean importWalletWithKey(String password, String privateKey, String name);
+
     boolean importKeysStore(String keyStore, String password, String name);
 
     String getPrivateKey(String password, String address);

@@ -102,6 +102,8 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                 boolean isSuccess = WalletManager.getInstance(mContext).importKeysStore(keyStore, walletPwd, walletName);
                 if (isSuccess) {
                     Intent intent = new Intent(mContext, MainActivity.class);
+                    intent.putExtra(Constant.IMPORT_FLAG, true);
+                    intent.putExtra(Constant.WALLET_NAME, walletName);
                     startActivity(intent);
                 } else {
                     // todo 显示导入失败dialog？tips？

@@ -359,5 +359,13 @@
     <string name="tv_suggestion">建议备份完成后立即恢复一次，以确保账户安全 ，然后尝试转入、转出小额资产开始使用</string>
     <string name="tv_warning"><![CDATA[<font color=\'#888888\'>去中心化钱包密匙完全由您自己保存，</font><strong><font color=\'#F55758\'>一旦丢失 无法找回！</font></strong><font color=\'#888888\'>请使用前务必做好备份，将钱包密匙 保存大安全的地方</font>]]></string>
     <string name="title_warning">注意事项</string>
+    <string name="title_add_currency">添加币种</string>
+    <string name="tv_dialog_name">名称：%1$s</string>
+    <string name="title_modify_pwd">修改密码</string>
+    <string name="tv_hint_current_pwd">输入当前密码</string>
+    <string name="tv_hint_new_pwd">设置新密码</string>
+    <string name="tv_hint_new_rep">确认新密码</string>
+    <string name="btn_done">完成</string>
+    <string name="tv_err_old_pwd">密码错误，请重新输入！</string>
 
 </resources>

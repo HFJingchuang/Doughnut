@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="300dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/shape_dialog_bg">
+    android:layout_marginHorizontal="40dp"
+    android:background="@drawable/shape_dialog_bg"
+    android:gravity="center"
+    android:orientation="vertical">
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="110dp"
-        android:layout_marginRight="110dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/ic_drok"/>
+        android:layout_marginTop="40dp"
+        android:background="@drawable/ic_drok" />
+
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
         android:text="@string/dialog_import_success"
         android:textColor="@color/color_currency_name"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:layout_gravity="center_horizontal"
+        android:textSize="20sp" />
 
-        />
     <TextView
         android:id="@+id/tv_upgrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_decoration_inactive"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:text="名称名称名称名称名称"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
         android:layout_gravity="center_horizontal"
-        />
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:text="@string/tv_dialog_name"
+        android:textColor="@color/color_decoration_inactive"
+        android:textSize="14sp" />
 
 </LinearLayout>
