@@ -20,6 +20,7 @@ import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -38,8 +39,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private Button mBtnConfirm;
     private LinearLayout mLayoutToken;
     private String mBalance;
-
-    private final static int SCAN_REQUEST_CODE = 10001;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -255,7 +254,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String issue = "";// todo 获取issue
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, issue, value, "", memo);
+                            boolean isSuccess = WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, issue, value, "10", memo);
+                            String msg = getString(R.string.dailog_msg_success);
+                            if (!isSuccess) {
+                                msg = getString(R.string.dialog_msg_fail);
+                            }
+                            new MsgDialog(TokenTransferActivity.this, msg).setIsHook(isSuccess).show();
                         }
                     }
                 }).show();

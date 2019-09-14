@@ -367,5 +367,7 @@
     <string name="tv_hint_new_rep">Retype your new password</string>
     <string name="btn_done">Done</string>
     <string name="tv_err_old_pwd">Wrong password, please re input!</string>
+    <string name="dailog_msg_success">Successful Transfer</string>
+    <string name="dialog_msg_fail">Transfer Failure</string>
 
 </resources>

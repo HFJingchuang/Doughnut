@@ -21,6 +21,7 @@ public class Constant {
     public final static String WALLET_ADDRESS = "walletAddress";
     public final static String WALLET_NAME = "walletName";
     public final static String IMPORT_FLAG = "isImportWallet";
+    public final static String IS_SINGLE = "isSingle";
 
 
     public final static String RECEIVE_ADDRESS_KEY = "Receive_Address";

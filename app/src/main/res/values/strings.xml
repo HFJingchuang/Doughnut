@@ -367,5 +367,7 @@
     <string name="tv_hint_new_rep">确认新密码</string>
     <string name="btn_done">完成</string>
     <string name="tv_err_old_pwd">密码错误，请重新输入！</string>
+    <string name="dailog_msg_success">转账成功</string>
+    <string name="dialog_msg_fail">转账失败</string>
 
 </resources>

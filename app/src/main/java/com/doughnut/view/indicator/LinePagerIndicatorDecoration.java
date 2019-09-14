@@ -99,7 +99,7 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
         mPaint.setColor(mContext.getResources().getColor(colorInactive));
 
         // width of item indicator including padding
-        final float itemWidth = mIndicatorItemRadius * 2 + mIndicatorItemPadding;
+        final float itemWidth = mIndicatorItemRadius * 2F + mIndicatorItemPadding;
 
         float start = indicatorStartX + mIndicatorItemPadding / 2F + mIndicatorItemRadius;
         for (int i = 0; i < itemCount; i++) {

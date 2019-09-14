@@ -25,7 +25,7 @@ public interface IWallet {
 
     String getPrivateKey(String password, String address);
 
-    String transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo);
+    boolean transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo);
 
     AccountTx getTransferHistory(String address, Integer limit, Marker marker);
 

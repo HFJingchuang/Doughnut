@@ -213,7 +213,7 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public String transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo) {
+    public boolean transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
@@ -230,14 +230,12 @@ public class WalletManager implements IWallet {
             }
             TransactionInfo bean = tx.submit();
             if (WConstant.RESULT_OK.equals(bean.getEngineResultCode())) {
-                return bean.getTxJson().getHash();
-            } else {
-                return bean.getEngineResult();
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
     /**

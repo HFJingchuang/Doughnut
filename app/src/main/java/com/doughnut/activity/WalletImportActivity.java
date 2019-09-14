@@ -37,7 +37,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
-    
+
     private Fragment[] mFragments = new Fragment[]{
             PrivateKeyImpFragment.newInstance(""),
             KeyStoreImpFragment.newInstance("")
@@ -99,11 +99,6 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initView() {
-
-        initViewPager();
-    }
-
-    private void initViewPager() {
 
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);

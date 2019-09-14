@@ -51,6 +51,8 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
     private LinkedList<Currency> currencysCopy;
     private LinkedList<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
     private String mCurrentWallet;
+    private boolean mIsSingle = false;
+    private int mSelectedItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,9 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         currencysCopy = new LinkedList<>();
         selectTokens = new LinkedList<>();
         mCurrentWallet = WalletSp.getInstance(this, "").getCurrentWallet();
+        if (getIntent() != null) {
+            mIsSingle = getIntent().getBooleanExtra(Constant.IS_SINGLE, false);
+        }
         initView();
     }
 
@@ -143,7 +148,14 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onLeftClick(View v) {
-        saveSelectToken();
+        if (mIsSingle) {
+            if (mSelectedItem != -1) {
+                String token = currencys.get(mSelectedItem).getName();
+                TokenReceiveActivity.startTokenReceiveActivity(this, token);
+            }
+        } else {
+            saveSelectToken();
+        }
         finish();
     }
 
@@ -163,10 +175,11 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         super.onResume();
     }
 
-    public static void startActivity(Context from) {
-        Intent intent = new Intent(from, AddCurrencyActivity.class);
-        intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
-        from.startActivity(intent);
+    public static void startActivity(Context context, boolean isSingle) {
+        Intent intent = new Intent(context, AddCurrencyActivity.class);
+        intent.putExtra(Constant.IS_SINGLE, isSingle);
+        intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     class AddCurrencyAdapter extends RecyclerView.Adapter<AddCurrencyAdapter.VH> {
@@ -183,15 +196,40 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        chk_select.setChecked(!chk_select.isChecked());
-                        Currency currency = currencys.get(getAdapterPosition());
-                        if (chk_select.isChecked()) {
-                            selectTokens.add(currency.getName());
-                            currency.setSelect(true);
+                        //单选
+                        if (mIsSingle) {
+                            VH vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+                            int position = getAdapterPosition();
+                            if (position == mSelectedItem) {
+                                return;
+                            } else if (position != mSelectedItem && vh != null) {
+                                vh.chk_select.setChecked(false);
+                                vh.mLayoutItem.setActivated(false);
+                                mSelectedItem = position;
+                                vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+                                vh.chk_select.setChecked(true);
+                                vh.mLayoutItem.setActivated(true);
+                            } else {
+                                if (mSelectedItem != -1) {
+                                    notifyItemChanged(mSelectedItem);
+                                }
+                                mSelectedItem = position;
+                                vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(position);
+                                vh.chk_select.setChecked(true);
+                                vh.mLayoutItem.setActivated(true);
+                            }
                         } else {
-                            selectTokens.remove(currency.getName());
-                            currency.setSelect(false);
+                            chk_select.setChecked(!chk_select.isChecked());
+                            Currency currency = currencys.get(getAdapterPosition());
+                            if (chk_select.isChecked()) {
+                                selectTokens.add(currency.getName());
+                                currency.setSelect(true);
+                            } else {
+                                selectTokens.remove(currency.getName());
+                                currency.setSelect(false);
+                            }
                         }
+
                     }
                 });
                 mImgIcon = itemView.findViewById(R.id.img_icon);

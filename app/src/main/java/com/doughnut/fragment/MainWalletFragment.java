@@ -230,7 +230,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 CaptureActivity.startCaptureActivity(getContext());
                 break;
             case R.id.add_asset:
-                AddCurrencyActivity.startActivity(mContext);
+                AddCurrencyActivity.startActivity(mContext, false);
                 break;
             case R.id.create_wallet:
                 CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
