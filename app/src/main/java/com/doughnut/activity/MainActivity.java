@@ -61,9 +61,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onResume() {
+        int index = mMainViewPager.getCurrentItem();
         hasWallet();
         notifyRefreshAdapter();
-        pageSelected(WALLET_INDEX);
+        mMainViewPager.setCurrentItem(index);
         super.onResume();
     }
 

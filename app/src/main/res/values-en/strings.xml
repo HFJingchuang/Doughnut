@@ -369,5 +369,8 @@
     <string name="tv_err_old_pwd">Wrong password, please re input!</string>
     <string name="dailog_msg_success">Successful Transfer</string>
     <string name="dialog_msg_fail">Transfer Failure</string>
+    <string name="tv_has_no_wallet">You haven\'t added your wallet yet</string>
+    <string name="tv_no_wallet_tips">Scan or click the button below to add Wallet</string>
+    <string name="tv_swtc_tips">Wallet Based on SWTC Block Chain</string>
 
 </resources>

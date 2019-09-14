@@ -32,7 +32,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
 
     private LinearLayout mLayoutCreateWallet;
     private LinearLayout mLayoutImPortWallet;
-
+    private LinearLayout mLayoutNoWallet;
     private RecyclerView mLsWallet;
     private WalletRecordAdapter mAdapter;
 
@@ -73,9 +73,12 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         } else {
             mTitleBar.setTitle(getString(R.string.titleBar_manage_wallet));
         }
+
         mTitleBar.setTitleTextColor(R.color.black);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.white));
         mTitleBar.setTitleBarClickListener(this);
+
+        mLayoutNoWallet = findViewById(R.id.layout_no_wallet);
         mLayoutCreateWallet = findViewById(R.id.layout_create_wallet);
         mLayoutCreateWallet.setOnClickListener(this);
         mLayoutImPortWallet = findViewById(R.id.layout_import_wallet);
@@ -84,7 +87,6 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mLsWallet.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new WalletRecordAdapter();
         mLsWallet.setAdapter(mAdapter);
-
         getWallets();
     }
 
@@ -207,6 +209,15 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void getWallets() {
+        boolean isNoWallet = WalletManager.getInstance(this).hasWallet();
+        if (isNoWallet) {
+            mLayoutNoWallet.setVisibility(View.GONE);
+            mLsWallet.setVisibility(View.VISIBLE);
+        } else {
+            mLayoutNoWallet.setVisibility(View.VISIBLE);
+            mLsWallet.setVisibility(View.GONE);
+            return;
+        }
         walletList.clear();
         String currentWallet = WalletSp.getInstance(WalletManageActivity.this, "").getCurrentWallet();
         walletList.add(currentWallet);

@@ -369,5 +369,8 @@
     <string name="tv_err_old_pwd">密码错误，请重新输入！</string>
     <string name="dailog_msg_success">转账成功</string>
     <string name="dialog_msg_fail">转账失败</string>
+    <string name="tv_has_no_wallet">您还未添加钱包</string>
+    <string name="tv_no_wallet_tips">扫描或点击下方按钮添加钱包</string>
+    <string name="tv_swtc_tips">基于SWTC公链的钱包</string>
 
 </resources>

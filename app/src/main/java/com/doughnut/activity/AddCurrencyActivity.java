@@ -135,6 +135,9 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         String fileName = getPackageName() + "_tokens";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         String tokens = sharedPreferences.getString("tokens", "");
+        if (TextUtils.isEmpty(tokens)) {
+            return;
+        }
         Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
         for (Map.Entry<String, String> entry : tokenMap.entrySet()) {
             Currency currency = new Currency();

@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title_bar"
         android:layout_marginHorizontal="20dp"
-        android:text="基于SWTC公链的钱包"
+        android:text="@string/tv_swtc_tips"
         android:textColor="#1C2E3F"
         android:textSize="15sp" />
 
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="您还未添加钱包"
+            android:text="@string/tv_has_no_wallet"
             android:textColor="@color/color_detail_address"
             android:textSize="17sp" />
 
@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="扫描或点击下方按钮添加钱包"
+            android:text="@string/tv_no_wallet_tips"
             android:textColor="@color/color_detail_time"
             android:textSize="14sp" />
     </LinearLayout>

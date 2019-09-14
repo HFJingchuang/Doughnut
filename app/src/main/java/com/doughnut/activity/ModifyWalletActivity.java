@@ -9,7 +9,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.EditDialog;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
@@ -139,7 +141,6 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                     public void authPwd(boolean result, String key) {
                         if (result) {
                             WalletManager.getInstance(ModifyWalletActivity.this).deleteWallet(mWalletAddress);
-                            ToastUtil.toast(ModifyWalletActivity.this, "钱包「" + mWalletName + "」已成功删除!");
                             finish();
                         }
                     }
