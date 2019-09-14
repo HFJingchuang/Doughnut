@@ -27,6 +27,7 @@
             android:visibility="visible" />
 
         <ImageView
+            android:id="@+id/img_trigon"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_gravity="bottom"

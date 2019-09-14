@@ -231,6 +231,7 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         switch (view.getId()) {
             // 创建钱包按钮
             case R.id.btn_confirm:
+                mBtnConfirm.setClickable(false);
                 String passWord = mEdtWalletPwd.getText().toString();
                 String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
                 if (TextUtils.equals(passWord, passwordConfirm)) {

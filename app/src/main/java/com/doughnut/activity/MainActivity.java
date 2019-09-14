@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.doughnut.config.Constant;
 import com.doughnut.dialog.ImportSuccessDialog;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
+import com.doughnut.fragment.SplashFragment;
+import com.doughnut.wallet.WalletManager;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -37,10 +40,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ImageView mImgMine;
     private TextView mTvMine;
 
+    private Fragment[] mFragments;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        hasWallet();
         initView();
         if (getIntent() != null) {
             boolean isImport = getIntent().getBooleanExtra(Constant.IMPORT_FLAG, false);
@@ -55,6 +61,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onResume() {
+        hasWallet();
+        notifyRefreshAdapter();
+        pageSelected(WALLET_INDEX);
         super.onResume();
     }
 
@@ -92,10 +101,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initView() {
-        initViewPager();
-    }
-
-    private void initViewPager() {
         //tab
         mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
         mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
@@ -109,7 +114,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTvMine = (TextView) findViewById(R.id.tv_tab_mine);
 
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        mMainViewPager.setOffscreenPageLimit(3);
+        mMainViewPager.setOffscreenPageLimit(2);
         mMainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -146,6 +151,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void hasWallet() {
+        if (!WalletManager.getInstance(this).hasWallet()) {
+            mFragments = new Fragment[]{
+                    SplashFragment.newInstance(),
+                    MainUserFragment.newInstance()
+            };
+        } else {
+            mFragments = new Fragment[]{
+                    MainWalletFragment.newInstance(),
+                    MainUserFragment.newInstance()
+            };
+        }
+    }
+
+    /**
+     * 通知刷新适配器
+     */
+    private void notifyRefreshAdapter() {
+        if (mMainViewPager != null) {
+            mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
+        }
+    }
+
     private void resetTab() {
         mImgWallet.setImageResource(R.drawable.ic_wallet_noclick);
         mTvWallet.setSelected(false);
@@ -154,16 +182,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTvMine.setSelected(false);
     }
 
-    class MainViewPagerAdapter extends FragmentPagerAdapter {
+    class MainViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public MainViewPagerAdapter(FragmentManager fm) {
             super(fm);
+            notifyDataSetChanged();
         }
-
-        private Fragment[] mFragments = new Fragment[]{
-                MainWalletFragment.newInstance(),
-                MainUserFragment.newInstance()
-        };
 
         @Override
         public Fragment getItem(int position) {

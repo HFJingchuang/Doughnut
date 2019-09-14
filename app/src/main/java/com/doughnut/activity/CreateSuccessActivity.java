@@ -46,10 +46,12 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
                     String address = getIntent().getStringExtra(Constant.WALLET_ADDRESS);
                     String privateKey = getIntent().getStringExtra(Constant.PRIVATE_KEY);
                     WalletExportActivity.startExportWalletActivity(this, address, privateKey);
+                    finish();
                 }
                 break;
             case R.id.tv_skip:
                 MainActivity.startMainActivity(this);
+                finish();
                 break;
         }
     }
