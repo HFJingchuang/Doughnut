@@ -51,16 +51,15 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <!--<activity-->
-        <!--android:name=".activity.SplashActivity"-->
-        <!--android:theme="@style/AppTheme.NoActionBar">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN" />-->
-
-        <!--<category android:name="android.intent.category.LAUNCHER" />-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.WalletImportActivity" />
         <activity android:name=".activity.WalletManageActivity" /> <!-- <activity android:name=".activity.WallwtManageActivity" /> -->
         <activity android:name=".activity.BackupStartActivity" />
@@ -77,14 +76,7 @@
         <activity android:name=".activity.ImportWalletSelectActivity" />
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.FragmentContainerActivity"
             android:screenOrientation="portrait" />
@@ -153,6 +145,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.WalletQRActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.TransferTokenActivity"
             android:screenOrientation="portrait" />
     </application>
 

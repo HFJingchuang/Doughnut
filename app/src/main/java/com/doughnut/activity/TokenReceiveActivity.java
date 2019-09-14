@@ -21,10 +21,10 @@ import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ImageUtils;
 import com.doughnut.utils.QRUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.CashierInputFilter;
@@ -112,7 +112,7 @@ public class TokenReceiveActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Util.clipboard(TokenReceiveActivity.this, "", mAddress);
-                ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_wallet_address_copied));
+                new MsgDialog(TokenReceiveActivity.this, getString(R.string.toast_wallet_address_copied)).show();
             }
         });
         mLayoutSave = findViewById(R.id.layout_save);
@@ -122,11 +122,11 @@ public class TokenReceiveActivity extends BaseActivity {
                 BitmapDrawable bmpDrawable = (BitmapDrawable) mImgQr.getDrawable();
                 Bitmap bitmap = bmpDrawable.getBitmap();
                 Boolean saved = ImageUtils.saveImageToGallery(TokenReceiveActivity.this, bitmap);
-                if (saved) {
-                    ToastUtil.toast(TokenReceiveActivity.this, getResources().getString(R.string.toast_save_success));
-                } else {
-                    ToastUtil.toast(TokenReceiveActivity.this, getResources().getString(R.string.toast_save_fail));
+                String msg = getResources().getString(R.string.toast_save_success);
+                if (!saved) {
+                    msg = getResources().getString(R.string.toast_save_fail);
                 }
+                new MsgDialog(TokenReceiveActivity.this, msg).setIsHook(saved).show();
             }
         });
         mLayoutToken = findViewById(R.id.layout_token);
@@ -166,7 +166,7 @@ public class TokenReceiveActivity extends BaseActivity {
             Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
         } catch (Exception e) {
-            ToastUtil.toast(TokenReceiveActivity.this, getResources().getString(R.string.toast_amount_format_err));
+            new MsgDialog(TokenReceiveActivity.this, getResources().getString(R.string.toast_amount_format_err)).setIsHook(false).show();
         }
     }
 

@@ -3,6 +3,7 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -32,13 +33,15 @@ import java.math.BigDecimal;
 
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
 
-    public final static String TAG = "TokenTransferActivity";
+    private final static String FEE = "10";
+
     private TitleBar mTitleBar;
     private TextView mTvTokenName, mTvBalance, mTvErrAddr, mTvErrAmount;
     private EditText mEdtWalletAddress, mEdtTransferNum, mEdtMemo;
     private Button mBtnConfirm;
     private LinearLayout mLayoutToken;
     private String mBalance;
+    private String mIssue;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +49,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         setContentView(R.layout.activity_transfer_token);
         initView();
         initData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLayoutToken.setEnabled(true);
+        getTransferToken();
     }
 
     private void initView() {
@@ -235,7 +245,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 sendTranscation();
                 break;
             case R.id.layout_token:
-                // todo 选择转账token
+                mLayoutToken.setEnabled(false);
+                TransferTokenActivity.startActivity(this);
                 break;
         }
     }
@@ -251,10 +262,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                         if (result) {
                             String to = mEdtWalletAddress.getText().toString();
                             String token = mTvTokenName.getText().toString();
-                            String issue = "";// todo 获取issue
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-                            boolean isSuccess = WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, issue, value, "10", memo);
+                            boolean isSuccess = WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, FEE, memo);
                             String msg = getString(R.string.dailog_msg_success);
                             if (!isSuccess) {
                                 msg = getString(R.string.dialog_msg_fail);
@@ -263,16 +273,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                         }
                     }
                 }).show();
-    }
-
-    private void updateBtnToTranferingState() {
-        mBtnConfirm.setEnabled(false);
-        mBtnConfirm.setText(getString(R.string.btn_transferring));
-    }
-
-    private void resetTranferBtn() {
-        mBtnConfirm.setEnabled(true);
-        mBtnConfirm.setText(getString(R.string.btn_next));
     }
 
     /**
@@ -309,4 +309,19 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 获取选择的币种
+     */
+    public void getTransferToken() {
+        String fileName = getPackageName() + "_transfer_token";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
+        if (TextUtils.isEmpty(token)) {
+            mTvTokenName.setText("SWT");
+            mIssue = "";
+        } else {
+            mTvTokenName.setText(token);
+            mIssue = sharedPreferences.getString("issue", "");
+        }
+    }
 }

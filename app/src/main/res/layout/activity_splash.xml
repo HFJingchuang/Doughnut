@@ -11,49 +11,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_splash" />
+        android:src="@drawable/ic_ok" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/content_splash"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
-        android:textSize="15sp"
-        android:textColor="#808080"
         android:layout_below="@id/img_icon"
-        />
-
-    <LinearLayout
-        android:id="@+id/layout_splash_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_create_wallet"
-            android:layout_width="245dp"
-            android:layout_height="47dp"
-            android:background="@drawable/shape_splash_createwallet_bg"
-            android:gravity="center"
-            android:text="@string/btn_create_wallet"
-            android:textColor="@color/white"
-            android:textSize="17dp" />
-
-        <TextView
-            android:id="@+id/tv_import_wallet"
-            android:layout_width="245dp"
-            android:layout_height="47dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/shape_splash_importwallet_bg"
-            android:gravity="center"
-            android:text="@string/btn_import_wallet"
-            android:textColor="@color/common_blue"
-            android:textSize="17dp"
-            />
-    </LinearLayout>
+        android:layout_marginTop="60dp"
+        android:text="@string/content_splash"
+        android:textColor="@color/color_detail_address"
+        android:textSize="17sp" />
 
 </RelativeLayout>

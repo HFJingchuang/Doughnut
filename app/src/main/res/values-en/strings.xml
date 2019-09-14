@@ -55,7 +55,7 @@
     <string name="titleBar_change_pwd">Change Password</string>
     <string name="titleBar_completed">Done</string>
     <string name="content_forgot_password"><![CDATA[<font color=\'#929da6\'>Forgot password? Import mnemonic or private key to reset password</font><font color=\'#2890fe\'>Import now?</font>]]></string>
-    <string name="toast_wallet_address_copied">Wallet address has been copied to the clipboard</string>
+    <string name="toast_wallet_address_copied">Address has been copied</string>
     <string name="toast_password_incorrect">Password Incorrect</string>
     <string name="titleBar_save">Done</string>
     <string name="dialog_title_warning">Warning</string>
@@ -153,7 +153,7 @@
     <string name="content_gas">Gas</string>
     <string name="content_slow">Slow</string>
     <string name="content_fast">Fast</string>
-    <string name="content_splash">Make wealth more free</string>
+    <string name="content_splash">Donuts, wrap your SWTC</string>
     <string name="content_payer">Payer</string>
     <string name="content_payee">Payee</string>
     <string name="content_note">Note</string>
@@ -372,5 +372,6 @@
     <string name="tv_has_no_wallet">You haven\'t added your wallet yet</string>
     <string name="tv_no_wallet_tips">Scan or click the button below to add Wallet</string>
     <string name="tv_swtc_tips">Wallet Based on SWTC Block Chain</string>
+    <string name="title_token_choose">Currency Choice</string>
 
 </resources>

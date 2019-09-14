@@ -1,15 +1,11 @@
 package com.doughnut.activity;
 
 import android.Manifest;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
@@ -18,13 +14,9 @@ import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.wallet.WalletManager;
 
-public class SplashActivity extends BaseActivity implements View.OnClickListener {
+public class SplashActivity extends BaseActivity {
 
     private final static String TAG = "SplashActivity";
-
-    private LinearLayout mLayoutSplashBtn;
-    private TextView mTvCreateWallet;
-    private TextView mTvImportWallet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,30 +25,10 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
-        // 启动页背景图片
-        mLayoutSplashBtn = (LinearLayout) findViewById(R.id.layout_splash_btn);
-        // 启动页创建钱包按钮
-        mTvCreateWallet = (TextView) findViewById(R.id.tv_create_wallet);
-        mTvCreateWallet.setOnClickListener(this);
-        // 启动页导入钱包按钮
-        mTvImportWallet = (TextView) findViewById(R.id.tv_import_wallet);
-        mTvImportWallet.setOnClickListener(this);
         if (!NetUtil.isNetworkAvailable(this)) {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
         checkPermission();
-    }
-
-    @Override
-    public void onClick(View v) {
-        // 创建钱包按钮点击事件
-        if (v == mTvCreateWallet) {
-            CreateNewWalletActivity.startCreateNewWalletActivity(this);
-        }
-        // 导入钱包按钮点击事件
-        else if (v == mTvImportWallet) {
-            WalletImportActivity.startWalletImportActivity(this);
-        }
     }
 
     public static void startSplashActivity(Context context) {
@@ -119,24 +91,8 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     private void permissonSuccess() {
         WalletManager.getInstance(this).getAllTokens();
         AppConfig.postDelayOnUiThread(() -> {
-            if (WalletManager.getInstance(SplashActivity.this).hasWallet()) {
-                MainActivity.startMainActivity(SplashActivity.this);
-                SplashActivity.this.finish();
-            } else {
-                playAlphaAnim();
-            }
-
+            MainActivity.startMainActivity(SplashActivity.this);
+            SplashActivity.this.finish();
         }, 1000);
-    }
-
-    private void playAlphaAnim() {
-        mLayoutSplashBtn.setVisibility(View.VISIBLE);
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        valueAnimator.addUpdateListener(animation -> {
-            float alpha = (float) animation.getAnimatedValue();
-            mLayoutSplashBtn.setAlpha(alpha);
-        });
-        valueAnimator.setDuration(1000);
-        valueAnimator.start();
     }
 }

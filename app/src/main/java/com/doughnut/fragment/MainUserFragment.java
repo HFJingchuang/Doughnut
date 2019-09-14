@@ -2,6 +2,7 @@ package com.doughnut.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.doughnut.activity.WalletQRActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 
 
@@ -37,8 +39,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private LinearLayout mLayoutRight;
     private LinearLayout mLayoutReceive;
     private LinearLayout mLayoutSend;
-    private TextView mAddressTv;
-    private TextView mNameTv;
+    private TextView mTvAddress;
+    private TextView mTvName;
+    private TextView mTvLab;
     private ImageView mImgQR;
     private String currentWallet;
 
@@ -140,8 +143,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRight = view.findViewById(R.id.layout_right);
         mLayoutReceive = view.findViewById(R.id.layout_receiver);
         mLayoutSend = view.findViewById(R.id.layout_send);
-        mAddressTv = view.findViewById(R.id.tv_wallet_address);
-        mNameTv = view.findViewById(R.id.tv_wallet_name);
+        mTvAddress = view.findViewById(R.id.tv_wallet_address);
+        mTvName = view.findViewById(R.id.tv_wallet_name);
+        mTvLab = view.findViewById(R.id.tv_label);
         mImgQR = view.findViewById(R.id.img_qr);
 
         mLayoutManageWallet.setOnClickListener(this);
@@ -160,10 +164,20 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
 
     private void setWalletInfo() {
         currentWallet = WalletSp.getInstance(getContext(), "").getCurrentWallet();
-        mAddressTv.setText(currentWallet);
-        ViewUtil.EllipsisTextView(mAddressTv);
-        mNameTv.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
-        ViewUtil.EllipsisTextView(mNameTv);
+        if (TextUtils.isEmpty(currentWallet)) {
+            mTvLab.setVisibility(View.GONE);
+            mTvName.setText(getString(R.string.tv_has_no_wallet));
+            mImgQR.setEnabled(false);
+            mLayoutRight.setEnabled(false);
+        } else {
+            mTvAddress.setText(currentWallet);
+            ViewUtil.EllipsisTextView(mTvAddress);
+            mTvName.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
+            ViewUtil.EllipsisTextView(mTvName);
+            mTvLab.setVisibility(View.VISIBLE);
+            mImgQR.setEnabled(true);
+            mLayoutRight.setEnabled(true);
+        }
     }
 
 }

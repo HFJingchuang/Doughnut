@@ -67,7 +67,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private ImageView mTvOpenEyes;
     private TextView mTvWalletName;
 
-    private Context mContext;
     private List<Line> dataList;
     private String mCurrentWallet;
     private boolean isHidden;
@@ -89,7 +88,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mContext = getActivity();
         dataList = new ArrayList();
         isHidden = false;
         isTokenHidden = false;
@@ -230,13 +228,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 CaptureActivity.startCaptureActivity(getContext());
                 break;
             case R.id.add_asset:
-                AddCurrencyActivity.startActivity(mContext, false);
+                AddCurrencyActivity.startActivity(getContext(), false);
                 break;
             case R.id.create_wallet:
-                CreateNewWalletActivity.startCreateNewWalletActivity(mContext);
+                CreateNewWalletActivity.startCreateNewWalletActivity(getContext());
                 break;
             case R.id.import_wallet:
-                WalletImportActivity.startWalletImportActivity(mContext);
+                WalletImportActivity.startWalletImportActivity(getContext());
                 break;
             case R.id.view_see:
                 this.isHidden = !isHidden;
@@ -307,7 +305,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
 
-            WalletManager walletManager = WalletManager.getInstance(mContext);
+            WalletManager walletManager = WalletManager.getInstance(getContext());
 
             // 取得钱包资产
             AccountRelations accountRelations = walletManager.getBalance(mCurrentWallet);
