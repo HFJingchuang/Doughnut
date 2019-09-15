@@ -93,8 +93,8 @@
     <string name="titleBar_transaction_query">交易查询</string>
     <string name="titleBar_message_center">消息中心</string>
     <string name="toast_update_default_wallet_failed">更新默认钱包失败</string>
-    <string name="toast_private_key_copied">私钥已经复制到剪贴板</string>
-    <string name="toast_keystore_copied">KeyStore已经复制到剪贴板</string>
+    <string name="toast_private_key_copied">私钥已复制</string>
+    <string name="toast_keystore_copied">KeyStore已复制</string>
     <string name="titleBar_help_center">帮助中心</string>
     <string name="toast_scan_failure">扫描错误</string>
     <string name="toast_not_support_eth_wallet">当前不支持以太钱包</string>
@@ -373,5 +373,9 @@
     <string name="tv_no_wallet_tips">扫描或点击下方按钮添加钱包</string>
     <string name="tv_swtc_tips">基于SWTC公链的钱包</string>
     <string name="title_token_choose">币种选择</string>
+    <string name="tv_import_key_tips">复制粘贴钱包Keystore文件内容至输入框，或点击扫描 Keystore内容的二维码录入输入框</string>
+    <string name="dialog_import_fail">导入失败</string>
+    <string name="dailog_modify_fail">失败，再试一次吧</string>
+    <string name="tv_scan_fail">扫描失败！</string>
 
 </resources>

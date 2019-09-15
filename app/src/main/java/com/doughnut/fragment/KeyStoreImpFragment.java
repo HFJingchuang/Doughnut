@@ -26,7 +26,7 @@ import com.doughnut.R;
 import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
-import com.doughnut.utils.ToastUtil;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.wallet.WalletManager;
 
@@ -106,8 +106,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                     intent.putExtra(Constant.WALLET_NAME, walletName);
                     startActivity(intent);
                 } else {
-                    // todo 显示导入失败dialog？tips？
-                    ToastUtil.toast(getContext(), "导入失败！！！");
+                    new MsgDialog(getContext(), getString(R.string.dialog_import_fail)).setIsHook(false).show();
                 }
                 break;
             // 勾选框

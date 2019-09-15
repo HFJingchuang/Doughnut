@@ -373,5 +373,9 @@
     <string name="tv_no_wallet_tips">Scan or click the button below to add Wallet</string>
     <string name="tv_swtc_tips">Wallet Based on SWTC Block Chain</string>
     <string name="title_token_choose">Currency Choice</string>
+    <string name="tv_import_key_tips">Copy and paste the contents of the wallet Keystore file into the input box, or click on QR code to scan the Keystore content.</string>
+    <string name="dialog_import_fail">Import Failed</string>
+    <string name="dailog_modify_fail">Modification failed</string>
+    <string name="tv_scan_fail">Scanning failed!</string>
 
 </resources>

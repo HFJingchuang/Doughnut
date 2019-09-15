@@ -24,7 +24,6 @@ import com.doughnut.activity.WalletQRActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.ViewUtil;
-import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 
 

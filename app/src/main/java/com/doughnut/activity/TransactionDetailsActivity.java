@@ -21,6 +21,7 @@ import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
@@ -183,7 +184,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     @Override
                     public void onClick(View v) {
                         Util.clipboard(TransactionDetailsActivity.this, "", mTo);
-                        ToastUtil.toast(TransactionDetailsActivity.this, getResources().getString(R.string.toast_to_cp));
+                        new MsgDialog(TransactionDetailsActivity.this, getString(R.string.toast_to_cp)).show();
                     }
                 });
                 mTvType = findViewById(R.id.tv_type);
@@ -584,15 +585,15 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         switch (v.getId()) {
             case R.id.layout_hash:
                 Util.clipboard(this, "", mTvHash.getText().toString());
-                ToastUtil.toast(this, getResources().getString(R.string.toast_hash_cp));
+                new MsgDialog(this, getString(R.string.toast_hash_cp)).show();
                 break;
             case R.id.layout_from:
                 Util.clipboard(this, "", mFrom);
-                ToastUtil.toast(this, getResources().getString(R.string.toast_from_cp));
+                new MsgDialog(this, getString(R.string.toast_from_cp)).show();
                 break;
             case R.id.layout_to:
                 Util.clipboard(this, "", mTo);
-                ToastUtil.toast(this, getResources().getString(R.string.toast_to_cp));
+                new MsgDialog(this, getString(R.string.toast_to_cp)).show();
                 break;
         }
     }

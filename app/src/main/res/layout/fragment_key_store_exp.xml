@@ -5,119 +5,125 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_wallet_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:ellipsize="middle"
-            android:gravity="center"
-            android:maxEms="15"
-            android:singleLine="true"
-            android:textColor="@color/color_receive_hint"
-            android:textSize="14sp" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@drawable/shape_dialog_edt"
-            android:overScrollMode="never">
-
-            <TextView
-                android:id="@+id/tv_keystore"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                android:gravity="top"
-                android:paddingHorizontal="10dp"
-                android:paddingTop="10dp"
-                android:textColor="@color/color_detail_address"
-                android:textSize="18sp" />
-
-        </ScrollView>
+        android:overScrollMode="never">
 
         <LinearLayout
-            android:id="@+id/layout_copy"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp">
+            android:layout_marginHorizontal="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_wallet_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="middle"
+                android:gravity="center"
+                android:maxEms="15"
+                android:singleLine="true"
+                android:textColor="@color/color_receive_hint"
+                android:textSize="14sp" />
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@drawable/shape_dialog_edt"
+                android:overScrollMode="never">
+
+                <TextView
+                    android:id="@+id/tv_keystore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="top"
+                    android:minHeight="160dp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="18sp" />
+            </android.support.v4.widget.NestedScrollView>
 
             <LinearLayout
+                android:id="@+id/layout_copy"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_copy" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/btn_copy_keystore"
+                        android:textColor="@color/color_export_wallet"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp">
+
+                    <ImageView
+                        android:id="@+id/img_qrcode_shadow"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:background="#56000000" />
+
+                    <ImageView
+                        android:id="@+id/img_qr"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_export"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/shape_btn_export"
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_copy" />
+                    android:src="@drawable/ic_down_white" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:gravity="center"
-                    android:text="@string/btn_copy_keystore"
-                    android:textColor="@color/color_export_wallet"
-                    android:textSize="12sp"
+                    android:text="@string/btn_export"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:id="@+id/img_qrcode_shadow"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:background="#56000000" />
-
-                <ImageView
-                    android:id="@+id/img_qr"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_export"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/shape_btn_export"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_down_white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="@string/btn_export"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

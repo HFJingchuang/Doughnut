@@ -31,6 +31,7 @@ import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
 import com.doughnut.utils.ToastUtil;
@@ -141,7 +142,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
                     onResultHandler((String) msg.obj);
                     break;
                 case PARSE_BARCODE_FAIL:
-                    Toast.makeText(CaptureActivity.this, (String) msg.obj, Toast.LENGTH_LONG).show();
+                    new MsgDialog(CaptureActivity.this, (String) msg.obj).setIsHook(false).show();
                     break;
                 default:
                     break;
@@ -182,7 +183,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
                             } else {
                                 Message m = mHandler.obtainMessage();
                                 m.what = PARSE_BARCODE_FAIL;
-                                m.obj = "Scan failed!";
+                                m.obj = getString(R.string.tv_scan_fail);
                                 mHandler.sendMessage(m);
                             }
                         }
@@ -273,7 +274,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
 
     private void onResultHandler(String resultString) {
         if (TextUtils.isEmpty(resultString)) {
-            ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail));
+            new MsgDialog(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail)).setIsHook(false).show();
             return;
         }
 
@@ -307,7 +308,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             else if (result.isValid()) {
                 WalletImportActivity.startWalletImportActivity(this, 1, resultString);
             } else {
-                ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_err));
+                new MsgDialog(CaptureActivity.this, getResources().getString(R.string.toast_qr_err)).setIsHook(false).show();
                 // 2秒后重新扫描
                 AppConfig.postDelayOnUiThread(new Runnable() {
                     @Override
@@ -320,7 +321,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
                 return;
             }
         } catch (Exception e) {
-            ToastUtil.toast(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail));
+            new MsgDialog(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail)).setIsHook(false).show();
             return;
         }
         CaptureActivity.this.finish();

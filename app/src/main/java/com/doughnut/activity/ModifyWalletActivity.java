@@ -14,7 +14,6 @@ import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
@@ -73,7 +72,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
             exportWallet();
         } else if (view == mLayoutCopy) {
             Util.clipboard(ModifyWalletActivity.this, "", mWalletAddress);
-            ToastUtil.toast(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied));
+            new MsgDialog(ModifyWalletActivity.this, getString(R.string.toast_wallet_address_copied)).show();
         } else if (view == mLayoutEdt) {
             changeWalletName();
         }

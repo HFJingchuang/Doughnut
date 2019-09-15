@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.PWDUtils;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.view.SubCharSequence;
@@ -281,10 +282,9 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
                     // 修改KeyStore密码，name参数可不传
                     boolean res = WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "");
                     if (res) {
-                        ToastUtil.toast(ModifyPwdActivity.this, getString(R.string.toast_password_changed));
                         finish();
                     } else {
-                        showTipAlertDialog("修改失败，请重新尝试。");
+                        new MsgDialog(this, getString(R.string.dailog_modify_fail)).setIsHook(false).show();
                     }
                 } else {
                     mEdtRepNewPwd.setText("");
@@ -334,14 +334,5 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
         intent.putExtra("Wallet_Address", walletAddress);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-    }
-
-    private void showTipAlertDialog(String tips) {
-        new AlertDialog.Builder(ModifyPwdActivity.this).setTitle(tips).setNegativeButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        }).show();
     }
 }

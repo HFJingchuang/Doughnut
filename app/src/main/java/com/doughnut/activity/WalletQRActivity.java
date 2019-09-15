@@ -12,8 +12,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.QRUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
@@ -28,6 +28,7 @@ public class WalletQRActivity extends BaseActivity {
     private ImageView mImgQr;
     private ImageView mImgQrShadow;
     private TextView mTvAddress;
+    private TextView mTvWalletName;
     private RelativeLayout mLayoutCopy;
     private String mAddress;
 
@@ -50,7 +51,7 @@ public class WalletQRActivity extends BaseActivity {
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                onBackPressed();
+                finish();
             }
         });
 
@@ -63,16 +64,18 @@ public class WalletQRActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Util.clipboard(WalletQRActivity.this, "", mAddress);
-                ToastUtil.toast(WalletQRActivity.this, getString(R.string.toast_wallet_address_copied));
+                new MsgDialog(WalletQRActivity.this, getString(R.string.toast_wallet_address_copied)).show();
             }
         });
+        mTvWalletName = findViewById(R.id.tv_wallet_name);
         createQRCode();
     }
 
     private void initData() {
         mTvAddress.setText(mAddress);
         ViewUtil.EllipsisTextView(mTvAddress);
-        mTitleBar.setTitle(WalletSp.getInstance(this, mAddress).getName());
+        mTvWalletName.setText(WalletSp.getInstance(this, mAddress).getName());
+        ViewUtil.EllipsisTextView(mTvWalletName);
     }
 
     private void createQRCode() {

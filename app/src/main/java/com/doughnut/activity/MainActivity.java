@@ -75,8 +75,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (view == mLayoutTabMine) {
             mMainViewPager.setCurrentItem(MINE_INDEX);
         }
-
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(false);
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

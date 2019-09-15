@@ -6,194 +6,207 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="20dp">
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-        <EditText
-            android:id="@+id/edt_private_key"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/shape_dialog_edt"
-            android:hint="@string/enter_hint_private_key"
-            android:paddingLeft="15dp"
-            android:textColorHint="@color/color_decoration_inactive"
-            android:textSize="17sp" />
-
-        <TextView
-            android:id="@+id/err_private_key"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:textColor="@color/color_detail_send"
-            android:textSize="@dimen/text_size_8"
-            android:visibility="invisible" />
-
-        <EditText
-            android:id="@+id/edt_wallet_name"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/shape_dialog_edt"
-            android:hint="@string/enter_hint_wallet_name"
-            android:paddingLeft="15dp"
-            android:textColorHint="@color/color_decoration_inactive"
-            android:textSize="17sp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/shape_dialog_edt">
-
-            <EditText
-                android:id="@+id/edt_wallet_pwd"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_toLeftOf="@+id/show_pwd"
-                android:background="@drawable/shape_dialog_edt"
-                android:hint="@string/enter_hint_password"
-                android:inputType="textPassword"
-                android:paddingLeft="15dp"
-                android:textColorHint="@color/color_decoration_inactive"
-                android:textSize="17sp" />
-
-            <LinearLayout
-                android:id="@+id/show_pwd"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/img_show_pwd"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="20dp"
-                    app:srcCompat="@drawable/selector_pwd" />
-            </LinearLayout>
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_pwd_tips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="@string/tv_pwd_tips"
-            android:textColor="@color/color_detail_send"
-            android:textSize="@dimen/text_size_12"
-            android:textStyle="bold"
-            android:visibility="visible" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/shape_dialog_edt">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
 
                 <EditText
-                    android:id="@+id/edt_wallet_pwd_confirm"
+                    android:id="@+id/edt_private_key"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:layout_toLeftOf="@+id/show_pwd_rep"
                     android:background="@drawable/shape_dialog_edt"
-                    android:hint="@string/enter_hint_verify"
-                    android:inputType="textPassword"
+                    android:hint="@string/enter_hint_private_key"
                     android:paddingLeft="15dp"
                     android:textColorHint="@color/color_decoration_inactive"
                     android:textSize="17sp" />
 
-                <LinearLayout
-                    android:id="@+id/show_pwd_rep"
+                <TextView
+                    android:id="@+id/err_private_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="@dimen/text_size_8"
+                    android:visibility="invisible" />
+
+                <EditText
+                    android:id="@+id/edt_wallet_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/shape_dialog_edt"
+                    android:hint="@string/enter_hint_wallet_name"
+                    android:paddingLeft="15dp"
+                    android:textColorHint="@color/color_decoration_inactive"
+                    android:textSize="17sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/shape_dialog_edt">
+
+                    <EditText
+                        android:id="@+id/edt_wallet_pwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_toLeftOf="@+id/show_pwd"
+                        android:background="@drawable/shape_dialog_edt"
+                        android:hint="@string/enter_hint_password"
+                        android:inputType="textPassword"
+                        android:paddingLeft="15dp"
+                        android:textColorHint="@color/color_decoration_inactive"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:id="@+id/show_pwd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/img_show_pwd"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="20dp"
+                            app:srcCompat="@drawable/selector_pwd" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_pwd_tips"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_pwd_tips"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
 
-                    <ImageView
-                        android:id="@+id/img_show_pwd_rep"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp"
-                        app:srcCompat="@drawable/selector_pwd" />
-                </LinearLayout>
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_pwd_rep_tips"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:paddingLeft="10dp"
-                android:text="@string/dialog_content_passwords_unmatch"
-                android:textColor="@color/color_detail_send"
-                android:textSize="@dimen/text_size_8"
-                android:textStyle="bold"
-                android:visibility="gone" />
-        </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/shape_dialog_edt">
 
-        <Button
-            android:id="@+id/btn_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/selector_btn_transfer"
-            android:enabled="false"
-            android:text="@string/btn_import_wallet"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+                        <EditText
+                            android:id="@+id/edt_wallet_pwd_confirm"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_toLeftOf="@+id/show_pwd_rep"
+                            android:background="@drawable/shape_dialog_edt"
+                            android:hint="@string/enter_hint_verify"
+                            android:inputType="textPassword"
+                            android:paddingLeft="15dp"
+                            android:textColorHint="@color/color_decoration_inactive"
+                            android:textSize="17sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical">
+                        <LinearLayout
+                            android:id="@+id/show_pwd_rep"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+                            <ImageView
+                                android:id="@+id/img_show_pwd_rep"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="20dp"
+                                app:srcCompat="@drawable/selector_pwd" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_pwd_rep_tips"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:paddingLeft="10dp"
+                        android:text="@string/dialog_content_passwords_unmatch"
+                        android:textColor="@color/color_detail_send"
+                        android:textSize="@dimen/text_size_8"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/selector_btn_transfer"
+                    android:enabled="false"
+                    android:text="@string/btn_import_wallet"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_read"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/radio_read"
-                    style="@null"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:background="@android:color/transparent"
-                    android:button="@drawable/selector_btn_node"
-                    android:clickable="false" />
-            </LinearLayout>
+                    android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_policy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textColor="@color/color_detail_address"
-                android:textSize="12sp" />
+                    <LinearLayout
+                        android:id="@+id/layout_read"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/radio_read"
+                            style="@null"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:background="@android:color/transparent"
+                            android:button="@drawable/selector_btn_node"
+                            android:clickable="false" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_policy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/color_detail_address"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

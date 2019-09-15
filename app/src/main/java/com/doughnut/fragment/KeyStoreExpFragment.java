@@ -1,6 +1,5 @@
 package com.doughnut.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -14,11 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.ImageUtils;
 import com.doughnut.utils.QRUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletSp;
@@ -29,7 +27,6 @@ public class KeyStoreExpFragment extends BaseFragment implements View.OnClickLis
     private ImageView mImgQR;
     private LinearLayout mLayoutExport, mLayoutCopy;
 
-    private Context mContext;
     private String mKeyStore;
 
 
@@ -50,7 +47,6 @@ public class KeyStoreExpFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mContext = getActivity();
         initView(view);
     }
 
@@ -91,7 +87,7 @@ public class KeyStoreExpFragment extends BaseFragment implements View.OnClickLis
             Bitmap bitmap = QRUtils.createQRCode(mKeyStore, getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQR.setImageBitmap(bitmap);
         } catch (Exception e) {
-            ToastUtil.toast(mContext, getResources().getString(R.string.toast_qr_create_fail));
+            new MsgDialog(getContext(), getString(R.string.toast_qr_create_fail)).setIsHook(false).show();
         }
     }
 
@@ -106,17 +102,17 @@ public class KeyStoreExpFragment extends BaseFragment implements View.OnClickLis
         switch (view.getId()) {
             case R.id.layout_copy:
                 Util.clipboard(getContext(), "", mKeyStore);
-                ToastUtil.toast(getContext(), getResources().getString(R.string.toast_private_key_copied));
+                new MsgDialog(getContext(), getString(R.string.toast_keystore_copied)).show();
                 break;
             case R.id.layout_export:
                 BitmapDrawable bmpDrawable = (BitmapDrawable) mImgQR.getDrawable();
                 Bitmap bitmap = bmpDrawable.getBitmap();
                 Boolean saved = ImageUtils.saveImageToGallery(getContext(), bitmap);
-                if (saved) {
-                    ToastUtil.toast(getContext(), getResources().getString(R.string.toast_save_success));
-                } else {
-                    ToastUtil.toast(getContext(), getResources().getString(R.string.toast_save_fail));
+                String msg = getResources().getString(R.string.toast_save_success);
+                if (!saved) {
+                    msg = getResources().getString(R.string.toast_save_fail);
                 }
+                new MsgDialog(getContext(), msg).setIsHook(saved).show();
         }
     }
 }

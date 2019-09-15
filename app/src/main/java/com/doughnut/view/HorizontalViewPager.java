@@ -60,11 +60,10 @@ public class HorizontalViewPager extends ViewPager {
                 dealtY += Math.abs(y - lastY);
                 lastX = x;
                 lastY = y;
-                // 拦截左右滑动
-                if (dealtX < dealtY) {
-                    getParent().requestDisallowInterceptTouchEvent(false);
+                if (dealtX >= dealtY) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
                 } else {
-                    return false;
+                    getParent().requestDisallowInterceptTouchEvent(false);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:

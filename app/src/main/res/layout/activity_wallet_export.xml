@@ -31,19 +31,12 @@
             android:layout_height="1dp"
             android:background="@color/split_color" />
 
-        <ScrollView
+        <com.doughnut.view.NoScrollViewPager
+            android:id="@+id/main_viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:overScrollMode="never">
-
-            <com.doughnut.view.HorizontalViewPager
-                android:id="@+id/main_viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_dialog_bg"
-                android:overScrollMode="never" />
-        </ScrollView>
+            android:background="@drawable/shape_dialog_bg"
+            android:overScrollMode="never" />
     </LinearLayout>
 </LinearLayout>
 
