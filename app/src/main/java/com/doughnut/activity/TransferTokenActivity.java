@@ -25,6 +25,8 @@ import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
+import com.doughnut.config.AppConfig;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
@@ -32,8 +34,10 @@ import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.jccdex.rpc.base.JCallback;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -192,7 +196,39 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                 if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
                     holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), 2));
                 } else {
-                    WalletManager.getInstance(getContext()).getTokenPrice(currency, sum, holder.mTvCNY, null);
+                    WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
+                        @Override
+                        public void onResponse(String code, String response) {
+                            if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                GsonUtil res = new GsonUtil(response);
+                                GsonUtil data = res.getArray("data");
+                                if (data.isValid()) {
+                                    // SWT当前价
+                                    BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                                    // 计算SWT总价值
+                                    BigDecimal value = sum.multiply(cur, new MathContext(2));
+                                    AppConfig.postOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            holder.mTvCNY.setText(String.format("%.2f", value));
+                                        }
+                                    });
+                                }
+                            } else {
+                                AppConfig.postOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        holder.mTvCNY.setText("0.00");
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onFail(Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 holder.mTvTokenCount.setText(balance);
                 holder.mTvTokenFreeze.setText(balanceFreeze);

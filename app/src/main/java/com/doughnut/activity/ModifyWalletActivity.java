@@ -3,6 +3,7 @@ package com.doughnut.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -12,6 +13,7 @@ import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
@@ -19,8 +21,10 @@ import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.jccdex.rpc.base.JCallback;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
     private final static String TAG = "ModifyWalletActivity";
@@ -186,6 +190,38 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletAddress.setText(mWalletAddress);
         String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
         mTvWalletBalance.setText(balance);
-        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), mTvWalletBalanceCNY, null);
+        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new JCallback() {
+            @Override
+            public void onResponse(String code, String response) {
+                if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                    GsonUtil res = new GsonUtil(response);
+                    GsonUtil data = res.getArray("data");
+                    if (data.isValid()) {
+                        // SWT当前价
+                        BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                        // 计算SWT总价值
+                        BigDecimal value = new BigDecimal(balance).multiply(cur, new MathContext(2));
+                        AppConfig.postOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTvWalletBalanceCNY.setText(String.format("%.2f", value));
+                            }
+                        });
+                    }
+                } else {
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTvWalletBalanceCNY.setText("0.00");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFail(Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

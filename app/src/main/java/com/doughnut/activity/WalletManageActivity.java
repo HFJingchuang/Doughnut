@@ -14,14 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.jccdex.rpc.base.JCallback;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,7 +198,39 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
             ViewUtil.EllipsisTextView(holder.mTvName);
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
-            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new BigDecimal(balance), holder.mTvBalanceCNY, null);
+            WalletManager.getInstance(WalletManageActivity.this).getTokenPrice(WConstant.CURRENCY_SWT, new JCallback() {
+                @Override
+                public void onResponse(String code, String response) {
+                    if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                        GsonUtil res = new GsonUtil(response);
+                        GsonUtil data = res.getArray("data");
+                        if (data.isValid()) {
+                            // SWT当前价
+                            BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                            // 计算SWT总价值
+                            BigDecimal value = new BigDecimal(balance).multiply(cur, new MathContext(2));
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.mTvBalanceCNY.setText(String.format("%.2f", value));
+                                }
+                            });
+                        }
+                    } else {
+                        AppConfig.postOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                holder.mTvBalanceCNY.setText("0.00");
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFail(Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         @Override

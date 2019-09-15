@@ -26,6 +26,7 @@ import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.DefaultItemDecoration;
 import com.doughnut.utils.GsonUtil;
@@ -37,6 +38,7 @@ import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.jccdex.rpc.base.JCallback;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -49,6 +51,7 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -348,9 +351,128 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
             deleteHideToken();
             GsonUtil extra = new GsonUtil(dataList);
+            if (isHidden) {
+                if (mTvBalanceCnyDec != null) {
+                    mTvBalanceCny.setText("***");
+                }
+                if (mTvBalanceCny != null) {
+                    mTvBalanceCnyDec.setText("");
+                }
+                if (mTvBalance != null) {
+                    mTvBalance.setText("***");
+                }
+                if (mTvBalanceDec != null) {
+                    mTvBalanceDec.setText("");
+                }
+            } else if (dataList == null || dataList.size() == 0) {
+                if (mTvBalanceCnyDec != null) {
+                    mTvBalanceCny.setText("0.00");
+                }
+                if (mTvBalanceCny != null) {
+                    mTvBalanceCnyDec.setText("");
+                }
+                if (mTvBalance != null) {
+                    mTvBalance.setText("0.00");
+                }
+                if (mTvBalanceDec != null) {
+                    mTvBalanceDec.setText("");
+                }
+            } else {
+                walletManager.getAllTokenPrice(new JCallback() {
+                    // 钱包总价值
+                    BigDecimal values = new BigDecimal(0.00);
+                    // 钱包折换总SWT
+                    BigDecimal number = new BigDecimal(0.00);
+                    BigDecimal swtPrice = new BigDecimal(0.00);
 
-            // SWTC实时总价值
-            walletManager.getAllTokenPrice(dataList, mTvBalanceCny, mTvBalanceCnyDec, mTvBalance, mTvBalanceDec, isHidden);
+                    @Override
+                    public void onResponse(String code, String response) {
+                        if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                            GsonUtil res = new GsonUtil(response);
+                            GsonUtil data = res.getObject("data");
+                            GsonUtil gsonUtil = data.getArray("SWT-CNY");
+                            swtPrice = new BigDecimal(gsonUtil.getString(1, "0"));
+                            for (int i = 0; i < dataList.size(); i++) {
+                                Line line = (Line) dataList.get(i);
+                                // 数量
+                                String balance = line.getBalance();
+                                if (TextUtils.isEmpty(balance)) {
+                                    balance = "0";
+                                }
+                                // 币种
+                                String currency = line.getCurrency();
+                                // 冻结
+                                String freeze = line.getLimit();
+                                if (TextUtils.isEmpty(freeze)) {
+                                    freeze = "0";
+                                }
+
+                                BigDecimal price = new BigDecimal(0);
+                                if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
+                                    price = BigDecimal.ONE;
+                                } else {
+                                    String currency_cny = currency + "-CNY";
+                                    GsonUtil currencyLst = data.getArray(currency_cny);
+                                    if (currencyLst != null) {
+                                        price = new BigDecimal(currencyLst.getString(1, "0"));
+
+                                    }
+                                }
+                                // 当前币种总价值
+                                BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(freeze));
+                                BigDecimal value = sum.multiply(price, new MathContext(2));
+                                values = values.add(value);
+                            }
+                            number = values.divide(swtPrice, 2, BigDecimal.ROUND_HALF_UP);
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mTvBalanceCnyDec != null && mTvBalanceCny != null) {
+                                        String balanceStr = values.stripTrailingZeros().toPlainString();
+                                        if (balanceStr.contains(".")) {
+                                            String[] balanceArr = balanceStr.split("\\.");
+                                            mTvBalanceCny.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                            if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                mTvBalanceCnyDec.setText("." + balanceArr[1]);
+                                            }
+                                        }
+                                    }
+
+                                    if (mTvBalanceDec != null && mTvBalance != null) {
+                                        String balanceStr = number.stripTrailingZeros().toPlainString();
+                                        if (balanceStr.contains(".")) {
+                                            String[] balanceArr = balanceStr.split("\\.");
+                                            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
+                                            if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                mTvBalanceDec.setText("." + balanceArr[1]);
+                                            }
+                                        }
+                                    }
+
+                                }
+                            });
+                        } else {
+                            if (mTvBalanceCnyDec != null) {
+                                mTvBalanceCny.setText("---");
+                            }
+                            if (mTvBalanceCny != null) {
+                                mTvBalanceCnyDec.setText("");
+                            }
+                            if (mTvBalance != null) {
+                                mTvBalance.setText("---");
+                            }
+                            if (mTvBalanceDec != null) {
+                                mTvBalanceDec.setText("");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
             handleTokenRequestResult(params, loadmore, extra);
             if (mSmartRefreshLayout != null) {
                 mSmartRefreshLayout.finishRefresh();
@@ -387,7 +509,39 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
                         holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), 2));
                     } else {
-                        WalletManager.getInstance(getContext()).getTokenPrice(currency, sum, holder.mTvCNY, null);
+                        WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
+                            @Override
+                            public void onResponse(String code, String response) {
+                                if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                    GsonUtil res = new GsonUtil(response);
+                                    GsonUtil data = res.getArray("data");
+                                    if (data.isValid()) {
+                                        // SWT当前价
+                                        BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                                        // 计算SWT总价值
+                                        BigDecimal value = sum.multiply(cur, new MathContext(2));
+                                        AppConfig.postOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                holder.mTvCNY.setText(String.format("%.2f", value));
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    AppConfig.postOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            holder.mTvCNY.setText("0.00");
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onFail(Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
                     holder.mTvTokenCount.setText(balance);
                     holder.mTvTokenFreeze.setText(balanceFreeze);
