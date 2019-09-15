@@ -23,6 +23,7 @@ import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.activity.WalletQRActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
+import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletSp;
 
@@ -41,6 +42,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private TextView mTvAddress;
     private TextView mTvName;
     private TextView mTvLab;
+    private TextView mTvVersion;
     private ImageView mImgQR;
     private String currentWallet;
 
@@ -146,6 +148,8 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mTvName = view.findViewById(R.id.tv_wallet_name);
         mTvLab = view.findViewById(R.id.tv_label);
         mImgQR = view.findViewById(R.id.img_qr);
+        mTvVersion = view.findViewById(R.id.tv_version);
+        mTvVersion.setText(DeviceUtil.getVersionName());
 
         mLayoutManageWallet.setOnClickListener(this);
         mLayoutRecordTransaction.setOnClickListener(this);

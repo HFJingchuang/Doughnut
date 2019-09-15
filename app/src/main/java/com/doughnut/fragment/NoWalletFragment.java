@@ -14,14 +14,14 @@ import com.doughnut.activity.WalletImportActivity;
 import com.zxing.activity.CaptureActivity;
 
 
-public class SplashFragment extends BaseFragment implements View.OnClickListener {
+public class NoWalletFragment extends BaseFragment implements View.OnClickListener {
 
     private LinearLayout mLayoutCreate, mLayoutImport;
     private ImageView mImgScan;
 
-    public static SplashFragment newInstance() {
+    public static NoWalletFragment newInstance() {
         Bundle args = new Bundle();
-        SplashFragment fragment = new SplashFragment();
+        NoWalletFragment fragment = new NoWalletFragment();
         fragment.setArguments(args);
         return fragment;
     }

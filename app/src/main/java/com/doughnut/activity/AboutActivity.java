@@ -5,25 +5,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.update.UpdateTask;
 import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.view.TitleBar;
+import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 
 public class AboutActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;
     private TextView mTvVersion;
-
-    private RelativeLayout mLayoutUserTerms;
-    private RelativeLayout mLayoutPrivliTerms;
+    private ImageView mImgLoad;
     private RelativeLayout mLayoutCheckUpdate;
-
+    private ProgressDrawable mProgressDrawable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,27 +41,28 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         mTvVersion = (TextView) findViewById(R.id.tv_version);
         mTvVersion.setText(getString(R.string.content_version) + DeviceUtil.getVersionName());
 
-        mLayoutUserTerms = (RelativeLayout) findViewById(R.id.layout_use_terms);
-        mLayoutUserTerms.setOnClickListener(this);
-        mLayoutPrivliTerms = (RelativeLayout) findViewById(R.id.layout_privil_terms);
-        mLayoutPrivliTerms.setOnClickListener(this);
         mLayoutCheckUpdate = (RelativeLayout) findViewById(R.id.layout_check_update);
-        mLayoutCheckUpdate.setVisibility(View.GONE);
         mLayoutCheckUpdate.setOnClickListener(this);
-        new UpdateTask().execute(this);
-
+        mImgLoad = findViewById(R.id.img_loading);
+        mProgressDrawable = new ProgressDrawable();
+        mProgressDrawable.setColor(0xff666666);
+        mImgLoad.setImageDrawable(mProgressDrawable);
+        mImgLoad.setVisibility(View.GONE);
     }
 
     @Override
     public void onClick(View view) {
-        if (view == mLayoutUserTerms) {
-            WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_agreement), Constant.service_term_url);
-
-        } else if (view == mLayoutPrivliTerms) {
-            WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_privacy), Constant.privilege_url);
-
-        } else if (view == mLayoutCheckUpdate) {
-            ToastUtil.toast(AboutActivity.this, getString(R.string.toast_latest_version));
+        if (view == mLayoutCheckUpdate) {
+            mProgressDrawable.start();
+            mImgLoad.setVisibility(View.VISIBLE);
+            new UpdateTask().execute(this);
+            AppConfig.postDelayOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressDrawable.stop();
+                    mImgLoad.setVisibility(View.GONE);
+                }
+            }, 30000);
         }
     }
 

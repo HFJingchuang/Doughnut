@@ -15,8 +15,6 @@ import com.doughnut.update.APKDownLoad;
 
 public class UpgradeDialog extends BaseDialog {
 
-    private final static String TAG = "PKDialog";
-
     private TextView mTvUpgrade;
     private String mUpgradeUrl;
 
@@ -31,20 +29,16 @@ public class UpgradeDialog extends BaseDialog {
         setCanceledOnTouchOutside(false);
         setContentView(R.layout.layout_dialog_upgrade);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = -2;
-        lp.height = -2;
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.x = 0;
         lp.y = 0;
         lp.gravity = Gravity.CENTER;
         getWindow().setAttributes(lp);
+        getWindow().setBackgroundDrawableResource(R.color.transparent);
+        getWindow().setDimAmount(0f);
         initView();
     }
-
-    @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-    }
-
 
     private void initView() {
         mTvUpgrade = (TextView) findViewById(R.id.tv_upgrade);
@@ -57,10 +51,6 @@ public class UpgradeDialog extends BaseDialog {
                 }
                 APKDownLoad.downLoad(getContext(), mUpgradeUrl);
                 dismiss();
-//                AppConfig.getContext().clearActivity();
-//                android.os.Process.killProcess(android.os.Process.myPid());
-//                System.exit(0);
-
             }
         });
     }

@@ -198,7 +198,18 @@
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/tv_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/img_go"
+                    android:textColor="@color/color_detail_time"
+                    android:textSize="14sp" />
+
                 <ImageView
+                    android:id="@+id/img_go"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

@@ -56,5 +56,6 @@
     <color name="color_keyStore_tips">#A6A9AD</color>
     <color name="color_export_wallet">#3B6CA6</color>
     <color name="color_main_item">#08021E38</color>
+    <color name="ss">#C5D0F6</color>
 
 </resources>

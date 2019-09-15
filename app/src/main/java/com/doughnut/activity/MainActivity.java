@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -20,7 +19,7 @@ import com.doughnut.config.Constant;
 import com.doughnut.dialog.ImportSuccessDialog;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
-import com.doughnut.fragment.SplashFragment;
+import com.doughnut.fragment.NoWalletFragment;
 import com.doughnut.wallet.WalletManager;
 
 
@@ -160,7 +159,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void hasWallet() {
         if (!WalletManager.getInstance(this).hasWallet()) {
             mFragments = new Fragment[]{
-                    SplashFragment.newInstance(),
+                    NoWalletFragment.newInstance(),
                     MainUserFragment.newInstance()
             };
         } else {

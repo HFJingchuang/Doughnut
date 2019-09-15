@@ -12,11 +12,16 @@ import com.doughnut.config.AppConfig;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletManager;
+import com.yasic.library.particletextview.MovingStrategy.BidiHorizontalStrategy;
+import com.yasic.library.particletextview.Object.ParticleTextViewConfig;
+import com.yasic.library.particletextview.View.ParticleTextView;
 
 public class SplashActivity extends BaseActivity {
 
     private final static String TAG = "SplashActivity";
+    private ParticleTextView mTvSpalsh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,21 @@ public class SplashActivity extends BaseActivity {
         if (!NetUtil.isNetworkAvailable(this)) {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
+        mTvSpalsh = (ParticleTextView) findViewById(R.id.tv_splash);
+        BidiHorizontalStrategy movingStrategy5 = new BidiHorizontalStrategy();
+        ParticleTextViewConfig config1 = new ParticleTextViewConfig.Builder()
+                .setTargetText(getString(R.string.content_splash))
+                .setReleasing(0.03)
+                .setParticleRadius(ViewUtil.dip2px(this, 1))
+                .setTextSize(ViewUtil.dip2px(this, 25))
+                .setMiniDistance(ViewUtil.dip2px(this, 0.02f))
+                .setColumnStep(ViewUtil.dip2px(this, 1))
+                .setRowStep(ViewUtil.dip2px(this, 1))
+                .setIsLoop(false)
+                .setParticleColorArray(new String[]{"#25A886", "#F55758", "#3B6CA6"})
+                .instance();
+        mTvSpalsh.setConfig(config1);
+        mTvSpalsh.startAnimation();
         checkPermission();
     }
 
@@ -91,8 +111,10 @@ public class SplashActivity extends BaseActivity {
     private void permissonSuccess() {
         WalletManager.getInstance(this).getAllTokens();
         AppConfig.postDelayOnUiThread(() -> {
+            mTvSpalsh.setAnimationFrozen();
             MainActivity.startMainActivity(SplashActivity.this);
             SplashActivity.this.finish();
-        }, 1000);
+        }, 3000);
     }
+
 }

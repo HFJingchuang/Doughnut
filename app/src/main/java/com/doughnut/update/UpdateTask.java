@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import com.doughnut.R;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.dialog.UpgradeDialog;
 import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.GsonUtil;
@@ -78,11 +80,11 @@ public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
                     editor.putString("md5", md5);
                     editor.apply();
                 } else {
-                    ToastUtil.toast(mContext, "已是最新版！");
+                    new MsgDialog(mContext, mContext.getResources().getString(R.string.toast_latest_version)).show();
                 }
                 break;
             case RES_ERR:
-                ToastUtil.toast(mContext, "更新信息获取失败！");
+                new MsgDialog(mContext, mContext.getResources().getString(R.string.dialog_update_fail)).show();
                 break;
         }
     }

@@ -41,7 +41,7 @@
     <string name="toast_no_messages">No messages</string>
     <string name="titleBar_scan">Scan</string>
     <string name="dialog_content_scanning">Scanning</string>
-    <string name="content_about_token_pocket">TokenPocket is a mobile light wallet APP designed to provide a safe, secure, easy-to-use, powerful digital asset wallet APP for the average user.</string>
+    <string name="content_about_token_pocket">Doughnut are a mobile light wallet based on TokenPocket open source code, dedicated to the ecological development of SWTC public chain. Thank you for your use.</string>
     <string name="btn_user_agreement">User Agreement</string>
     <string name="btn_privacy">Privacy</string>
     <string name="btn_update_version">Version Update</string>

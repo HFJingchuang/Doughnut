@@ -7,7 +7,7 @@
     <string name="enter_hint_verify">请确认密码</string>
     <string name="btn_create_wallet_done">创建钱包</string>
     <string name="titleBar_about">关于我们</string>
-    <string name="content_version">当前版本:</string>
+    <string name="content_version">当前版本:&#160;</string>
     <string name="titleBar_agreement">使用协议</string>
     <string name="titleBar_privacy">隐私条款</string>
     <string name="toast_latest_version">已经是最新版本</string>
@@ -41,7 +41,7 @@
     <string name="toast_no_messages">空信息</string>
     <string name="titleBar_scan">扫码</string>
     <string name="dialog_content_scanning">正在扫描...</string>
-    <string name="content_about_token_pocket">TokenPocket是一款移动端轻钱包APP，它旨在为普通用户提供一款安全放心，简单好用，功能强大的数字资产钱包应用</string>
+    <string name="content_about_token_pocket">甜甜圈是一款基于TokenPocket开源代码开发的，致力于SWTC公链生态发展的移动端轻钱包。在此，感谢您的使用！</string>
     <string name="btn_user_agreement">使用协议</string>
     <string name="btn_privacy">隐私条款</string>
     <string name="btn_update_version">检测新版本</string>
@@ -198,5 +198,6 @@
     <string name="dialog_import_fail">导入失败</string>
     <string name="dailog_modify_fail">失败，再试一次吧</string>
     <string name="tv_scan_fail">扫描失败！</string>
+    <string name="dialog_update_fail">更新信息获取失败！</string>
 
 </resources>
