@@ -2,13 +2,11 @@ package com.doughnut.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.text.Layout;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +14,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
-import com.doughnut.R;
-import com.doughnut.activity.StartBakupActivity;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.dialog.EditDialog;
-import com.doughnut.dialog.WarnDialog;
 
 
 public class ViewUtil {
@@ -57,51 +49,6 @@ public class ViewUtil {
     public static void showSysAlertDialog(Context context, String title, String message, String cancelTxt, DialogInterface.OnClickListener negListener, String positiveTxt, DialogInterface.OnClickListener listener) {
         new AlertDialog.Builder(context).setTitle(title).setMessage(message).setNegativeButton(cancelTxt, negListener).setPositiveButton(positiveTxt, listener).show();
     }
-
-    public static void showBakupDialog(final Context context, final WalletInfoManager.WData walletData, boolean canCancel, final boolean needVerifyPwd, final String pwdHash) {
-        final WarnDialog warnDialog = new WarnDialog(context, context.getString(R.string.dialog_content_wallet_security), context.getString(R.string.dialog_btn_backup), canCancel,
-                new WarnDialog.OnConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(final Dialog dialog, View view) {
-
-                        if (needVerifyPwd) {
-//                            EditDialog editDialog = new EditDialog(context, new EditDialog.PwdResultListener() {
-//                                @Override
-//                                public void authPwd(String tag, boolean result, String key) {
-//                                    if (result) {
-//                                        if (TextUtils.isEmpty(walletData.words)) {
-//                                            StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
-//                                                    1);
-//                                        } else {
-//                                            StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
-//                                                    2);
-//                                        }
-//                                        dialog.dismiss();
-//                                    } else {
-//                                        ToastUtil.toast(context, context.getString(R.string.toast_password_incorrect));
-//                                    }
-//                                }
-//                            }, pwdHash, "");
-//                            editDialog.show();
-                        } else {
-                            if (TextUtils.isEmpty(walletData.words)) {
-                                StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
-                                        1);
-                            } else {
-                                StartBakupActivity.startBakupWalletStartActivity(context, walletData.waddress,
-                                        2);
-                            }
-                            dialog.dismiss();
-                        }
-                    }
-                });
-        warnDialog.show();
-    }
-
-    public static void showBakupDialog(final Context context, final WalletInfoManager.WData walletData, boolean canCancel) {
-        showBakupDialog(context, walletData, canCancel, false, "");
-    }
-
 
     /**
      * 替换TextView的省略号{...}为星号{***}

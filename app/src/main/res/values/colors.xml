@@ -3,18 +3,11 @@
     <color name="colorPrimary">@color/color_theme</color>
     <color name="colorPrimaryDark">@color/color_theme</color>
     <color name="backgroud_gray">#f9f9f9</color>
-    <color name="tab_text_color_unselected">#c7c7c7</color>
-    <color name="tab_text_color_selected">#2890fe</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="modify_wallet_bottom_textcolor">#929da6</color>
     <color name="split_color">#f0f0f0</color>
 
     <!--复制privatekey 对话框-->
-    <color name="privatekey_bg">#eff3f6</color>
-    <color name="warning_bg">#fbf0ee</color>
-    <color name="warning_stroke_color">#e1a09a</color>
-    <color name="warning_text_color">#c54828</color>
 
     <!--创建钱包-->
 
@@ -22,22 +15,17 @@
     <color name="possible_result_points">#c0ffff00</color>
     <color name="result_view">#b0000000</color>
     <color name="transparent">#00000000</color>
-    <color name="viewfinder_frame">#ff000000</color>
     <color name="viewfinder_laser">#ffff0000</color>
     <color name="viewfinder_mask">#60000000</color>
 
     <!--common-->
     <color name="common_blue">#2890FE</color>
     <color name="common_green">#009688</color>
-    <color name="common_red">#f3474d</color>
     <color name="common_black_fontcolor">#333333</color>
 
-    <color name="color_transparent">#00000000</color>
     <color name="color_white">#FFFFFF</color>
-    <color name="color_white_1">#DDDDDD</color>
     <color name="color_line">#E8E8E8</color>
     <color name="color_text_3">#333333</color>
-    <color name="color_text_80">#808080</color>
     <color name="color_theme">#03162D</color>
 
     <color name="color_split">#D5D2D2</color>

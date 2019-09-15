@@ -72,7 +72,6 @@ public class TransactionRecordActivity extends BaseActivity implements
 
     @Override
     public void onRightClick(View view) {
-        ChangeWalletActivity.startChangeWalletActivity(this);
     }
 
     @Override

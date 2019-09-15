@@ -26,15 +26,9 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     private final static int PRIVATEKEY_INDEX = 0;
     private final static int KEYSTORE_INDEX = 1;
     private ViewPager mMainViewPager;
-
-    //tab
     private LinearLayout mLayoutTabPrivateKey;
     private LinearLayout mLayoutTabKeyStore;
-
     private TextView mTvPrivateKey;
-
-    private EditText mEditPrivateKey;
-
     private TextView mTvKeyStore;
     private TitleBar mTitleBar;
 
@@ -123,14 +117,11 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             }
         });
 
-        //tab
         mLayoutTabPrivateKey = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
         mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
         mLayoutTabPrivateKey.setOnClickListener(this);
         mLayoutTabKeyStore.setOnClickListener(this);
 
-
-        mEditPrivateKey = findViewById(R.id.edt_private_key);
         mTvPrivateKey = (TextView) findViewById(R.id.tv_tab_privatekey);
         mTvKeyStore = (TextView) findViewById(R.id.tv_tab_keystore);
 

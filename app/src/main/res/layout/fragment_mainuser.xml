@@ -37,7 +37,6 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/tv_manage_wallet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -68,7 +67,6 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/tv_transaction_record"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -103,7 +101,6 @@
                 android:background="#ffffff">
 
                 <TextView
-                    android:id="@+id/tv_node"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -133,7 +130,6 @@
                 android:background="#ffffff">
 
                 <TextView
-                    android:id="@+id/tv_language"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -162,7 +158,6 @@
                 android:background="#ffffff">
 
                 <TextView
-                    android:id="@+id/tv_help"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -191,7 +186,6 @@
                 android:background="#ffffff">
 
                 <TextView
-                    android:id="@+id/tv_about"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -222,7 +216,6 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/tv_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"

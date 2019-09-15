@@ -34,7 +34,6 @@
                     android:textSize="@dimen/text_size_13" />
 
                 <android.support.v4.widget.NestedScrollView
-                    android:id="@+id/scroll_key_store"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
                     android:layout_marginTop="20dp"
@@ -69,7 +68,6 @@
                     android:textSize="17sp" />
 
                 <TextView
-                    android:id="@+id/err_wallet_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
