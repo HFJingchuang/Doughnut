@@ -37,12 +37,12 @@ public class SplashActivity extends BaseActivity {
         BidiHorizontalStrategy movingStrategy5 = new BidiHorizontalStrategy();
         ParticleTextViewConfig config1 = new ParticleTextViewConfig.Builder()
                 .setTargetText(getString(R.string.content_splash))
-                .setReleasing(0.03)
+                .setReleasing(0.1)
                 .setParticleRadius(ViewUtil.dip2px(this, 1))
                 .setTextSize(ViewUtil.dip2px(this, 25))
                 .setMiniDistance(ViewUtil.dip2px(this, 0.02f))
-                .setColumnStep(ViewUtil.dip2px(this, 1))
-                .setRowStep(ViewUtil.dip2px(this, 1))
+                .setColumnStep(ViewUtil.dip2px(this, 1f))
+                .setRowStep(ViewUtil.dip2px(this, 1f))
                 .setIsLoop(false)
                 .setParticleColorArray(new String[]{"#25A886", "#F55758", "#3B6CA6"})
                 .instance();
@@ -114,7 +114,7 @@ public class SplashActivity extends BaseActivity {
             mTvSpalsh.setAnimationFrozen();
             MainActivity.startMainActivity(SplashActivity.this);
             SplashActivity.this.finish();
-        }, 3000);
+        }, 1500);
     }
 
 }
