@@ -198,5 +198,8 @@
     <string name="dialog_import_fail">Import Failed</string>
     <string name="dailog_modify_fail">Modification failed</string>
     <string name="tv_scan_fail">Scanning failed!</string>
+    <string name="dialog_update_fail">Failed to update information acquisition</string>
+    <string name="tv_err_key">Private key format error. Please re-enter.</string>
+    <string name="tv_create_fail">Wallet creation failed</string>
 
 </resources>

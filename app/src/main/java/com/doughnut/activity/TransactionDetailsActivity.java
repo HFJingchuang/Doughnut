@@ -22,7 +22,6 @@ import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
 import com.doughnut.dialog.MsgDialog;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
@@ -42,7 +41,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private TextView mTvHash;
     private TextView mTvType;
     private TextView mTvFrom;
+    private ImageView mImgFrom;
     private TextView mTvTo;
+    private ImageView mImgTo;
     private TextView mTvAmount;
     private TextView mTvToken;
     private TextView mTvEntrustAmount, mTvEntrustToken, mTvPayAmount, mTvPayToken, mTvPayAmountNone;
@@ -103,11 +104,15 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mLayoutFrom = findViewById(R.id.layout_from);
         mLayoutFrom.setOnClickListener(this);
         mTvFrom = findViewById(R.id.tv_from);
+        mImgFrom = findViewById(R.id.img_copy_from);
+        mImgFrom.setOnClickListener(this);
 
         mLayoutToV = findViewById(R.id.layout_to_v);
         mLayoutTo = findViewById(R.id.layout_to);
         mLayoutTo.setOnClickListener(this);
         mTvTo = findViewById(R.id.tv_to);
+        mImgTo = findViewById(R.id.img_copy_to);
+        mImgTo.setOnClickListener(this);
 
         mTvAmount = findViewById(R.id.tv_amount);
         mTvToken = findViewById(R.id.tv_token);
@@ -166,6 +171,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             private TextView mTvValue, mTvValueToken;
             private TextView mTvType;
             private ImageView mImgType;
+            private ImageView mImgCopy;
             private TextView mTvTo;
             private String mTo;
 
@@ -187,8 +193,16 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         new MsgDialog(TransactionDetailsActivity.this, getString(R.string.toast_to_cp)).show();
                     }
                 });
-                mTvType = findViewById(R.id.tv_type);
-                mImgType = findViewById(R.id.img_type);
+                mTvType = itemView.findViewById(R.id.tv_type);
+                mImgType = itemView.findViewById(R.id.img_type);
+                mImgCopy = itemView.findViewById(R.id.img_copy1);
+                mImgCopy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Util.clipboard(TransactionDetailsActivity.this, "", mTo);
+                        new MsgDialog(TransactionDetailsActivity.this, getString(R.string.toast_to_cp)).show();
+                    }
+                });
             }
         }
 
@@ -587,10 +601,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 Util.clipboard(this, "", mTvHash.getText().toString());
                 new MsgDialog(this, getString(R.string.toast_hash_cp)).show();
                 break;
+            case R.id.img_copy_from:
             case R.id.layout_from:
                 Util.clipboard(this, "", mFrom);
                 new MsgDialog(this, getString(R.string.toast_from_cp)).show();
                 break;
+            case R.id.img_copy_to:
             case R.id.layout_to:
                 Util.clipboard(this, "", mTo);
                 new MsgDialog(this, getString(R.string.toast_to_cp)).show();

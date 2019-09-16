@@ -84,6 +84,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         if (view == mTvCancel) {
             dismiss();
+            mPwdResultListener.authPwd(false, "");
         } else if (view == mTvOk) {
             if (mPwdResultListener == null) {
                 TLog.e(TAG, "回掉接口空");

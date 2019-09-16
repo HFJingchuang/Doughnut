@@ -92,7 +92,7 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                onBackPressed();
+                finish();
             }
         });
         //tab
@@ -148,7 +148,7 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
     }
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {
-        
+
         public MainViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }

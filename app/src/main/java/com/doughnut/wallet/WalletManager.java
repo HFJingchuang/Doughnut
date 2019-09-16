@@ -202,7 +202,7 @@ public class WalletManager implements IWallet {
     /**
      * 转账
      *
-     * @param password
+     * @param privateKey
      * @param from
      * @param to
      * @param token
@@ -213,7 +213,7 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public boolean transfer(String password, String from, String to, String token, String issuer, String value, String fee, String memo) {
+    public boolean transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
@@ -221,7 +221,7 @@ public class WalletManager implements IWallet {
             amount.setIssuer(issuer);
             amount.setValue(value);
             Transaction tx = JtServer.getInstance(mContext).getRemote().buildPaymentTx(from, to, amount);
-            tx.setSecret(getPrivateKey(password, from));
+            tx.setSecret(privateKey);
             List<String> memos = new ArrayList<String>();
             memos.add(memo);
             tx.addMemo(memos);
@@ -446,6 +446,10 @@ public class WalletManager implements IWallet {
                         GsonUtil tokens = tokenPair.getArray(keys.get(0));
                         for (int j = 0; j < tokens.getLength(); j++) {
                             String[] token = tokens.getString(j, "").split("_");
+                            if (TextUtils.equals(token[0], "CNY")) {
+                                tokenMap.put(token[0], "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or");
+                                break;
+                            }
                             if (token.length == 2) {
                                 tokenMap.put(token[0], token[1]);
                             } else if (token.length == 1) {

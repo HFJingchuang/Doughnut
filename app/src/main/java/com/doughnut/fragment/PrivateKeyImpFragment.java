@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
@@ -36,7 +37,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
 
     private RadioButton mRadioRead;
     private EditText mEdtPrivateKey, mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm;
-    private TextView mTvPolicy, mTvErrPassword, mTvErrPasswordRep;
+    private TextView mTvPolicy, mTvErrKey, mTvErrPassword, mTvErrPasswordRep;
     private ImageView mImgShowRepPwd, mImgShowPwd;
     private LinearLayout mTvShowPwd, mTvShowPwdRep, mLayoutRead;
     private Button mBtnConfirm;
@@ -91,6 +92,48 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
     private void initView(View view, String importKey) {
 
         mEdtPrivateKey = view.findViewById(R.id.edt_private_key);
+        mTvErrKey = view.findViewById(R.id.tv_err_key);
+        mEdtPrivateKey.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (mTvErrKey.isShown()) {
+                    mTvErrKey.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mEdtPrivateKey.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String privateKey = mEdtPrivateKey.getText().toString();
+                    if (TextUtils.isEmpty(privateKey)) {
+                        return;
+                    }
+                    boolean isVaild = Wallet.isValidSecret(privateKey);
+                    if (!isVaild) {
+                        AppConfig.postOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTvErrKey.setVisibility(View.VISIBLE);
+                                mTvErrKey.setText(getString(R.string.tv_err_key));
+                                mEdtPrivateKey.requestFocus();
+                                mEdtPrivateKey.setSelection(privateKey.length());
+                            }
+                        });
+                    }
+                }
+            }
+        });
         mEdtWalletName = view.findViewById(R.id.edt_wallet_name);
         if (!TextUtils.isEmpty(importKey)) {
             mEdtPrivateKey.setText(importKey);
@@ -249,8 +292,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
         boolean isRead = mRadioRead.isChecked();
 
         if (!TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && !isErr
-                && !TextUtils.isEmpty(passwordConfim) && !mTvErrPasswordRep.isShown()
-                && passWord.equals(passwordConfim) && isRead) {
+                && !TextUtils.isEmpty(passwordConfim) && !mTvErrPasswordRep.isShown() && isRead) {
             mBtnConfirm.setEnabled(true);
             mBtnConfirm.setClickable(true);
         } else {
@@ -272,6 +314,20 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
         switch (view.getId()) {
             // 导入按钮
             case R.id.btn_confirm:
+                String passWord = mEdtWalletPwd.getText().toString();
+                String passwordConfim = mEdtWalletPwdConfirm.getText().toString();
+                if (!TextUtils.equals(passWord, passwordConfim)) {
+                    mEdtWalletPwdConfirm.setText("");
+                    mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
+                    mTvErrPasswordRep.setVisibility(View.VISIBLE);
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtWalletPwdConfirm.requestFocus();
+                        }
+                    });
+                    return;
+                }
                 mBtnConfirm.setClickable(false);
                 String privateKey = mEdtPrivateKey.getText().toString();
                 String walletName = mEdtWalletName.getText().toString();

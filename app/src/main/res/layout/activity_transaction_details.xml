@@ -156,7 +156,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginRight="5dp"
-                                    android:layout_toLeftOf="@+id/img_copy"
+                                    android:layout_toLeftOf="@+id/img_copy_from"
                                     android:ellipsize="middle"
                                     android:gravity="center|right"
                                     android:singleLine="true"
@@ -165,7 +165,7 @@
                                     android:textStyle="bold" />
 
                                 <ImageView
-                                    android:id="@+id/img_copy"
+                                    android:id="@+id/img_copy_from"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentRight="true"
@@ -375,7 +375,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginRight="5dp"
-                                    android:layout_toLeftOf="@+id/img_copy1"
+                                    android:layout_toLeftOf="@+id/img_copy_to"
                                     android:ellipsize="middle"
                                     android:gravity="right|center"
                                     android:singleLine="true"
@@ -384,7 +384,7 @@
                                     android:textStyle="bold" />
 
                                 <ImageView
-                                    android:id="@+id/img_copy1"
+                                    android:id="@+id/img_copy_to"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentRight="true"

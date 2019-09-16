@@ -199,5 +199,7 @@
     <string name="dailog_modify_fail">失败，再试一次吧</string>
     <string name="tv_scan_fail">扫描失败！</string>
     <string name="dialog_update_fail">更新信息获取失败！</string>
+    <string name="tv_err_key">私钥格式错误，请重新输入</string>
+    <string name="tv_create_fail">钱包创建失败</string>
 
 </resources>

@@ -17,11 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.jtblk.client.Wallet;
+import com.android.jtblk.client.bean.AccountRelations;
+import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
+import com.doughnut.utils.Util;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -29,6 +32,10 @@ import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
@@ -42,6 +49,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private LinearLayout mLayoutToken;
     private String mBalance;
     private String mIssue;
+    private String mCurrentWallet;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -203,6 +211,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initData() {
+        mCurrentWallet = WalletSp.getInstance(this, "").getCurrentWallet();
         if (getIntent() != null) {
             String address = getIntent().getStringExtra(Constant.RECEIVE_ADDRESS_KEY);
             if (!TextUtils.isEmpty(address)) {
@@ -232,16 +241,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 //                mEdtMemo.setText(memo);
 //            }
         }
-
-        String currentAddr = WalletSp.getInstance(this, "").getCurrentWallet();
-        mBalance = WalletManager.getInstance(this).getSWTBalance(currentAddr);
-        mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, "SWTC"));
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_confirm:
+            case R.id.btn_send:
+                mBtnConfirm.setEnabled(false);
                 sendTranscation();
                 break;
             case R.id.layout_token:
@@ -271,6 +277,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             }
                             new MsgDialog(TokenTransferActivity.this, msg).setIsHook(isSuccess).show();
                         }
+                        AppConfig.postOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mBtnConfirm.setEnabled(true);
+                            }
+                        });
                     }
                 }).show();
     }
@@ -312,16 +324,41 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     /**
      * 获取选择的币种
      */
-    public void getTransferToken() {
+    private void getTransferToken() {
         String fileName = getPackageName() + "_transfer_token";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "");
         if (TextUtils.isEmpty(token)) {
-            mTvTokenName.setText("SWT");
+            token = "SWT";
             mIssue = "";
         } else {
-            mTvTokenName.setText(token);
             mIssue = sharedPreferences.getString("issue", "");
+        }
+        getTransferToken(token);
+    }
+
+    /**
+     * @param token
+     */
+    private void getTransferToken(String token) {
+        // 取得钱包资产
+        AccountRelations accountRelations = WalletManager.getInstance(this).getBalance(mCurrentWallet);
+        if (accountRelations != null && accountRelations.getLines() != null) {
+            List<Line> lines = accountRelations.getLines();
+            // 排除余额为零的token
+            try {
+                for (int i = lines.size() - 1; i >= 0; i--) {
+                    Line line = lines.get(i);
+                    String currency = line.getCurrency();
+                    if (TextUtils.equals(token, currency)) {
+                        mBalance = line.getBalance();
+                        mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+                        mTvTokenName.setText(token);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.PWDUtils;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
@@ -243,8 +244,9 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                     if (Wallet.isValidAddress(address)) {
                         String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
                         CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
+                        finish();
                     } else {
-                        // todo 创建失败提示
+                        new MsgDialog(this, getString(R.string.tv_create_fail)).setIsHook(false).show();
                     }
                 } else {
                     mEdtWalletPwdConfirm.setText("");

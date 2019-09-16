@@ -57,15 +57,16 @@ public class WalletTest {
     @Test
     public void importWalletWithKeyTest() throws Exception {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", addr);
+        boolean res = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        Assert.assertEquals(true, res);
     }
 
     @Test
     public void exportWalletWithQRTest() throws Exception {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        Bitmap qrBitmap = WalletManager.getInstance(appContext).exportWalletWithQR(addr, 500, Color.BLACK);
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        Bitmap qrBitmap = WalletManager.getInstance(appContext).exportWalletWithQR(address, 500, Color.BLACK);
         Assert.assertNotNull(qrBitmap);
     }
 
@@ -73,8 +74,9 @@ public class WalletTest {
     public void getPrivateKeyTest() throws Exception {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        String privateKey1 = WalletManager.getInstance(appContext).getPrivateKey("123456", addr);
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        String privateKey1 = WalletManager.getInstance(appContext).getPrivateKey("123456", address);
         Assert.assertEquals(privateKey1, privateKey);
     }
 
@@ -82,17 +84,18 @@ public class WalletTest {
     public void transferTest() throws Exception {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        String res = WalletManager.getInstance(appContext).transfer("123456", addr, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "", "钱包工具类：转账单元测试");
-        Assert.assertNotNull(res);
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        boolean res = WalletManager.getInstance(appContext).transfer(privateKey, address, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "", "钱包工具类：转账单元测试");
+        Assert.assertEquals(true, res);
     }
 
     @Test
     public void getTansferHishoryTest() throws Exception {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountTx bean = WalletManager.getInstance(appContext).getTransferHistory(addr, new Integer("10"), null);
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        AccountTx bean = WalletManager.getInstance(appContext).getTransferHistory(address, new Integer("10"), null);
         Assert.assertEquals(10, bean.getTransactions().size());
     }
 
@@ -100,8 +103,9 @@ public class WalletTest {
     public void getBalanceTest() throws Exception {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountRelations accountRelations = WalletManager.getInstance(appContext).getBalance(addr);
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        AccountRelations accountRelations = WalletManager.getInstance(appContext).getBalance(address);
         Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", accountRelations.getAccount());
     }
 }

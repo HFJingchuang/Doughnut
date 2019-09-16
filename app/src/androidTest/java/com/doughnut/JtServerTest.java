@@ -27,12 +27,13 @@ public class JtServerTest {
     public void changeServerTest() throws Exception {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        String addr = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountRelations balance = WalletManager.getInstance(appContext).getBalance(addr);
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        AccountRelations balance = WalletManager.getInstance(appContext).getBalance(address);
         Assert.assertEquals(true, JtServer.getInstance(appContext).getRemote().getLocalSign());
 
         JtServer.getInstance(appContext).changeServer("ws://ts5.jingtum.com:5020", false);
-        AccountRelations balance1 = WalletManager.getInstance(appContext).getBalance(addr);
+        AccountRelations balance1 = WalletManager.getInstance(appContext).getBalance(address);
         Assert.assertEquals(false, JtServer.getInstance(appContext).getRemote().getLocalSign());
         Assert.assertNotEquals(balance.getLines().size(), balance1.getLines().size());
     }

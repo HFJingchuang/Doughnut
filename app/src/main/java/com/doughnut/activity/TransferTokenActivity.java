@@ -256,9 +256,8 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
      * 获取可转账的token
      */
     private void getTransferToken() {
-        WalletManager walletManager = WalletManager.getInstance(TransferTokenActivity.this);
         // 取得钱包资产
-        AccountRelations accountRelations = walletManager.getBalance(mCurrentWallet);
+        AccountRelations accountRelations = WalletManager.getInstance(this).getBalance(mCurrentWallet);
         if (accountRelations != null) {
             dataList.clear();
             dataList.addAll(accountRelations.getLines());
