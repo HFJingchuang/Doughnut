@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -84,6 +85,22 @@ public class JtNodeRecordActivity extends BaseActivity implements
 
     @Override
     public void onLeftClick(View view) {
+        saveNode();
+        finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            saveNode();
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private void saveNode() {
         String url;
         String ping;
         if (mSelectedItem != -1) {
@@ -99,13 +116,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         ping = ping.replace("ms", "");
         if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
             JtServer.getInstance(this).changeServer(url);
-            String fileName = getPackageName() + WConstant.SP_SERVER;
-            SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("nodeUrl", url);
-            editor.apply();
         }
-        finish();
     }
 
     @Override

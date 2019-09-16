@@ -3,6 +3,14 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
+    signingConfigs {
+        release {
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+        }
+    }
     defaultConfig {
         applicationId "com.doughnut"
         minSdkVersion 19
@@ -22,10 +30,15 @@ android {
                 // but continue the build even when errors are found:
                 abortOnError false
             }
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.release
+        }
+
     }
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
@@ -60,7 +73,7 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation('com.github.HFJingchuang:jch-jingtum-lib-android:1.0.8', {
+    implementation('com.github.HFJingchuang:jch-jingtum-lib-android:1.1.0', {
         exclude group: 'junit'
     })
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'

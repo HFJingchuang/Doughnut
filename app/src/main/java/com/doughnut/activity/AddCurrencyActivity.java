@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -147,6 +148,24 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         }
         Collections.sort(currencys);
         currencysCopy = (LinkedList<Currency>) currencys.clone();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mIsSingle) {
+                if (mSelectedItem != -1) {
+                    String token = currencys.get(mSelectedItem).getName();
+                    TokenReceiveActivity.startTokenReceiveActivity(this, token);
+                }
+            } else {
+                saveSelectToken();
+            }
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
     @Override

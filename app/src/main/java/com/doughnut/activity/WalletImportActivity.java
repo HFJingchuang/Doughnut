@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -92,16 +93,21 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         context.startActivity(intent);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            MainActivity.startMainActivity(WalletImportActivity.this);
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
     private void initView() {
 
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
-            @Override
-            public void onLeftClick(View view) {
-                onBackPressed();
-            }
-        });
         mTitleBar.setTitle(R.string.titleBar_import_wallet);
         mTitleBar.setTitleTextColor(R.color.color_currency_name);
         mTitleBar.setRightDrawable(R.drawable.ic_scan);
@@ -114,6 +120,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onLeftClick(View view) {
                 MainActivity.startMainActivity(WalletImportActivity.this);
+                finish();
             }
         });
 

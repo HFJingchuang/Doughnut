@@ -77,10 +77,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    public void onBackPressed() {
-        moveTaskToBack(false);
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            moveTaskToBack(false);
+            return false;
+        }
+        return super.dispatchKeyEvent(event);
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

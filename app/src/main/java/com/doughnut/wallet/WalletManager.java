@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
@@ -21,18 +20,15 @@ import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
-import com.doughnut.config.AppConfig;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.Util;
 import com.jccdex.rpc.api.JccConfig;
 import com.jccdex.rpc.api.JccdexInfo;
 import com.jccdex.rpc.base.JCallback;
 import com.jccdex.rpc.url.JccdexUrl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

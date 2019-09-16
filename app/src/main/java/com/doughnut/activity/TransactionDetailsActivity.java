@@ -91,7 +91,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                onBackPressed();
+                finish();
             }
         });
 

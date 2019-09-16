@@ -8,6 +8,8 @@ import android.util.Log;
 import com.android.jtblk.client.Remote;
 import com.android.jtblk.connection.Connection;
 import com.android.jtblk.connection.ConnectionFactory;
+import com.doughnut.utils.FileUtil;
+import com.doughnut.utils.GsonUtil;
 
 public class JtServer {
 
@@ -15,6 +17,8 @@ public class JtServer {
     private static String server = "wss://s.jingtum.com:5020";
     // 测试环境
 //    private static String server = "ws://ts5.jingtum.com:5020";
+    //节点链接状态
+    private static final String STATUS = "OPEN";
     // 是否使用本地签名方式提交交易
     private static Boolean local_sign = true;
     private static Connection conn;
@@ -22,13 +26,14 @@ public class JtServer {
     private static JtServer instance;
     private static Context mContext;
     private static int i = 0;
+    SharedPreferences sharedPreferences;
 
     private JtServer() {
         if (conn != null) {
             this.conn.close();
         }
         String fileName = mContext.getPackageName() + WConstant.SP_SERVER;
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         String nodeUrl = sharedPreferences.getString("nodeUrl", "");
         if (!TextUtils.isEmpty(nodeUrl)) {
             server = nodeUrl;
@@ -36,6 +41,9 @@ public class JtServer {
         try {
             conn = ConnectionFactory.getCollection(server);
             remote = new Remote(conn, local_sign);
+            if (!TextUtils.equals(remote.getStatus(), STATUS)) {
+                pollServer();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,15 +59,48 @@ public class JtServer {
     }
 
     /**
+     * 节点轮询
+     */
+    private void pollServer() {
+        GsonUtil publicNodes = new GsonUtil(FileUtil.getConfigFile(mContext, "publicNode.json"));
+        for (int i = 0; i < publicNodes.getLength(); i++) {
+            conn.close();
+            GsonUtil item = publicNodes.getObject(i);
+            String node = item.getString("node", "");
+            conn = ConnectionFactory.getCollection(node);
+            remote = new Remote(conn, local_sign);
+            if (TextUtils.equals(remote.getStatus(), STATUS)) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("nodeUrl", node);
+                editor.apply();
+                break;
+            }
+        }
+    }
+
+    /**
      * 切换服务节点
      *
      * @param server
      * @param local_sign
      */
     public void changeServer(String server, boolean local_sign) {
-        this.instance = null;
-        this.server = server;
-        this.local_sign = local_sign;
+        try {
+            conn.close();
+            this.server = server;
+            this.local_sign = local_sign;
+            conn = ConnectionFactory.getCollection(server);
+            remote = new Remote(conn, local_sign);
+            if (TextUtils.equals(remote.getStatus(), STATUS)) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("nodeUrl", server);
+                editor.apply();
+            } else {
+                pollServer();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -68,9 +109,23 @@ public class JtServer {
      * @param server
      */
     public void changeServer(String server) {
-        this.instance = null;
-        this.server = server;
+        try {
+            conn.close();
+            this.server = server;
+            conn = ConnectionFactory.getCollection(server);
+            remote = new Remote(conn, local_sign);
+            if (TextUtils.equals(remote.getStatus(), STATUS)) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("nodeUrl", server);
+                editor.apply();
+            } else {
+                pollServer();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     public Remote getRemote() {
         return remote;

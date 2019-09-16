@@ -85,6 +85,7 @@
 
 -dontwarn java.util.concurrent.**
 -keep class java.util.concurrent.**{*;}
+-keep class java.util.TimerTask { *; }
 
 -dontwarn android.support.v4.**
 -keep class android.support.v4.**{*;}
@@ -172,6 +173,12 @@
 -dontwarn org.bouncycastle.x509.**
 -keep class net.i2p.crypto.x509.** { *; }
 -dontwarn net.i2p.crypto.**
+-dontwarn com.alibaba.fastjson.**
+-keep class com.alibaba.fastjson.**{*; }
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *;}
+-dontwarn okio.**
+-dontwarn okhttp3.**
 
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
@@ -214,5 +221,4 @@
   public *;
 }
 
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+-keep class com.android.jtblk.** { *;}
