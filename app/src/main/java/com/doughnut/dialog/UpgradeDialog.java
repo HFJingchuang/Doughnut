@@ -26,10 +26,10 @@ public class UpgradeDialog extends BaseDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setCanceledOnTouchOutside(false);
+        setCanceledOnTouchOutside(true);
         setContentView(R.layout.layout_dialog_upgrade);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.x = 0;
         lp.y = 0;

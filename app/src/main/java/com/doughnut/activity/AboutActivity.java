@@ -62,7 +62,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                     mProgressDrawable.stop();
                     mImgLoad.setVisibility(View.GONE);
                 }
-            }, 30000);
+            }, 10000);
         }
     }
 
