@@ -1,6 +1,5 @@
 package com.doughnut.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import com.doughnut.config.Constant;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.ImageUtils;
 import com.doughnut.utils.QRUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.wallet.WalletSp;
@@ -30,7 +28,6 @@ public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickL
     private ImageView mImgQR;
     private LinearLayout mLayoutExport, mLayoutCopy;
 
-    private Context mContext;
     private String mPrivateKey;
 
     public static PrivateKeyExpFragment newInstance(String walletAddress, String privateKey) {
@@ -51,7 +48,6 @@ public class PrivateKeyExpFragment extends BaseFragment implements View.OnClickL
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mContext = getActivity();
         initView(view);
     }
 

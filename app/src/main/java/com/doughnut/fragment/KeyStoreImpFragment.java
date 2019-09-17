@@ -1,6 +1,5 @@
 package com.doughnut.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -40,7 +39,6 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
     private LinearLayout mTvShowPwd, mLayoutRead;
     private Button mBtnConfirm;
 
-    private Context mContext;
     private boolean isErr;
     private TransformationMethod transformationMethod = new TransformationMethod() {
         @Override
@@ -73,7 +71,6 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mContext = getActivity();
         isErr = false;
         if (getArguments() != null) {
             initView(view, getArguments().getString(Constant.IMPORT_KEY));
@@ -99,9 +96,9 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                 String walletName = mEdtWalletName.getText().toString();
                 String walletPwd = mEdtWalletPwd.getText().toString();
                 // 导入钱包
-                boolean isSuccess = WalletManager.getInstance(mContext).importKeysStore(keyStore, walletPwd, walletName);
+                boolean isSuccess = WalletManager.getInstance(getContext()).importKeysStore(keyStore, walletPwd, walletName);
                 if (isSuccess) {
-                    Intent intent = new Intent(mContext, MainActivity.class);
+                    Intent intent = new Intent(getContext(), MainActivity.class);
                     intent.putExtra(Constant.IMPORT_FLAG, true);
                     intent.putExtra(Constant.WALLET_NAME, walletName);
                     startActivity(intent);
@@ -225,6 +222,6 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
      * 跳转服务条款页面
      */
     private void gotoServiceTermPage() {
-        WebBrowserActivity.startWebBrowserActivity(mContext, getString(R.string.titleBar_service_terms), Constant.service_term_url);
+        WebBrowserActivity.startWebBrowserActivity(getContext(), getString(R.string.titleBar_service_terms), Constant.service_term_url);
     }
 }
