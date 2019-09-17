@@ -8,7 +8,7 @@ import android.webkit.CookieManager;
 import android.webkit.WebView;
 
 
-public class TBWebView extends WebView{
+public class TBWebView extends WebView {
 
     public TBWebView(Context context) {
         super(context);
@@ -56,7 +56,7 @@ public class TBWebView extends WebView{
         getSettings().setDisplayZoomControls(false);
         getSettings().setLoadWithOverviewMode(true);
         getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        getSettings().setAllowFileAccess(true);
+        getSettings().setAllowFileAccess(false);
         getSettings().setUserAgentString(getSettings().getUserAgentString() + " doughnut-Android");
 
     }

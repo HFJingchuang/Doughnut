@@ -36,6 +36,7 @@ public class JSUtil {
     public void init() {
         mWebView = new TBWebView(AppConfig.getContext());
         mWebView.addJavascriptInterface(this, "client");
+        mWebView.getSettings().setAllowFileAccess(false);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -62,7 +63,7 @@ public class JSUtil {
             return;
         }
 
-        if(!isInit) {
+        if (!isInit) {
             return;
         }
 
