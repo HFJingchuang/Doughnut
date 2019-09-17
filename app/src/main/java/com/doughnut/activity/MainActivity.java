@@ -59,7 +59,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
     protected void onResume() {
+        if (getIntent() != null) {
+            boolean isImport = getIntent().getBooleanExtra(Constant.IMPORT_FLAG, false);
+            if (isImport) {
+                String walletName = getIntent().getStringExtra(Constant.WALLET_NAME);
+                ImportSuccessDialog importSuccessDialog = new ImportSuccessDialog(this, walletName);
+                importSuccessDialog.show();
+            }
+        }
         int index = mMainViewPager.getCurrentItem();
         hasWallet();
         notifyRefreshAdapter();
@@ -79,7 +93,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            moveTaskToBack(false);
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            home.addCategory(Intent.CATEGORY_HOME);
+            startActivity(home);
             return false;
         }
         return super.dispatchKeyEvent(event);
@@ -88,7 +105,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            moveTaskToBack(false);
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            home.addCategory(Intent.CATEGORY_HOME);
+            startActivity(home);
             return true;
         } else {
             return super.onKeyDown(keyCode, event);

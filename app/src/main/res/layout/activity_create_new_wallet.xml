@@ -43,6 +43,7 @@
                 android:background="@drawable/shape_dialog_edt"
                 android:hint="@string/enter_hint_wallet_name"
                 android:paddingLeft="17dp"
+                android:singleLine="true"
                 android:textColorHint="@color/color_decoration_inactive"
                 android:textSize="17sp" />
 
