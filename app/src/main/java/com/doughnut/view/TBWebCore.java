@@ -21,7 +21,6 @@ import com.doughnut.R;
 import com.doughnut.utils.ViewUtil;
 
 
-
 public class TBWebCore extends FrameLayout {
 
     public interface WebCoreListener {
@@ -73,7 +72,7 @@ public class TBWebCore extends FrameLayout {
         mWebView.loadUrl(mWebView.getUrl());
     }
 
-    public void setWebCoreListener(WebCoreListener coreListener){
+    public void setWebCoreListener(WebCoreListener coreListener) {
         this.mWebCoreListener = coreListener;
     }
 
@@ -81,12 +80,13 @@ public class TBWebCore extends FrameLayout {
         mProgressbarWebView = (ProgressBar) view.findViewById(R.id.pb_webview);
         mTvErrorView = (TextView) view.findViewById(R.id.web_errorview);
         mWebView = (TBWebView) view.findViewById(R.id.webview);
+        mWebView.getSettings().setAllowFileAccess(false);
         mWebView.setWebChromeClient(new WebChromeClient() {
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-                if(mWebCoreListener != null) {
+                if (mWebCoreListener != null) {
                     mWebCoreListener.onReceivedTitle(title);
                 }
             }
@@ -102,13 +102,13 @@ public class TBWebCore extends FrameLayout {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                if(mTvErrorView.getVisibility() == View.VISIBLE) {
+                if (mTvErrorView.getVisibility() == View.VISIBLE) {
                     mTvErrorView.setVisibility(View.GONE);
                 }
                 if (TextUtils.equals(url, mCurrentUrl) && mProgressbarWebView.getVisibility() == View.GONE) {
                     mProgressbarWebView.setVisibility(View.VISIBLE);
                     mProgressbarWebView.setProgress(0);
-                    if(mWebCoreListener != null) {
+                    if (mWebCoreListener != null) {
                         mWebCoreListener.onPageStarted(url, favicon);
                     }
                 }
@@ -121,7 +121,7 @@ public class TBWebCore extends FrameLayout {
                 if (TextUtils.equals(url, mCurrentUrl) && mProgressbarWebView.getVisibility() == View.VISIBLE) {
                     mProgressbarWebView.setVisibility(View.GONE);
                     mProgressbarWebView.setProgress(0);
-                    if(mWebCoreListener != null) {
+                    if (mWebCoreListener != null) {
                         mWebCoreListener.onPageFinished(url);
                     }
                 }
@@ -131,9 +131,9 @@ public class TBWebCore extends FrameLayout {
             @TargetApi(21)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                if(TextUtils.equals(mCurrentUrl +"/", request.getUrl().toString())) {
+                if (TextUtils.equals(mCurrentUrl + "/", request.getUrl().toString())) {
                     mTvErrorView.setVisibility(View.VISIBLE);
-                    if(mWebCoreListener != null) {
+                    if (mWebCoreListener != null) {
                         mWebCoreListener.onReceiveError(mCurrentUrl);
                     }
                 }
