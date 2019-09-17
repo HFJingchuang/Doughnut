@@ -83,6 +83,14 @@ public class PermissionUtil {
                 for (int i = 0; i < permissions.length; i++) {
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         granted = false;
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[i])) {
+                            mCheckCallback.firEvent(new SimpleCallback.ICallback<CheckCallback2>() {
+                                @Override
+                                public void onFireEvent(CheckCallback2 listener, Object... objects) {
+                                    listener.onPermissionDenied(permissions);
+                                }
+                            });
+                        }
                     }
                 }
 
@@ -207,13 +215,6 @@ public class PermissionUtil {
     public static void doWithPermissionChecked(Activity activity, String[] permissions, CheckTipCallback2 checkCallback) {
         String[] ret = lackPermissions(activity, permissions);
         if (ret != null) {
-            for (int i = 0; i < ret.length; ++i) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, ret[i])) {
-                    checkCallback.onUserOnceDenied(ret);
-                    return;
-                }
-            }
-
             checkCallback.onPermissionDenied(ret);
         } else {
             checkCallback.onPermissionGranted();
@@ -241,7 +242,6 @@ public class PermissionUtil {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                activity.finish();
                 startSelfDetailsSettings(activity);
             }
         });

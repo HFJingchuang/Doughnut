@@ -82,6 +82,7 @@ public class SplashActivity extends BaseActivity {
 
                 @Override
                 public void onPermissionDenied(final String[] lackedPermissions) {
+                    PermissionUtil.getInstance().requestPermissions(SplashActivity.this, lackedPermissions);
                     PermissionUtil.getInstance().attachPermissionCheckCallback(new PermissionUtil.CheckCallback2() {
                         @Override
                         public void onPermissionGranted() {
@@ -95,7 +96,6 @@ public class SplashActivity extends BaseActivity {
                             PermissionUtil.showPermSetDialog(SplashActivity.this, false, lackedPermissions);
                         }
                     });
-                    PermissionUtil.getInstance().requestPermissions(SplashActivity.this, lackedPermissions);
                 }
 
                 @Override
