@@ -6,7 +6,7 @@
                 android:left="2px"
                 android:right="2px"
                 android:top="2px" />
-            <solid android:color="#106A92E7" />
+            <solid android:color="#100D5DAD" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -17,7 +17,7 @@
                 android:left="2px"
                 android:right="2px"
                 android:top="2px" />
-            <solid android:color="#157AA1F1" />
+            <solid android:color="#154881F7" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -28,43 +28,43 @@
                 android:left="2px"
                 android:right="2px"
                 android:top="2px" />
-            <solid android:color="#1582A6F1" />
+            <solid android:color="#155086F7" />
             <corners android:radius="8dp" />
         </shape>
     </item>
-    <item>
-        <shape android:shape="rectangle">
-            <padding
-                android:bottom="2px"
-                android:left="2px"
-                android:right="2px"
-                android:top="2px" />
-            <solid android:color="#156D98F5" />
-            <corners android:radius="8dp" />
-        </shape>
-    </item>
-    <item>
-        <shape android:shape="rectangle">
-            <padding
-                android:bottom="2px"
-                android:left="2px"
-                android:right="2px"
-                android:top="2px" />
-            <solid android:color="#15C2D3F7" />
-            <corners android:radius="8dp" />
-        </shape>
-    </item>
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="#206EEE" />
-            <corners android:radius="8dp" />
-            <padding
-                android:bottom="2px"
-                android:left="2px"
-                android:right="2px"
-                android:top="2px" />
-        </shape>
-    </item>
+    <!--<item>-->
+        <!--<shape android:shape="rectangle">-->
+            <!--<padding-->
+                <!--android:bottom="2px"-->
+                <!--android:left="2px"-->
+                <!--android:right="2px"-->
+                <!--android:top="2px" />-->
+            <!--<solid android:color="#153371F3" />-->
+            <!--<corners android:radius="8dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item>-->
+        <!--<shape android:shape="rectangle">-->
+            <!--<padding-->
+                <!--android:bottom="2px"-->
+                <!--android:left="2px"-->
+                <!--android:right="2px"-->
+                <!--android:top="2px" />-->
+            <!--<solid android:color="#153670F3" />-->
+            <!--<corners android:radius="8dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item>-->
+        <!--<shape android:shape="rectangle">-->
+            <!--<solid android:color="#0B61EE" />-->
+            <!--<corners android:radius="8dp" />-->
+            <!--<padding-->
+                <!--android:bottom="2px"-->
+                <!--android:left="2px"-->
+                <!--android:right="2px"-->
+                <!--android:top="2px" />-->
+        <!--</shape>-->
+    <!--</item>-->
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="8dp" />

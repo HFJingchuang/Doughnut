@@ -23,10 +23,41 @@
         android:inputType="textEmailAddress"
         android:textSize="15sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/view_recycler"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:overScrollMode="never" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_no_transfer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/view_split"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/ic_nothing" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/tv_no_transfer_token"
+                android:textColor="@color/color_receive_hint"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/view_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:overScrollMode="never" />
+    </RelativeLayout>
 </LinearLayout>

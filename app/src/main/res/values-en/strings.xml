@@ -201,5 +201,7 @@
     <string name="dialog_update_fail">Failed to update information acquisition</string>
     <string name="tv_err_key">Private key format error. Please re-enter.</string>
     <string name="tv_create_fail">Wallet creation failed</string>
+    <string name="tv_transfer_err_aomunt">˙Transfer amount cannot be 0</string>
+    <string name="tv_no_transfer_token">No currency available</string>
 
 </resources>

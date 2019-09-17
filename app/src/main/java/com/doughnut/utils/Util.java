@@ -250,7 +250,7 @@ public class Util {
     public static String formatAmount(String amountStr, int scale) {
         try {
             BigDecimal amount = new BigDecimal(amountStr);
-            BigDecimal amountF = amount.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            BigDecimal amountF = amount.setScale(scale, BigDecimal.ROUND_DOWN);
             if (amountF.compareTo(BigDecimal.ZERO) != 0) {
                 return amountF.stripTrailingZeros().toPlainString();
             }

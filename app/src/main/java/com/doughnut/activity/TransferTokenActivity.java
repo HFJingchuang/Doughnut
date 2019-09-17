@@ -53,10 +53,12 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
     private TitleBar mTitleBar;
     private EditText mEdtSearch;
     private RecyclerView mRecyclerView;
+    private LinearLayout mLayoutNoToken;
     private String mCurrentWallet;
     private TransferTokenAdapter mAdapter;
     private ArrayList<Line> dataList;
     private ArrayList<Line> dataListCopy;
+    private final int SCALE = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +114,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
 
             }
         });
-
+        mLayoutNoToken = findViewById(R.id.layout_no_transfer);
         mAdapter = new TransferTokenAdapter();
         mRecyclerView = findViewById(R.id.view_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -190,11 +192,11 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             try {
-                String balance = Util.formatAmount(item.getBalance(), 2);
-                String balanceFreeze = Util.formatAmount(item.getLimit(), 2);
+                String balance = Util.formatAmount(item.getBalance(), SCALE);
+                String balanceFreeze = Util.formatAmount(item.getLimit(), SCALE);
                 BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(balanceFreeze));
                 if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
-                    holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), 2));
+                    holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), SCALE));
                 } else {
                     WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
                         @Override
@@ -206,7 +208,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                                     // SWT当前价
                                     BigDecimal cur = new BigDecimal(data.getString(1, "0"));
                                     // 计算SWT总价值
-                                    BigDecimal value = sum.multiply(cur, new MathContext(2));
+                                    BigDecimal value = sum.multiply(cur, new MathContext(4));
                                     AppConfig.postOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -262,7 +264,11 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
             dataList.clear();
             dataList.addAll(accountRelations.getLines());
         }
-
+        if (dataList == null || dataList.size() == 0) {
+            mLayoutNoToken.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+            return;
+        }
         // 排除余额为零的token
         try {
             for (int i = dataList.size() - 1; i >= 0; i--) {

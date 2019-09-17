@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.jtblk.client.Wallet;
@@ -26,6 +27,7 @@ import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.Util;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -183,7 +185,17 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     if (!TextUtils.isEmpty(input)) {
                         BigDecimal balance = new BigDecimal(mBalance);
                         BigDecimal amount = new BigDecimal(input);
-                        if (balance.compareTo(amount) < 0 && !mTvErrAddr.isShown()) {
+                        if (amount.compareTo(BigDecimal.ZERO) == 0) {
+                            mTvErrAmount.setText(getString(R.string.tv_transfer_err_aomunt));
+                            mTvErrAmount.setVisibility(View.VISIBLE);
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mEdtTransferNum.requestFocus();
+                                }
+                            });
+                        } else if (balance.compareTo(amount) < 0 && !mTvErrAddr.isShown()) {
+                            mTvErrAmount.setText(getString(R.string.tv_err_amount));
                             mTvErrAmount.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
@@ -253,6 +265,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 //                mEdtMemo.setText(memo);
 //            }
         }
+        getTransferToken();
+//        ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);
     }
 
     @Override
@@ -346,31 +360,41 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         } else {
             mIssue = sharedPreferences.getString("issue", "");
         }
-        getTransferToken(token);
+        setBalance(token);
     }
 
     /**
      * @param token
      */
-    private void getTransferToken(String token) {
+    private void setBalance(String token) {
         // 取得钱包资产
         AccountRelations accountRelations = WalletManager.getInstance(this).getBalance(mCurrentWallet);
         if (accountRelations != null && accountRelations.getLines() != null) {
             List<Line> lines = accountRelations.getLines();
             // 排除余额为零的token
             try {
-                for (int i = lines.size() - 1; i >= 0; i--) {
-                    Line line = lines.get(i);
-                    String currency = line.getCurrency();
-                    if (TextUtils.equals(token, currency)) {
-                        mBalance = line.getBalance();
-                        mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
-                        mTvTokenName.setText(token);
+                if (lines.size() == 0) {
+                    mBalance = "0.00";
+                    mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+                    mTvTokenName.setText(token);
+                } else {
+                    for (int i = lines.size() - 1; i >= 0; i--) {
+                        Line line = lines.get(i);
+                        String currency = line.getCurrency();
+                        if (TextUtils.equals(token, currency)) {
+                            mBalance = Util.formatAmount(line.getBalance(), 4);
+                            mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+                            mTvTokenName.setText(token);
+                        }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            mBalance = "0.00";
+            mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+            mTvTokenName.setText(token);
         }
     }
 }

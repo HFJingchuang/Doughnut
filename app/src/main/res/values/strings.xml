@@ -201,5 +201,7 @@
     <string name="dialog_update_fail">更新信息获取失败！</string>
     <string name="tv_err_key">私钥格式错误，请重新输入</string>
     <string name="tv_create_fail">钱包创建失败</string>
+    <string name="tv_transfer_err_aomunt">˙转账金额不能为0</string>
+    <string name="tv_no_transfer_token">暂无可转币种</string>
 
 </resources>

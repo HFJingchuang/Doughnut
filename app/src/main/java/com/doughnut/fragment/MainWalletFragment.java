@@ -74,6 +74,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private String mCurrentWallet;
     private boolean isHidden;
     private boolean isTokenHidden;
+    private final int SCALE = 4;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -503,11 +504,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             if (!isHidden) {
                 try {
-                    String balance = Util.formatAmount(data.getString("balance", "0"), 2);
-                    String balanceFreeze = Util.formatAmount(data.getString("limit", "0"), 2);
+                    String balance = Util.formatAmount(data.getString("balance", "0"), SCALE);
+                    String balanceFreeze = Util.formatAmount(data.getString("limit", "0"), SCALE);
                     BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(balanceFreeze));
                     if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
-                        holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), 2));
+                        holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), SCALE));
                     } else {
                         WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
                             @Override
@@ -519,7 +520,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                         // SWT当前价
                                         BigDecimal cur = new BigDecimal(data.getString(1, "0"));
                                         // 计算SWT总价值
-                                        BigDecimal value = sum.multiply(cur, new MathContext(2));
+                                        BigDecimal value = sum.multiply(cur, new MathContext(4));
                                         AppConfig.postOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {

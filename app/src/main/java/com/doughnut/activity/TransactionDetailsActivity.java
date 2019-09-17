@@ -73,7 +73,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private String currentAddr;
     private String mFrom;
     private String mTo;
-    private final int SCALE = 4;
+    private final int SCALE = 2;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

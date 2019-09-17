@@ -52,8 +52,6 @@ public class TokenReceiveActivity extends BaseActivity {
     private RelativeLayout mLayoutCopy;
     private LinearLayout mLayoutSave;
     private LinearLayout mLayoutToken;
-    private LinearLayout mLayoutRoot;
-    private ScrollView mViewScroll;
     private String mAddress;
 
     @Override
@@ -79,8 +77,6 @@ public class TokenReceiveActivity extends BaseActivity {
     }
 
     private void initView() {
-        mLayoutRoot = findViewById(R.id.root_view);
-        mViewScroll = findViewById(R.id.view_scroll);
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
         mTitleBar.setTitleBarBackColor(R.color.color_detail_receive);
@@ -148,7 +144,6 @@ public class TokenReceiveActivity extends BaseActivity {
                 AddCurrencyActivity.startActivity(TokenReceiveActivity.this, true);
             }
         });
-        ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);
     }
 
     private void initData() {

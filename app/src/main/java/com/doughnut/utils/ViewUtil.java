@@ -106,7 +106,7 @@ public class ViewUtil {
                         return;
                     }
                     context.getWindow().getCurrentFocus().getGlobalVisibleRect(rect1);
-                    final int px = dip2px(context, 80);
+                    final int px = dip2px(context, 100);
                     if ((rect.bottom < rect1.bottom) || ((rect.bottom - rect1.bottom) < px)) {
                         scrollToView.post(new Runnable() {
                             @Override
