@@ -2,6 +2,7 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -53,6 +54,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 String walletName = getIntent().getStringExtra(Constant.WALLET_NAME);
                 ImportSuccessDialog importSuccessDialog = new ImportSuccessDialog(this, walletName);
                 importSuccessDialog.show();
+                getIntent().removeExtra(Constant.IMPORT_FLAG);
             }
         }
         mMainViewPager.setCurrentItem(getIntent().getIntExtra(Constant.PAGE_INDEX, 0));
@@ -72,11 +74,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 String walletName = getIntent().getStringExtra(Constant.WALLET_NAME);
                 ImportSuccessDialog importSuccessDialog = new ImportSuccessDialog(this, walletName);
                 importSuccessDialog.show();
+                getIntent().removeExtra(Constant.IMPORT_FLAG);
             }
         }
         int index = mMainViewPager.getCurrentItem();
-        hasWallet();
-        notifyRefreshAdapter();
+        judgeState();
         mMainViewPager.setCurrentItem(index);
         super.onResume();
     }
@@ -179,29 +181,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void hasWallet() {
-        if (!WalletManager.getInstance(this).hasWallet()) {
-            mFragments = new Fragment[]{
-                    NoWalletFragment.newInstance(),
-                    MainUserFragment.newInstance()
-            };
-        } else {
-            mFragments = new Fragment[]{
-                    MainWalletFragment.newInstance(),
-                    MainUserFragment.newInstance()
-            };
-        }
-    }
-
-    /**
-     * 通知刷新适配器
-     */
-    private void notifyRefreshAdapter() {
-        if (mMainViewPager != null) {
-            mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
-        }
-    }
-
     private void resetTab() {
         mImgWallet.setImageResource(R.drawable.ic_wallet_noclick);
         mTvWallet.setSelected(false);
@@ -225,6 +204,62 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public int getCount() {
             return mFragments.length;
+        }
+    }
+
+    private void hasWallet() {
+        if (!WalletManager.getInstance(this).hasWallet()) {
+            mFragments = new Fragment[]{
+                    NoWalletFragment.newInstance(),
+                    MainUserFragment.newInstance()
+            };
+        } else {
+            mFragments = new Fragment[]{
+                    MainWalletFragment.newInstance(),
+                    MainUserFragment.newInstance()
+            };
+        }
+    }
+
+    /**
+     * 保存App钱包有无状态
+     *
+     * @param state
+     */
+    private void saveWalletState(boolean state) {
+        String fileName = getPackageName() + "_wallet_state";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("state", state);
+        editor.apply();
+    }
+
+    /**
+     * 判断是否要刷新ViewPager内容
+     */
+    private void judgeState() {
+        String fileName = getPackageName() + "_wallet_state";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        boolean state = sharedPreferences.getBoolean("state", false);
+        boolean isHasWallet = WalletManager.getInstance(this).hasWallet();
+        if (!state && isHasWallet) {
+            mFragments = new Fragment[]{
+                    MainWalletFragment.newInstance(),
+                    MainUserFragment.newInstance()
+            };
+            saveWalletState(isHasWallet);
+            if (mMainViewPager != null) {
+                mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
+            }
+        } else if (state && !isHasWallet) {
+            mFragments = new Fragment[]{
+                    NoWalletFragment.newInstance(),
+                    MainUserFragment.newInstance()
+            };
+            saveWalletState(isHasWallet);
+            if (mMainViewPager != null) {
+                mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
+            }
         }
     }
 }

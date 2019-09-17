@@ -28,6 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:background="@drawable/shape_dialog_edt"
+                    android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:hint="@string/enter_hint_private_key"
                     android:paddingLeft="15dp"
                     android:textColorHint="@color/color_decoration_inactive"

@@ -167,7 +167,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         mTvImportWallet = view.findViewById(R.id.import_wallet);
         mTvImportWallet.setOnClickListener(this);
-        setWalletInfo();
     }
 
     /**

@@ -44,12 +44,12 @@ public class ImportSuccessDialog extends BaseDialog {
         mTvUpgrade = (TextView) findViewById(R.id.tv_upgrade);
         mTvUpgrade.setText(String.format(getContext().getString(R.string.tv_dialog_name), mWalletName));
 
-        // 5秒后关闭
+        // 3秒后关闭
         AppConfig.postDelayOnUiThread(new Runnable() {
             @Override
             public void run() {
                 dismiss();
             }
-        }, 5000);
+        }, 3000);
     }
 }
