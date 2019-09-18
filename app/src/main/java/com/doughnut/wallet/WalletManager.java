@@ -22,13 +22,13 @@ import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.GsonUtil;
 import com.jccdex.rpc.api.JccConfig;
 import com.jccdex.rpc.api.JccdexInfo;
 import com.jccdex.rpc.base.JCallback;
 import com.jccdex.rpc.url.JccdexUrl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -293,8 +293,8 @@ public class WalletManager implements IWallet {
             // 计算swt冻结数量
             Integer freezed = (relationsTrust.getLines().size() + accountOffers.getOffers().size()) * WConstant.FREEZED + WConstant.RESERVED;
             Line swtLine = new Line();
-            BigDecimal valid = new BigDecimal(info.getAccountData().getBalance()).subtract(BigDecimal.valueOf(freezed));
-            swtLine.setBalance(valid.stripTrailingZeros().toPlainString());
+            String valid = CaclUtil.sub(info.getAccountData().getBalance(), String.valueOf(freezed));
+            swtLine.setBalance(valid);
             swtLine.setCurrency(WConstant.CURRENCY_SWT);
             swtLine.setLimit(String.valueOf(freezed));
             relationsTrust.getLines().add(swtLine);
@@ -314,10 +314,12 @@ public class WalletManager implements IWallet {
                     Line line = linesT.get(j);
                     String currency = line.getCurrency();
                     if (TextUtils.equals(getsCurrency, currency)) {
-                        BigDecimal tokenFreeze = new BigDecimal(line.getLimit()).add(new BigDecimal(offers.get(i).getTakerGets().getValue()));
-                        BigDecimal balance = new BigDecimal(line.getBalance()).subtract(tokenFreeze);
-                        line.setBalance(balance.stripTrailingZeros().toPlainString());
-                        line.setLimit(tokenFreeze.stripTrailingZeros().toPlainString());
+                        String offerValue = offers.get(i).getTakerGets().getValue();
+                        String tokenFreeze = CaclUtil.add(line.getLimit(), offerValue);
+                        String balance = CaclUtil.sub(line.getBalance(), offerValue);
+                        line.setBalance(balance);
+                        line.setLimit(tokenFreeze);
+                        break;
                     }
                 }
             }
@@ -330,10 +332,11 @@ public class WalletManager implements IWallet {
                     Line line = linesT.get(j);
                     String currency = line.getCurrency();
                     if (TextUtils.equals(FCurrency, currency)) {
-                        BigDecimal tokenFreeze = new BigDecimal(line.getLimit()).add(new BigDecimal(linesF.get(i).getLimit()));
-                        BigDecimal balance = new BigDecimal(line.getBalance()).subtract(tokenFreeze);
-                        line.setBalance(balance.stripTrailingZeros().toPlainString());
-                        line.setLimit(tokenFreeze.stripTrailingZeros().toPlainString());
+                        String freeze = linesF.get(i).getLimit();
+                        String tokenFreeze = CaclUtil.add(line.getLimit(), freeze);
+                        String balance = CaclUtil.sub(line.getBalance(), freeze);
+                        line.setBalance(balance);
+                        line.setLimit(tokenFreeze);
                     }
                 }
             }

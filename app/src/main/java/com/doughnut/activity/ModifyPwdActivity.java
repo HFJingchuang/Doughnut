@@ -1,8 +1,6 @@
 package com.doughnut.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -24,7 +22,6 @@ import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.PWDUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;

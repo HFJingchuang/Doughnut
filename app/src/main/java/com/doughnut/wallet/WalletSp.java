@@ -22,20 +22,20 @@ public class WalletSp {
     private static WalletSp instance;
     private static Context mContext;
     private static final String WALLET = "wallet";
-    private static SharedPreferences sharedPreferences;
-    private static SharedPreferences.Editor editor;
+    private static SharedPreferences mSharedPreferences;
+    private static SharedPreferences.Editor mEditor;
     private static String mAddress;
 
     private WalletSp() {
     }
 
     public static WalletSp getInstance(Context context, String address) {
-        if (sharedPreferences == null || !sharedPreferences.contains(address)) {
+        if (mSharedPreferences == null || !mSharedPreferences.contains(address)) {
             mContext = context;
             mAddress = address;
             String fileName = context.getPackageName() + "_" + WALLET + "_" + address;
-            sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-            editor = sharedPreferences.edit();
+            mSharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+            mEditor = mSharedPreferences.edit();
             instance = new WalletSp();
         }
         return instance;
@@ -47,8 +47,8 @@ public class WalletSp {
      * @param name
      */
     public void setName(String name) {
-        editor.putString("name", name);
-        editor.apply();
+        mEditor.putString("name", name);
+        mEditor.apply();
     }
 
     /**
@@ -57,7 +57,7 @@ public class WalletSp {
      * @return
      */
     public String getName() {
-        return sharedPreferences.getString("name", null);
+        return mSharedPreferences.getString("name", null);
     }
 
     /**
@@ -66,8 +66,8 @@ public class WalletSp {
      * @param address
      */
     private void setAddress(String address) {
-        editor.putString("address", address);
-        editor.apply();
+        mEditor.putString("address", address);
+        mEditor.apply();
     }
 
     /**
@@ -76,7 +76,7 @@ public class WalletSp {
      * @return
      */
     public String getAddress() {
-        return sharedPreferences.getString("address", null);
+        return mSharedPreferences.getString("address", null);
     }
 
     /**
@@ -85,8 +85,8 @@ public class WalletSp {
      * @param keyStore
      */
     private void setKeyStore(String keyStore) {
-        editor.putString("keyStore", keyStore);
-        editor.apply();
+        mEditor.putString("keyStore", keyStore);
+        mEditor.apply();
     }
 
     /**
@@ -95,7 +95,7 @@ public class WalletSp {
      * @return
      */
     public String getKeyStore() {
-        return sharedPreferences.getString("keyStore", null);
+        return mSharedPreferences.getString("keyStore", null);
     }
 
     /**
@@ -106,8 +106,8 @@ public class WalletSp {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(currentTime);
         String sim = formatter.format(date);
-        editor.putString("createTime", sim);
-        editor.apply();
+        mEditor.putString("createTime", sim);
+        mEditor.apply();
     }
 
     /**
@@ -116,7 +116,7 @@ public class WalletSp {
      * @return
      */
     public String getCreateTime() {
-        return sharedPreferences.getString("createTime", null);
+        return mSharedPreferences.getString("createTime", null);
     }
 
     /**
@@ -160,8 +160,8 @@ public class WalletSp {
      * 删除钱包信息
      */
     public void delete() {
-        editor.clear();
-        editor.apply();
+        mEditor.clear();
+        mEditor.apply();
         String fileName = mContext.getPackageName() + "_wallets";
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

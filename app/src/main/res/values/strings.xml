@@ -203,5 +203,6 @@
     <string name="tv_create_fail">钱包创建失败</string>
     <string name="tv_transfer_err_aomunt">˙转账金额不能为0</string>
     <string name="tv_no_transfer_token">暂无可转币种</string>
+    <string name="tv_no_token">没有可用的%1$s</string>
 
 </resources>

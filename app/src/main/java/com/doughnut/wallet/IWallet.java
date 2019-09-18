@@ -1,16 +1,11 @@
 package com.doughnut.wallet;
 
 import android.graphics.Bitmap;
-import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
-import com.android.jtblk.client.bean.Line;
 import com.android.jtblk.client.bean.Marker;
 import com.jccdex.rpc.base.JCallback;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 public interface IWallet {
 

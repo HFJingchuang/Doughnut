@@ -22,6 +22,7 @@ import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
 import com.doughnut.dialog.MsgDialog;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
@@ -69,16 +70,19 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private TransactionInfoAdapter mTransactionInfoAdapter;
     private JSONArray mEffects = new JSONArray();
 
-    private static Transactions mTransactions;
+    private static Transactions mTransactions = new Transactions();
     private String currentAddr;
     private String mFrom;
     private String mTo;
-    private final int SCALE = 2;
+    private static final int SCALE = 2;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_details);
+        if (getIntent() != null) {
+            mTransactions = getIntent().getParcelableExtra("data");
+        }
         initView();
     }
 
@@ -169,9 +173,11 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             private TextView mTvIndex;
             private TextView mTvEntrustAmount, mTvEntrustToken, mTvPayAmount, mTvPayToken;
             private TextView mTvValue, mTvValueToken;
+            private RelativeLayout mLayoutType;
             private TextView mTvType;
             private ImageView mImgType;
             private ImageView mImgCopy;
+            private RelativeLayout mLayoutTo;
             private TextView mTvTo;
             private String mTo;
 
@@ -185,6 +191,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mTvPayToken = itemView.findViewById(R.id.tv_pay_token);
                 mTvValue = itemView.findViewById(R.id.tv_value);
                 mTvValueToken = itemView.findViewById(R.id.tv_value_token);
+                mLayoutTo = itemView.findViewById(R.id.layout_to_v);
                 mTvTo = itemView.findViewById(R.id.tv_to);
                 mTvTo.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -193,6 +200,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         new MsgDialog(TransactionDetailsActivity.this, getString(R.string.toast_to_cp)).show();
                     }
                 });
+                mLayoutType = itemView.findViewById(R.id.layout_type);
                 mTvType = itemView.findViewById(R.id.tv_type);
                 mImgType = itemView.findViewById(R.id.img_type);
                 mImgCopy = itemView.findViewById(R.id.img_copy1);
@@ -218,9 +226,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 return;
             }
             JSONObject item = mEffects.getJSONObject(position);
-            JSONObject pays = item.getJSONObject("paid");
-            JSONObject gets = item.getJSONObject("got");
-
+            JSONObject pays;
+            JSONObject gets;
             // 首位补零
             String index;
             if (position < 9) {
@@ -230,36 +237,101 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             }
             holder.mTvTitleIndex.setText(index);
             holder.mTvIndex.setText(index);
+            String effectType = item.getString("effect");
+            if (TextUtils.equals(effectType, "offer_cancelled")) {
+                pays = item.getJSONObject("pays");
+                gets = item.getJSONObject("gets");
+                if (pays != null && gets != null) {
+                    holder.mLayoutType.setVisibility(View.VISIBLE);
+                    holder.mLayoutTo.setVisibility(View.GONE);
+                    holder.mTvType.setText(getResources().getString(R.string.tv_offercancel));
+                    holder.mImgType.setImageResource(R.drawable.ic_offer_cancel);
 
-            if (pays != null && gets != null) {
-                String addr = item.getJSONObject("counterparty").getString("account");
-                holder.mTo = addr;
-                holder.mTvTo.setText(addr);
-                ViewUtil.EllipsisTextView(holder.mTvTo);
+                    String currency = pays.getString("currency");
+                    String paysCount = pays.getString("value");
+                    holder.mTvPayAmount.setText(CaclUtil.formatAmount(paysCount, SCALE));
+                    holder.mTvPayToken.setText(currency);
 
-                String currency = pays.getString("currency");
-                String paysCount = pays.getString("value");
-                holder.mTvPayAmount.setText(Util.formatAmount(paysCount, SCALE));
-                holder.mTvPayToken.setText(currency);
+                    currency = gets.getString("currency");
+                    String getsCount = gets.getString("value");
+                    holder.mTvEntrustAmount.setText(CaclUtil.formatAmount(getsCount, SCALE));
+                    holder.mTvEntrustToken.setText(currency);
 
-                currency = gets.getString("currency");
-                String getsCount = gets.getString("value");
-                holder.mTvEntrustAmount.setText(Util.formatAmount(getsCount, SCALE));
-                holder.mTvEntrustToken.setText(currency);
-
-                String price = item.getString("price");
-                if (!TextUtils.isEmpty(price) && price.contains(" ")) {
-                    String[] priceArr = price.split(" ");
-                    if (priceArr.length == 2) {
-                        holder.mTvValue.setText(priceArr[0]);
-                        holder.mTvValueToken.setText(priceArr[1]);
+                    String price = item.getString("price");
+                    if (!TextUtils.isEmpty(price) && price.contains(" ")) {
+                        String[] priceArr = price.split(" ");
+                        if (priceArr.length == 2) {
+                            holder.mTvValue.setText(priceArr[0]);
+                            holder.mTvValueToken.setText(priceArr[1]);
+                        }
                     }
                 }
-            }
-            if (TextUtils.equals(currentAddr, holder.mTo)) {
-                holder.mTvTo.setTextColor(getResources().getColor(R.color.color_ping_normal));
+            } else if (TextUtils.equals(effectType, "offer_created")) {
+                pays = item.getJSONObject("pays");
+                gets = item.getJSONObject("gets");
+                if (pays != null && gets != null) {
+                    holder.mLayoutType.setVisibility(View.VISIBLE);
+                    holder.mLayoutTo.setVisibility(View.GONE);
+                    holder.mTvType.setText(getResources().getString(R.string.tv_offernew));
+                    holder.mImgType.setImageResource(R.drawable.ic_offer_new);
+
+                    String currency = pays.getString("currency");
+                    String paysCount = pays.getString("value");
+                    holder.mTvPayAmount.setText(CaclUtil.formatAmount(paysCount, SCALE));
+                    holder.mTvPayToken.setText(currency);
+
+                    currency = gets.getString("currency");
+                    String getsCount = gets.getString("value");
+                    holder.mTvEntrustAmount.setText(CaclUtil.formatAmount(getsCount, SCALE));
+                    holder.mTvEntrustToken.setText(currency);
+
+                    String price = item.getString("price");
+                    if (!TextUtils.isEmpty(price) && price.contains(" ")) {
+                        String[] priceArr = price.split(" ");
+                        if (priceArr.length == 2) {
+                            holder.mTvValue.setText(priceArr[0]);
+                            holder.mTvValueToken.setText(priceArr[1]);
+                        }
+                    }
+                }
             } else {
-                holder.mTvTo.setTextColor(getResources().getColor(R.color.color_detail_address));
+                pays = item.getJSONObject("paid");
+                gets = item.getJSONObject("got");
+                holder.mLayoutType.setVisibility(View.GONE);
+                holder.mLayoutTo.setVisibility(View.VISIBLE);
+                if (pays != null && gets != null) {
+                    JSONObject counterparty = item.getJSONObject("counterparty");
+                    if (counterparty != null) {
+                        String addr = counterparty.getString("account");
+                        holder.mTo = addr;
+                        holder.mTvTo.setText(addr);
+                        ViewUtil.EllipsisTextView(holder.mTvTo);
+                    }
+
+                    String currency = pays.getString("currency");
+                    String paysCount = pays.getString("value");
+                    holder.mTvPayAmount.setText(CaclUtil.formatAmount(paysCount, SCALE));
+                    holder.mTvPayToken.setText(currency);
+
+                    currency = gets.getString("currency");
+                    String getsCount = gets.getString("value");
+                    holder.mTvEntrustAmount.setText(CaclUtil.formatAmount(getsCount, SCALE));
+                    holder.mTvEntrustToken.setText(currency);
+
+                    String price = item.getString("price");
+                    if (!TextUtils.isEmpty(price) && price.contains(" ")) {
+                        String[] priceArr = price.split(" ");
+                        if (priceArr.length == 2) {
+                            holder.mTvValue.setText(priceArr[0]);
+                            holder.mTvValueToken.setText(priceArr[1]);
+                        }
+                    }
+                }
+                if (TextUtils.equals(currentAddr, holder.mTo)) {
+                    holder.mTvTo.setTextColor(getResources().getColor(R.color.color_ping_normal));
+                } else {
+                    holder.mTvTo.setTextColor(getResources().getColor(R.color.color_detail_address));
+                }
             }
         }
 
@@ -285,7 +357,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             case "sent":
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
-                mTvAmount.setText(Util.formatAmount(mTransactions.getAmount().getValue(), SCALE));
+                mTvAmount.setText(CaclUtil.formatAmount(mTransactions.getAmount().getValue(), SCALE));
                 mTvToken.setText(mTransactions.getAmount().getCurrency());
                 mTo = mTransactions.getCounterparty();
                 mTvTo.setText(mTo);
@@ -296,7 +368,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             case "received":
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
-                mTvAmount.setText(Util.formatAmount(mTransactions.getAmount().getValue(), SCALE));
+                mTvAmount.setText(CaclUtil.formatAmount(mTransactions.getAmount().getValue(), SCALE));
                 mTvToken.setText(mTransactions.getAmount().getCurrency());
                 mFrom = mTransactions.getCounterparty();
                 mTvFrom.setText(mFrom);
@@ -308,27 +380,30 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mTvType.setText(getResources().getString(R.string.tv_offernew));
                 String getsCur = mTransactions.getGets().getCurrency();
                 String paysCur = mTransactions.getPays().getCurrency();
-                BigDecimal getsAmount = new BigDecimal("0");
-                BigDecimal paysAmount = new BigDecimal("0");
+                String getsAmount = "0";
+                String paysAmount = "0";
                 if (mTransactions.getEffects() != null) {
                     mEffects = mTransactions.getEffects();
                     for (int i = mEffects.size() - 1; i >= 0; i--) {
                         JSONObject effect = mEffects.getJSONObject(i);
                         pays = effect.getJSONObject("paid");
                         gets = effect.getJSONObject("got");
-                        if (pays != null && gets != null) {
-                            String currency = pays.getString("currency");
-                            String paysCount = pays.getString("value");
-                            if (TextUtils.equals(currency, paysCur)) {
-                                paysAmount = paysAmount.add(new BigDecimal(paysCount));
+                        String effectType = effect.getString("effect");
+                        if (!TextUtils.equals(effectType, "offer_cancelled") && !TextUtils.equals(effectType, "offer_created")) {
+                            if (pays != null && gets != null) {
+                                String currency = pays.getString("currency");
+                                String paysCount = pays.getString("value");
+                                if (TextUtils.equals(currency, paysCur)) {
+                                    paysAmount = CaclUtil.add(paysAmount, paysCount);
+                                }
+                                currency = gets.getString("currency");
+                                String getsCount = gets.getString("value");
+                                if (TextUtils.equals(currency, getsCur)) {
+                                    getsAmount = CaclUtil.add(getsAmount, getsCount);
+                                }
+                            } else {
+                                mEffects.remove(i);
                             }
-                            currency = gets.getString("currency");
-                            String getsCount = gets.getString("value");
-                            if (TextUtils.equals(currency, getsCur)) {
-                                getsAmount = getsAmount.add(new BigDecimal(getsCount));
-                            }
-                        } else {
-                            mEffects.remove(i);
                         }
                     }
 
@@ -337,34 +412,32 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
 
                     // 成交
-                    if (getsAmount.compareTo(new BigDecimal(0)) != 0 && paysAmount.compareTo(new BigDecimal(0)) != 0) {
-                        String paysValue = paysAmount.stripTrailingZeros().toPlainString();
-                        String getsValue = getsAmount.stripTrailingZeros().toPlainString();
+                    if (!TextUtils.isEmpty(getsAmount) && CaclUtil.compare(getsAmount, "0") != 0 && !TextUtils.isEmpty(paysAmount) && CaclUtil.compare(paysAmount, "0") != 0) {
                         mLayoutTurnoverAmount.setVisibility(View.VISIBLE);
-                        mTvTurnoverAmount.setText(Util.formatAmount(getsValue, SCALE));
+                        mTvTurnoverAmount.setText(CaclUtil.formatAmount(getsAmount, SCALE));
                         mTvTurnoverToken.setText(getsCur);
-                        mTvTurnoverPayAmount.setText(Util.formatAmount(paysValue, SCALE));
+                        mTvTurnoverPayAmount.setText(CaclUtil.formatAmount(paysAmount, SCALE));
                         mTvTurnoverPayToken.setText(paysCur);
 
                         // 成交价格
                         String price;
                         String token;
                         if (TextUtils.equals(WConstant.CURRENCY_CNY, getsCur)) {
-                            price = amountRatio(getsValue, paysValue);
+                            price = amountRatio(getsAmount, paysAmount);
                             token = getsCur;
                         } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysCur)) {
-                            price = amountRatio(paysValue, getsValue);
+                            price = amountRatio(paysAmount, getsAmount);
                             token = paysCur;
                         } else if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
-                            price = amountRatio(getsValue, paysValue);
+                            price = amountRatio(getsAmount, paysAmount);
                             token = getsCur;
                         } else {
-                            price = amountRatio(paysValue, getsValue);
+                            price = amountRatio(paysAmount, getsAmount);
                             token = paysCur;
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
-                            mTvTurnoverValue.setText(Util.formatAmount(price, SCALE));
+                            mTvTurnoverValue.setText(CaclUtil.formatAmount(price, SCALE));
                             mTvTurnoverValueToken.setText(token);
                         }
                     }
@@ -373,9 +446,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
                     mLayoutEntrustAmount.setVisibility(View.VISIBLE);
-                    mTvEntrustAmount.setText(Util.formatAmount(getsValue, SCALE));
+                    mTvEntrustAmount.setText(CaclUtil.formatAmount(getsValue, SCALE));
                     mTvEntrustToken.setText(getsCur);
-                    mTvPayAmount.setText(Util.formatAmount(paysValue, SCALE));
+                    mTvPayAmount.setText(CaclUtil.formatAmount(paysValue, SCALE));
                     mTvPayToken.setText(paysCur);
 
                     // 委托价格
@@ -396,7 +469,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
-                        mTvValue.setText(Util.formatAmount(price, SCALE));
+                        mTvValue.setText(CaclUtil.formatAmount(price, SCALE));
                         mTvValueToken.setText(token);
                     }
 
@@ -412,9 +485,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String paysValue = mTransactions.getPays().getValue();
                     String getsToken = mTransactions.getGets().getCurrency();
                     String paysToken = mTransactions.getPays().getCurrency();
-                    mTvEntrustAmount.setText(Util.formatAmount(getsValue, SCALE));
+                    mTvEntrustAmount.setText(CaclUtil.formatAmount(getsValue, SCALE));
                     mTvEntrustToken.setText(getsToken);
-                    mTvPayAmount.setText(Util.formatAmount(paysValue, SCALE));
+                    mTvPayAmount.setText(CaclUtil.formatAmount(paysValue, SCALE));
                     mTvPayToken.setText(paysToken);
 
                     // 委托价格
@@ -443,42 +516,47 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mTvFrom.setText(mFrom);
                 getsCur = mTransactions.getGets().getCurrency();
                 paysCur = mTransactions.getPays().getCurrency();
-                BigDecimal getsAmount1 = new BigDecimal("0");
-                BigDecimal paysAmount1 = new BigDecimal("0");
+                String getsAmount1 = "0";
+                String paysAmount1 = "0";
                 if (mTransactions.getEffects() != null) {
                     mEffects = mTransactions.getEffects();
+                    int index = 0;
                     for (int i = mEffects.size() - 1; i >= 0; i--) {
                         JSONObject effect = mEffects.getJSONObject(i);
+                        String effectType = effect.getString("effect");
+                        if (!TextUtils.equals(effectType, "offer_cancelled") && !TextUtils.equals(effectType, "offer_created")) {
+                            // 本机帐号记录前置
+                            JSONObject counterparty = effect.getJSONObject("counterparty");
+                            if (counterparty != null) {
+                                String addr = counterparty.getString("account");
+                                if (TextUtils.equals(addr, currentAddr)) {
+                                    while (index < mEffects.size() && i > index) {
+                                        JSONObject jsonObject = mEffects.getJSONObject(index);
+                                        mEffects.set(index, effect);
+                                        mEffects.set(i, jsonObject);
+                                        effect = mEffects.getJSONObject(i);
+                                        index++;
+                                        break;
+                                    }
+                                }
+                            }
 
-                        // 本机帐号移至首位
-                        String addr = effect.getJSONObject("counterparty").getString("account");
-                        if (TextUtils.equals(addr, currentAddr) && i != 0) {
-                            JSONObject jsonObject = mEffects.getJSONObject(0);
-                            mEffects.set(0, effect);
-                            mEffects.set(i, jsonObject);
-                        }
-
-                        pays = effect.getJSONObject("paid");
-                        gets = effect.getJSONObject("got");
-                        if (pays != null && gets != null) {
                             pays = effect.getJSONObject("paid");
                             gets = effect.getJSONObject("got");
                             if (pays != null && gets != null) {
                                 String currency = pays.getString("currency");
                                 String paysCount = pays.getString("value");
                                 if (TextUtils.equals(currency, paysCur)) {
-                                    paysAmount1 = paysAmount1.add(new BigDecimal(paysCount));
+                                    paysAmount1 = CaclUtil.add(paysAmount1, paysCount);
                                 }
                                 currency = gets.getString("currency");
                                 String getsCount = gets.getString("value");
                                 if (TextUtils.equals(currency, getsCur)) {
-                                    getsAmount1 = getsAmount1.add(new BigDecimal(getsCount));
+                                    getsAmount1 = CaclUtil.add(getsAmount1, getsCount);
                                 }
                             } else {
                                 mEffects.remove(i);
                             }
-                        } else {
-                            mEffects.remove(i);
                         }
                     }
 
@@ -487,34 +565,32 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
 
                     // 成交
-                    if (getsAmount1.compareTo(new BigDecimal(0)) != 0 && paysAmount1.compareTo(new BigDecimal(0)) != 0) {
-                        String paysValue = paysAmount1.stripTrailingZeros().toPlainString();
-                        String getsValue = getsAmount1.stripTrailingZeros().toPlainString();
+                    if (!TextUtils.isEmpty(getsAmount1) && CaclUtil.compare(getsAmount1, "0") != 0 && !TextUtils.isEmpty(paysAmount1) && CaclUtil.compare(paysAmount1, "0") != 0) {
                         mLayoutTurnoverAmount.setVisibility(View.VISIBLE);
-                        mTvTurnoverAmount.setText(Util.formatAmount(getsValue, SCALE));
+                        mTvTurnoverAmount.setText(CaclUtil.formatAmount(getsAmount1, SCALE));
                         mTvTurnoverToken.setText(getsCur);
-                        mTvTurnoverPayAmount.setText(Util.formatAmount(paysValue, SCALE));
+                        mTvTurnoverPayAmount.setText(CaclUtil.formatAmount(paysAmount1, SCALE));
                         mTvTurnoverPayToken.setText(paysCur);
 
                         // 成交价格
                         String price;
                         String token;
                         if (TextUtils.equals(WConstant.CURRENCY_CNY, getsCur)) {
-                            price = amountRatio(getsValue, paysValue);
+                            price = amountRatio(getsAmount1, paysAmount1);
                             token = getsCur;
                         } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysCur)) {
-                            price = amountRatio(paysValue, getsValue);
+                            price = amountRatio(paysAmount1, getsAmount1);
                             token = paysCur;
                         } else if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
-                            price = amountRatio(getsValue, paysValue);
+                            price = amountRatio(getsAmount1, paysAmount1);
                             token = getsCur;
                         } else {
-                            price = amountRatio(paysValue, getsValue);
+                            price = amountRatio(paysAmount1, getsAmount1);
                             token = paysCur;
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
-                            mTvTurnoverValue.setText(Util.formatAmount(price, SCALE));
+                            mTvTurnoverValue.setText(CaclUtil.formatAmount(price, SCALE));
                             mTvTurnoverValueToken.setText(token);
                         }
                     }
@@ -523,9 +599,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
                     mLayoutEntrustAmount.setVisibility(View.VISIBLE);
-                    mTvEntrustAmount.setText(Util.formatAmount(getsValue, SCALE));
+                    mTvEntrustAmount.setText(CaclUtil.formatAmount(getsValue, SCALE));
                     mTvEntrustToken.setText(getsCur);
-                    mTvPayAmount.setText(Util.formatAmount(paysValue, SCALE));
+                    mTvPayAmount.setText(CaclUtil.formatAmount(paysValue, SCALE));
                     mTvPayToken.setText(paysCur);
 
                     // 委托价格
@@ -546,7 +622,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
-                        mTvValue.setText(Util.formatAmount(price, SCALE));
+                        mTvValue.setText(CaclUtil.formatAmount(price, SCALE));
                         mTvValueToken.setText(token);
                     }
                 }
@@ -563,7 +639,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             }
             mTvMemo.setText(info);
         }
-        mTvGas.setText(new BigDecimal(mTransactions.getFee()).stripTrailingZeros().toPlainString());
+        mTvGas.setText(CaclUtil.formatAmount(mTransactions.getFee(), 10));
         mTvHash.setText(mTransactions.getHash());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(mTransactions.getDate().longValue() * 1000);
@@ -589,7 +665,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
 
     public static void startTransactionDetailActivity(Context context, Transactions data) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
-        mTransactions = data;
+        intent.putExtra("data", data);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -621,7 +697,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             BigDecimal bi3 = bi1.divide(bi2, 6, BigDecimal.ROUND_HALF_UP);
             return bi3.stripTrailingZeros().toPlainString();
         } else {
-            return "";
+            return "0";
         }
     }
 

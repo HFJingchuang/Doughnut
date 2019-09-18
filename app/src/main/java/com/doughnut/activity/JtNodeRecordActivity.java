@@ -26,7 +26,6 @@ import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.JtServer;
-import com.doughnut.wallet.WConstant;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;

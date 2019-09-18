@@ -15,9 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.Line;
@@ -26,19 +26,15 @@ import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
-import com.doughnut.utils.Util;
-import com.doughnut.utils.ViewUtil;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
@@ -183,9 +179,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 if (!hasFocus) {
                     String input = mEdtTransferNum.getText().toString();
                     if (!TextUtils.isEmpty(input)) {
-                        BigDecimal balance = new BigDecimal(mBalance);
-                        BigDecimal amount = new BigDecimal(input);
-                        if (amount.compareTo(BigDecimal.ZERO) == 0) {
+                        if (CaclUtil.compare(input, "0") == 0) {
                             mTvErrAmount.setText(getString(R.string.tv_transfer_err_aomunt));
                             mTvErrAmount.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
@@ -194,7 +188,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                     mEdtTransferNum.requestFocus();
                                 }
                             });
-                        } else if (balance.compareTo(amount) < 0 && !mTvErrAddr.isShown()) {
+                        } else if (CaclUtil.compare(mBalance, input) < 0 && !mTvErrAddr.isShown()) {
                             mTvErrAmount.setText(getString(R.string.tv_err_amount));
                             mTvErrAmount.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
@@ -255,10 +249,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     });
                 }
             }
-            String token = getIntent().getStringExtra(Constant.TOEKN_NAME);
-            if (!TextUtils.isEmpty(token)) {
-                mTvTokenName.setText(token);
-            }
+//            token = getIntent().getStringExtra(Constant.TOEKN_NAME);
+//            if (!TextUtils.isEmpty(token)) {
+//                mTvTokenName.setText(token);
+//                setBalance(token);
+//                return;
+//            }
 
 //            String memo = getIntent().getStringExtra(Constant.MEMO);
 //            if (!TextUtils.isEmpty(memo)) {
@@ -266,7 +262,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 //            }
         }
         getTransferToken();
-//        ViewUtil.controlKeyboardLayout(mLayoutRoot, mViewScroll, this);
     }
 
     @Override
@@ -319,11 +314,10 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      * @param context
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress,
-                                                  String amount, String token) {
+                                                  String amount) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(Constant.RECEIVE_ADDRESS_KEY, receiveAddress);
         intent.putExtra(Constant.TOEKN_AMOUNT, amount);
-        intent.putExtra(Constant.TOEKN_NAME, token);
         context.startActivity(intent);
     }
 
@@ -357,8 +351,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         if (TextUtils.isEmpty(token)) {
             token = "SWT";
             mIssue = "";
-        } else {
-            mIssue = sharedPreferences.getString("issue", "");
         }
         setBalance(token);
     }
@@ -368,33 +360,37 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      */
     private void setBalance(String token) {
         // 取得钱包资产
+        mBalance = "0.00";
         AccountRelations accountRelations = WalletManager.getInstance(this).getBalance(mCurrentWallet);
         if (accountRelations != null && accountRelations.getLines() != null) {
             List<Line> lines = accountRelations.getLines();
             // 排除余额为零的token
             try {
-                if (lines.size() == 0) {
-                    mBalance = "0.00";
-                    mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
-                    mTvTokenName.setText(token);
-                } else {
-                    for (int i = lines.size() - 1; i >= 0; i--) {
-                        Line line = lines.get(i);
-                        String currency = line.getCurrency();
-                        if (TextUtils.equals(token, currency)) {
-                            mBalance = Util.formatAmount(line.getBalance(), 4);
-                            mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
-                            mTvTokenName.setText(token);
-                        }
+                for (int i = 0; i < lines.size(); i++) {
+                    Line line = lines.get(i);
+                    String currency = line.getCurrency();
+                    if (TextUtils.equals(token, currency)) {
+                        mBalance = CaclUtil.formatAmount(line.getBalance(), 4);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            mBalance = "0.00";
-            mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
-            mTvTokenName.setText(token);
+        }
+        mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+        mTvTokenName.setText(token);
+        if (CaclUtil.compare(mBalance, "0") == 0) {
+            new MsgDialog(this, String.format(getString(R.string.tv_no_token), token)).setIsHook(false).show();
+            return;
+        }
+
+        // 获取issue
+        String fileName = getPackageName() + "_tokens";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String tokens = sharedPreferences.getString("tokens", "");
+        if (!TextUtils.isEmpty(tokens)) {
+            Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
+            mIssue = tokenMap.get(token);
         }
     }
 }

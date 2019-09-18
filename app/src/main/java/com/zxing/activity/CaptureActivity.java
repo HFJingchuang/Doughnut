@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Rect;
@@ -282,7 +283,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
 
             // 钱包地址=>跳转转账页面
             if (Wallet.isValidAddress(resultString)) {
-                TokenTransferActivity.startTokenTransferActivity(this, resultString, "", "");
+                TokenTransferActivity.startTokenTransferActivity(this, resultString, "");
                 CaptureActivity.this.finish();
                 return;
             }
@@ -298,11 +299,17 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             List<String> keys = result.getKey();
 
             // 跳转转账页面
-            if (keys.contains(Constant.RECEIVE_ADDRESS_KEY) && keys.contains(Constant.TOEKN_AMOUNT) && keys.contains(Constant.TOEKN_AMOUNT)) {
+            if (keys.contains(Constant.RECEIVE_ADDRESS_KEY) && keys.contains(Constant.TOEKN_AMOUNT) && keys.contains(Constant.TOEKN_NAME)) {
                 String address = result.getString(Constant.RECEIVE_ADDRESS_KEY, "");
                 String amount = result.getString(Constant.TOEKN_AMOUNT, "");
-                String tokenName = result.getString(Constant.TOEKN_AMOUNT, "");
-                TokenTransferActivity.startTokenTransferActivity(this, address, amount, tokenName);
+                String tokenName = result.getString(Constant.TOEKN_NAME, "");
+                // 本地保存tokens
+                String fileName = getPackageName() + "_transfer_token";
+                SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("token", tokenName);
+                editor.apply();
+                TokenTransferActivity.startTokenTransferActivity(this, address, amount);
             }
             // JSON格式字符串=>跳转KeyStore导入页面
             else if (result.isValid()) {
@@ -324,7 +331,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             new MsgDialog(CaptureActivity.this, getResources().getString(R.string.toast_qr_fail)).setIsHook(false).show();
             return;
         }
-        CaptureActivity.this.finish();
+        finish();
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {

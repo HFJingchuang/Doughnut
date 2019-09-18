@@ -297,39 +297,39 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
      * 保存选中的币种
      */
     private void saveSelectToken() {
-        String fileName = getPackageName() + Constant.SELECT_TOKEN + mCurrentWallet;
-        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        String select = sharedPreferences.getString("select", "");
-        String hide = sharedPreferences.getString("hide", "");
-        List<String> selectList;
-        List<String> hideList;
-        if (TextUtils.isEmpty(select)) {
-            selectList = new ArrayList();
-        } else {
-            if (select.contains(",")) {
-                List<String> arrList = Arrays.asList(select.split(","));
-                selectList = new ArrayList(arrList);
-            } else {
-                selectList = new ArrayList();
-                selectList.add(select);
-            }
-        }
-
-        if (TextUtils.isEmpty(hide)) {
-            hideList = new ArrayList();
-        } else {
-            if (select.contains(",")) {
-                List<String> arrList = Arrays.asList(hide.split(","));
-                hideList = new ArrayList(arrList);
-            } else {
-                hideList = new ArrayList();
-                hideList.add(hide);
-            }
-        }
-
-        // 去掉先前隐藏的币种及重复币种不再添加显示
         if (selectTokens.size() > 0) {
+            String fileName = getPackageName() + Constant.SELECT_TOKEN + mCurrentWallet;
+            SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            String select = sharedPreferences.getString("select", "");
+            String hide = sharedPreferences.getString("hide", "");
+            List<String> selectList;
+            List<String> hideList;
+            if (TextUtils.isEmpty(select)) {
+                selectList = new ArrayList();
+            } else {
+                if (select.contains(",")) {
+                    List<String> arrList = Arrays.asList(select.split(","));
+                    selectList = new ArrayList(arrList);
+                } else {
+                    selectList = new ArrayList();
+                    selectList.add(select);
+                }
+            }
+
+            if (TextUtils.isEmpty(hide)) {
+                hideList = new ArrayList();
+            } else {
+                if (select.contains(",")) {
+                    List<String> arrList = Arrays.asList(hide.split(","));
+                    hideList = new ArrayList(arrList);
+                } else {
+                    hideList = new ArrayList();
+                    hideList.add(hide);
+                }
+            }
+
+            // 去掉先前隐藏的币种及重复币种不再添加显示
             for (int i = selectTokens.size() - 1; i >= 0; i--) {
                 String token = selectTokens.get(i);
                 if (hideList.contains(token)) {

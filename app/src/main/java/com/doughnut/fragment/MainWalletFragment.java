@@ -28,6 +28,7 @@ import com.doughnut.adapter.BaseRecycleAdapter;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.DefaultItemDecoration;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.NetUtil;
@@ -51,7 +52,6 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,7 +74,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private String mCurrentWallet;
     private boolean isHidden;
     private boolean isTokenHidden;
-    private final int SCALE = 4;
+    private static final int SCALE = 4;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -380,10 +380,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             } else {
                 walletManager.getAllTokenPrice(new JCallback() {
                     // 钱包总价值
-                    BigDecimal values = new BigDecimal(0.00);
+                    String values = "0.00";
                     // 钱包折换总SWT
-                    BigDecimal number = new BigDecimal(0.00);
-                    BigDecimal swtPrice = new BigDecimal(0.00);
+                    String number = "0.00";
+                    String swtPrice = "0.00";
 
                     @Override
                     public void onResponse(String code, String response) {
@@ -391,7 +391,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             GsonUtil res = new GsonUtil(response);
                             GsonUtil data = res.getObject("data");
                             GsonUtil gsonUtil = data.getArray("SWT-CNY");
-                            swtPrice = new BigDecimal(gsonUtil.getString(1, "0"));
+                            swtPrice = gsonUtil.getString(1, "0");
+
                             for (int i = 0; i < dataList.size(); i++) {
                                 Line line = (Line) dataList.get(i);
                                 // 数量
@@ -407,48 +408,44 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                     freeze = "0";
                                 }
 
-                                BigDecimal price = new BigDecimal(0);
+                                String price = "0";
                                 if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
-                                    price = BigDecimal.ONE;
+                                    price = "1";
                                 } else {
                                     String currency_cny = currency + "-CNY";
                                     GsonUtil currencyLst = data.getArray(currency_cny);
                                     if (currencyLst != null) {
-                                        price = new BigDecimal(currencyLst.getString(1, "0"));
-
+                                        price = currencyLst.getString(1, "0");
                                     }
                                 }
                                 // 当前币种总价值
-                                BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(freeze));
-                                BigDecimal value = sum.multiply(price, new MathContext(2));
-                                values = values.add(value);
+                                String sum = CaclUtil.add(balance, freeze);
+                                String value = CaclUtil.mul(sum, price);
+                                values = CaclUtil.add(values, value, 2);
                             }
-                            number = values.divide(swtPrice, 2, BigDecimal.ROUND_HALF_UP);
+                            number = CaclUtil.div(values, swtPrice, 2);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (mTvBalanceCnyDec != null && mTvBalanceCny != null) {
-                                        String balanceStr = values.stripTrailingZeros().toPlainString();
-                                        if (balanceStr.contains(".")) {
-                                            String[] balanceArr = balanceStr.split("\\.");
-                                            mTvBalanceCny.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                            if (!TextUtils.isEmpty(balanceArr[1])) {
-                                                mTvBalanceCnyDec.setText("." + balanceArr[1]);
-                                            }
+                                    if (values.contains(".")) {
+                                        String[] balanceArr = values.split("\\.");
+                                        mTvBalanceCny.setText(Util.formatWithComma(Double.parseDouble(balanceArr[0])));
+                                        if (!TextUtils.isEmpty(balanceArr[1])) {
+                                            mTvBalanceCnyDec.setText("." + balanceArr[1]);
                                         }
+                                    } else {
+                                        mTvBalanceCny.setText(Util.formatWithComma(Double.parseDouble(values)));
                                     }
 
-                                    if (mTvBalanceDec != null && mTvBalance != null) {
-                                        String balanceStr = number.stripTrailingZeros().toPlainString();
-                                        if (balanceStr.contains(".")) {
-                                            String[] balanceArr = balanceStr.split("\\.");
-                                            mTvBalance.setText(Util.formatWithComma(Long.parseLong(balanceArr[0])));
-                                            if (!TextUtils.isEmpty(balanceArr[1])) {
-                                                mTvBalanceDec.setText("." + balanceArr[1]);
-                                            }
+                                    if (number.contains(".")) {
+                                        String[] balanceArr = number.split("\\.");
+                                        mTvBalance.setText(Util.formatWithComma(Double.parseDouble(balanceArr[0])));
+                                        if (!TextUtils.isEmpty(balanceArr[1])) {
+                                            mTvBalanceDec.setText("." + balanceArr[1]);
                                         }
+                                    } else {
+                                        mTvBalance.setText(Util.formatWithComma(Double.parseDouble(number)));
                                     }
-
                                 }
                             });
                         } else {
@@ -503,11 +500,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             if (!isHidden) {
                 try {
-                    String balance = Util.formatAmount(data.getString("balance", "0"), SCALE);
-                    String balanceFreeze = Util.formatAmount(data.getString("limit", "0"), SCALE);
-                    BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(balanceFreeze));
+                    String balance = CaclUtil.formatAmount(data.getString("balance", "0"), SCALE);
+                    String balanceFreeze = CaclUtil.formatAmount(data.getString("limit", "0"), SCALE);
+                    String sum = CaclUtil.add(balance, balanceFreeze, SCALE);
                     if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
-                        holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), SCALE));
+                        holder.mTvCNY.setText(sum);
                     } else {
                         WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
                             @Override
@@ -517,13 +514,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                     GsonUtil data = res.getArray("data");
                                     if (data.isValid()) {
                                         // SWT当前价
-                                        BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                                        String cur = data.getString(1, "0");
                                         // 计算SWT总价值
-                                        BigDecimal value = sum.multiply(cur, new MathContext(4));
+                                        String value = CaclUtil.mul(sum, cur, SCALE);
                                         AppConfig.postOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                holder.mTvCNY.setText(String.format("%.2f", value));
+                                                holder.mTvCNY.setText(String.format("%.2f", new BigDecimal(value)));
                                             }
                                         });
                                     }

@@ -21,7 +21,7 @@ import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.Marker;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
-import com.doughnut.utils.Util;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.WalletManager;
@@ -31,7 +31,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +49,7 @@ public class TransactionRecordActivity extends BaseActivity implements
     private Marker marker;
     private List<Transactions> transactions;
     private String currentAddr;
-    private final int SCALE = 2;
+    private static final int SCALE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +170,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mImgIcon.setImageResource(R.drawable.ic_transfer_send);
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
 
-                    String paysH = "<font color=\"#F55758\">" + "-" + Util.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
+                    String paysH = "<font color=\"#F55758\">" + "-" + CaclUtil.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
                     String paysCurH = "<font color=\"#021E38\">" + tr.getAmount().getCurrency() + "</font>";
                     holder.mTvTransactionCount.setText(Html.fromHtml(paysH.concat(paysCurH)));
                     break;
@@ -179,7 +178,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mImgIcon.setImageResource(R.drawable.ic_transfer_receive);
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
 
-                    String paysH1 = "<font color=\"#27B498\">" + "+" + Util.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
+                    String paysH1 = "<font color=\"#27B498\">" + "+" + CaclUtil.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
                     String paysCurH1 = "<font color=\"#021E38\">" + tr.getAmount().getCurrency() + "</font>";
                     holder.mTvTransactionCount.setText(Html.fromHtml(paysH1.concat(paysCurH1)));
                     break;
@@ -189,8 +188,8 @@ public class TransactionRecordActivity extends BaseActivity implements
 
                     String getsCur = tr.getGets().getCurrency();
                     String paysCur = tr.getPays().getCurrency();
-                    BigDecimal getsAmount = new BigDecimal("0");
-                    BigDecimal paysAmount = new BigDecimal("0");
+                    String getsAmount = "0";
+                    String paysAmount = "0";
                     if (tr.getEffects() != null) {
                         for (int i = 0; i < tr.getEffects().size(); i++) {
                             JSONObject effect = tr.getEffects().getJSONObject(i);
@@ -199,19 +198,20 @@ public class TransactionRecordActivity extends BaseActivity implements
                             if (pays != null && gets != null) {
                                 String currency = pays.getString("currency");
                                 if (TextUtils.equals(currency, paysCur)) {
-                                    paysAmount = paysAmount.add(new BigDecimal(pays.getString("value")));
+                                    paysAmount = CaclUtil.add(paysAmount, pays.getString("value"));
                                 }
                                 currency = gets.getString("currency");
                                 if (TextUtils.equals(currency, getsCur)) {
-                                    getsAmount = getsAmount.add(new BigDecimal(gets.getString("value")));
+                                    getsAmount = CaclUtil.add(getsAmount, gets.getString("value"));
                                 }
                             }
                         }
-                        if (getsAmount.equals(new BigDecimal("0")) || paysAmount.equals(new BigDecimal("0"))) {
-                            holder.mTvTransactionCount.setText(formatHtml(Util.formatAmount(tr.getPays().getValue(), SCALE), paysCur, Util.formatAmount(tr.getGets().getValue(), SCALE), getsCur));
+                        if (TextUtils.isEmpty(getsAmount) || CaclUtil.compare(getsAmount, "0") == 0 ||
+                                TextUtils.isEmpty(paysAmount) || CaclUtil.compare(paysAmount, "0") == 0) {
+                            holder.mTvTransactionCount.setText(formatHtml(CaclUtil.formatAmount(tr.getPays().getValue(), SCALE), paysCur, CaclUtil.formatAmount(tr.getGets().getValue(), SCALE), getsCur));
                         } else {
-                            String entrustAmount = Util.formatAmount(getsAmount.stripTrailingZeros().toPlainString(), SCALE);
-                            String payAmount = Util.formatAmount(paysAmount.stripTrailingZeros().toPlainString(), SCALE);
+                            String entrustAmount = CaclUtil.formatAmount(getsAmount, SCALE);
+                            String payAmount = CaclUtil.formatAmount(paysAmount, SCALE);
                             holder.mTvTransactionCount.setText(formatHtml(payAmount, paysCur, entrustAmount, getsCur));
 
                         }
@@ -221,9 +221,9 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mImgIcon.setImageResource(R.drawable.ic_offer_cancel);
                     holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offercancel));
                     if (tr.getGets() != null && tr.getPays() != null) {
-                        String entrustAmount = Util.formatAmount(tr.getGets().getValue(), SCALE);
+                        String entrustAmount = CaclUtil.formatAmount(tr.getGets().getValue(), SCALE);
                         String entrustToken = tr.getGets().getCurrency();
-                        String payAmount = Util.formatAmount(tr.getPays().getValue(), SCALE);
+                        String payAmount = CaclUtil.formatAmount(tr.getPays().getValue(), SCALE);
                         String payToken = tr.getPays().getCurrency();
                         holder.mTvTransactionCount.setText(formatHtml(payAmount, payToken, entrustAmount, entrustToken));
                     } else {
@@ -231,21 +231,43 @@ public class TransactionRecordActivity extends BaseActivity implements
                     }
                     break;
                 case "offereffect":
-                    holder.mImgIcon.setImageResource(R.drawable.ic_offer_cancel);
-                    holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offercancel));
-
+                    holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offereffect));
                     holder.mImgIcon.setImageResource(R.drawable.ic_offer_effect);
                     if (tr.getEffects() != null) {
+                        String getsAmount1 = "0";
+                        String getsCur1 = "";
+                        String paysAmount1 = "0";
+                        String paysCur1 = "";
                         for (int i = 0; i < tr.getEffects().size(); i++) {
                             JSONObject effect = tr.getEffects().getJSONObject(i);
-                            String addr = effect.getJSONObject("counterparty").getString("account");
-                            if (TextUtils.equals(addr, currentAddr)) {
-                                pays = effect.getJSONObject("paid");
-                                gets = effect.getJSONObject("got");
-                                if (pays != null && gets != null) {
-                                    holder.mTvTransactionCount.setText(formatHtml(Util.formatAmount(gets.getString("value"), SCALE), gets.getString("currency"), Util.formatAmount(pays.getString("value"), SCALE), pays.getString("currency")));
+                            JSONObject counterparty = effect.getJSONObject("counterparty");
+                            if (counterparty != null) {
+                                String addr = effect.getJSONObject("counterparty").getString("account");
+                                if (TextUtils.equals(addr, currentAddr)) {
+                                    pays = effect.getJSONObject("paid");
+                                    gets = effect.getJSONObject("got");
+                                    if (pays != null && gets != null) {
+                                        if (TextUtils.isEmpty(getsCur1) && TextUtils.isEmpty(paysCur1)) {
+                                            getsAmount1 = CaclUtil.add(getsAmount1, gets.getString("value"));
+                                            getsCur1 = gets.getString("currency");
+                                            paysAmount1 = CaclUtil.add(paysAmount1, pays.getString("value"));
+                                            paysCur1 = pays.getString("currency");
+                                        } else {
+                                            String currency = pays.getString("currency");
+                                            if (TextUtils.equals(currency, paysCur1)) {
+                                                paysAmount1 = CaclUtil.add(paysAmount1, pays.getString("value"));
+                                            }
+                                            currency = gets.getString("currency");
+                                            if (TextUtils.equals(currency, getsCur1)) {
+                                                getsAmount1 = CaclUtil.add(getsAmount1, gets.getString("value"));
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                        }
+                        if (!TextUtils.isEmpty(getsAmount1) && CaclUtil.compare(getsAmount1, "0") != 0 && !TextUtils.isEmpty(paysAmount1) && CaclUtil.compare(paysAmount1, "0") != 0) {
+                            holder.mTvTransactionCount.setText(formatHtml(CaclUtil.formatAmount(getsAmount1, SCALE), getsCur1, CaclUtil.formatAmount(paysAmount1, SCALE), paysCur1));
                         }
                     }
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());

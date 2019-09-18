@@ -20,12 +20,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.adapter.BaseRecyclerViewHolder;
 import com.doughnut.config.AppConfig;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
@@ -37,11 +37,9 @@ import com.doughnut.wallet.WalletSp;
 import com.jccdex.rpc.base.JCallback;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +56,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
     private TransferTokenAdapter mAdapter;
     private ArrayList<Line> dataList;
     private ArrayList<Line> dataListCopy;
-    private final int SCALE = 4;
+    private static final int SCALE = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,11 +190,9 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             try {
-                String balance = Util.formatAmount(item.getBalance(), SCALE);
-                String balanceFreeze = Util.formatAmount(item.getLimit(), SCALE);
-                BigDecimal sum = new BigDecimal(balance).add(new BigDecimal(balanceFreeze));
+                String sum = CaclUtil.add(item.getBalance(), item.getLimit(), SCALE);
                 if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
-                    holder.mTvCNY.setText(Util.formatAmount(sum.stripTrailingZeros().toPlainString(), SCALE));
+                    holder.mTvCNY.setText(sum);
                 } else {
                     WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
                         @Override
@@ -206,13 +202,13 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                                 GsonUtil data = res.getArray("data");
                                 if (data.isValid()) {
                                     // SWT当前价
-                                    BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                                    String cur = data.getString(1, "0");
                                     // 计算SWT总价值
-                                    BigDecimal value = sum.multiply(cur, new MathContext(4));
+                                    String value = CaclUtil.mul(sum, cur, SCALE);
                                     AppConfig.postOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            holder.mTvCNY.setText(String.format("%.2f", value));
+                                            holder.mTvCNY.setText(String.format("%.2f", new BigDecimal(value)));
                                         }
                                     });
                                 }
@@ -232,6 +228,8 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                         }
                     });
                 }
+                String balance = CaclUtil.formatAmount(item.getBalance(), SCALE);
+                String balanceFreeze = CaclUtil.formatAmount(item.getLimit(), SCALE);
                 holder.mTvTokenCount.setText(balance);
                 holder.mTvTokenFreeze.setText(balanceFreeze);
             } catch (Exception e) {
@@ -273,8 +271,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
         try {
             for (int i = dataList.size() - 1; i >= 0; i--) {
                 Line line = dataList.get(i);
-                BigDecimal balance = new BigDecimal(line.getBalance());
-                if (balance.compareTo(BigDecimal.ZERO) == 0) {
+                if (CaclUtil.compare(line.getBalance(), "0") == 0) {
                     dataList.remove(i);
                 }
             }
@@ -309,18 +306,10 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
      */
     public void setTransferToken(String token) {
         // 本地保存tokens
-        String fileName = getPackageName() + "_tokens";
+        String fileName = getPackageName() + "_transfer_token";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String tokens = sharedPreferences.getString("tokens", "");
-        if (TextUtils.isEmpty(tokens)) {
-            return;
-        }
-        Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
-        fileName = getPackageName() + "_transfer_token";
-        sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("token", token);
-        editor.putString("issue", tokenMap.get(token));
         editor.apply();
     }
 }

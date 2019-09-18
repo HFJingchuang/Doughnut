@@ -13,6 +13,7 @@ import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
+import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
@@ -23,7 +24,6 @@ import com.doughnut.wallet.WalletSp;
 import com.jccdex.rpc.base.JCallback;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
     private final static String TAG = "ModifyWalletActivity";
@@ -188,7 +188,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletName.setText(mWalletName);
         mTvWalletAddress.setText(mWalletAddress);
         String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
-        mTvWalletBalance.setText(balance);
+        mTvWalletBalance.setText(CaclUtil.formatAmount(balance, 4));
         WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new JCallback() {
             @Override
             public void onResponse(String code, String response) {
@@ -197,13 +197,13 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                     GsonUtil data = res.getArray("data");
                     if (data.isValid()) {
                         // SWT当前价
-                        BigDecimal cur = new BigDecimal(data.getString(1, "0"));
+                        String cur = data.getString(1, "0");
                         // 计算SWT总价值
-                        BigDecimal value = new BigDecimal(balance).multiply(cur, new MathContext(2));
+                        String value = CaclUtil.mul(balance, cur, 4);
                         AppConfig.postOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mTvWalletBalanceCNY.setText(String.format("%.2f", value));
+                                mTvWalletBalanceCNY.setText(String.format("%.2f", new BigDecimal(value)));
                             }
                         });
                     }
