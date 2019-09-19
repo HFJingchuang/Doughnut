@@ -473,7 +473,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                             AppConfig.postOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    mTvPrice.setText(String.format("≈￥%.5f", new BigDecimal(swtPrice)));
+                                                    mTvPrice.setText(String.format(getString(R.string.tv_price), new BigDecimal(swtPrice)));
                                                     mTvPrice.setVisibility(View.VISIBLE);
 
                                                     if (values.contains(".")) {

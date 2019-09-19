@@ -3,7 +3,6 @@ package com.doughnut.utils;
 import android.text.TextUtils;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
@@ -176,7 +175,7 @@ public class CaclUtil {
     }
 
     /**
-     * 格式化数字，截取小数位，以便于画面显示
+     * 格式化数字，截取小数位，以便于画面显示(不为零的值截取后为零时默认重新截取4位小数并返回)
      *
      * @param amountStr
      * @param scale
@@ -187,7 +186,13 @@ public class CaclUtil {
             if (!TextUtils.isEmpty(amountStr)) {
                 BigDecimal amount = new BigDecimal(amountStr);
                 BigDecimal amountF = amount.setScale(scale, RoundingMode.DOWN);
-                if (amountF.compareTo(BigDecimal.ZERO) != 0) {
+                if (amountF.compareTo(BigDecimal.ZERO) == 0) {
+                    if (amount.compareTo(BigDecimal.ZERO) != 0) {
+                        return amount.setScale(4, RoundingMode.DOWN).stripTrailingZeros().toPlainString();
+                    } else {
+                        return "0.00";
+                    }
+                } else {
                     return amountF.stripTrailingZeros().toPlainString();
                 }
             }

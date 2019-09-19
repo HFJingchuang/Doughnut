@@ -76,7 +76,7 @@ public class DoughnutFooterView extends InternalAbstract implements RefreshFoote
                 mTitleText.setText(getResources().getString(R.string.srl_footer_loading));
                 break;
             case Refreshing:
-                mTitleText.setText(getResources().getString(R.string.srl_footer_finish));
+                mTitleText.setText(getResources().getString(R.string.srl_footer_refreshing));
                 break;
         }
     }

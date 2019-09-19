@@ -185,7 +185,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
 
         updateData();
     }
-    
+
     class TransactionInfoAdapter extends RecyclerView.Adapter<TransactionInfoAdapter.VH> {
 
 
@@ -458,7 +458,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
-                            mTvTurnoverValue.setText(CaclUtil.formatAmount(price, SCALE));
+                            mTvTurnoverValue.setText(CaclUtil.formatAmount(price, 6));
                             mTvTurnoverValueToken.setText(token);
                         }
                     }
@@ -490,7 +490,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
-                        mTvValue.setText(CaclUtil.formatAmount(price, SCALE));
+                        mTvValue.setText(CaclUtil.formatAmount(price, 6));
                         mTvValueToken.setText(token);
                     }
 
@@ -611,7 +611,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
-                            mTvTurnoverValue.setText(CaclUtil.formatAmount(price, SCALE));
+                            mTvTurnoverValue.setText(CaclUtil.formatAmount(price, 6));
                             mTvTurnoverValueToken.setText(token);
                         }
                     }
@@ -643,7 +643,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
-                        mTvValue.setText(CaclUtil.formatAmount(price, SCALE));
+                        mTvValue.setText(CaclUtil.formatAmount(price, 6));
                         mTvValueToken.setText(token);
                     }
                 }

@@ -80,7 +80,7 @@ public class DoughnutHeaderView extends InternalAbstract implements RefreshHeade
                 stop();
                 mAnimationImg.setImageDrawable(mAnimationDrawableLoad);
                 mAnimationDrawableLoad.start();
-                mTitleText.setText(getResources().getString(R.string.srl_header_loading));
+                mTitleText.setText(getResources().getString(R.string.srl_header_refreshing));
                 break;
         }
     }
