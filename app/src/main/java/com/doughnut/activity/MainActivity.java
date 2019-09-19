@@ -16,11 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.ImportSuccessDialog;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
 import com.doughnut.fragment.NoWalletFragment;
+import com.doughnut.update.UpdateTask;
 import com.doughnut.wallet.WalletManager;
 
 
@@ -46,6 +48,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new UpdateTask().execute();
         hasWallet();
         initView();
         if (getIntent() != null) {

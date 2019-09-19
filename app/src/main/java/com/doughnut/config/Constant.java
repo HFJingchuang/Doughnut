@@ -70,6 +70,6 @@ public class Constant {
     public final static String BLOCK_KEY = "BLOCK";
 
     // 更新信息
-    public final static String UPATE_URL = "https://raw.githubusercontent.com/gwang74/note/master/versionInfo";
+    public final static String UPDATE_URL = "https://raw.githubusercontent.com/gwang74/note/master/versionInfo";
 
 }

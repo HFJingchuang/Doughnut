@@ -36,6 +36,10 @@ public class AppConfig {
         mWifiManager = (WifiManager) application.getSystemService(Context.WIFI_SERVICE);
     }
 
+    public static Activity getCurActivity() {
+        return currentActivity.get();
+    }
+
     public static TApplication getContext() {
         return application;
     }

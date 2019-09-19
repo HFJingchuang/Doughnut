@@ -5,15 +5,18 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.dialog.UpgradeDialog;
 import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Parameter;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,11 +24,10 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * 检查更新AsyncTask
  */
-public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
+public class UpdateTask extends AsyncTask<Parameter, Integer, Integer> {
     private final int RES_NOR = 0;//获取更新信息成功
     private final int RES_ERR = 1;//获取更新信息失败
     private int RE_CONN = 0;
-    private static Context mContext;
     private GsonUtil versionInfo = null;
 
     @Override
@@ -34,9 +36,8 @@ public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(Context... params) {
-        mContext = params[0];
-        InputStream inputStream = connect(mContext);
+    protected Integer doInBackground(Parameter... params) {
+        InputStream inputStream = connect();
         try {
             if (inputStream != null) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -67,40 +68,46 @@ public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
     protected void onPostExecute(Integer result) {
         switch (result) {
             case RES_NOR:
-                int version_Code = versionInfo.getInt("version_Code", 0);
+                int versionCode = versionInfo.getInt("version_Code", 0);
+                String versionName = versionInfo.getString("version_Name", "");
                 String url = versionInfo.getString("url", "");
-                if (version_Code > DeviceUtil.getVersionCode(mContext)) {
-                    new UpgradeDialog(mContext, url).show();
+                if (versionCode > DeviceUtil.getVersionCode(AppConfig.getCurActivity())) {
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new UpgradeDialog(AppConfig.getCurActivity(), url, versionName).show();
+                        }
+                    });
 
                     // 保存md5
                     String md5 = versionInfo.getString("md5", "");
-                    String fileName = mContext.getPackageName() + "_update";
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                    String fileName = AppConfig.getCurActivity().getPackageName() + "_update";
+                    SharedPreferences sharedPreferences = AppConfig.getCurActivity().getSharedPreferences(fileName, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("md5", md5);
                     editor.apply();
                 } else {
-                    new MsgDialog(mContext, mContext.getResources().getString(R.string.toast_latest_version)).show();
+                    EventBus.getDefault().post("LATEST");
                 }
                 break;
             case RES_ERR:
-                new MsgDialog(mContext, mContext.getResources().getString(R.string.dialog_update_fail)).show();
+                EventBus.getDefault().post("UPDATE_FAIL");
                 break;
         }
+        EventBus.getDefault().post("CHECK_FINISH");
     }
 
     /**
      * 网络请求失败重试3次
      *
-     * @param context
      * @return
      */
-    private InputStream connect(Context context) {
+    private InputStream connect() {
         if (RE_CONN == 3) {
             return null;
         }
         HttpsURLConnection conn = null;
-        String URL = Constant.UPATE_URL + "?" + System.currentTimeMillis();
+        String URL = Constant.UPDATE_URL + "?" + System.currentTimeMillis();
         InputStream inputStream;
         try {
             RE_CONN++;
@@ -116,10 +123,10 @@ public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
                 conn.disconnect();
-                inputStream = connect(context);
+                inputStream = connect();
             }
         } catch (Exception e) {
-            inputStream = connect(context);
+            inputStream = connect();
         }
         return inputStream;
     }

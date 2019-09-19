@@ -9,6 +9,7 @@ import android.view.WindowManager;
 
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
+import com.doughnut.update.UpdateTask;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;

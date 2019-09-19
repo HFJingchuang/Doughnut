@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="60dp"
-    android:background="@drawable/shape_dialog_bg"
-    android:orientation="vertical">
+    android:background="@drawable/shape_dialog_update"
+    android:orientation="vertical"
+    android:paddingVertical="10dp">
 
     <TextView
         android:id="@+id/tv_title"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:text="@string/dialog_title_update"
+        android:text="@string/dialog_content_has_new_version"
         android:textColor="@color/color_detail_address"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -22,20 +23,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="@string/dialog_content_has_new_version"
-        android:textColor="@color/color_detail_address"
-        android:textSize="15sp" />
+        android:layout_marginTop="10dp"
+        android:textColor="@color/color_detail_send"
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/tv_upgrade"
-        android:layout_width="110dp"
+        android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/shape_btn_send"
         android:gravity="center"
+        android:paddingHorizontal="20dp"
         android:text="@string/dialog_btn_update"
         android:textColor="@color/white"
         android:textSize="14sp" />

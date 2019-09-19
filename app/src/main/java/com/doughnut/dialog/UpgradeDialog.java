@@ -15,12 +15,14 @@ import com.doughnut.update.APKDownLoad;
 
 public class UpgradeDialog extends BaseDialog {
 
-    private TextView mTvUpgrade;
+    private TextView mTvUpgrade, mTvContent;
     private String mUpgradeUrl;
+    private String mVersionName;
 
-    public UpgradeDialog(@NonNull Context context, String upgradeUrl) {
+    public UpgradeDialog(@NonNull Context context, String upgradeUrl, String versionName) {
         super(context, R.style.DialogStyle);
         this.mUpgradeUrl = upgradeUrl;
+        this.mVersionName = versionName;
     }
 
     @Override
@@ -42,6 +44,8 @@ public class UpgradeDialog extends BaseDialog {
 
     private void initView() {
         mTvUpgrade = (TextView) findViewById(R.id.tv_upgrade);
+        mTvContent = (TextView) findViewById(R.id.tv_content);
+        mTvContent.setText("v " + mVersionName);
         mTvUpgrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
