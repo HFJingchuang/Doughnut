@@ -77,11 +77,11 @@
     <string name="tab_keyStore">keyStore</string>
     <string name="tab_privateKey">Private Key</string>
     <string name="tv_no_transfer">No transfer record</string>
-    <string name="content_exchange_RMB">Exchange of RMB (CNY)</string>
+    <string name="content_exchange_RMB">Exchange of RMB (&#165;)</string>
     <string name="content_add_asset">Add Asset</string>
     <string name="btn_export_wallet">Export Wallet</string>
     <string name="titleBar_export_wallet">Export Wallet</string>
-    <string name="content_wallet_asset">Total Account Assets (SWTC)</string>
+    <string name="content_wallet_asset">Total Account Assets (SWTC</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="tv_current_wallet">Current</string>
     <string name="tv_transferdetail">Transactions</string>

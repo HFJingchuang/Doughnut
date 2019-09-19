@@ -219,10 +219,18 @@ public class Util {
      * 数字每隔三位加个逗号
      *
      * @param amunot
+     * @param scal
      * @return
      */
-    public static String formatWithComma(double amunot) {
-        DecimalFormat df = new DecimalFormat("#,###");
+    public static String formatWithComma(double amunot, int scal) {
+        String pattern = "#,###";
+        if (scal > 0) {
+            pattern = "#,###.";
+            for (int i = 0; i < scal; i++) {
+                pattern = pattern + "0";
+            }
+        }
+        DecimalFormat df = new DecimalFormat(pattern);
         return df.format(amunot);
     }
 

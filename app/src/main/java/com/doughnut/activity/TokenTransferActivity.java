@@ -29,6 +29,7 @@ import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.CaclUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
@@ -205,6 +206,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         });
         mTvTokenName = findViewById(R.id.tv_token_name);
         mTvBalance = findViewById(R.id.tv_balance);
+        mTvBalance.setText("---");
         mLayoutToken = findViewById(R.id.layout_token);
         mLayoutToken.setOnClickListener(this);
         mEdtMemo = findViewById(R.id.edt_memo);
@@ -261,7 +263,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 //                mEdtMemo.setText(memo);
 //            }
         }
-        getTransferToken();
     }
 
     @Override
@@ -291,19 +292,19 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String token = mTvTokenName.getText().toString();
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-                            boolean isSuccess = WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, FEE, memo);
-                            String msg = getString(R.string.dailog_msg_success);
-                            if (!isSuccess) {
-                                msg = getString(R.string.dialog_msg_fail);
-                            }
-                            new MsgDialog(TokenTransferActivity.this, msg).setIsHook(isSuccess).show();
+                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, FEE, memo, new ICallBack() {
+                                @Override
+                                public void onResponse(Object result) {
+                                    boolean isSuccess = (boolean) result;
+                                    String msg = getString(R.string.dailog_msg_success);
+                                    if (!isSuccess) {
+                                        msg = getString(R.string.dialog_msg_fail);
+                                    }
+                                    new MsgDialog(TokenTransferActivity.this, msg).setIsHook(isSuccess).show();
+                                    mBtnConfirm.setEnabled(true);
+                                }
+                            });
                         }
-                        AppConfig.postOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mBtnConfirm.setEnabled(true);
-                            }
-                        });
                     }
                 }).show();
     }
@@ -361,36 +362,49 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private void setBalance(String token) {
         // 取得钱包资产
         mBalance = "0.00";
-        AccountRelations accountRelations = WalletManager.getInstance(this).getBalance(mCurrentWallet);
-        if (accountRelations != null && accountRelations.getLines() != null) {
-            List<Line> lines = accountRelations.getLines();
-            // 排除余额为零的token
-            try {
-                for (int i = 0; i < lines.size(); i++) {
-                    Line line = lines.get(i);
-                    String currency = line.getCurrency();
-                    if (TextUtils.equals(token, currency)) {
-                        mBalance = CaclUtil.formatAmount(line.getBalance(), 4);
+        WalletManager.getInstance(this).getBalance(mCurrentWallet, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                if (response != null) {
+                    AccountRelations accountRelations = (AccountRelations) response;
+                    if (accountRelations != null && accountRelations.getLines() != null) {
+                        List<Line> lines = accountRelations.getLines();
+                        // 排除余额为零的token
+                        try {
+                            for (int i = 0; i < lines.size(); i++) {
+                                Line line = lines.get(i);
+                                String currency = line.getCurrency();
+                                if (TextUtils.equals(token, currency)) {
+                                    mBalance = CaclUtil.formatAmount(line.getBalance(), 4);
+                                }
+                            }
+
+                            mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+                            mTvTokenName.setText(token);
+                            if (CaclUtil.compare(mBalance, "0") == 0) {
+                                new MsgDialog(TokenTransferActivity.this, String.format(getString(R.string.tv_no_token), token)).setIsHook(false).show();
+                                String fileName = getPackageName() + "_transfer_token";
+                                SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("token", "SWT");
+                                editor.apply();
+                                return;
+                            }
+
+                            // 获取issue
+                            String fileName = getPackageName() + "_tokens";
+                            SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                            String tokens = sharedPreferences.getString("tokens", "");
+                            if (!TextUtils.isEmpty(tokens)) {
+                                Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
+                                mIssue = tokenMap.get(token);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
-        mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
-        mTvTokenName.setText(token);
-        if (CaclUtil.compare(mBalance, "0") == 0) {
-            new MsgDialog(this, String.format(getString(R.string.tv_no_token), token)).setIsHook(false).show();
-            return;
-        }
-
-        // 获取issue
-        String fileName = getPackageName() + "_tokens";
-        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String tokens = sharedPreferences.getString("tokens", "");
-        if (!TextUtils.isEmpty(tokens)) {
-            Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
-            mIssue = tokenMap.get(token);
-        }
+        });
     }
 }

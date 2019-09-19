@@ -21,13 +21,13 @@ public interface IWallet {
 
     String getPrivateKey(String password, String address);
 
-    boolean transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo);
+    void transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack);
 
-    AccountTx getTransferHistory(String address, Integer limit, Marker marker);
+    void getTransferHistory(String address, Integer limit, Marker marker, ICallBack callBack);
 
-    AccountRelations getBalance(String address);
+    void getBalance(String address, ICallBack callBack);
 
-    String getSWTBalance(String address);
+    void getSWTBalance(String address, ICallBack callBack);
 
     void getTokenPrice(String base, JCallback jCallback);
 

@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.jtblk.client.bean.AccountRelations;
+import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.EditDialog;
@@ -18,12 +20,15 @@ import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.jccdex.rpc.base.JCallback;
 
-import java.math.BigDecimal;
+import java.util.List;
+
+import static com.doughnut.config.AppConfig.getContext;
 
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
     private final static String TAG = "ModifyWalletActivity";
@@ -187,39 +192,86 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     private void setWalletInfo() {
         mTvWalletName.setText(mWalletName);
         mTvWalletAddress.setText(mWalletAddress);
-        String balance = WalletManager.getInstance(this).getSWTBalance(mWalletAddress);
-        mTvWalletBalance.setText(CaclUtil.formatAmount(balance, 4));
-        WalletManager.getInstance(this).getTokenPrice(WConstant.CURRENCY_SWT, new JCallback() {
+        // 取得钱包资产
+        WalletManager.getInstance(getContext()).getBalance(mWalletAddress, new ICallBack() {
             @Override
-            public void onResponse(String code, String response) {
-                if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
-                    GsonUtil res = new GsonUtil(response);
-                    GsonUtil data = res.getArray("data");
-                    if (data.isValid()) {
-                        // SWT当前价
-                        String cur = data.getString(1, "0");
-                        // 计算SWT总价值
-                        String value = CaclUtil.mul(balance, cur, 4);
-                        AppConfig.postOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mTvWalletBalanceCNY.setText(String.format("%.2f", new BigDecimal(value)));
-                            }
-                        });
-                    }
-                } else {
-                    AppConfig.postOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+            public void onResponse(Object response) {
+                if (response != null) {
+                    AccountRelations accountRelations = (AccountRelations) response;
+                    if (accountRelations != null) {
+                        List<Line> dataList = accountRelations.getLines();
+                        if (dataList != null) {
+                            WalletManager.getInstance(getContext()).getAllTokenPrice(new JCallback() {
+                                // 钱包总价值
+                                String values = "0.00";
+                                // 钱包折换总SWT
+                                String number = "0.00";
+                                String swtPrice = "0.00";
+
+                                @Override
+                                public void onResponse(String code, String response) {
+                                    if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                        GsonUtil res = new GsonUtil(response);
+                                        GsonUtil data = res.getObject("data");
+                                        GsonUtil gsonUtil = data.getArray("SWT-CNY");
+                                        swtPrice = gsonUtil.getString(1, "0");
+
+                                        for (int i = 0; i < dataList.size(); i++) {
+                                            Line line = (Line) dataList.get(i);
+                                            // 数量
+                                            String balance = line.getBalance();
+                                            if (TextUtils.isEmpty(balance)) {
+                                                balance = "0";
+                                            }
+                                            // 币种
+                                            String currency = line.getCurrency();
+                                            // 冻结
+                                            String freeze = line.getLimit();
+                                            if (TextUtils.isEmpty(freeze)) {
+                                                freeze = "0";
+                                            }
+
+                                            String price = "0";
+                                            if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
+                                                price = "1";
+                                            } else {
+                                                String currency_cny = currency + "-CNY";
+                                                GsonUtil currencyLst = data.getArray(currency_cny);
+                                                if (currencyLst != null) {
+                                                    price = currencyLst.getString(1, "0");
+                                                }
+                                            }
+                                            // 当前币种总价值
+                                            String sum = CaclUtil.add(balance, freeze);
+                                            String value = CaclUtil.mul(sum, price);
+                                            values = CaclUtil.add(values, value, 4);
+                                        }
+                                        number = CaclUtil.div(values, swtPrice, 4);
+                                        AppConfig.postOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mTvWalletBalance.setText(Util.formatWithComma(Double.parseDouble(number), 2));
+                                                mTvWalletBalanceCNY.setText(Util.formatWithComma(Double.parseDouble(values), 2));
+
+                                            }
+                                        });
+                                    } else {
+                                        mTvWalletBalance.setText("0.00");
+                                        mTvWalletBalanceCNY.setText("0.00");
+                                    }
+                                }
+
+                                @Override
+                                public void onFail(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        } else {
+                            mTvWalletBalance.setText("0.00");
                             mTvWalletBalanceCNY.setText("0.00");
                         }
-                    });
+                    }
                 }
-            }
-
-            @Override
-            public void onFail(Exception e) {
-                e.printStackTrace();
             }
         });
     }

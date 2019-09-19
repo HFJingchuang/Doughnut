@@ -24,6 +24,7 @@ import com.doughnut.R;
 import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -39,6 +40,9 @@ import java.util.List;
 public class TransactionRecordActivity extends BaseActivity implements
         TitleBar.TitleBarClickListener {
 
+    private static final int SCALE = 2;
+    private static final int LIMIT = 10;
+
     private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
 
@@ -49,7 +53,6 @@ public class TransactionRecordActivity extends BaseActivity implements
     private Marker marker;
     private List<Transactions> transactions;
     private String currentAddr;
-    private static final int SCALE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +102,6 @@ public class TransactionRecordActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 getHistory();
-                if (transactions == null || transactions.isEmpty()) {
-                    mLayoutEmpty.setVisibility(View.VISIBLE);
-                } else {
-                    mLayoutEmpty.setVisibility(View.GONE);
-                }
             }
         });
         mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -303,27 +301,57 @@ public class TransactionRecordActivity extends BaseActivity implements
             transactions.clear();
         }
 
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTransferHistory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, null);
-        if (accountTx != null) {
-            transactions = accountTx.getTransactions();
-            marker = accountTx.getMarker();
-        }
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
-        mSmartRefreshLayout.finishRefresh();
+        WalletManager.getInstance(this).getTransferHistory(WalletSp.getInstance(this, "").getCurrentWallet(), LIMIT, null, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                if (response != null) {
+                    AccountTx accountTx = (AccountTx) response;
+                    if (accountTx != null) {
+                        transactions = accountTx.getTransactions();
+                        marker = accountTx.getMarker();
+                        if (mAdapter != null) {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                if (transactions == null || transactions.isEmpty()) {
+                    if (!mLayoutEmpty.isShown()) {
+                        mLayoutEmpty.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (mLayoutEmpty.isShown()) {
+                        mLayoutEmpty.setVisibility(View.GONE);
+                    }
+                }
+                mSmartRefreshLayout.finishRefresh();
+            }
+        });
+
     }
 
     private void getHistoryMore() {
-        AccountTx accountTx = WalletManager.getInstance(TransactionRecordActivity.this).getTransferHistory(WalletSp.getInstance(this, "").getCurrentWallet(), 10, marker);
-        if (accountTx != null) {
-            transactions.addAll(accountTx.getTransactions());
-            marker = accountTx.getMarker();
-        }
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
-        mSmartRefreshLayout.finishLoadMore();
+        WalletManager.getInstance(this).getTransferHistory(WalletSp.getInstance(this, "").getCurrentWallet(), LIMIT, marker, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                if (response != null) {
+                    AccountTx accountTx = (AccountTx) response;
+                    if (accountTx != null) {
+                        List<Transactions> transaction = accountTx.getTransactions();
+                        if (transactions != null) {
+                            transactions.addAll(transaction);
+                            marker = accountTx.getMarker();
+                            if (mAdapter != null) {
+                                mAdapter.notifyDataSetChanged();
+                                mSmartRefreshLayout.finishLoadMore();
+                                return;
+                            }
+                        }
+                    }
+                }
+                marker = null;
+                mSmartRefreshLayout.finishLoadMore();
+            }
+        });
     }
 
     private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {

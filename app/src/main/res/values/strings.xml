@@ -77,11 +77,11 @@
     <string name="tab_keyStore">keyStore</string>
     <string name="tab_privateKey">私钥</string>
     <string name="tv_no_transfer">暂无转账记录</string>
-    <string name="content_exchange_RMB">兑换人民币（元）</string>
+    <string name="content_exchange_RMB">兑换人民币（&#165;）</string>
     <string name="content_add_asset">添加资产</string>
     <string name="btn_export_wallet">导出钱包</string>
     <string name="titleBar_export_wallet">导出钱包</string>
-    <string name="content_wallet_asset">账户总资产（SWTC）</string>
+    <string name="content_wallet_asset">账户总资产（SWTC</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="tv_current_wallet">当前钱包</string>
     <string name="tv_transferdetail">交易记录</string>

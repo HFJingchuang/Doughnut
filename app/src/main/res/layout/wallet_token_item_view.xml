@@ -53,35 +53,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="right|center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_toLeftOf="@+id/tv_balance_cny"
-                    android:text="¥"
-                    android:textColor="@color/color_detail_address"
-                    android:textSize="@dimen/text_size_14"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_balance_cny"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/color_detail_address"
-                    android:textSize="@dimen/text_size_14"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
                 android:gravity="center|right"
                 android:orientation="horizontal">
 
@@ -90,7 +61,6 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/token_count"
                     android:text="@string/tv_vailed"
-
                     android:textColor="@color/color_detail_address"
                     android:textSize="@dimen/text_size_12" />
 
@@ -102,9 +72,10 @@
                     android:layout_toLeftOf="@+id/tv_freeze"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:textStyle="bold"
                     android:singleLine="true"
                     android:textColor="@color/color_detail_address"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <TextView
                     android:id="@+id/tv_freeze"
@@ -123,8 +94,36 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="right|center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/tv_balance_cny"
+                    android:text="¥"
                     android:textColor="@color/color_detail_address"
                     android:textSize="@dimen/text_size_12" />
+
+                <TextView
+                    android:id="@+id/tv_balance_cny"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="@dimen/text_size_12"/>
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

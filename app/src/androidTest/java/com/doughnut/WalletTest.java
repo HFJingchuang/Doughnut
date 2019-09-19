@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.android.jtblk.client.bean.AccountRelations;
 import com.android.jtblk.client.bean.AccountTx;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.JtServer;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
@@ -18,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -82,30 +84,77 @@ public class WalletTest {
 
     @Test
     public void transferTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
-        boolean res = WalletManager.getInstance(appContext).transfer(privateKey, address, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "", "钱包工具类：转账单元测试");
-        Assert.assertEquals(true, res);
+        final boolean[] result = new boolean[1];
+        WalletManager.getInstance(appContext).transfer(privateKey, address, "jNn89aY84G23onFXupUd7bkMode6aKYMt8", "SWT", "", "0.01", "", "钱包工具类：转账单元测试", new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                result[0] = (boolean) response;
+                mutex.countDown();
+            }
+        });
+        mutex.await();
+        Assert.assertEquals(true, result[0]);
     }
 
     @Test
     public void getTansferHishoryTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        final AccountTx[] bean = new AccountTx[1];
         WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountTx bean = WalletManager.getInstance(appContext).getTransferHistory(address, new Integer("10"), null);
-        Assert.assertEquals(10, bean.getTransactions().size());
+        WalletManager.getInstance(appContext).getTransferHistory(address, new Integer("10"), null, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                bean[0] = (AccountTx) response;
+                mutex.countDown();
+            }
+        });
+
+        mutex.await();
+        Assert.assertEquals(10, bean[0].getTransactions().size());
+    }
+
+    @Test
+    public void getSWTBalanceTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
+        // 导入钱包
+        String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
+        String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        final String[] balance = new String[1];
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        WalletManager.getInstance(appContext).getSWTBalance(address, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                balance[0] = (String) response;
+                mutex.countDown();
+            }
+        });
+        mutex.await();
+        Assert.assertNotEquals("", balance[0]);
     }
 
     @Test
     public void getBalanceTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
+        final AccountRelations[] accountRelations = new AccountRelations[1];
         WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        AccountRelations accountRelations = WalletManager.getInstance(appContext).getBalance(address);
-        Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", accountRelations.getAccount());
+        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                accountRelations[0] = (AccountRelations) response;
+                mutex.countDown();
+            }
+        });
+        mutex.await();
+        Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", accountRelations[0].getAccount());
     }
 }

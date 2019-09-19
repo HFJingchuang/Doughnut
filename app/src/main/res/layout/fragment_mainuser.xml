@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="20dp"
                     android:drawableLeft="@drawable/ic_walletmanager"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go2" />
 
             </RelativeLayout>
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="20dp"
                     android:drawableLeft="@drawable/ic_transferhistory"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
@@ -84,14 +84,14 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go2" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginHorizontal="22dp"
+                android:layout_marginHorizontal="20dp"
                 android:background="@color/color_split" />
 
             <RelativeLayout
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="20dp"
                     android:drawableLeft="@drawable/ic_node"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go2" />
 
             </RelativeLayout>
@@ -134,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="20dp"
                     android:drawableLeft="@drawable/ic_globus"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
@@ -147,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go2" />
             </RelativeLayout>
 
@@ -162,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="20dp"
                     android:drawableLeft="@drawable/ic_info"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go2" />
             </RelativeLayout>
 
@@ -190,7 +190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="20dp"
                     android:drawableLeft="@drawable/ic_version"
                     android:drawablePadding="13dp"
                     android:gravity="center_vertical"
@@ -214,44 +214,15 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go2" />
 
             </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:background="#ffffff"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
-                    android:drawableLeft="@drawable/ic_setting"
-                    android:drawablePadding="13dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/btn_settings"
-                    android:textColor="#333333" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
-                    android:src="@drawable/ic_user_rightarrow" />
-
-            </RelativeLayout>
-
+            
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginHorizontal="22dp"
+                android:layout_marginHorizontal="20dp"
                 android:background="@color/color_split" />
         </LinearLayout>
     </ScrollView>
@@ -259,16 +230,16 @@
     <LinearLayout
         android:id="@+id/layout_btn"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
-        android:paddingHorizontal="15dp">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/layout_receiver"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginVertical="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
             android:background="@drawable/shape_btn_receive"
             android:gravity="center">
@@ -291,7 +262,9 @@
             android:id="@+id/layout_send"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginVertical="20dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@drawable/shape_btn_send"
             android:gravity="center">

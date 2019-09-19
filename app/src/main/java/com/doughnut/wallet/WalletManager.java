@@ -34,6 +34,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * 钱包管理类
  * <p>
@@ -195,21 +202,7 @@ public class WalletManager implements IWallet {
         return null;
     }
 
-    /**
-     * 转账
-     *
-     * @param privateKey
-     * @param from
-     * @param to
-     * @param token
-     * @param issuer
-     * @param value
-     * @param fee
-     * @param memo
-     * @return
-     */
-    @Override
-    public boolean transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo) {
+    private boolean transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo) {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
@@ -235,13 +228,36 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 获取交易记录
+     * 转账
      *
-     * @param limit
-     * @return
+     * @param privateKey
+     * @param from
+     * @param to
+     * @param token
+     * @param issuer
+     * @param value
+     * @param fee
+     * @param memo
+     * @param callBack
      */
     @Override
-    public AccountTx getTransferHistory(String address, Integer limit, Marker marker) {
+    public void transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                emitter.onNext(transfer(privateKey, from, to, token, issuer, value, fee, memo));
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean result) throws Exception {
+                callBack.onResponse(result);
+            }
+        });
+    }
+
+    private AccountTx getTransferHistory(String address, Integer limit, Marker marker) {
         try {
             AccountTx bean = JtServer.getInstance(mContext).getRemote().requestAccountTx(address, limit, marker);
             return bean;
@@ -252,12 +268,35 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 获取SWT余额
+     * 获取交易记录
      *
-     * @return
+     * @param address
+     * @param limit
+     * @param marker
+     * @param callBack
      */
     @Override
-    public String getSWTBalance(String address) {
+    public void getTransferHistory(String address, Integer limit, Marker marker, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<AccountTx>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<AccountTx> emitter) throws Exception {
+                AccountTx accountTx = getTransferHistory(address, limit, marker);
+                if (accountTx == null) {
+                    accountTx = new AccountTx();
+                }
+                emitter.onNext(accountTx);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<AccountTx>() {
+            @Override
+            public void accept(AccountTx accountTx) throws Exception {
+                callBack.onResponse(accountTx);
+            }
+        });
+    }
+
+    private String getSWTBalance(String address) {
         try {
             // 获取账户信息
             AccountInfo info = JtServer.getInstance(mContext).getRemote().requestAccountInfo(address, null, null);
@@ -271,12 +310,33 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 获取全部余额
+     * 获取SWT余额
      *
-     * @return
+     * @param address
+     * @param iCallBack
      */
     @Override
-    public AccountRelations getBalance(String address) {
+    public void getSWTBalance(String address, ICallBack iCallBack) {
+        Observable.create(new ObservableOnSubscribe<String>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                String balance = getSWTBalance(address);
+                if (TextUtils.isEmpty(balance)) {
+                    balance = "0.00";
+                }
+                emitter.onNext(balance);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String balance) throws Exception {
+                iCallBack.onResponse(balance);
+            }
+        });
+    }
+
+    private AccountRelations getBalance(String address) {
         try {
             // 获取账户信息
             AccountInfo info = JtServer.getInstance(mContext).getRemote().requestAccountInfo(address, null, null);
@@ -340,13 +400,35 @@ public class WalletManager implements IWallet {
                     }
                 }
             }
-
             return relationsTrust;
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * @param address
+     * @param callBack
+     */
+    @Override
+    public void getBalance(String address, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<AccountRelations>() {
+            @Override
+            public void subscribe(ObservableEmitter<AccountRelations> emitter) throws Exception {
+                AccountRelations accountRelations = getBalance(address);
+                if (accountRelations == null) {
+                    accountRelations = new AccountRelations();
+                }
+                emitter.onNext(accountRelations);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<AccountRelations>() {
+            @Override
+            public void accept(AccountRelations accountRelations) throws Exception {
+                callBack.onResponse(accountRelations);
+            }
+        });
     }
 
     /**

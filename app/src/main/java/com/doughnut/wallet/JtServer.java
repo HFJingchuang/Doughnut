@@ -13,19 +13,18 @@ import com.doughnut.utils.GsonUtil;
 
 public class JtServer {
 
-    // 生产环境
-    private static String server = "wss://s.jingtum.com:5020";
-    // 测试环境
-//    private static String server = "ws://ts5.jingtum.com:5020";
-    //节点链接状态
     private static final String STATUS = "OPEN";
+    // 生产环境
+    private String server = "wss://s.jingtum.com:5020";
+    // 测试环境
+    //    private static String server = "ws://ts5.jingtum.com:5020";
+    //节点链接状态
     // 是否使用本地签名方式提交交易
-    private static Boolean local_sign = true;
-    private static Connection conn;
-    private static Remote remote;
+    private Boolean local_sign = true;
+    private Connection conn;
+    private Remote remote;
     private static JtServer instance;
     private static Context mContext;
-    private static int i = 0;
     SharedPreferences sharedPreferences;
 
     private JtServer() {
@@ -51,7 +50,6 @@ public class JtServer {
 
     public static JtServer getInstance(Context context) {
         if (instance == null) {
-            i++;
             mContext = context;
             instance = new JtServer();
         }

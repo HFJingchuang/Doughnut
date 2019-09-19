@@ -31,6 +31,7 @@ import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
@@ -40,6 +41,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,7 +120,6 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 5));
-        getTransferToken();
     }
 
     @Override
@@ -140,6 +141,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
     @Override
     protected void onResume() {
         super.onResume();
+        getTransferToken();
     }
 
     public static void startActivity(Context context) {
@@ -257,46 +259,56 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
      */
     private void getTransferToken() {
         // 取得钱包资产
-        AccountRelations accountRelations = WalletManager.getInstance(this).getBalance(mCurrentWallet);
-        if (accountRelations != null) {
-            dataList.clear();
-            dataList.addAll(accountRelations.getLines());
-        }
-        if (dataList == null || dataList.size() == 0) {
-            mLayoutNoToken.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-            return;
-        }
-        // 排除余额为零的token
-        try {
-            for (int i = dataList.size() - 1; i >= 0; i--) {
-                Line line = dataList.get(i);
-                if (CaclUtil.compare(line.getBalance(), "0") == 0) {
-                    dataList.remove(i);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Collections.sort(dataList, new Comparator<Line>() {
+        WalletManager.getInstance(this).getBalance(mCurrentWallet, new ICallBack() {
             @Override
-            public int compare(Line o1, Line o2) {
-                String cur1 = o1.getCurrency();
-                String cur2 = o2.getCurrency();
-                boolean b1 = Util.isStartWithNumber(cur1);
-                boolean b2 = Util.isStartWithNumber(cur2);
-                if (b1 && !b2) {
-                    return 1;
-                } else if (!b1 && b2) {
-                    return -1;
-                } else {
-                    return cur1.compareTo(cur2);
+            public void onResponse(Object response) {
+                if (response != null) {
+                    AccountRelations accountRelations = (AccountRelations) response;
+                    if (accountRelations != null) {
+                        List<Line> lines = accountRelations.getLines();
+                        if (lines != null) {
+                            dataList.clear();
+                            dataList.addAll(lines);
+                        }
+                    }
+                    if (dataList == null || dataList.size() == 0) {
+                        mLayoutNoToken.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                        return;
+                    }
+                    // 排除余额为零的token
+                    try {
+                        for (int i = dataList.size() - 1; i >= 0; i--) {
+                            Line line = dataList.get(i);
+                            if (CaclUtil.compare(line.getBalance(), "0") == 0) {
+                                dataList.remove(i);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    Collections.sort(dataList, new Comparator<Line>() {
+                        @Override
+                        public int compare(Line o1, Line o2) {
+                            String b1 = o1.getBalance();
+                            String b2 = o2.getBalance();
+                            if (CaclUtil.compare(b1, "0") == 0 && CaclUtil.compare(b2, "0") == 0) {
+                                String l1 = o1.getLimit();
+                                String l2 = o2.getLimit();
+                                return CaclUtil.compare(l2, l1);
+                            } else {
+                                return CaclUtil.compare(b2, b1);
+                            }
+                        }
+                    });
+                    if (mAdapter != null) {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    dataListCopy = (ArrayList<Line>) dataList.clone();
                 }
             }
         });
-
-        dataListCopy = (ArrayList<Line>) dataList.clone();
     }
 
     /**
