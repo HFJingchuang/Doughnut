@@ -185,15 +185,15 @@ public class CaclUtil {
         try {
             if (!TextUtils.isEmpty(amountStr)) {
                 BigDecimal amount = new BigDecimal(amountStr);
-                BigDecimal amountF = amount.setScale(scale, RoundingMode.DOWN);
-                if (amountF.compareTo(BigDecimal.ZERO) == 0) {
-                    if (amount.compareTo(BigDecimal.ZERO) != 0) {
-                        return amount.setScale(4, RoundingMode.DOWN).stripTrailingZeros().toPlainString();
+                if (amount.compareTo(BigDecimal.ZERO) != 0) {
+                    BigDecimal amountF = amount.setScale(scale, RoundingMode.DOWN);
+                    if (amountF.compareTo(BigDecimal.ZERO) == 0) {
+                        return amount.setScale(scale, 4).stripTrailingZeros().toPlainString();
                     } else {
-                        return "0.00";
+                        return amountF.stripTrailingZeros().toPlainString();
                     }
                 } else {
-                    return amountF.stripTrailingZeros().toPlainString();
+                    return "0.00";
                 }
             }
         } catch (Exception e) {
