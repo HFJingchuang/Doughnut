@@ -32,23 +32,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-
-        mTitleBar = (TitleBar) findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(getString(R.string.titleBar_about));
-        mTitleBar.setRightTextColor(R.color.white);
-        mTitleBar.setTitleBarClickListener(this);
-
-        mTvVersion = (TextView) findViewById(R.id.tv_version);
-        mTvVersion.setText(getString(R.string.content_version) + DeviceUtil.getVersionName());
-
-        mLayoutCheckUpdate = (RelativeLayout) findViewById(R.id.layout_check_update);
-        mLayoutCheckUpdate.setOnClickListener(this);
-        mImgLoad = findViewById(R.id.img_loading);
-        mProgressDrawable = new ProgressDrawable();
-        mProgressDrawable.setColor(0xff666666);
-        mImgLoad.setImageDrawable(mProgressDrawable);
-        mImgLoad.setVisibility(View.GONE);
+        initView();
     }
 
     @Override
@@ -73,6 +57,27 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onMiddleClick(View view) {
 
+    }
+
+    private void initView() {
+
+        mTitleBar = (TitleBar) findViewById(R.id.title_bar);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setTitle(getString(R.string.titleBar_about));
+        mTitleBar.setRightTextColor(R.color.white);
+        mTitleBar.setTitleBarClickListener(this);
+
+        mTvVersion = (TextView) findViewById(R.id.tv_version);
+        mTvVersion.setText(getString(R.string.content_version) + DeviceUtil.getVersionName());
+
+        mLayoutCheckUpdate = (RelativeLayout) findViewById(R.id.layout_check_update);
+        mLayoutCheckUpdate.setOnClickListener(this);
+        mImgLoad = findViewById(R.id.img_loading);
+        mProgressDrawable = new ProgressDrawable();
+        mProgressDrawable.setColor(0xff666666);
+        mImgLoad.setImageDrawable(mProgressDrawable);
+        mImgLoad.setVisibility(View.GONE);
+        
     }
 
     public static void startAboutActivity(Context from) {

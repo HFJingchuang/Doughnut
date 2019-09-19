@@ -66,6 +66,74 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         initView();
     }
 
+    /**
+     * 画面按钮事件
+     *
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            // 创建钱包按钮
+            case R.id.btn_confirm:
+                mBtnConfirm.setClickable(false);
+                String passWord = mEdtWalletPwd.getText().toString();
+                String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
+                if (TextUtils.equals(passWord, passwordConfirm)) {
+                    mBtnConfirm.setClickable(false);
+                    String walletName = mEdtWalletName.getText().toString();
+                    String walletPwd = mEdtWalletPwd.getText().toString();
+                    // 创建钱包
+                    String address = createWallet(walletName, walletPwd);
+                    if (Wallet.isValidAddress(address)) {
+                        String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
+                        CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
+                        finish();
+                    } else {
+                        new MsgDialog(this, getString(R.string.tv_create_fail)).setIsHook(false).show();
+                    }
+                } else {
+                    mEdtWalletPwdConfirm.setText("");
+                    mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
+                    mTvErrPasswordRep.setVisibility(View.VISIBLE);
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtWalletPwdConfirm.requestFocus();
+                        }
+                    });
+                }
+                break;
+            // 勾选框
+            case R.id.layout_read:
+                mRadioRead.setChecked(!mRadioRead.isChecked());
+                isCreateWallet();
+                break;
+            // 跳转服务条款页面
+            case R.id.tv_policy:
+                gotoServiceTermPage();
+                break;
+            case R.id.show_pwd:
+                mImgShowPwd.setSelected(!mImgShowPwd.isSelected());
+                if (mImgShowPwd.isSelected()) {
+                    mEdtWalletPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtWalletPwd.setTransformationMethod(transformationMethod);
+                }
+                mEdtWalletPwd.setSelection(mEdtWalletPwd.getText().length());
+                break;
+            case R.id.show_pwd_rep:
+                mImgShowRepPwd.setSelected(!mImgShowRepPwd.isSelected());
+                if (mImgShowRepPwd.isSelected()) {
+                    mEdtWalletPwdConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
+                }
+                mEdtWalletPwdConfirm.setSelection(mEdtWalletPwdConfirm.getText().length());
+                break;
+        }
+    }
+
 
     /**
      * 页面初始化
@@ -220,74 +288,6 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         mImgShowRepPwd = findViewById(R.id.img_show_pwd_rep);
 
         mBtnConfirm.setOnClickListener(this);
-    }
-
-    /**
-     * 画面按钮事件
-     *
-     * @param view
-     */
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            // 创建钱包按钮
-            case R.id.btn_confirm:
-                mBtnConfirm.setClickable(false);
-                String passWord = mEdtWalletPwd.getText().toString();
-                String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
-                if (TextUtils.equals(passWord, passwordConfirm)) {
-                    mBtnConfirm.setClickable(false);
-                    String walletName = mEdtWalletName.getText().toString();
-                    String walletPwd = mEdtWalletPwd.getText().toString();
-                    // 创建钱包
-                    String address = createWallet(walletName, walletPwd);
-                    if (Wallet.isValidAddress(address)) {
-                        String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
-                        CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
-                        finish();
-                    } else {
-                        new MsgDialog(this, getString(R.string.tv_create_fail)).setIsHook(false).show();
-                    }
-                } else {
-                    mEdtWalletPwdConfirm.setText("");
-                    mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
-                    mTvErrPasswordRep.setVisibility(View.VISIBLE);
-                    AppConfig.postOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mEdtWalletPwdConfirm.requestFocus();
-                        }
-                    });
-                }
-                break;
-            // 勾选框
-            case R.id.layout_read:
-                mRadioRead.setChecked(!mRadioRead.isChecked());
-                isCreateWallet();
-                break;
-            // 跳转服务条款页面
-            case R.id.tv_policy:
-                gotoServiceTermPage();
-                break;
-            case R.id.show_pwd:
-                mImgShowPwd.setSelected(!mImgShowPwd.isSelected());
-                if (mImgShowPwd.isSelected()) {
-                    mEdtWalletPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    mEdtWalletPwd.setTransformationMethod(transformationMethod);
-                }
-                mEdtWalletPwd.setSelection(mEdtWalletPwd.getText().length());
-                break;
-            case R.id.show_pwd_rep:
-                mImgShowRepPwd.setSelected(!mImgShowRepPwd.isSelected());
-                if (mImgShowRepPwd.isSelected()) {
-                    mEdtWalletPwdConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
-                }
-                mEdtWalletPwdConfirm.setSelection(mEdtWalletPwdConfirm.getText().length());
-                break;
-        }
     }
 
     /**

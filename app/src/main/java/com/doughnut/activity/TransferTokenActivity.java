@@ -70,6 +70,28 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
         initView();
     }
 
+    @Override
+    public void onLeftClick(View v) {
+        finish();
+    }
+
+
+    @Override
+    public void onRightClick(View v) {
+
+    }
+
+    @Override
+    public void onMiddleClick(View v) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getTransferToken();
+    }
+
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
@@ -120,28 +142,6 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 5));
-    }
-
-    @Override
-    public void onLeftClick(View v) {
-        finish();
-    }
-
-
-    @Override
-    public void onRightClick(View v) {
-
-    }
-
-    @Override
-    public void onMiddleClick(View v) {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getTransferToken();
     }
 
     public static void startActivity(Context context) {

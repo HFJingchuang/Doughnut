@@ -64,6 +64,77 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
         initView();
     }
 
+    @Override
+    public void onLeftClick(View view) {
+        finish();
+    }
+
+    @Override
+    public void onRightClick(View view) {
+    }
+
+    @Override
+    public void onMiddleClick(View view) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            // 创建钱包按钮
+            case R.id.btn_done:
+                String newPwd = mEdtNewPwd.getText().toString();
+                String repPwd = mEdtRepNewPwd.getText().toString();
+                if (TextUtils.equals(newPwd, repPwd)) {
+                    // 修改KeyStore密码，name参数可不传
+                    boolean res = WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "");
+                    if (res) {
+                        finish();
+                    } else {
+                        new MsgDialog(this, getString(R.string.dailog_modify_fail)).setIsHook(false).show();
+                    }
+                } else {
+                    mEdtRepNewPwd.setText("");
+                    mTvRepTips.setText(getString(R.string.dialog_content_passwords_unmatch));
+                    mTvRepTips.setVisibility(View.VISIBLE);
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtRepNewPwd.requestFocus();
+                        }
+                    });
+                }
+                break;
+            case R.id.layout_show:
+                mImgShow.setSelected(!mImgShow.isSelected());
+                if (mImgShow.isSelected()) {
+                    mEdtOldPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtOldPwd.setTransformationMethod(transformationMethod);
+                }
+                mEdtOldPwd.setSelection(mEdtOldPwd.getText().length());
+                break;
+            case R.id.layout_show_pwd:
+                mImgShowNew.setSelected(!mImgShowNew.isSelected());
+                if (mImgShowNew.isSelected()) {
+                    mEdtNewPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtNewPwd.setTransformationMethod(transformationMethod);
+                }
+                mEdtNewPwd.setSelection(mEdtNewPwd.getText().length());
+                break;
+            case R.id.layout_show_pwd_rep:
+                mImgShowRep.setSelected(!mImgShowRep.isSelected());
+                if (mImgShowRep.isSelected()) {
+                    mEdtRepNewPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    mEdtRepNewPwd.setTransformationMethod(transformationMethod);
+                }
+                mEdtRepNewPwd.setSelection(mEdtRepNewPwd.getText().length());
+                break;
+        }
+    }
+
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
@@ -253,78 +324,6 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
             mBtnDone.setEnabled(false);
         }
     }
-
-    @Override
-    public void onLeftClick(View view) {
-        finish();
-    }
-
-    @Override
-    public void onRightClick(View view) {
-    }
-
-    @Override
-    public void onMiddleClick(View view) {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            // 创建钱包按钮
-            case R.id.btn_done:
-                String newPwd = mEdtNewPwd.getText().toString();
-                String repPwd = mEdtRepNewPwd.getText().toString();
-                if (TextUtils.equals(newPwd, repPwd)) {
-                    // 修改KeyStore密码，name参数可不传
-                    boolean res = WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "");
-                    if (res) {
-                        finish();
-                    } else {
-                        new MsgDialog(this, getString(R.string.dailog_modify_fail)).setIsHook(false).show();
-                    }
-                } else {
-                    mEdtRepNewPwd.setText("");
-                    mTvRepTips.setText(getString(R.string.dialog_content_passwords_unmatch));
-                    mTvRepTips.setVisibility(View.VISIBLE);
-                    AppConfig.postOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mEdtRepNewPwd.requestFocus();
-                        }
-                    });
-                }
-                break;
-            case R.id.layout_show:
-                mImgShow.setSelected(!mImgShow.isSelected());
-                if (mImgShow.isSelected()) {
-                    mEdtOldPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    mEdtOldPwd.setTransformationMethod(transformationMethod);
-                }
-                mEdtOldPwd.setSelection(mEdtOldPwd.getText().length());
-                break;
-            case R.id.layout_show_pwd:
-                mImgShowNew.setSelected(!mImgShowNew.isSelected());
-                if (mImgShowNew.isSelected()) {
-                    mEdtNewPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    mEdtNewPwd.setTransformationMethod(transformationMethod);
-                }
-                mEdtNewPwd.setSelection(mEdtNewPwd.getText().length());
-                break;
-            case R.id.layout_show_pwd_rep:
-                mImgShowRep.setSelected(!mImgShowRep.isSelected());
-                if (mImgShowRep.isSelected()) {
-                    mEdtRepNewPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    mEdtRepNewPwd.setTransformationMethod(transformationMethod);
-                }
-                mEdtRepNewPwd.setSelection(mEdtRepNewPwd.getText().length());
-                break;
-        }
-    }
-
 
     public static void startModifyPwdActivity(Context context, String walletAddress) {
         Intent intent = new Intent(context, ModifyPwdActivity.class);

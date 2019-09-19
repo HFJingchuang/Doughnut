@@ -2,12 +2,12 @@ package com.doughnut.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -79,11 +79,6 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initView() {
-        initViewPager();
-    }
-
-    private void initViewPager() {
-
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back_white);
         mTitleBar.setTitle(R.string.titleBar_export_wallet);
@@ -127,7 +122,6 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
         mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
         pageSelected(PRIVATEKEY_INDEX);
     }
-
 
     private void pageSelected(int position) {
         resetTab();

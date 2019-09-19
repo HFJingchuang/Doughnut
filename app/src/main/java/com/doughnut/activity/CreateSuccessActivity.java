@@ -39,15 +39,6 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void initView() {
-        mBtnBackup = findViewById(R.id.btn_backup);
-        mBtnBackup.setOnClickListener(this);
-        mTvWarning = findViewById(R.id.tv_warning);
-        mTvWarning.setText(Html.fromHtml(getString(R.string.tv_warning)));
-        mTvSkip = findViewById(R.id.tv_skip);
-        mTvSkip.setOnClickListener(this);
-    }
-
     /**
      * 画面按钮事件
      *
@@ -69,6 +60,15 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
         }
+    }
+
+    private void initView() {
+        mBtnBackup = findViewById(R.id.btn_backup);
+        mBtnBackup.setOnClickListener(this);
+        mTvWarning = findViewById(R.id.tv_warning);
+        mTvWarning.setText(Html.fromHtml(getString(R.string.tv_warning)));
+        mTvSkip = findViewById(R.id.tv_skip);
+        mTvSkip.setOnClickListener(this);
     }
 
     public static void startCreateSuccessActivity(Context context, String address, String privateKey) {

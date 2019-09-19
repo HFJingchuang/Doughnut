@@ -99,25 +99,6 @@ public class JtNodeRecordActivity extends BaseActivity implements
         }
     }
 
-    private void saveNode() {
-        String url;
-        String ping;
-        if (mSelectedItem != -1) {
-            NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
-            url = vh.mTvNodeUrl.getText().toString();
-            ping = vh.mTvNodePing.getText().toString();
-        } else {
-            NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
-            url = vh.mTvNodeUrl.getText().toString();
-            ping = vh.mTvNodePing.getText().toString();
-        }
-        // ping值没有时，忽略
-        ping = ping.replace("ms", "");
-        if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
-            JtServer.getInstance(this).changeServer(url);
-        }
-    }
-
     @Override
     public void onRightClick(View view) {
     }
@@ -216,6 +197,25 @@ public class JtNodeRecordActivity extends BaseActivity implements
             }
         }
     };
+
+    private void saveNode() {
+        String url;
+        String ping;
+        if (mSelectedItem != -1) {
+            NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+            url = vh.mTvNodeUrl.getText().toString();
+            ping = vh.mTvNodePing.getText().toString();
+        } else {
+            NodeRecordCustomAdapter.VH vh = (NodeRecordCustomAdapter.VH) mRecyclerViewCustom.findViewHolderForLayoutPosition(mSelectedCustomItem);
+            url = vh.mTvNodeUrl.getText().toString();
+            ping = vh.mTvNodePing.getText().toString();
+        }
+        // ping值没有时，忽略
+        ping = ping.replace("ms", "");
+        if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
+            JtServer.getInstance(this).changeServer(url);
+        }
+    }
 
     public static void startJtNodeRecordActivity(Context context) {
         Intent intent = new Intent(context, JtNodeRecordActivity.class);

@@ -70,6 +70,17 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            MainActivity.startMainActivity(WalletImportActivity.this);
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         if (view == mLayoutTabPrivateKey) {
             mMainViewPager.setCurrentItem(PRIVATEKEY_INDEX);
@@ -91,17 +102,6 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         intent.putExtra(Constant.IMPORT_KEY, importKey);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            MainActivity.startMainActivity(WalletImportActivity.this);
-            finish();
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
     }
 
     private void initView() {

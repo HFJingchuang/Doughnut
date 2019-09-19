@@ -43,7 +43,6 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
 
         String select = LanguageUtil.getUserSelect(this);
         imageShow(select);
-
     }
 
     @Override

@@ -86,6 +86,26 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         initView();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.layout_hash:
+                Util.clipboard(this, "", mTvHash.getText().toString());
+                new MsgDialog(this, getString(R.string.toast_hash_cp)).show();
+                break;
+            case R.id.img_copy_from:
+            case R.id.layout_from:
+                Util.clipboard(this, "", mFrom);
+                new MsgDialog(this, getString(R.string.toast_from_cp)).show();
+                break;
+            case R.id.img_copy_to:
+            case R.id.layout_to:
+                Util.clipboard(this, "", mTo);
+                new MsgDialog(this, getString(R.string.toast_to_cp)).show();
+                break;
+        }
+    }
+
     private void initView() {
 
         mTitleBar = findViewById(R.id.title_bar);
@@ -165,8 +185,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
 
         updateData();
     }
-
+    
     class TransactionInfoAdapter extends RecyclerView.Adapter<TransactionInfoAdapter.VH> {
+
 
         class VH extends RecyclerView.ViewHolder {
             private TextView mTvTitleIndex;
@@ -668,26 +689,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         intent.putExtra("data", data);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.layout_hash:
-                Util.clipboard(this, "", mTvHash.getText().toString());
-                new MsgDialog(this, getString(R.string.toast_hash_cp)).show();
-                break;
-            case R.id.img_copy_from:
-            case R.id.layout_from:
-                Util.clipboard(this, "", mFrom);
-                new MsgDialog(this, getString(R.string.toast_from_cp)).show();
-                break;
-            case R.id.img_copy_to:
-            case R.id.layout_to:
-                Util.clipboard(this, "", mTo);
-                new MsgDialog(this, getString(R.string.toast_to_cp)).show();
-                break;
-        }
     }
 
     public String amountRatio(String pays, String gets) {

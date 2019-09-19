@@ -65,6 +65,30 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         getWallets();
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v == mLayoutCreateWallet) {
+            gotoCreateWallet();
+        } else if (v == mLayoutImPortWallet) {
+            gotoImportWallet();
+        }
+
+    }
+
+    @Override
+    public void onLeftClick(View view) {
+        this.finish();
+    }
+
+    @Override
+    public void onRightClick(View view) {
+    }
+
+    @Override
+    public void onMiddleClick(View view) {
+
+    }
+
     public static void startModifyWalletActivity(Context context, boolean isChange) {
         Intent intent = new Intent(context, WalletManageActivity.class);
         intent.putExtra("isChange", isChange);
@@ -96,31 +120,6 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mAdapter = new WalletRecordAdapter();
         mLsWallet.setAdapter(mAdapter);
         getWallets();
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        if (v == mLayoutCreateWallet) {
-            gotoCreateWallet();
-        } else if (v == mLayoutImPortWallet) {
-            gotoImportWallet();
-        }
-
-    }
-
-    @Override
-    public void onLeftClick(View view) {
-        this.finish();
-    }
-
-    @Override
-    public void onRightClick(View view) {
-    }
-
-    @Override
-    public void onMiddleClick(View view) {
-
     }
 
     private void gotoCreateWallet() {

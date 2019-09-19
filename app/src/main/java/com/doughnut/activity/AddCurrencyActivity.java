@@ -42,7 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class AddCurrencyActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
+public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;
     private EditText mEdtSearch;
@@ -67,6 +67,53 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
             mIsSingle = getIntent().getBooleanExtra(Constant.IS_SINGLE, false);
         }
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mIsSingle) {
+                if (mSelectedItem != -1) {
+                    String token = currencys.get(mSelectedItem).getName();
+                    TokenReceiveActivity.startTokenReceiveActivity(this, token);
+                }
+            } else {
+                saveSelectToken();
+            }
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public void onLeftClick(View v) {
+        if (mIsSingle) {
+            if (mSelectedItem != -1) {
+                String token = currencys.get(mSelectedItem).getName();
+                TokenReceiveActivity.startTokenReceiveActivity(this, token);
+            }
+        } else {
+            saveSelectToken();
+        }
+        finish();
+    }
+
+
+    @Override
+    public void onRightClick(View v) {
+
+    }
+
+    @Override
+    public void onMiddleClick(View v) {
+
     }
 
     private void initView() {
@@ -122,11 +169,6 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         mRecyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 10));
     }
 
-    @Override
-    public void onClick(View view) {
-
-    }
-
     /**
      * 获取记录
      */
@@ -148,53 +190,6 @@ public class AddCurrencyActivity extends BaseActivity implements View.OnClickLis
         }
         Collections.sort(currencys);
         currencysCopy = (LinkedList<Currency>) currencys.clone();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mIsSingle) {
-                if (mSelectedItem != -1) {
-                    String token = currencys.get(mSelectedItem).getName();
-                    TokenReceiveActivity.startTokenReceiveActivity(this, token);
-                }
-            } else {
-                saveSelectToken();
-            }
-            finish();
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
-
-    @Override
-    public void onLeftClick(View v) {
-        if (mIsSingle) {
-            if (mSelectedItem != -1) {
-                String token = currencys.get(mSelectedItem).getName();
-                TokenReceiveActivity.startTokenReceiveActivity(this, token);
-            }
-        } else {
-            saveSelectToken();
-        }
-        finish();
-    }
-
-
-    @Override
-    public void onRightClick(View v) {
-
-    }
-
-    @Override
-    public void onMiddleClick(View v) {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     public static void startActivity(Context context, boolean isSingle) {
