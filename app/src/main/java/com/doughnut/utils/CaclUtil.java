@@ -78,7 +78,7 @@ public class CaclUtil {
     }
 
     /**
-     * 注意数值过大返回0
+     * 注意数超大值返回0
      *
      * @param v1
      * @param v2
@@ -188,7 +188,7 @@ public class CaclUtil {
                 if (amount.compareTo(BigDecimal.ZERO) != 0) {
                     BigDecimal amountF = amount.setScale(scale, RoundingMode.DOWN);
                     if (amountF.compareTo(BigDecimal.ZERO) == 0) {
-                        return amount.setScale(scale, 4).stripTrailingZeros().toPlainString();
+                        return amount.setScale(4, RoundingMode.DOWN).stripTrailingZeros().toPlainString();
                     } else {
                         return amountF.stripTrailingZeros().toPlainString();
                     }
@@ -205,9 +205,9 @@ public class CaclUtil {
     /**
      * 比较大小
      *
-     * @param v1 被比较数
-     * @param v2 比较数
-     * @return 如果v1 大于v2 则 返回true 否则false
+     * @param v1
+     * @param v2
+     * @return
      */
     public static int compare(String v1, String v2) {
         try {

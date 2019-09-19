@@ -138,6 +138,15 @@ public class CaclUtilTest {
 
         res = CaclUtil.formatAmount(err4, 2);
         Assert.assertEquals(res, err4);
+
+        res = CaclUtil.formatAmount("0.00466000000000001", 2);
+        Assert.assertEquals("0.0046", res);
+
+        res = CaclUtil.formatAmount("0.0000000000000", 5);
+        Assert.assertEquals("0.00", res);
+
+        res = CaclUtil.formatAmount("", 2);
+        Assert.assertEquals("", res);
     }
 
 }
