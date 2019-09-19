@@ -33,7 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:gravity="right">
 
         <ImageView
@@ -53,12 +52,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center|right"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/token_freeze"
                     android:layout_toLeftOf="@+id/token_count"
                     android:text="@string/tv_vailed"
                     android:textColor="@color/color_detail_address"
@@ -68,19 +67,21 @@
                     android:id="@+id/token_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/token_freeze"
                     android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/tv_freeze"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textStyle="bold"
                     android:singleLine="true"
                     android:textColor="@color/color_detail_address"
-                    android:textSize="@dimen/text_size_14" />
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_freeze"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/token_freeze"
                     android:layout_toLeftOf="@+id/token_freeze"
                     android:text="@string/tv_freeze"
                     android:textColor="@color/color_detail_address"
@@ -91,12 +92,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textStyle="bold"
                     android:textColor="@color/color_detail_address"
-                    android:textSize="@dimen/text_size_14" />
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -123,7 +125,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="@color/color_detail_address"
-                    android:textSize="@dimen/text_size_12"/>
+                    android:textSize="@dimen/text_size_12" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
