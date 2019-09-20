@@ -244,9 +244,9 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                                             // 当前币种总价值
                                             String sum = CaclUtil.add(balance, freeze);
                                             String value = CaclUtil.mul(sum, price);
-                                            values = CaclUtil.add(values, value, 4);
+                                            values = CaclUtil.add(values, value);
                                         }
-                                        number = CaclUtil.div(values, swtPrice, 4);
+                                        number = CaclUtil.div(values, swtPrice, 2);
                                         AppConfig.postOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
