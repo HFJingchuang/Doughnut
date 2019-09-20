@@ -54,7 +54,6 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

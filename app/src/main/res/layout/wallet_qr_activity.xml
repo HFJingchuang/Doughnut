@@ -57,6 +57,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="10dp"
+                    android:ellipsize="middle"
+                    android:maxWidth="200dp"
+                    android:singleLine="true"
                     android:textColor="@color/color_receive_hint"
                     android:textSize="14sp" />
 
