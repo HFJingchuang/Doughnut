@@ -38,10 +38,10 @@ public class SplashActivity extends BaseActivity {
         BidiHorizontalStrategy movingStrategy5 = new BidiHorizontalStrategy();
         ParticleTextViewConfig config1 = new ParticleTextViewConfig.Builder()
                 .setTargetText(getString(R.string.content_splash))
-                .setReleasing(0.1)
-                .setParticleRadius(ViewUtil.dip2px(this, 1))
-                .setTextSize(ViewUtil.dip2px(this, 25))
-                .setMiniDistance(ViewUtil.dip2px(this, 0.02f))
+                .setReleasing(0.08)
+                .setParticleRadius(ViewUtil.dip2px(this, 0.8f))
+                .setTextSize(ViewUtil.dip2px(this, 28))
+                .setMiniDistance(ViewUtil.dip2px(this, 0.01f))
                 .setColumnStep(ViewUtil.dip2px(this, 1f))
                 .setRowStep(ViewUtil.dip2px(this, 1f))
                 .setIsLoop(false)
@@ -112,10 +112,10 @@ public class SplashActivity extends BaseActivity {
     private void permissonSuccess() {
         WalletManager.getInstance(this).getAllTokens();
         AppConfig.postDelayOnUiThread(() -> {
-            mTvSpalsh.setAnimationFrozen();
+            mTvSpalsh.stopAnimation();
             MainActivity.startMainActivity(SplashActivity.this);
             SplashActivity.this.finish();
-        }, 1500);
+        }, 2000);
     }
 
 }
