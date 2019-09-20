@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.Memo;
 import com.android.jtblk.client.bean.Transactions;
 import com.doughnut.R;
@@ -47,8 +48,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private ImageView mImgTo;
     private TextView mTvAmount;
     private TextView mTvToken;
-    private TextView mTvEntrustAmount, mTvEntrustToken, mTvPayAmount, mTvPayToken, mTvPayAmountNone;
-    private TextView mTvTurnoverAmount, mTvTurnoverToken, mTvTurnoverPayAmount, mTvTurnoverPayToken;
+    private TextView mTvEntrustContent, mTvPayAmountNone;
+    private TextView mTvTurnoverContent;
     private TextView mTvValue, mTvValueToken;
     private TextView mTvTurnoverValue, mTvTurnoverValueToken;
     private TextView mTvTransferType;
@@ -143,10 +144,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mLayoutAmount = findViewById(R.id.layout_amount);
 
         mLayoutEntrustAmount = findViewById(R.id.layout_entrust_amount);
-        mTvEntrustAmount = findViewById(R.id.tv_entrust_amount);
-        mTvEntrustToken = findViewById(R.id.tv_entrust_token);
-        mTvPayAmount = findViewById(R.id.tv_pay_amount);
-        mTvPayToken = findViewById(R.id.tv_pay_token);
+        mTvEntrustContent = findViewById(R.id.tv_entrust_content);
         mTvPayAmountNone = findViewById(R.id.tv_entrust_amount_none);
 
         mTvValue = findViewById(R.id.tv_value);
@@ -154,10 +152,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mLayoutValue = findViewById(R.id.layout_value);
 
         mLayoutTurnoverAmount = findViewById(R.id.layout_turnover_amount);
-        mTvTurnoverAmount = findViewById(R.id.tv_turnover_amount);
-        mTvTurnoverToken = findViewById(R.id.tv_turnover_token);
-        mTvTurnoverPayAmount = findViewById(R.id.tv_turnover_pay_amount);
-        mTvTurnoverPayToken = findViewById(R.id.tv_turnover_pay_token);
+        mTvTurnoverContent = findViewById(R.id.tv_turnover_content);
 
         mLayoutTurnoverValue = findViewById(R.id.layout_turnover_value);
         mTvTurnoverValue = findViewById(R.id.tv_turnover_value);
@@ -192,7 +187,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         class VH extends RecyclerView.ViewHolder {
             private TextView mTvTitleIndex;
             private TextView mTvIndex;
-            private TextView mTvEntrustAmount, mTvEntrustToken, mTvPayAmount, mTvPayToken;
+            private TextView mTvContent;
             private TextView mTvValue, mTvValueToken;
             private RelativeLayout mLayoutType;
             private TextView mTvType;
@@ -206,10 +201,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 super(v);
                 mTvTitleIndex = itemView.findViewById(R.id.tv_title_index);
                 mTvIndex = itemView.findViewById(R.id.tv_index);
-                mTvEntrustAmount = itemView.findViewById(R.id.tv_entrust_amount);
-                mTvEntrustToken = itemView.findViewById(R.id.tv_entrust_token);
-                mTvPayAmount = itemView.findViewById(R.id.tv_pay_amount);
-                mTvPayToken = itemView.findViewById(R.id.tv_pay_token);
+                mTvContent = itemView.findViewById(R.id.tv_content);
                 mTvValue = itemView.findViewById(R.id.tv_value);
                 mTvValueToken = itemView.findViewById(R.id.tv_value_token);
                 mLayoutTo = itemView.findViewById(R.id.layout_to_v);
@@ -262,59 +254,17 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             if (TextUtils.equals(effectType, "offer_cancelled")) {
                 pays = item.getJSONObject("pays");
                 gets = item.getJSONObject("gets");
-                if (pays != null && gets != null) {
-                    holder.mLayoutType.setVisibility(View.VISIBLE);
-                    holder.mLayoutTo.setVisibility(View.GONE);
-                    holder.mTvType.setText(getResources().getString(R.string.tv_offercancel));
-                    holder.mImgType.setImageResource(R.drawable.ic_offer_cancel);
-
-                    String currency = pays.getString("currency");
-                    String paysCount = pays.getString("value");
-                    holder.mTvPayAmount.setText(CaclUtil.formatAmount(paysCount, SCALE));
-                    holder.mTvPayToken.setText(currency);
-
-                    currency = gets.getString("currency");
-                    String getsCount = gets.getString("value");
-                    holder.mTvEntrustAmount.setText(CaclUtil.formatAmount(getsCount, SCALE));
-                    holder.mTvEntrustToken.setText(currency);
-
-                    String price = item.getString("price");
-                    if (!TextUtils.isEmpty(price) && price.contains(" ")) {
-                        String[] priceArr = price.split(" ");
-                        if (priceArr.length == 2) {
-                            holder.mTvValue.setText(priceArr[0]);
-                            holder.mTvValueToken.setText(priceArr[1]);
-                        }
-                    }
-                }
+                holder.mLayoutType.setVisibility(View.VISIBLE);
+                holder.mLayoutTo.setVisibility(View.GONE);
+                holder.mTvType.setText(getResources().getString(R.string.tv_offercancel));
+                holder.mImgType.setImageResource(R.drawable.ic_offer_cancel);
             } else if (TextUtils.equals(effectType, "offer_created")) {
                 pays = item.getJSONObject("pays");
                 gets = item.getJSONObject("gets");
-                if (pays != null && gets != null) {
-                    holder.mLayoutType.setVisibility(View.VISIBLE);
-                    holder.mLayoutTo.setVisibility(View.GONE);
-                    holder.mTvType.setText(getResources().getString(R.string.tv_offernew));
-                    holder.mImgType.setImageResource(R.drawable.ic_offer_new);
-
-                    String currency = pays.getString("currency");
-                    String paysCount = pays.getString("value");
-                    holder.mTvPayAmount.setText(CaclUtil.formatAmount(paysCount, SCALE));
-                    holder.mTvPayToken.setText(currency);
-
-                    currency = gets.getString("currency");
-                    String getsCount = gets.getString("value");
-                    holder.mTvEntrustAmount.setText(CaclUtil.formatAmount(getsCount, SCALE));
-                    holder.mTvEntrustToken.setText(currency);
-
-                    String price = item.getString("price");
-                    if (!TextUtils.isEmpty(price) && price.contains(" ")) {
-                        String[] priceArr = price.split(" ");
-                        if (priceArr.length == 2) {
-                            holder.mTvValue.setText(priceArr[0]);
-                            holder.mTvValueToken.setText(priceArr[1]);
-                        }
-                    }
-                }
+                holder.mLayoutType.setVisibility(View.VISIBLE);
+                holder.mLayoutTo.setVisibility(View.GONE);
+                holder.mTvType.setText(getResources().getString(R.string.tv_offernew));
+                holder.mImgType.setImageResource(R.drawable.ic_offer_new);
             } else {
                 pays = item.getJSONObject("paid");
                 gets = item.getJSONObject("got");
@@ -328,30 +278,29 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         holder.mTvTo.setText(addr);
                         ViewUtil.EllipsisTextView(holder.mTvTo);
                     }
-
-                    String currency = pays.getString("currency");
-                    String paysCount = pays.getString("value");
-                    holder.mTvPayAmount.setText(CaclUtil.formatAmount(paysCount, SCALE));
-                    holder.mTvPayToken.setText(currency);
-
-                    currency = gets.getString("currency");
-                    String getsCount = gets.getString("value");
-                    holder.mTvEntrustAmount.setText(CaclUtil.formatAmount(getsCount, SCALE));
-                    holder.mTvEntrustToken.setText(currency);
-
-                    String price = item.getString("price");
-                    if (!TextUtils.isEmpty(price) && price.contains(" ")) {
-                        String[] priceArr = price.split(" ");
-                        if (priceArr.length == 2) {
-                            holder.mTvValue.setText(priceArr[0]);
-                            holder.mTvValueToken.setText(priceArr[1]);
-                        }
-                    }
                 }
                 if (TextUtils.equals(currentAddr, holder.mTo)) {
                     holder.mTvTo.setTextColor(getResources().getColor(R.color.color_ping_normal));
                 } else {
                     holder.mTvTo.setTextColor(getResources().getColor(R.color.color_detail_address));
+                }
+            }
+
+            if (pays != null && gets != null) {
+                String paysCur = pays.getString("currency");
+                String paysCount = pays.getString("value");
+
+                String getsCur = gets.getString("currency");
+                String getsCount = gets.getString("value");
+                holder.mTvContent.setText(formatHtml(CaclUtil.formatAmount(paysCount, SCALE), paysCur, CaclUtil.formatAmount(getsCount, SCALE), getsCur));
+
+                String price = item.getString("price");
+                if (!TextUtils.isEmpty(price) && price.contains(" ")) {
+                    String[] priceArr = price.split(" ");
+                    if (priceArr.length == 2) {
+                        holder.mTvValue.setText(priceArr[0]);
+                        holder.mTvValueToken.setText(priceArr[1]);
+                    }
                 }
             }
         }
@@ -435,10 +384,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     // 成交
                     if (!TextUtils.isEmpty(getsAmount) && CaclUtil.compare(getsAmount, "0") != 0 && !TextUtils.isEmpty(paysAmount) && CaclUtil.compare(paysAmount, "0") != 0) {
                         mLayoutTurnoverAmount.setVisibility(View.VISIBLE);
-                        mTvTurnoverAmount.setText(CaclUtil.formatAmount(getsAmount, SCALE));
-                        mTvTurnoverToken.setText(getsCur);
-                        mTvTurnoverPayAmount.setText(CaclUtil.formatAmount(paysAmount, SCALE));
-                        mTvTurnoverPayToken.setText(paysCur);
+                        mTvTurnoverContent.setText(formatHtml(CaclUtil.formatAmount(paysAmount, SCALE), paysCur, CaclUtil.formatAmount(getsAmount, SCALE), getsCur));
 
                         // 成交价格
                         String price;
@@ -467,10 +413,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
                     mLayoutEntrustAmount.setVisibility(View.VISIBLE);
-                    mTvEntrustAmount.setText(CaclUtil.formatAmount(getsValue, SCALE));
-                    mTvEntrustToken.setText(getsCur);
-                    mTvPayAmount.setText(CaclUtil.formatAmount(paysValue, SCALE));
-                    mTvPayToken.setText(paysCur);
+                    mTvEntrustContent.setText(formatHtml(CaclUtil.formatAmount(paysValue, SCALE), paysCur, CaclUtil.formatAmount(getsValue, SCALE), getsCur));
 
                     // 委托价格
                     String price;
@@ -506,10 +449,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String paysValue = mTransactions.getPays().getValue();
                     String getsToken = mTransactions.getGets().getCurrency();
                     String paysToken = mTransactions.getPays().getCurrency();
-                    mTvEntrustAmount.setText(CaclUtil.formatAmount(getsValue, SCALE));
-                    mTvEntrustToken.setText(getsToken);
-                    mTvPayAmount.setText(CaclUtil.formatAmount(paysValue, SCALE));
-                    mTvPayToken.setText(paysToken);
+                    mTvEntrustContent.setText(formatHtml(CaclUtil.formatAmount(paysValue, SCALE), paysToken, CaclUtil.formatAmount(getsValue, SCALE), getsToken));
 
                     // 委托价格
                     if (mTransactions.getEffects() != null && mTransactions.getEffects().getJSONObject(0) != null) {
@@ -588,10 +528,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     // 成交
                     if (!TextUtils.isEmpty(getsAmount1) && CaclUtil.compare(getsAmount1, "0") != 0 && !TextUtils.isEmpty(paysAmount1) && CaclUtil.compare(paysAmount1, "0") != 0) {
                         mLayoutTurnoverAmount.setVisibility(View.VISIBLE);
-                        mTvTurnoverAmount.setText(CaclUtil.formatAmount(getsAmount1, SCALE));
-                        mTvTurnoverToken.setText(getsCur);
-                        mTvTurnoverPayAmount.setText(CaclUtil.formatAmount(paysAmount1, SCALE));
-                        mTvTurnoverPayToken.setText(paysCur);
+                        mTvTurnoverContent.setText(formatHtml(CaclUtil.formatAmount(paysAmount1, SCALE), paysCur, CaclUtil.formatAmount(getsAmount1, SCALE), getsCur));
 
                         // 成交价格
                         String price;
@@ -620,10 +557,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
                     mLayoutEntrustAmount.setVisibility(View.VISIBLE);
-                    mTvEntrustAmount.setText(CaclUtil.formatAmount(getsValue, SCALE));
-                    mTvEntrustToken.setText(getsCur);
-                    mTvPayAmount.setText(CaclUtil.formatAmount(paysValue, SCALE));
-                    mTvPayToken.setText(paysCur);
+                    mTvEntrustContent.setText(formatHtml(CaclUtil.formatAmount(paysValue, SCALE), paysCur, CaclUtil.formatAmount(getsValue, SCALE), getsCur));
 
                     // 委托价格
                     String price;
@@ -702,12 +636,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         }
     }
 
-    private String EllipsizeAddress(String address) {
-        if (Wallet.isValidAddress(address)) {
-            String startStr = address.substring(0, 7);
-            String endStr = address.substring(address.length() - 7);
-            return startStr + "***" + endStr;
-        }
-        return address;
+    private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {
+        String paysH = "<font color=\"#3B6CA6\">" + paysValue + " </font>";
+        String paysCurH = "<font color=\"#021E38\">" + paysCur + " </font>";
+        String right = "<font color=\"#A6A9AD\">" + "\u2192" + " </font>";
+        String getsH = "<font color=\"#3B6CA6\">" + getsValue + " </font>";
+        String getsCurH = "<font color=\"#021E38\">" + getsCur + "</font>";
+        return Html.fromHtml(paysH.concat(paysCurH).concat(right).concat(getsH).concat(getsCurH));
     }
 }

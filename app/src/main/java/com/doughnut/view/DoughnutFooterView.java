@@ -8,7 +8,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -67,6 +69,7 @@ public class DoughnutFooterView extends InternalAbstract implements RefreshFoote
 
     @Override
     public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
+        if (mNoMoreData) return;
         switch (newState) {
             case PullUpToLoad:
                 start();
@@ -106,7 +109,11 @@ public class DoughnutFooterView extends InternalAbstract implements RefreshFoote
             mNoMoreData = noMoreData;
             if (noMoreData) {
                 mAnimationImg.setVisibility(GONE);
+                ViewGroup.LayoutParams lp = mTitleText.getLayoutParams();
                 mTitleText.setText(getResources().getString(R.string.srl_footer_nothing));
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(lp);
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                mTitleText.setLayoutParams(layoutParams);
             } else {
                 mAnimationImg.setVisibility(VISIBLE);
                 mTitleText.setText(getResources().getString(R.string.srl_footer_pulling));

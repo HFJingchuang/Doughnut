@@ -234,60 +234,14 @@
                                 android:textSize="15sp" />
 
                             <TextView
-                                android:id="@+id/tv_pay_amount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="20dp"
-                                android:layout_toLeftOf="@+id/tv_pay_token"
-                                android:layout_toRightOf="@+id/tv_entrust_amount_tmp"
-                                android:gravity="center|right"
-                                android:textColor="@color/color_dialog_confirm"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_pay_token"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="5dp"
-                                android:layout_toLeftOf="@+id/tv_right"
-                                android:ellipsize="middle"
-                                android:gravity="center|right"
-                                android:maxWidth="80dp"
-                                android:textColor="@color/color_detail_address"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_right"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/tv_entrust_amount"
-                                android:gravity="center"
-                                android:text="\u2192"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_entrust_amount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="5dp"
-                                android:layout_toLeftOf="@+id/tv_entrust_token"
-                                android:gravity="center"
-                                android:textColor="@color/color_dialog_confirm"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_entrust_token"
+                                android:id="@+id/tv_entrust_content"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
-                                android:ellipsize="middle"
+                                android:layout_marginLeft="20dp"
+                                android:layout_toRightOf="@+id/tv_entrust_amount_tmp"
                                 android:gravity="center|right"
-                                android:maxWidth="80dp"
-                                android:textColor="@color/color_detail_address"
+                                android:textColor="@color/color_dialog_confirm"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
@@ -410,63 +364,16 @@
                                 android:textSize="15sp" />
 
                             <TextView
-                                android:id="@+id/tv_turnover_pay_amount"
+                                android:id="@+id/tv_turnover_content"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
                                 android:layout_marginLeft="20dp"
-                                android:layout_toLeftOf="@+id/tv_turnover_pay_token"
                                 android:layout_toRightOf="@+id/tv_turnover_amount_tmp"
                                 android:gravity="center|right"
                                 android:textColor="@color/color_dialog_confirm"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_turnover_pay_token"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="5dp"
-                                android:layout_toLeftOf="@+id/tv_turnover_right"
-                                android:ellipsize="middle"
-                                android:gravity="center|right"
-                                android:maxWidth="80dp"
-                                android:textColor="@color/color_detail_address"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_turnover_right"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/tv_turnover_amount"
-                                android:gravity="center"
-                                android:text="\u2192"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_turnover_amount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="5dp"
-                                android:layout_toLeftOf="@+id/tv_turnover_token"
-                                android:gravity="center"
-                                android:textColor="@color/color_dialog_confirm"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_turnover_token"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:ellipsize="middle"
-                                android:gravity="center|right"
-                                android:maxWidth="80dp"
-                                android:textColor="@color/color_detail_address"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
                         </RelativeLayout>
 
                         <RelativeLayout

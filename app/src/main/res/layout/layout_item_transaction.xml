@@ -53,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="2dp"
             android:layout_toRightOf="@+id/layout_address"
             android:gravity="right|center"
             android:textColor="@color/color_detail_address"
