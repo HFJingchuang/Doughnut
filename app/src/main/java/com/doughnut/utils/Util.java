@@ -218,11 +218,11 @@ public class Util {
     /**
      * 数字每隔三位加个逗号
      *
-     * @param amunot
+     * @param amount
      * @param scal
      * @return
      */
-    public static String formatWithComma(double amunot, int scal) {
+    public static String formatWithComma(double amount, int scal) {
         String pattern = "#,###";
         if (scal > 0) {
             pattern = "#,###.";
@@ -231,7 +231,7 @@ public class Util {
             }
         }
         DecimalFormat df = new DecimalFormat(pattern);
-        return df.format(amunot);
+        return df.format(amount);
     }
 
     /**

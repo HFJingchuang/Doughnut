@@ -54,6 +54,7 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.zxing.activity.CaptureActivity;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -467,7 +468,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                                 // 当前币种总价值
                                                 String sum = CaclUtil.add(balance, freeze);
                                                 String value = CaclUtil.mul(sum, price);
-                                                values = CaclUtil.add(values, value, 2);
+                                                values = CaclUtil.add(values, value);
                                             }
                                             number = CaclUtil.div(values, swtPrice, 2);
                                             AppConfig.postOnUiThread(new Runnable() {
@@ -475,10 +476,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                                 public void run() {
                                                     mTvPrice.setText(String.format(getString(R.string.tv_price), new BigDecimal(swtPrice)));
                                                     mTvPrice.setVisibility(View.VISIBLE);
-
-                                                    if (values.contains(".")) {
-                                                        String[] balanceArr = values.split("\\.");
-                                                        mTvBalanceCny.setText(Util.formatWithComma(Double.parseDouble(balanceArr[0]), 0));
+                                                    String valuesF = Util.formatWithComma(Double.parseDouble(values), 2);
+                                                    if (valuesF.contains(".")) {
+                                                        String[] balanceArr = valuesF.split("\\.");
+                                                        mTvBalanceCny.setText(balanceArr[0]);
                                                         if (!TextUtils.isEmpty(balanceArr[1])) {
                                                             mTvBalanceCnyDec.setText("." + balanceArr[1]);
                                                         }
