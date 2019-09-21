@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import me.jessyan.autosize.AutoSize;
+import me.jessyan.autosize.AutoSizeConfig;
+
 
 public class TApplication extends Application {
 
@@ -34,6 +37,8 @@ public class TApplication extends Application {
         TBController.getInstance().init();
         WalletInfoManager.getInstance().init();
         JSUtil.getInstance().init();
+        AutoSize.initCompatMultiProcess(this);
+        AutoSizeConfig.getInstance().setExcludeFontScale(true);
     }
 
     public void addActivity(BaseActivity activity) {

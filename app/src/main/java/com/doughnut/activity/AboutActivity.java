@@ -64,6 +64,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_about));
+        mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setRightTextColor(R.color.white);
         mTitleBar.setTitleBarClickListener(this);
 
@@ -77,7 +78,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         mProgressDrawable.setColor(0xff666666);
         mImgLoad.setImageDrawable(mProgressDrawable);
         mImgLoad.setVisibility(View.GONE);
-        
+
     }
 
     public static void startAboutActivity(Context from) {

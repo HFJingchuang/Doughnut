@@ -51,7 +51,7 @@ public class Constant {
     public final static String privilege_url = "";
 
     //服务协议
-    public final static String service_term_url = "";
+    public final static String service_term_url = "file:///android_asset/service.html";
 
     //交易查询
     public final static String swt_transaction_search_url = "http://state.jingtum.com/#!/tx/";
