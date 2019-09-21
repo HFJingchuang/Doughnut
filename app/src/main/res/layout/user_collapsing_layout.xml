@@ -10,14 +10,19 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/img_qr"
+        <LinearLayout
+            android:id="@+id/layout_qr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="@dimen/text_size_15"
-            android:src="@drawable/ic_erm" />
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/text_size_15"
+                android:src="@drawable/ic_erm" />
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout

@@ -81,6 +81,10 @@ public class EditDialog extends Dialog implements View.OnClickListener {
     }
 
     @Override
+    public void onBackPressed() {
+    }
+
+    @Override
     public void onClick(View view) {
         if (view == mTvCancel) {
             dismiss();

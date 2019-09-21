@@ -48,6 +48,7 @@ public class MsgDialog extends BaseDialog {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

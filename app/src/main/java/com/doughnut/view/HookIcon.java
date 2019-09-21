@@ -2,7 +2,6 @@ package com.doughnut.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,13 +12,14 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 
 public class HookIcon extends View {
 
-    private static final float DP = Resources.getSystem().getDisplayMetrics().density;
+    private final static float DP = AppConfig.getContext().getResources().getDisplayMetrics().density;
 
-    private final float mCircleRadius = DP * 12;
-    private final float mPaintWidth = DP * 3;
+    private final static float mCircleRadius = DP * 12;
+    private final static float mPaintWidth = DP * 3;
     private Paint mPaint;
     private Path mPath;
     private PathMeasure mPathMeasure;

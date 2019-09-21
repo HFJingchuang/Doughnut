@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,7 +42,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private TextView mTvName;
     private TextView mTvLab;
     private TextView mTvVersion;
-    private ImageView mImgQR;
+    private LinearLayout mLayoutQR;
     private String currentWallet;
 
     public static MainUserFragment newInstance() {
@@ -93,7 +92,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRight.setClickable(true);
         mLayoutReceive.setClickable(true);
         mLayoutSend.setClickable(true);
-        mImgQR.setClickable(true);
+        mLayoutQR.setClickable(true);
     }
 
     @Override
@@ -126,8 +125,8 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutSend) {
             mLayoutSend.setClickable(false);
             TokenTransferActivity.startTokenTransferActivity(getActivity());
-        } else if (view == mImgQR) {
-            mImgQR.setClickable(false);
+        } else if (view == mLayoutQR) {
+            mLayoutQR.setClickable(false);
             WalletQRActivity.startTokenReceiveActivity(getActivity(), currentWallet);
         }
     }
@@ -147,7 +146,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mTvAddress = view.findViewById(R.id.tv_wallet_address);
         mTvName = view.findViewById(R.id.tv_wallet_name);
         mTvLab = view.findViewById(R.id.tv_label);
-        mImgQR = view.findViewById(R.id.img_qr);
+        mLayoutQR = view.findViewById(R.id.layout_qr);
         mTvVersion = view.findViewById(R.id.tv_version);
         mTvVersion.setText(DeviceUtil.getVersionName());
 
@@ -160,7 +159,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRight.setOnClickListener(this);
         mLayoutReceive.setOnClickListener(this);
         mLayoutSend.setOnClickListener(this);
-        mImgQR.setOnClickListener(this);
+        mLayoutQR.setOnClickListener(this);
 
         setWalletInfo();
     }
@@ -170,7 +169,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         if (TextUtils.isEmpty(currentWallet)) {
             mTvLab.setVisibility(View.GONE);
             mTvName.setText(getString(R.string.tv_has_no_wallet));
-            mImgQR.setEnabled(false);
+            mLayoutQR.setEnabled(false);
             mLayoutRight.setEnabled(false);
         } else {
             mTvAddress.setText(currentWallet);
@@ -178,7 +177,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
             mTvName.setText(WalletSp.getInstance(getContext(), currentWallet).getName());
             ViewUtil.EllipsisTextView(mTvName);
             mTvLab.setVisibility(View.VISIBLE);
-            mImgQR.setEnabled(true);
+            mLayoutQR.setEnabled(true);
             mLayoutRight.setEnabled(true);
         }
     }
