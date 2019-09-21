@@ -9,15 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:id="@+id/v_web"
+    <com.doughnut.view.TBWebCore
+        android:id="@+id/web_core"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
-
-    <!--<com.doughnut.view.TBWebCore-->
-    <!--android:id="@+id/web_core"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent" />-->
+        android:layout_height="match_parent" />
 
 </LinearLayout>

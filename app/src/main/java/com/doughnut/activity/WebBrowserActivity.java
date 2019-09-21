@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.doughnut.R;
 import com.doughnut.utils.TLog;
 import com.doughnut.view.TBWebCore;
 import com.doughnut.view.TitleBar;
-import com.just.agentweb.AgentWeb;
 
 
 public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBarClickListener {
@@ -23,7 +21,6 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
     private String mTitle = "";
 
     private TBWebCore mWebCore;
-    private AgentWeb mAgentWeb;
     private TitleBar mTitleBar;
 
     @Override
@@ -36,7 +33,7 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
             mTitle = getIntent().getStringExtra("TITLE");
             TLog.d(TAG, "mUrl:" + mUrl);
         }
-//        mWebCore = findViewById(R.id.web_core);
+        mWebCore = findViewById(R.id.web_core);
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setTitle(mTitle);
         mTitleBar.setTitleBarBackColor(R.color.color_detail_address);
@@ -46,13 +43,7 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
         mTitleBar.setTitleBarClickListener(this);
 
         if (!TextUtils.isEmpty(mUrl)) {
-//            mWebCore.loadUrl(mUrl);
-            mAgentWeb = AgentWeb.with(this)
-                    .setAgentWebParent((LinearLayout) findViewById(R.id.v_web), new LinearLayout.LayoutParams(-1, -1))
-                    .useDefaultIndicator()
-                    .createAgentWeb()
-                    .ready()
-                    .go(mUrl);
+            mWebCore.loadUrl(mUrl);
         }
     }
 
