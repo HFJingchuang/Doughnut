@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
-import com.doughnut.dialog.MsgDialog;
 import com.doughnut.dialog.UpgradeDialog;
 import com.doughnut.utils.DeviceUtil;
 import com.doughnut.utils.GsonUtil;
@@ -16,7 +14,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Parameter;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -24,7 +21,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * 检查更新AsyncTask
  */
-public class UpdateTask extends AsyncTask<Parameter, Integer, Integer> {
+public class UpdateTask extends AsyncTask<Context, Integer, Integer> {
     private final int RES_NOR = 0;//获取更新信息成功
     private final int RES_ERR = 1;//获取更新信息失败
     private int RE_CONN = 0;
@@ -36,7 +33,7 @@ public class UpdateTask extends AsyncTask<Parameter, Integer, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(Parameter... params) {
+    protected Integer doInBackground(Context... params) {
         InputStream inputStream = connect();
         try {
             if (inputStream != null) {

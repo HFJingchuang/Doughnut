@@ -13,9 +13,10 @@ import com.doughnut.utils.TLog;
 import java.util.HashMap;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Function;
 
 
 public abstract class ApiRequest<T> implements IApiRequest {
@@ -71,9 +72,9 @@ public abstract class ApiRequest<T> implements IApiRequest {
     public Observable<String> getObservableObj(final boolean shouldCache) {
         if (apiResponseObservable == null) {
             Observable<String> strObservable = getStrObservable(shouldCache);
-            apiResponseObservable = strObservable.map(new Func1<String, String>() {
+            apiResponseObservable = strObservable.map(new Function<String, String>() {
                 @Override
-                public String call(String s) {
+                public String apply(String s) throws Exception {
                     return s;
                 }
             });
@@ -82,16 +83,16 @@ public abstract class ApiRequest<T> implements IApiRequest {
     }
 
     public Observable<String> getStrObservable(final boolean shouldCache) {
-        return Observable.create(new Observable.OnSubscribe<String>() {
+        return Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void call(final Subscriber<? super String> subscriber) {
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 BaseJsonRequest<String> request = new BaseJsonRequest<String>(getMethod(), initUrl(), initHeader(), initRequest(),
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String s) {
                                 TLog.d(TAG, "RxJava request response = " + s);
-                                subscriber.onNext(s);
-                                subscriber.onCompleted();
+                                emitter.onNext(s);
+                                emitter.onComplete();
                             }
                         },
                         new Response.ErrorListener() {
@@ -104,7 +105,7 @@ public abstract class ApiRequest<T> implements IApiRequest {
                                     errCode = volleyError.networkResponse.statusCode;
                                     errMsg = volleyError.toString();
                                 }
-                                subscriber.onError(new Throwable(errMsg + AppConfig.getContext().getString(R.string.content_error_code) + errCode));
+                                emitter.onError(new Throwable(errMsg + AppConfig.getContext().getString(R.string.content_error_code) + errCode));
                             }
                         });
                 request.setShouldCache(shouldCache);

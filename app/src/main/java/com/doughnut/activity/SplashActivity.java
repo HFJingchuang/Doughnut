@@ -9,15 +9,13 @@ import android.view.WindowManager;
 
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
-import com.doughnut.update.UpdateTask;
 import com.doughnut.utils.NetUtil;
 import com.doughnut.utils.PermissionUtil;
 import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
+import com.doughnut.view.ParticlTextView.ParticleTextView;
+import com.doughnut.view.ParticlTextView.ParticleTextViewConfig;
 import com.doughnut.wallet.WalletManager;
-import com.yasic.library.particletextview.MovingStrategy.BidiHorizontalStrategy;
-import com.yasic.library.particletextview.Object.ParticleTextViewConfig;
-import com.yasic.library.particletextview.View.ParticleTextView;
 
 public class SplashActivity extends BaseActivity {
 
@@ -35,7 +33,6 @@ public class SplashActivity extends BaseActivity {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
         mTvSpalsh = (ParticleTextView) findViewById(R.id.tv_splash);
-        BidiHorizontalStrategy movingStrategy5 = new BidiHorizontalStrategy();
         ParticleTextViewConfig config1 = new ParticleTextViewConfig.Builder()
                 .setTargetText(getString(R.string.content_splash))
                 .setReleasing(0.08)
