@@ -36,6 +36,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import me.jessyan.autosize.AutoSize;
+import me.jessyan.autosize.AutoSizeConfig;
+import me.jessyan.autosize.external.ExternalAdaptInfo;
+
 
 public class TransactionRecordActivity extends BaseActivity implements
         TitleBar.TitleBarClickListener {
@@ -271,7 +275,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
                     break;
                 default:
-                    // TODO parse other type
+                    holder.mTvTransactionAddress.setText(getString(R.string.tv_unkown));
                     break;
             }
             SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");

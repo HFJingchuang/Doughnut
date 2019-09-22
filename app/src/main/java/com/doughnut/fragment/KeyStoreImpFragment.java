@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
+import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
@@ -177,7 +178,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (isErr) {
-                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_tips));
+                            mTvErrPassword.setText(AppConfig.getCurActivity().getResources().getString(R.string.tv_pwd_tips));
                         }
                     }
 

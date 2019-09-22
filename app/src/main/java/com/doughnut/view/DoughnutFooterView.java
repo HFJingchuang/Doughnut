@@ -115,6 +115,11 @@ public class DoughnutFooterView extends InternalAbstract implements RefreshFoote
                 layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 mTitleText.setLayoutParams(layoutParams);
             } else {
+                ViewGroup.LayoutParams lp = mTitleText.getLayoutParams();
+                mTitleText.setText(getResources().getString(R.string.srl_footer_nothing));
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(lp);
+                layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.v_middle);
+                mTitleText.setLayoutParams(layoutParams);
                 mAnimationImg.setVisibility(VISIBLE);
                 mTitleText.setText(getResources().getString(R.string.srl_footer_pulling));
             }

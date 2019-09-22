@@ -209,5 +209,6 @@
     <string name="dialog_loading">Creating</string>
     <string name="dialog_modify">Modifying</string>
     <string name="dialog_import">Importing</string>
+    <string name="tv_unkown">UNKOWN</string>
 
 </resources>

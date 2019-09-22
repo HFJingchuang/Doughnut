@@ -124,7 +124,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                             @Override
                             public void run() {
                                 mTvErrKey.setVisibility(View.VISIBLE);
-                                mTvErrKey.setText(getString(R.string.tv_err_key));
+                                mTvErrKey.setText(AppConfig.getCurActivity().getString(R.string.tv_err_key));
                                 mEdtPrivateKey.requestFocus();
                                 mEdtPrivateKey.setSelection(privateKey.length());
                             }
@@ -183,7 +183,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                         if (!isValid) {
                             isErr = true;
                             mEdtWalletPwd.setText("");
-                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_err));
+                            mTvErrPassword.setText(AppConfig.getCurActivity().getResources().getString(R.string.tv_pwd_err));
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -232,7 +232,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                     if (!TextUtils.isEmpty(passwordConfim)) {
                         if (!TextUtils.isEmpty(passWord) && !TextUtils.equals(passwordConfim, passWord)) {
                             mEdtWalletPwdConfirm.setText("");
-                            mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
+                            mTvErrPasswordRep.setText(AppConfig.getCurActivity().getString(R.string.dialog_content_passwords_unmatch));
                             mTvErrPasswordRep.setVisibility(View.VISIBLE);
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
@@ -244,7 +244,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                             boolean isValid = PWDUtils.verifyPasswordFormat(passwordConfim);
                             if (!isValid) {
                                 mEdtWalletPwdConfirm.setText("");
-                                mTvErrPasswordRep.setText(getResources().getString(R.string.tv_pwd_err));
+                                mTvErrPasswordRep.setText(AppConfig.getCurActivity().getResources().getString(R.string.tv_pwd_err));
                                 mTvErrPasswordRep.setVisibility(View.VISIBLE);
                                 AppConfig.postOnUiThread(new Runnable() {
                                     @Override

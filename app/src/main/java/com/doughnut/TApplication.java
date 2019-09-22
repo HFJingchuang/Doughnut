@@ -13,6 +13,7 @@ import com.doughnut.base.WalletInfoManager;
 import com.doughnut.base.TBController;
 import com.doughnut.config.AppConfig;
 import com.doughnut.utils.LanguageUtil;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Locale;
 
 import me.jessyan.autosize.AutoSize;
 import me.jessyan.autosize.AutoSizeConfig;
+import me.jessyan.autosize.external.ExternalAdaptInfo;
 
 
 public class TApplication extends Application {
@@ -39,6 +41,8 @@ public class TApplication extends Application {
         JSUtil.getInstance().init();
         AutoSize.initCompatMultiProcess(this);
         AutoSizeConfig.getInstance().setExcludeFontScale(true);
+        AutoSizeConfig.getInstance().getExternalAdaptManager()
+                .addExternalAdaptInfoOfActivity(SmartRefreshLayout.class, new ExternalAdaptInfo(true, 410));
     }
 
     public void addActivity(BaseActivity activity) {
