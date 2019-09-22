@@ -36,13 +36,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import me.jessyan.autosize.AutoSize;
-import me.jessyan.autosize.AutoSizeConfig;
-import me.jessyan.autosize.external.ExternalAdaptInfo;
+import me.jessyan.autosize.internal.CustomAdapt;
 
 
 public class TransactionRecordActivity extends BaseActivity implements
-        TitleBar.TitleBarClickListener {
+        TitleBar.TitleBarClickListener, CustomAdapt {
 
     private static final int SCALE = 2;
     private static final int LIMIT = 10;
@@ -62,7 +60,6 @@ public class TransactionRecordActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_record);
-
         initView();
     }
 
@@ -125,6 +122,16 @@ public class TransactionRecordActivity extends BaseActivity implements
         Intent intent = new Intent(context, TransactionRecordActivity.class);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    @Override
+    public boolean isBaseOnWidth() {
+        return false;
+    }
+
+    @Override
+    public float getSizeInDp() {
+        return 730;
     }
 
     class TransactionRecordAdapter extends RecyclerView.Adapter<TransactionRecordAdapter.VH> {
