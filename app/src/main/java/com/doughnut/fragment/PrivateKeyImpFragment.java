@@ -26,9 +26,11 @@ import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.PWDUtils;
 import com.doughnut.view.SubCharSequence;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 
 
@@ -329,16 +331,24 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 String privateKey = mEdtPrivateKey.getText().toString();
                 String walletName = mEdtWalletName.getText().toString();
                 String walletPwd = mEdtWalletPwd.getText().toString();
+                LoadDialog loadDialog = new LoadDialog(getContext(), getString(R.string.dialog_import));
+                loadDialog.show();
+                WalletManager.getInstance(getContext()).importWalletWithKey(walletPwd, privateKey, walletName, new ICallBack() {
+                    @Override
+                    public void onResponse(Object response) {
+                        boolean isSuccess = (boolean) response;
+                        loadDialog.dismiss();
+                        if (isSuccess) {
+                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            intent.putExtra(Constant.IMPORT_FLAG, true);
+                            intent.putExtra(Constant.WALLET_NAME, walletName);
+                            startActivity(intent);
+                        } else {
+                            new MsgDialog(getContext(), getString(R.string.dialog_import_fail)).setIsHook(false).show();
+                        }
+                    }
+                });
 
-                boolean isSuccess = WalletManager.getInstance(getContext()).importWalletWithKey(walletPwd, privateKey, walletName);
-                if (isSuccess) {
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra(Constant.IMPORT_FLAG, true);
-                    intent.putExtra(Constant.WALLET_NAME, walletName);
-                    startActivity(intent);
-                } else {
-                    new MsgDialog(getContext(), getString(R.string.dialog_import_fail)).setIsHook(false).show();
-                }
                 break;
             // 勾选框
             case R.id.layout_read:

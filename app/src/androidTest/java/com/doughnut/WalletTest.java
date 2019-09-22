@@ -40,9 +40,17 @@ public class WalletTest {
 
     @Test
     public void createWalletTest() throws Exception {
-
-        String addr = WalletManager.getInstance(appContext).createWallet("123456", "测试");
-        Assert.assertNotNull(addr);
+        final CountDownLatch mutex = new CountDownLatch(1);
+        final String[] addr = new String[1];
+        WalletManager.getInstance(appContext).createWallet("123456", "测试", new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                addr[0] = (String) response;
+                mutex.countDown();
+            }
+        });
+        mutex.await();
+        Assert.assertNotNull(addr[0]);
     }
 
     @Test
@@ -58,26 +66,49 @@ public class WalletTest {
 
     @Test
     public void importWalletWithKeyTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
-        boolean res = WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        Assert.assertEquals(true, res);
+        final boolean[] res = new boolean[1];
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                res[0] = (boolean) response;
+                mutex.countDown();
+            }
+        });
+        mutex.await();
+        Assert.assertEquals(true, res[0]);
     }
 
     @Test
     public void exportWalletWithQRTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                mutex.countDown();
+            }
+        });
+        mutex.await();
         Bitmap qrBitmap = WalletManager.getInstance(appContext).exportWalletWithQR(address, 500, Color.BLACK);
         Assert.assertNotNull(qrBitmap);
     }
 
     @Test
     public void getPrivateKeyTest() throws Exception {
+        final CountDownLatch mutex = new CountDownLatch(1);
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                mutex.countDown();
+            }
+        });
+        mutex.await();
         String privateKey1 = WalletManager.getInstance(appContext).getPrivateKey("123456", address);
         Assert.assertEquals(privateKey1, privateKey);
     }
@@ -107,7 +138,12 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final AccountTx[] bean = new AccountTx[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+
+            }
+        });
         WalletManager.getInstance(appContext).getTransferHistory(address, new Integer("10"), null, new ICallBack() {
             @Override
             public void onResponse(Object response) {
@@ -127,15 +163,23 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final String[] balance = new String[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        WalletManager.getInstance(appContext).getSWTBalance(address, new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
             @Override
             public void onResponse(Object response) {
-                balance[0] = (String) response;
                 mutex.countDown();
             }
         });
         mutex.await();
+
+        final CountDownLatch mutex1 = new CountDownLatch(1);
+        WalletManager.getInstance(appContext).getSWTBalance(address, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                balance[0] = (String) response;
+                mutex1.countDown();
+            }
+        });
+        mutex1.await();
         Assert.assertNotEquals("", balance[0]);
     }
 
@@ -146,15 +190,22 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final AccountRelations[] accountRelations = new AccountRelations[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
             @Override
             public void onResponse(Object response) {
-                accountRelations[0] = (AccountRelations) response;
                 mutex.countDown();
             }
         });
         mutex.await();
+        final CountDownLatch mutex1 = new CountDownLatch(1);
+        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                accountRelations[0] = (AccountRelations) response;
+                mutex1.countDown();
+            }
+        });
+        mutex1.await();
         Assert.assertEquals("j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe", accountRelations[0].getAccount());
     }
 }

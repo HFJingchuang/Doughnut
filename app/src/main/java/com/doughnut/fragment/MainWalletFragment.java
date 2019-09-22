@@ -238,6 +238,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mProgressDrawable.stop();
+        mProgressDrawableCNY.stop();
+    }
+
+    @Override
     public void onClick(View view) {
         if (!NetUtil.isNetworkAvailable(getActivity())) {
             ToastUtil.toast(getContext(), getString(R.string.toast_no_network));
@@ -328,17 +335,19 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
             if (isHidden) {
-                if (mTvBalanceCnyDec != null) {
-                    mTvBalanceCny.setText("***");
-                }
-                if (mTvBalanceCny != null) {
-                    mTvBalanceCnyDec.setText("");
-                }
-                if (mTvBalance != null) {
-                    mTvBalance.setText("***");
-                }
-                if (mTvBalanceDec != null) {
-                    mTvBalanceDec.setText("");
+                if (!mProgressDrawable.isRunning()) {
+                    if (mTvBalanceCnyDec != null) {
+                        mTvBalanceCny.setText("***");
+                    }
+                    if (mTvBalanceCny != null) {
+                        mTvBalanceCnyDec.setText("");
+                    }
+                    if (mTvBalance != null) {
+                        mTvBalance.setText("***");
+                    }
+                    if (mTvBalanceDec != null) {
+                        mTvBalanceDec.setText("");
+                    }
                 }
 
                 handleTokenRequestResult(params, loadmore, null);

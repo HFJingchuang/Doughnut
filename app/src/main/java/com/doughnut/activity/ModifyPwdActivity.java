@@ -20,10 +20,12 @@ import android.widget.TextView;
 import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
+import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.PWDUtils;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 
 
@@ -86,13 +88,22 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
                 String newPwd = mEdtNewPwd.getText().toString();
                 String repPwd = mEdtRepNewPwd.getText().toString();
                 if (TextUtils.equals(newPwd, repPwd)) {
+                    LoadDialog loadDialog = new LoadDialog(this, getString(R.string.dialog_modify));
+                    loadDialog.show();
                     // 修改KeyStore密码，name参数可不传
-                    boolean res = WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "");
-                    if (res) {
-                        finish();
-                    } else {
-                        new MsgDialog(this, getString(R.string.dailog_modify_fail)).setIsHook(false).show();
-                    }
+                    WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "", new ICallBack() {
+                        @Override
+                        public void onResponse(Object response) {
+                            boolean isSuccess = (boolean) response;
+                            loadDialog.dismiss();
+                            if (isSuccess) {
+                                finish();
+                            } else {
+                                new MsgDialog(ModifyPwdActivity.this, getString(R.string.dailog_modify_fail)).setIsHook(false).show();
+                            }
+                        }
+                    });
+
                 } else {
                     mEdtRepNewPwd.setText("");
                     mTvRepTips.setText(getString(R.string.dialog_content_passwords_unmatch));

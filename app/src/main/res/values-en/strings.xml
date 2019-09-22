@@ -204,5 +204,10 @@
     <string name="tv_transfer_err_aomunt">˙Transfer amount cannot be 0</string>
     <string name="tv_no_transfer_token">No currency available</string>
     <string name="tv_no_token">No available %1$s</string>
+    <string name="tv_price">&#160;≈&#160;&#165;&#160;%.5f</string>
+    <string name="tv_cny">&#160;≈&#160;&#165;&#160;</string>
+    <string name="dialog_loading">Creating</string>
+    <string name="dialog_modify">Modifying</string>
+    <string name="dialog_import">Importing</string>
 
 </resources>

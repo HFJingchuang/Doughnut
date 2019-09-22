@@ -223,9 +223,9 @@ public class Util {
      * @return
      */
     public static String formatWithComma(double amount, int scal) {
-        String pattern = "#,###";
+        String pattern = "#,##0";
         if (scal > 0) {
-            pattern = "#,###.";
+            pattern = "#,##0.";
             for (int i = 0; i < scal; i++) {
                 pattern = pattern + "0";
             }

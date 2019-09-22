@@ -206,5 +206,8 @@
     <string name="tv_no_token">没有可用的%1$s</string>
     <string name="tv_price">&#160;≈&#160;&#165;&#160;%.5f</string>
     <string name="tv_cny">&#160;≈&#160;&#165;&#160;</string>
+    <string name="dialog_loading">创建中...</string>
+    <string name="dialog_modify">修改中...</string>
+    <string name="dialog_import">导入中...</string>
 
 </resources>

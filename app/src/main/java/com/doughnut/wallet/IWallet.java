@@ -9,15 +9,15 @@ import com.jccdex.rpc.base.JCallback;
 
 public interface IWallet {
 
-    String createWallet(String password, String name);
+    void createWallet(String password, String name, ICallBack callBack);
 
     void deleteWallet(String address);
 
     Bitmap exportWalletWithQR(String address, int widthAndHeight, int color);
 
-    boolean importWalletWithKey(String password, String privateKey, String name);
+    void importWalletWithKey(String password, String privateKey, String name, ICallBack callBack);
 
-    boolean importKeysStore(String keyStore, String password, String name);
+    void importKeysStore(String keyStore, String password, String name, ICallBack callBack);
 
     String getPrivateKey(String password, String address);
 

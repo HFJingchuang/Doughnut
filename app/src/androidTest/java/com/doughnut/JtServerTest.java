@@ -34,27 +34,36 @@ public class JtServerTest {
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final AccountRelations[] accountRelations1 = new AccountRelations[1];
         JtServer.getInstance(appContext).changeServer("wss://s.jingtum.com:5020", true);
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test");
-        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
             @Override
             public void onResponse(Object response) {
-                accountRelations1[0] = (AccountRelations) response;
                 mutex.countDown();
             }
         });
         mutex.await();
-        Assert.assertEquals(true, JtServer.getInstance(appContext).getRemote().getLocalSign());
+
         final CountDownLatch mutex1 = new CountDownLatch(1);
+        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                accountRelations1[0] = (AccountRelations) response;
+                mutex1.countDown();
+            }
+        });
+        mutex1.await();
+
+        Assert.assertEquals(true, JtServer.getInstance(appContext).getRemote().getLocalSign());
+        final CountDownLatch mutex2 = new CountDownLatch(1);
         final AccountRelations[] accountRelations2 = new AccountRelations[1];
         JtServer.getInstance(appContext).changeServer("ws://ts5.jingtum.com:5020", false);
         WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 accountRelations2[0] = (AccountRelations) response;
-                mutex1.countDown();
+                mutex2.countDown();
             }
         });
-        mutex1.await();
+        mutex2.await();
         Assert.assertEquals(false, JtServer.getInstance(appContext).getRemote().getLocalSign());
         Assert.assertNotEquals(accountRelations1[0].getLines().size(), accountRelations2[0].getLines().size());
     }

@@ -24,10 +24,12 @@ import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.PWDUtils;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 
 
@@ -81,17 +83,25 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                 String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
                 if (TextUtils.equals(passWord, passwordConfirm)) {
                     mBtnConfirm.setClickable(false);
+                    LoadDialog loadDialog = new LoadDialog(this, getString(R.string.dialog_loading));
+                    loadDialog.show();
                     String walletName = mEdtWalletName.getText().toString();
                     String walletPwd = mEdtWalletPwd.getText().toString();
                     // 创建钱包
-                    String address = createWallet(walletName, walletPwd);
-                    if (Wallet.isValidAddress(address)) {
-                        String privateKey = WalletManager.getInstance(this).getPrivateKey(walletPwd, address);
-                        CreateSuccessActivity.startCreateSuccessActivity(this, address, privateKey);
-                        finish();
-                    } else {
-                        new MsgDialog(this, getString(R.string.tv_create_fail)).setIsHook(false).show();
-                    }
+                    WalletManager.getInstance(CreateNewWalletActivity.this).createWallet(walletPwd, walletName, new ICallBack() {
+                        @Override
+                        public void onResponse(Object response) {
+                            String address = (String) response;
+                            loadDialog.dismiss();
+                            if (Wallet.isValidAddress(address)) {
+                                String privateKey = WalletManager.getInstance(CreateNewWalletActivity.this).getPrivateKey(walletPwd, address);
+                                CreateSuccessActivity.startCreateSuccessActivity(CreateNewWalletActivity.this, address, privateKey);
+                                finish();
+                            } else {
+                                new MsgDialog(CreateNewWalletActivity.this, getString(R.string.tv_create_fail)).setIsHook(false).show();
+                            }
+                        }
+                    });
                 } else {
                     mEdtWalletPwdConfirm.setText("");
                     mTvErrPasswordRep.setText(getString(R.string.dialog_content_passwords_unmatch));
@@ -288,19 +298,6 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
         mImgShowRepPwd = findViewById(R.id.img_show_pwd_rep);
 
         mBtnConfirm.setOnClickListener(this);
-    }
-
-    /**
-     * 创建钱包
-     *
-     * @param walletName
-     * @param walletPwd
-     * @return
-     */
-    private String createWallet(final String walletName, final String walletPwd) {
-        WalletManager walletManager = WalletManager.getInstance(this);
-        // 创建钱包
-        return walletManager.createWallet(walletPwd, walletName);
     }
 
     /**

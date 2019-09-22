@@ -20,6 +20,7 @@ import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
+import com.doughnut.dialog.BaseDialog;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.CaclUtil;
@@ -82,15 +83,7 @@ public class WalletManager implements IWallet {
         return false;
     }
 
-    /**
-     * 创建钱包
-     *
-     * @param password
-     * @param name
-     * @return
-     */
-    @Override
-    public String createWallet(String password, String name) {
+    private String createWallet(String password, String name) {
         try {
             Wallet wallet = Wallet.generate();
             KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
@@ -101,6 +94,31 @@ public class WalletManager implements IWallet {
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * 创建钱包
+     *
+     * @param password
+     * @param nam
+     * @param callBack
+     */
+    @Override
+    public void createWallet(String password, String nam, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<String>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                String address = createWallet(password, nam);
+                emitter.onNext(address);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String address) throws Exception {
+                callBack.onResponse(address);
+            }
+        });
     }
 
     /**
@@ -131,16 +149,7 @@ public class WalletManager implements IWallet {
         return null;
     }
 
-    /**
-     * 导入私钥
-     *
-     * @param password
-     * @param privateKey
-     * @param name
-     * @return
-     */
-    @Override
-    public boolean importWalletWithKey(String password, String privateKey, String name) {
+    private boolean importWalletWithKey(String password, String privateKey, String name) {
         try {
             if (Wallet.isValidSecret(privateKey)) {
                 Wallet wallet = Wallet.fromSecret(privateKey);
@@ -158,15 +167,32 @@ public class WalletManager implements IWallet {
     }
 
     /**
-     * 导入KeyStore
+     * 导入私钥
      *
-     * @param keyStore
      * @param password
+     * @param privateKey
      * @param name
-     * @return
+     * @param callBack
      */
     @Override
-    public boolean importKeysStore(String keyStore, String password, String name) {
+    public void importWalletWithKey(String password, String privateKey, String name, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                boolean isSuccess = importWalletWithKey(password, privateKey, name);
+                emitter.onNext(isSuccess);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean isSuccess) throws Exception {
+                callBack.onResponse(isSuccess);
+            }
+        });
+    }
+
+    private boolean importKeysStore(String keyStore, String password, String name) {
         try {
             KeyStoreFile keyStoreFile = KeyStoreFile.parse(keyStore);
             String address = keyStoreFile.getAddress();
@@ -181,6 +207,32 @@ public class WalletManager implements IWallet {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 导入KeyStore
+     *
+     * @param keyStore
+     * @param password
+     * @param name
+     * @param callBack
+     */
+    @Override
+    public void importKeysStore(String keyStore, String password, String name, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                boolean isSuccess = importKeysStore(keyStore, password, name);
+                emitter.onNext(isSuccess);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean isSuccess) throws Exception {
+                callBack.onResponse(isSuccess);
+            }
+        });
     }
 
     /**
@@ -529,6 +581,10 @@ public class WalletManager implements IWallet {
                             String[] token = tokens.getString(j, "").split("_");
                             if (TextUtils.equals(token[0], "CNY")) {
                                 tokenMap.put(token[0], "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or");
+                                break;
+                            }
+                            if (TextUtils.equals(token[0], "SWTC")) {
+                                tokenMap.put("SWT", "");
                                 break;
                             }
                             if (token.length == 2) {

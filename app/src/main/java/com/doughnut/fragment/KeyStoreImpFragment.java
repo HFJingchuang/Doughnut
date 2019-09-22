@@ -25,8 +25,10 @@ import com.doughnut.R;
 import com.doughnut.activity.MainActivity;
 import com.doughnut.activity.WebBrowserActivity;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.view.SubCharSequence;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 
 
@@ -95,16 +97,25 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                 String keyStore = mEKeyStore.getText().toString();
                 String walletName = mEdtWalletName.getText().toString();
                 String walletPwd = mEdtWalletPwd.getText().toString();
+                LoadDialog loadDialog = new LoadDialog(getContext(), getString(R.string.dialog_import));
+                loadDialog.show();
                 // 导入钱包
-                boolean isSuccess = WalletManager.getInstance(getContext()).importKeysStore(keyStore, walletPwd, walletName);
-                if (isSuccess) {
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra(Constant.IMPORT_FLAG, true);
-                    intent.putExtra(Constant.WALLET_NAME, walletName);
-                    startActivity(intent);
-                } else {
-                    new MsgDialog(getContext(), getString(R.string.dialog_import_fail)).setIsHook(false).show();
-                }
+                WalletManager.getInstance(getContext()).importKeysStore(keyStore, walletPwd, walletName, new ICallBack() {
+                    @Override
+                    public void onResponse(Object response) {
+                        boolean isSuccess = (boolean) response;
+                        loadDialog.dismiss();
+                        if (isSuccess) {
+                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            intent.putExtra(Constant.IMPORT_FLAG, true);
+                            intent.putExtra(Constant.WALLET_NAME, walletName);
+                            startActivity(intent);
+                        } else {
+                            new MsgDialog(getContext(), getString(R.string.dialog_import_fail)).setIsHook(false).show();
+                        }
+                    }
+                });
+
                 break;
             // 勾选框
             case R.id.layout_read:

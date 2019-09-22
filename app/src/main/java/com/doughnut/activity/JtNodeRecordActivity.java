@@ -52,8 +52,8 @@ import java.util.List;
 public class JtNodeRecordActivity extends BaseActivity implements
         TitleBar.TitleBarClickListener {
 
-    final private BigDecimal PING_QUICK = new BigDecimal("60");
-    final private BigDecimal PING_LOW = new BigDecimal("100");
+    private final static BigDecimal PING_QUICK = new BigDecimal("60");
+    private final static BigDecimal PING_LOW = new BigDecimal("100");
 
     private SmartRefreshLayout mSmartRefreshLayout;
     private TitleBar mTitleBar;
@@ -443,7 +443,11 @@ public class JtNodeRecordActivity extends BaseActivity implements
             holder.mTvNodeUrl.setText(item);
             holder.mTvNodeName.setText(getResources().getString(R.string.tv_custom) + (last - position + 1));
             holder.mLayoutItem.setClickable(true);
-            if (mSelectedItem == -1 && mSelectedCustomItem == position) {
+            if (TextUtils.equals(holder.mTvNodeUrl.getText().toString(), JtServer.getInstance(JtNodeRecordActivity.this).getServer()) && mSelectedItem == -1 && mSelectedCustomItem == -1) {
+                mSelectedCustomItem = position;
+                holder.mRadioSelected.setChecked(true);
+                holder.mLayoutItem.setActivated(true);
+            } else if (mSelectedItem == -1 && mSelectedCustomItem == position) {
                 holder.mRadioSelected.setChecked(true);
                 holder.mLayoutItem.setActivated(true);
             } else {

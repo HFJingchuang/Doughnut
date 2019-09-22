@@ -3,6 +3,7 @@ package com.doughnut;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.doughnut.utils.CaclUtil;
+import com.doughnut.utils.Util;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -147,6 +148,33 @@ public class CaclUtilTest {
 
         res = CaclUtil.formatAmount("", 2);
         Assert.assertEquals("", res);
+    }
+
+    @Test
+    public void formatWithCommaTest() throws Exception {
+        String res = Util.formatWithComma(Double.parseDouble("0.0466000000000001"), 2);
+        Assert.assertEquals("0.05", res);
+
+        res = Util.formatWithComma(Double.parseDouble("0"), 2);
+        Assert.assertEquals("0.00", res);
+
+        res = Util.formatWithComma(Double.parseDouble("011"), 2);
+        Assert.assertEquals("11.00", res);
+
+        res = Util.formatWithComma(Double.parseDouble("011111"), 2);
+        Assert.assertEquals("11,111.00", res);
+
+        res = Util.formatWithComma(Double.parseDouble("11111"), 2);
+        Assert.assertEquals("11,111.00", res);
+
+        res = Util.formatWithComma(Double.parseDouble("11111.0"), 2);
+        Assert.assertEquals("11,111.00", res);
+
+        res = Util.formatWithComma(Double.parseDouble("11111.000001"), 2);
+        Assert.assertEquals("11,111.00", res);
+
+        res = Util.formatWithComma(Double.parseDouble("11111."), 2);
+        Assert.assertEquals("11,111.00", res);
     }
 
 }

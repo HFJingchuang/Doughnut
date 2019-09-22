@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -119,6 +120,8 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mLsWallet.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new WalletRecordAdapter();
         mLsWallet.setAdapter(mAdapter);
+        LinearSnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mLsWallet);
         getWallets();
     }
 

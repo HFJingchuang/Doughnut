@@ -28,4 +28,8 @@ public class BaseDialog extends Dialog {
     public void show() {
         super.show();
     }
+
+    public void dismiss() {
+        super.dismiss();
+    }
 }
