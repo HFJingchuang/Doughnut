@@ -30,6 +30,7 @@ import com.doughnut.utils.CaclUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.ICallBack;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
@@ -350,7 +351,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "");
         if (TextUtils.isEmpty(token)) {
-            token = "SWT";
+            token = WConstant.CURRENCY_SWTC;
             mIssue = "";
         }
         setBalance(token);
@@ -374,6 +375,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             for (int i = 0; i < lines.size(); i++) {
                                 Line line = lines.get(i);
                                 String currency = line.getCurrency();
+                                if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
+                                    currency = WConstant.CURRENCY_SWTC;
+                                }
                                 if (TextUtils.equals(token, currency)) {
                                     mBalance = CaclUtil.formatAmount(line.getBalance(), 4);
                                 }
@@ -386,7 +390,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                 String fileName = getPackageName() + "_transfer_token";
                                 SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("token", "SWT");
+                                editor.putString("token", WConstant.CURRENCY_SWTC);
                                 editor.apply();
                                 return;
                             }

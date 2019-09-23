@@ -82,6 +82,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_margin="@dimen/text_size_15"
+                android:layout_margin="20dp"
                 android:src="@drawable/ic_erm" />
         </LinearLayout>
     </RelativeLayout>
@@ -108,7 +108,9 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/text_size_15"
+                    android:layout_marginVertical="20dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/ic_go" />
             </LinearLayout>
         </RelativeLayout>

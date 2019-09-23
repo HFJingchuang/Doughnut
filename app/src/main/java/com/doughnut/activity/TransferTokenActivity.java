@@ -187,6 +187,9 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
         public void onBindViewHolder(VH holder, int position) {
             Line item = dataList.get(position);
             String currency = item.getCurrency();
+            if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
+                currency = WConstant.CURRENCY_SWTC;
+            }
             holder.mTvTokenName.setText(currency);
             holder.tokenName = currency;
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
@@ -288,17 +291,30 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                         e.printStackTrace();
                     }
 
+                    //排序,余额 > 冻结 > 币种
                     Collections.sort(dataList, new Comparator<Line>() {
                         @Override
                         public int compare(Line o1, Line o2) {
                             String b1 = o1.getBalance();
                             String b2 = o2.getBalance();
-                            if (CaclUtil.compare(b1, "0") == 0 && CaclUtil.compare(b2, "0") == 0) {
-                                String l1 = o1.getLimit();
-                                String l2 = o2.getLimit();
+                            String l1 = o1.getLimit();
+                            String l2 = o2.getLimit();
+                            if (CaclUtil.compare(b1, "0") != 0 || CaclUtil.compare(b2, "0") != 0) {
+                                return CaclUtil.compare(b2, b1);
+                            } else if (CaclUtil.compare(l1, "0") != 0 || CaclUtil.compare(l2, "0") != 0) {
                                 return CaclUtil.compare(l2, l1);
                             } else {
-                                return CaclUtil.compare(b2, b1);
+                                String cur1 = o1.getCurrency();
+                                String cur2 = o2.getCurrency();
+                                boolean r1 = Util.isStartWithNumber(cur1);
+                                boolean r2 = Util.isStartWithNumber(cur2);
+                                if (r1 && !r2) {
+                                    return 1;
+                                } else if (!r1 && r2) {
+                                    return -1;
+                                } else {
+                                    return cur1.compareTo(cur2);
+                                }
                             }
                         }
                     });

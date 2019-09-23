@@ -210,5 +210,6 @@
     <string name="dialog_modify">修改中...</string>
     <string name="dialog_import">导入中...</string>
     <string name="tv_unkown">未知</string>
+    <string name="tv_show_zero">显示非零资产</string>
 
 </resources>

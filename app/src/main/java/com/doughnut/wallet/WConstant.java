@@ -8,6 +8,9 @@ public class WConstant {
     // SWT
     public final static String CURRENCY_SWT = "SWT";
 
+    // SWTC
+    public final static String CURRENCY_SWTC = "SWTC";
+
     // CNY
     public final static String CURRENCY_CNY = "CNY";
 

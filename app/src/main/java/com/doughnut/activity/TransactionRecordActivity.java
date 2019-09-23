@@ -25,6 +25,7 @@ import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.ICallBack;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -180,7 +181,11 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
 
                     String paysH = "<font color=\"#F55758\">" + "-" + CaclUtil.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
-                    String paysCurH = "<font color=\"#021E38\">" + tr.getAmount().getCurrency() + "</font>";
+                    String tokenName = tr.getAmount().getCurrency();
+                    if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName)) {
+                        tokenName = WConstant.CURRENCY_SWTC;
+                    }
+                    String paysCurH = "<font color=\"#021E38\">" + tokenName + "</font>";
                     holder.mTvTransactionCount.setText(Html.fromHtml(paysH.concat(paysCurH)));
                     break;
                 case "received":
@@ -188,7 +193,11 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mTvTransactionAddress.setText(tr.getCounterparty());
 
                     String paysH1 = "<font color=\"#27B498\">" + "+" + CaclUtil.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
-                    String paysCurH1 = "<font color=\"#021E38\">" + tr.getAmount().getCurrency() + "</font>";
+                    String tokenName1 = tr.getAmount().getCurrency();
+                    if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName1)) {
+                        tokenName1 = WConstant.CURRENCY_SWTC;
+                    }
+                    String paysCurH1 = "<font color=\"#021E38\">" + tokenName1 + "</font>";
                     holder.mTvTransactionCount.setText(Html.fromHtml(paysH1.concat(paysCurH1)));
                     break;
                 case "offernew":
@@ -283,6 +292,7 @@ public class TransactionRecordActivity extends BaseActivity implements
                     break;
                 default:
                     holder.mTvTransactionAddress.setText(getString(R.string.tv_unkown));
+                    holder.mTvTransactionCount.setText("---");
                     break;
             }
             SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
@@ -366,6 +376,12 @@ public class TransactionRecordActivity extends BaseActivity implements
     }
 
     private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, paysCur)) {
+            paysCur = WConstant.CURRENCY_SWTC;
+        }
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+            getsCur = WConstant.CURRENCY_SWTC;
+        }
         String paysH = "<font color=\"#3B6CA6\">" + paysValue + " </font>";
         String paysCurH = "<font color=\"#021E38\">" + paysCur + " </font>";
         String right = "<font color=\"#A6A9AD\">" + "\u2192" + " </font>";

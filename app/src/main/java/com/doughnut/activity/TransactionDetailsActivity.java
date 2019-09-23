@@ -328,7 +328,11 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
                 mTvAmount.setText(CaclUtil.formatAmount(mTransactions.getAmount().getValue(), SCALE));
-                mTvToken.setText(mTransactions.getAmount().getCurrency());
+                String tokenName = mTransactions.getAmount().getCurrency();
+                if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName)) {
+                    tokenName = WConstant.CURRENCY_SWTC;
+                }
+                mTvToken.setText(tokenName);
                 mTo = mTransactions.getCounterparty();
                 mTvTo.setText(mTo);
                 mLayoutToV.setVisibility(View.VISIBLE);
@@ -339,7 +343,11 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
                 mTvAmount.setText(CaclUtil.formatAmount(mTransactions.getAmount().getValue(), SCALE));
-                mTvToken.setText(mTransactions.getAmount().getCurrency());
+                String tokenName1 = mTransactions.getAmount().getCurrency();
+                if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName1)) {
+                    tokenName1 = WConstant.CURRENCY_SWTC;
+                }
+                mTvToken.setText(tokenName1);
                 mFrom = mTransactions.getCounterparty();
                 mTvFrom.setText(mFrom);
                 mTo = currentAddr;
@@ -583,7 +591,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 }
                 break;
             default:
-                // TODO parse other type
+                mTvType.setText(getString(R.string.tv_unkown));
+                mFrom = currentAddr;
+                mTvFrom.setText(mFrom);
                 break;
         }
         List<Memo> memos = mTransactions.getMemos();
@@ -637,6 +647,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, paysCur)) {
+            paysCur = WConstant.CURRENCY_SWTC;
+        }
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+            getsCur = WConstant.CURRENCY_SWTC;
+        }
         String paysH = "<font color=\"#3B6CA6\">" + paysValue + " </font>";
         String paysCurH = "<font color=\"#021E38\">" + paysCur + " </font>";
         String right = "<font color=\"#A6A9AD\">" + "\u2192" + " </font>";

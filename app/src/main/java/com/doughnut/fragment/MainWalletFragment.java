@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.jtblk.client.bean.AccountRelations;
@@ -74,6 +75,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private ImageView mTvOpenEyes;
     private TextView mTvWalletName;
     private ImageView mImgLoad, mImgLoadCNY;
+    private Switch mSwShow;
 
     private List<Line> dataList;
     private String mCurrentWallet;
@@ -110,6 +112,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mLayoutName.setOnClickListener(this);
 
         mTvPrice = view.findViewById(R.id.tv_price);
+
+        mSwShow = view.findViewById(R.id.swh_show);
+        mSwShow.setOnClickListener(this);
 
         mProgressDrawable = new ProgressDrawable();
         mProgressDrawable.setColor(Color.WHITE);
@@ -274,6 +279,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     mTvOpenEyes.setImageResource(R.drawable.ic_see);
                 }
                 mAdapter.refresh();
+                break;
+            case R.id.swh_show:
+                mAdapter.refresh();
+                break;
         }
     }
 
@@ -334,215 +343,213 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-            if (isHidden) {
-                if (!mProgressDrawable.isRunning()) {
-                    if (mTvBalanceCnyDec != null) {
-                        mTvBalanceCny.setText("***");
-                    }
-                    if (mTvBalanceCny != null) {
-                        mTvBalanceCnyDec.setText("");
-                    }
-                    if (mTvBalance != null) {
-                        mTvBalance.setText("***");
-                    }
-                    if (mTvBalanceDec != null) {
-                        mTvBalanceDec.setText("");
-                    }
-                }
+            // 取得钱包资产
+            WalletManager.getInstance(getContext()).getBalance(mCurrentWallet, new ICallBack() {
+                @Override
+                public void onResponse(Object response) {
+                    if (response != null) {
+                        AccountRelations accountRelations = (AccountRelations) response;
 
-                handleTokenRequestResult(params, loadmore, null);
-                if (mSmartRefreshLayout != null) {
-                    mSmartRefreshLayout.finishRefresh();
-                }
-            } else {
-                // 取得钱包资产
-                WalletManager.getInstance(getContext()).getBalance(mCurrentWallet, new ICallBack() {
-                    @Override
-                    public void onResponse(Object response) {
-                        if (response != null) {
-                            AccountRelations accountRelations = (AccountRelations) response;
-
-                            if (accountRelations != null) {
-                                List<Line> lines = accountRelations.getLines();
-                                if (lines != null) {
-                                    dataList.clear();
-                                    dataList.addAll(lines);
-                                }
-
-                            }
-                            // 获取将显示的币种
-                            List<String> currencies = new ArrayList<>();
-                            for (int i = 0; i < dataList.size(); i++) {
-                                currencies.add(dataList.get(i).getCurrency());
+                        if (accountRelations != null) {
+                            List<Line> lines = accountRelations.getLines();
+                            if (lines != null) {
+                                dataList.clear();
+                                dataList.addAll(lines);
                             }
 
-                            List<String> selects = getSelectToken();
-                            for (int i = 0; i < selects.size(); i++) {
-                                String token = selects.get(i);
-                                if (!currencies.contains(token)) {
-                                    Line line = new Line();
-                                    line.setCurrency(token);
-                                    dataList.add(line);
-                                }
+                        }
+                        // 获取将显示的币种
+                        List<String> currencies = new ArrayList<>();
+                        for (int i = 0; i < dataList.size(); i++) {
+                            currencies.add(dataList.get(i).getCurrency());
+                        }
+
+                        List<String> selects = getSelectToken();
+                        for (int i = 0; i < selects.size(); i++) {
+                            String token = selects.get(i);
+                            if (TextUtils.equals(token, WConstant.CURRENCY_SWTC)) {
+                                token = WConstant.CURRENCY_SWT;
                             }
+                            if (!currencies.contains(token)) {
+                                Line line = new Line();
+                                line.setCurrency(token);
+                                dataList.add(line);
+                            }
+                        }
 
-                            //去除选择隐藏的币种
-                            deleteHideToken();
+                        //去除选择隐藏的币种
+                        deleteHideToken();
 
-                            //排序,余额 > 冻结
-                            Collections.sort(dataList, new Comparator<Line>() {
-                                @Override
-                                public int compare(Line o1, Line o2) {
-                                    //币种排序
-//                                String cur1 = o1.getCurrency();
-//                                String cur2 = o2.getCurrency();
-//                                boolean b1 = Util.isStartWithNumber(cur1);
-//                                boolean b2 = Util.isStartWithNumber(cur2);
-//                                if (b1 && !b2) {
-//                                    return 1;
-//                                } else if (!b1 && b2) {
-//                                    return -1;
-//                                } else {
-//                                    return cur1.compareTo(cur2);
-//                                }
+                        //隐藏非零资产
+                        isShowZero();
 
-                                    String b1 = o1.getBalance();
-                                    String b2 = o2.getBalance();
-                                    if (CaclUtil.compare(b1, "0") == 0 && CaclUtil.compare(b2, "0") == 0) {
-                                        String l1 = o1.getLimit();
-                                        String l2 = o2.getLimit();
-                                        return CaclUtil.compare(l2, l1);
+                        //排序,余额 > 冻结 > 币种
+                        Collections.sort(dataList, new Comparator<Line>() {
+                            @Override
+                            public int compare(Line o1, Line o2) {
+                                String b1 = o1.getBalance();
+                                String b2 = o2.getBalance();
+                                String l1 = o1.getLimit();
+                                String l2 = o2.getLimit();
+                                if (CaclUtil.compare(b1, "0") != 0 || CaclUtil.compare(b2, "0") != 0) {
+                                    return CaclUtil.compare(b2, b1);
+                                } else if (CaclUtil.compare(l1, "0") != 0 || CaclUtil.compare(l2, "0") != 0) {
+                                    return CaclUtil.compare(l2, l1);
+                                } else {
+                                    String cur1 = o1.getCurrency();
+                                    String cur2 = o2.getCurrency();
+                                    boolean r1 = Util.isStartWithNumber(cur1);
+                                    boolean r2 = Util.isStartWithNumber(cur2);
+                                    if (r1 && !r2) {
+                                        return 1;
+                                    } else if (!r1 && r2) {
+                                        return -1;
                                     } else {
-                                        return CaclUtil.compare(b2, b1);
+                                        return cur1.compareTo(cur2);
                                     }
                                 }
-                            });
-
-                            if (dataList == null || dataList.size() == 0) {
-                                stopLoadAnima();
+                            }
+                        });
+                        if (isHidden) {
+                            if (!mProgressDrawable.isRunning()) {
                                 if (mTvBalanceCnyDec != null) {
-                                    mTvBalanceCny.setText("0.00");
+                                    mTvBalanceCny.setText("***");
                                 }
                                 if (mTvBalanceCny != null) {
                                     mTvBalanceCnyDec.setText("");
                                 }
                                 if (mTvBalance != null) {
-                                    mTvBalance.setText("0.00");
+                                    mTvBalance.setText("***");
                                 }
                                 if (mTvBalanceDec != null) {
                                     mTvBalanceDec.setText("");
                                 }
-                            } else {
-                                WalletManager.getInstance(getContext()).getAllTokenPrice(new JCallback() {
-                                    // 钱包总价值
-                                    String values = "0.00";
-                                    // 钱包折换总SWT
-                                    String number = "0.00";
-                                    String swtPrice = "0.00";
+                            }
+                        } else if (dataList == null || dataList.size() == 0) {
+                            stopLoadAnima();
+                            if (mTvBalanceCnyDec != null) {
+                                mTvBalanceCny.setText("0.00");
+                            }
+                            if (mTvBalanceCny != null) {
+                                mTvBalanceCnyDec.setText("");
+                            }
+                            if (mTvBalance != null) {
+                                mTvBalance.setText("0.00");
+                            }
+                            if (mTvBalanceDec != null) {
+                                mTvBalanceDec.setText("");
+                            }
+                        } else {
+                            WalletManager.getInstance(getContext()).getAllTokenPrice(new JCallback() {
+                                // 钱包总价值
+                                String values = "0.00";
+                                // 钱包折换总SWT
+                                String number = "0.00";
+                                String swtPrice = "0.00";
 
-                                    @Override
-                                    public void onResponse(String code, String response) {
-                                        if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
-                                            GsonUtil res = new GsonUtil(response);
-                                            GsonUtil data = res.getObject("data");
-                                            GsonUtil gsonUtil = data.getArray("SWT-CNY");
-                                            swtPrice = gsonUtil.getString(1, "0");
+                                @Override
+                                public void onResponse(String code, String response) {
+                                    if (TextUtils.equals(code, WConstant.SUCCESS_CODE)) {
+                                        GsonUtil res = new GsonUtil(response);
+                                        GsonUtil data = res.getObject("data");
+                                        GsonUtil gsonUtil = data.getArray("SWT-CNY");
+                                        swtPrice = gsonUtil.getString(1, "0");
 
-                                            for (int i = 0; i < dataList.size(); i++) {
-                                                Line line = (Line) dataList.get(i);
-                                                // 数量
-                                                String balance = line.getBalance();
-                                                if (TextUtils.isEmpty(balance)) {
-                                                    balance = "0";
-                                                }
-                                                // 币种
-                                                String currency = line.getCurrency();
-                                                // 冻结
-                                                String freeze = line.getLimit();
-                                                if (TextUtils.isEmpty(freeze)) {
-                                                    freeze = "0";
-                                                }
-
-                                                String price = "0";
-                                                if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
-                                                    price = "1";
-                                                } else {
-                                                    String currency_cny = currency + "-CNY";
-                                                    GsonUtil currencyLst = data.getArray(currency_cny);
-                                                    if (currencyLst != null) {
-                                                        price = currencyLst.getString(1, "0");
-                                                    }
-                                                }
-                                                // 当前币种总价值
-                                                String sum = CaclUtil.add(balance, freeze);
-                                                String value = CaclUtil.mul(sum, price);
-                                                values = CaclUtil.add(values, value);
+                                        for (int i = 0; i < dataList.size(); i++) {
+                                            Line line = (Line) dataList.get(i);
+                                            // 数量
+                                            String balance = line.getBalance();
+                                            if (TextUtils.isEmpty(balance)) {
+                                                balance = "0";
                                             }
-                                            number = CaclUtil.div(values, swtPrice, 2);
-                                            AppConfig.postOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    mTvPrice.setText(String.format(getString(R.string.tv_price), new BigDecimal(swtPrice)));
-                                                    mTvPrice.setVisibility(View.VISIBLE);
-                                                    String valuesF = Util.formatWithComma(Double.parseDouble(values), 2);
-                                                    if (valuesF.contains(".")) {
-                                                        String[] balanceArr = valuesF.split("\\.");
-                                                        mTvBalanceCny.setText(balanceArr[0]);
-                                                        if (!TextUtils.isEmpty(balanceArr[1])) {
-                                                            mTvBalanceCnyDec.setText("." + balanceArr[1]);
-                                                        }
-                                                    } else {
-                                                        mTvBalanceCny.setText(Util.formatWithComma(Double.parseDouble(values), 0));
-                                                    }
+                                            // 币种
+                                            String currency = line.getCurrency();
+                                            // 冻结
+                                            String freeze = line.getLimit();
+                                            if (TextUtils.isEmpty(freeze)) {
+                                                freeze = "0";
+                                            }
 
-                                                    if (number.contains(".")) {
-                                                        String[] balanceArr = number.split("\\.");
-                                                        mTvBalance.setText(Util.formatWithComma(Double.parseDouble(balanceArr[0]), 0));
-                                                        if (!TextUtils.isEmpty(balanceArr[1])) {
-                                                            mTvBalanceDec.setText("." + balanceArr[1]);
-                                                        }
-                                                    } else {
-                                                        mTvBalance.setText(Util.formatWithComma(Double.parseDouble(number), 0));
-                                                    }
+                                            String price = "0";
+                                            if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
+                                                price = "1";
+                                            } else {
+                                                String currency_cny = currency + "-CNY";
+                                                GsonUtil currencyLst = data.getArray(currency_cny);
+                                                if (currencyLst != null) {
+                                                    price = currencyLst.getString(1, "0");
                                                 }
-                                            });
-                                        } else {
-                                            AppConfig.postOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (mTvBalanceCnyDec != null) {
-                                                        mTvBalanceCny.setText("---");
-                                                    }
-                                                    if (mTvBalanceCny != null) {
-                                                        mTvBalanceCnyDec.setText("");
-                                                    }
-                                                    if (mTvBalance != null) {
-                                                        mTvBalance.setText("---");
-                                                    }
-                                                    if (mTvBalanceDec != null) {
-                                                        mTvBalanceDec.setText("");
-                                                    }
-                                                }
-                                            });
+                                            }
+                                            // 当前币种总价值
+                                            String sum = CaclUtil.add(balance, freeze);
+                                            String value = CaclUtil.mul(sum, price);
+                                            values = CaclUtil.add(values, value);
                                         }
-                                        stopLoadAnima();
-                                    }
+                                        number = CaclUtil.div(values, swtPrice, 2);
+                                        AppConfig.postOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mTvPrice.setText(String.format(getContext().getString(R.string.tv_price), new BigDecimal(swtPrice)));
+                                                mTvPrice.setVisibility(View.VISIBLE);
+                                                String valuesF = Util.formatWithComma(Double.parseDouble(values), 2);
+                                                if (valuesF.contains(".")) {
+                                                    String[] balanceArr = valuesF.split("\\.");
+                                                    mTvBalanceCny.setText(balanceArr[0]);
+                                                    if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                        mTvBalanceCnyDec.setText("." + balanceArr[1]);
+                                                    }
+                                                } else {
+                                                    mTvBalanceCny.setText(Util.formatWithComma(Double.parseDouble(values), 0));
+                                                }
 
-                                    @Override
-                                    public void onFail(Exception e) {
-                                        e.printStackTrace();
+                                                if (number.contains(".")) {
+                                                    String[] balanceArr = number.split("\\.");
+                                                    mTvBalance.setText(Util.formatWithComma(Double.parseDouble(balanceArr[0]), 0));
+                                                    if (!TextUtils.isEmpty(balanceArr[1])) {
+                                                        mTvBalanceDec.setText("." + balanceArr[1]);
+                                                    }
+                                                } else {
+                                                    mTvBalance.setText(Util.formatWithComma(Double.parseDouble(number), 0));
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        AppConfig.postOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (mTvBalanceCnyDec != null) {
+                                                    mTvBalanceCny.setText("---");
+                                                }
+                                                if (mTvBalanceCny != null) {
+                                                    mTvBalanceCnyDec.setText("");
+                                                }
+                                                if (mTvBalance != null) {
+                                                    mTvBalance.setText("---");
+                                                }
+                                                if (mTvBalanceDec != null) {
+                                                    mTvBalanceDec.setText("");
+                                                }
+                                            }
+                                        });
                                     }
-                                });
-                            }
-                            GsonUtil extra = new GsonUtil(dataList);
-                            handleTokenRequestResult(params, loadmore, extra);
-                            if (mSmartRefreshLayout != null) {
-                                mSmartRefreshLayout.finishRefresh();
-                            }
+                                    stopLoadAnima();
+                                }
+
+                                @Override
+                                public void onFail(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                        GsonUtil extra = new GsonUtil(dataList);
+                        handleTokenRequestResult(params, loadmore, extra);
+                        if (mSmartRefreshLayout != null) {
+                            mSmartRefreshLayout.finishRefresh();
                         }
                     }
-                });
-            }
+                }
+            });
+
         }
 
 
@@ -564,6 +571,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
             String currency = data.getString("currency", "");
+            if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
+                currency = WConstant.CURRENCY_SWTC;
+            }
             holder.mTvTokenName.setText(currency);
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
@@ -725,6 +735,26 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         }
         return tokenList;
+    }
+
+    /**
+     * 隐藏显示非零资产
+     */
+    private void isShowZero() {
+        // 排除余额为零的token
+        try {
+            if (!mSwShow.isChecked()) {
+                for (int i = dataList.size() - 1; i >= 0; i--) {
+                    Line line = dataList.get(i);
+                    if (CaclUtil.compare(line.getBalance(), "0") == 0 && CaclUtil.compare(line.getLimit(), "0") == 0) {
+                        dataList.remove(i);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void stopLoadAnima() {

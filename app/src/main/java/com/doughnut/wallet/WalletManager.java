@@ -20,7 +20,6 @@ import com.android.jtblk.client.bean.TransactionInfo;
 import com.android.jtblk.keyStore.KeyStore;
 import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
-import com.doughnut.dialog.BaseDialog;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.CaclUtil;
@@ -258,8 +257,13 @@ public class WalletManager implements IWallet {
         try {
             AmountInfo amount;
             amount = new AmountInfo();
-            amount.setCurrency(token);
-            amount.setIssuer(issuer);
+            if (TextUtils.equals(WConstant.CURRENCY_SWTC, token)) {
+                amount.setCurrency(WConstant.CURRENCY_SWT);
+                amount.setIssuer("");
+            } else {
+                amount.setCurrency(token);
+                amount.setIssuer(issuer);
+            }
             amount.setValue(value);
             Transaction tx = JtServer.getInstance(mContext).getRemote().buildPaymentTx(from, to, amount);
             tx.setSecret(privateKey);
@@ -509,7 +513,11 @@ public class WalletManager implements IWallet {
                             JccdexInfo jccdexInfo = JccdexInfo.getInstance();
                             jccdexInfo.setmBaseUrl(jccUrl);
                             // 获取时价
-                            jccdexInfo.requestTicker(base, COUNTER, callback);
+                            if (TextUtils.equals(WConstant.CURRENCY_SWTC, base)) {
+                                jccdexInfo.requestTicker(WConstant.CURRENCY_SWT, COUNTER, callback);
+                            } else {
+                                jccdexInfo.requestTicker(base, COUNTER, callback);
+                            }
                         }
                     }
 
@@ -581,10 +589,6 @@ public class WalletManager implements IWallet {
                             String[] token = tokens.getString(j, "").split("_");
                             if (TextUtils.equals(token[0], "CNY")) {
                                 tokenMap.put(token[0], "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or");
-                                break;
-                            }
-                            if (TextUtils.equals(token[0], "SWTC")) {
-                                tokenMap.put("SWT", "");
                                 break;
                             }
                             if (token.length == 2) {

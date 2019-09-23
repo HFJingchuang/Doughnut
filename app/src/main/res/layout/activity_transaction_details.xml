@@ -475,7 +475,7 @@
                                 android:layout_alignParentRight="true"
                                 android:layout_marginLeft="5dp"
                                 android:gravity="center"
-                                android:text="SWT"
+                                android:text="SWTC"
                                 android:textColor="@color/color_detail_address"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
