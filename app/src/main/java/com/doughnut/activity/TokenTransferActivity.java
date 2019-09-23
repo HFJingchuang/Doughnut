@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -25,8 +26,10 @@ import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
+import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.CaclUtil;
+import com.doughnut.utils.GsonUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.ICallBack;
@@ -35,6 +38,10 @@ import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +55,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private EditText mEdtWalletAddress, mEdtTransferNum, mEdtMemo;
     private Button mBtnConfirm;
     private LinearLayout mLayoutToken;
+    private LinearLayout mLayoutLatest;
     private String mBalance;
     private String mIssue;
     private String mCurrentWallet;
@@ -96,6 +104,10 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 startActivity(new Intent(TokenTransferActivity.this, CaptureActivity.class));
             }
         });
+
+        mLayoutLatest = findViewById(R.id.layout_latest);
+        mLayoutLatest.setOnClickListener(this);
+
         mTvErrAddr = findViewById(R.id.tv_err_address);
         mTvErrAmount = findViewById(R.id.tv_err_amount);
         mEdtWalletAddress = findViewById(R.id.edt_address);
@@ -149,6 +161,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             });
                         }
                     }
+                    isTransfer();
                 }
             }
         });
@@ -202,6 +215,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                         }
 
                     }
+                    isTransfer();
                 }
             }
         });
@@ -271,11 +285,15 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         switch (view.getId()) {
             case R.id.btn_send:
                 mBtnConfirm.setEnabled(false);
+                saveContact();
                 sendTranscation();
                 break;
             case R.id.layout_token:
                 mLayoutToken.setEnabled(false);
                 TransferTokenActivity.startActivity(this);
+                break;
+            case R.id.layout_latest:
+                ContactsActivity.startContactsActivity(this);
                 break;
         }
     }
@@ -293,19 +311,25 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String token = mTvTokenName.getText().toString();
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
+//                            LoadDialog loadDialog = new LoadDialog(TokenTransferActivity.this, getString(R.string.dialog_tranfer));
+//                            loadDialog.show();
                             WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, FEE, memo, new ICallBack() {
                                 @Override
                                 public void onResponse(Object result) {
+//                                    loadDialog.dismiss();
                                     boolean isSuccess = (boolean) result;
                                     String msg = getString(R.string.dailog_msg_success);
                                     if (!isSuccess) {
                                         msg = getString(R.string.dialog_msg_fail);
+                                    } else {
+                                        mEdtMemo.setText("");
+                                        mEdtTransferNum.setText("");
                                     }
                                     new MsgDialog(TokenTransferActivity.this, msg).setIsHook(isSuccess).show();
-                                    mBtnConfirm.setEnabled(true);
                                 }
                             });
                         }
+                        mBtnConfirm.setEnabled(true);
                     }
                 }).show();
     }
@@ -410,5 +434,49 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 }
             }
         });
+    }
+
+    private void saveContact() {
+        // 本地保存tokens
+        String fileName = getPackageName() + "_contacts";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String contact = sharedPreferences.getString("contacts", "");
+        String contactAddr = sharedPreferences.getString("contactAddr", "");
+        List<String> contactAddrList;
+        if (TextUtils.isEmpty(contactAddr)) {
+            contactAddrList = new ArrayList();
+        } else {
+            if (contactAddr.contains(",")) {
+                List<String> arrList = Arrays.asList(contact.split(","));
+                contactAddrList = new ArrayList(arrList);
+            } else {
+                contactAddrList = new ArrayList();
+                contactAddrList.add(contactAddr);
+            }
+        }
+        String address = mEdtWalletAddress.getText().toString();
+        // 重复联系人不添加
+        if (!contactAddrList.contains(address)) {
+            GsonUtil contacts;
+            if (!TextUtils.isEmpty(contact)) {
+                contacts = new GsonUtil(contact);
+            } else {
+                contacts = new GsonUtil("[]");
+            }
+            GsonUtil newContact = new GsonUtil("{}");
+            newContact.putString("address", address);
+            newContact.putString("amount", mEdtTransferNum.getText().toString());
+            newContact.putString("token", mTvTokenName.getText().toString());
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+            String now = formatter.format(System.currentTimeMillis());
+            newContact.putString("time", now);
+            contacts.put(newContact);
+
+            contactAddrList.add(address);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("contacts", contacts.toString());
+            editor.putString("contactAddr", contactAddrList.toString().replace("[", "").replace("]", "").replace(" ", ""));
+            editor.apply();
+        }
     }
 }

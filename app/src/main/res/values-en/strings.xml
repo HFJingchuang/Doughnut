@@ -210,5 +210,8 @@
     <string name="dialog_modify">Modifying</string>
     <string name="dialog_import">Importing</string>
     <string name="tv_unkown">UNKOWN</string>
+    <string name="tv_show_zero">Display non zero assets</string>
+    <string name="dialog_tranfer">Transferring</string>
+    <string name="title_contact">Select transfer address</string>
 
 </resources>

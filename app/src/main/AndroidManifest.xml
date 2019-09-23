@@ -129,6 +129,9 @@
         <activity
             android:name=".activity.TransferTokenActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ContactsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

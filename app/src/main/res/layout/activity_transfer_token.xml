@@ -37,16 +37,38 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edt_address"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/shape_dialog_edt"
-                android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                android:paddingHorizontal="20dp"
-                android:singleLine="true"
-                android:textColor="@color/color_detail_address"
-                android:textSize="17sp" />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edt_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/layout_latest"
+                    android:background="@null"
+                    android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:paddingHorizontal="20dp"
+                    android:singleLine="true"
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="17sp" />
+
+                <LinearLayout
+                    android:id="@+id/layout_latest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/ic_go_receive" />
+                </LinearLayout>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_err_address"
