@@ -105,9 +105,14 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                             String address = (String) response;
                             loadDialog.dismiss();
                             if (Wallet.isValidAddress(address)) {
-                                String privateKey = WalletManager.getInstance(CreateNewWalletActivity.this).getPrivateKey(walletPwd, address);
-                                CreateSuccessActivity.startCreateSuccessActivity(CreateNewWalletActivity.this, address, privateKey);
-                                finish();
+                                WalletManager.getInstance(CreateNewWalletActivity.this).getPrivateKey(walletPwd, address, new ICallBack() {
+                                    @Override
+                                    public void onResponse(Object response) {
+                                        String privateKey = (String) response;
+                                        CreateSuccessActivity.startCreateSuccessActivity(CreateNewWalletActivity.this, address, privateKey);
+                                        finish();
+                                    }
+                                });
                             } else {
                                 new MsgDialog(CreateNewWalletActivity.this, getString(R.string.tv_create_fail)).setIsHook(false).show();
                             }

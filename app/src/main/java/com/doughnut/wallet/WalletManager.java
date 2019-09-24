@@ -105,7 +105,6 @@ public class WalletManager implements IWallet {
     @Override
     public void createWallet(String password, String nam, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<String>() {
-
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 String address = createWallet(password, nam);
@@ -234,6 +233,17 @@ public class WalletManager implements IWallet {
         });
     }
 
+    private String getPrivateKey(String password, String address) {
+        try {
+            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext, address).getKeyStore());
+            Wallet wallet = KeyStore.decrypt(password, keyStoreFile);
+            return wallet.getSecret();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
      * 获取私钥
      *
@@ -242,15 +252,20 @@ public class WalletManager implements IWallet {
      * @return
      */
     @Override
-    public String getPrivateKey(String password, String address) {
-        try {
-            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext, address).getKeyStore());
-            Wallet jtKeyPair = KeyStore.decrypt(password, keyStoreFile);
-            return jtKeyPair.getSecret();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void getPrivateKey(String password, String address, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                String privateKey = getPrivateKey(password, address);
+                emitter.onNext(privateKey);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String address) throws Exception {
+                callBack.onResponse(address);
+            }
+        });
     }
 
     private boolean transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo) {

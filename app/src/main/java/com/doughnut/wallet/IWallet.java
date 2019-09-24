@@ -2,8 +2,6 @@ package com.doughnut.wallet;
 
 import android.graphics.Bitmap;
 
-import com.android.jtblk.client.bean.AccountRelations;
-import com.android.jtblk.client.bean.AccountTx;
 import com.android.jtblk.client.bean.Marker;
 import com.jccdex.rpc.base.JCallback;
 
@@ -19,7 +17,7 @@ public interface IWallet {
 
     void importKeysStore(String keyStore, String password, String name, ICallBack callBack);
 
-    String getPrivateKey(String password, String address);
+    void getPrivateKey(String password, String address, ICallBack callBack);
 
     void transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack);
 

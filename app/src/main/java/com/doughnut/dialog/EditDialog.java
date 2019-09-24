@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.utils.TLog;
 import com.doughnut.view.SubCharSequence;
+import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 
 public class EditDialog extends Dialog implements View.OnClickListener {
@@ -68,6 +69,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCanceledOnTouchOutside(false);
         setContentView(R.layout.layout_dialog_pwd);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -108,16 +110,20 @@ public class EditDialog extends Dialog implements View.OnClickListener {
                 return;
             }
 
-            String oldKey = WalletManager.getInstance(getContext()).getPrivateKey(input, mAddress);
-            if (TextUtils.isEmpty(oldKey)) {
-                mPwdResultListener.authPwd(false, "");
-                mEdtPw.setText("");
-                mTvErr.setVisibility(View.VISIBLE);
-            } else {
-                mPwdResultListener.authPwd(true, oldKey);
-                dismiss();
-            }
-
+            WalletManager.getInstance(getContext()).getPrivateKey(input, mAddress, new ICallBack() {
+                @Override
+                public void onResponse(Object response) {
+                    String oldKey = (String) response;
+                    if (TextUtils.isEmpty(oldKey)) {
+                        mPwdResultListener.authPwd(false, "");
+                        mEdtPw.setText("");
+                        mTvErr.setVisibility(View.VISIBLE);
+                    } else {
+                        mPwdResultListener.authPwd(true, oldKey);
+                        dismiss();
+                    }
+                }
+            });
         }
     }
 

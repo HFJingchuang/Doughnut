@@ -33,7 +33,7 @@ public class LoadDialog extends BaseDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setCanceledOnTouchOutside(true);
+        setCanceledOnTouchOutside(false);
         setContentView(R.layout.layout_dialog_load);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;

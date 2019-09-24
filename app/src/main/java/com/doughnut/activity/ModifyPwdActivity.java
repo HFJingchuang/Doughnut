@@ -203,20 +203,24 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
                 if (!hasFocus) {
                     String pwd = mEdtOldPwd.getText().toString();
                     if (!TextUtils.isEmpty(pwd)) {
-                        mPrivateKey = WalletManager.getInstance(ModifyPwdActivity.this).getPrivateKey(pwd, mWalletAddress);
-                        if (!Wallet.isValidSecret(mPrivateKey)) {
-                            mEdtOldPwd.setText("");
-                            mTvOldTips.setText(getResources().getString(R.string.tv_err_old_pwd));
-                            mTvOldTips.setVisibility(View.VISIBLE);
-                            AppConfig.postOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mEdtOldPwd.requestFocus();
+                        WalletManager.getInstance(ModifyPwdActivity.this).getPrivateKey(pwd, mWalletAddress, new ICallBack() {
+                            @Override
+                            public void onResponse(Object response) {
+                                mPrivateKey = (String) response;
+                                if (!Wallet.isValidSecret(mPrivateKey)) {
+                                    mEdtOldPwd.setText("");
+                                    mTvOldTips.setText(getResources().getString(R.string.tv_err_old_pwd));
+                                    mTvOldTips.setVisibility(View.VISIBLE);
+                                    AppConfig.postOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mEdtOldPwd.requestFocus();
+                                        }
+                                    });
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
-                    isDone();
                 }
             }
         });

@@ -109,8 +109,17 @@ public class WalletTest {
             }
         });
         mutex.await();
-        String privateKey1 = WalletManager.getInstance(appContext).getPrivateKey("123456", address);
-        Assert.assertEquals(privateKey1, privateKey);
+        final CountDownLatch mutex1 = new CountDownLatch(1);
+        final String[] privateKey1 = new String[1];
+        WalletManager.getInstance(appContext).getPrivateKey("123456", address, new ICallBack() {
+            @Override
+            public void onResponse(Object response) {
+                privateKey1[0] = (String) response;
+                mutex1.countDown();
+            }
+        });
+        mutex1.await();
+        Assert.assertEquals(privateKey1[0], privateKey);
     }
 
     @Test
