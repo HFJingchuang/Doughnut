@@ -96,11 +96,32 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/tv_balance"
+                    android:text="@string/tv_balance"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
                     android:id="@+id/tv_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_toLeftOf="@+id/tv_token"
+                    android:textColor="@color/color_detail_send"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_token"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="@string/tv_balance"
+                    android:ellipsize="middle"
+                    android:maxWidth="80dp"
+                    android:singleLine="true"
                     android:textColor="@color/color_detail_send"
                     android:textSize="12sp"
                     android:textStyle="bold" />

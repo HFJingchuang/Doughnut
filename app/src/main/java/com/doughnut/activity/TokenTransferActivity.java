@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -26,7 +25,6 @@ import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.EditDialog;
-import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.GsonUtil;
@@ -40,9 +38,6 @@ import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +48,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private final static String FEE = "10";
 
     private TitleBar mTitleBar;
-    private TextView mTvTokenName, mTvBalance, mTvErrAddr, mTvErrAmount;
+    private TextView mTvTokenName, mTvToken, mTvBalance, mTvErrAddr, mTvErrAmount;
     private EditText mEdtWalletAddress, mEdtTransferNum, mEdtMemo;
     private Button mBtnConfirm;
     private LinearLayout mLayoutToken;
@@ -222,6 +217,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             }
         });
         mTvTokenName = findViewById(R.id.tv_token_name);
+        mTvToken = findViewById(R.id.tv_token);
         mTvBalance = findViewById(R.id.tv_balance);
         mTvBalance.setText("---");
         mLayoutToken = findViewById(R.id.layout_token);
@@ -410,8 +406,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                 }
                             }
 
-                            mTvBalance.setText(String.format(getString(R.string.tv_balance), mBalance, token));
+                            mTvBalance.setText(mBalance);
                             mTvTokenName.setText(token);
+                            mTvToken.setText(token);
                             if (CaclUtil.compare(mBalance, "0") == 0) {
                                 new MsgDialog(TokenTransferActivity.this, String.format(getString(R.string.tv_no_token), token)).setIsHook(false).show();
                                 String fileName = getPackageName() + "_transfer_token";

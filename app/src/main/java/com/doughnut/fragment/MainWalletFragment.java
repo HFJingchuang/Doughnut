@@ -23,6 +23,7 @@ import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.activity.AddCurrencyActivity;
 import com.doughnut.activity.CreateNewWalletActivity;
+import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.activity.WalletManageActivity;
 import com.doughnut.adapter.BaseRecycleAdapter;
@@ -577,6 +578,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 currency = WConstant.CURRENCY_SWTC;
             }
             holder.mTvTokenName.setText(currency);
+            holder.tokenName = currency;
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             if (!isHidden) {
@@ -601,7 +603,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                         AppConfig.postOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-
                                                 holder.mTvCNY.setText(String.format("%.2f", new BigDecimal(value)));
                                             }
                                         });
@@ -635,12 +636,27 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
 
         class TokenViewHolder extends BaseRecyclerViewHolder {
+            LinearLayout mLayoutItem;
             ImageView mImgTokenIcon;
             TextView mTvTokenName;
             TextView mTvCNY, mTvTokenCount, mTvTokenFreeze;
+            String tokenName;
 
             public TokenViewHolder(View itemView) {
                 super(itemView);
+                mLayoutItem = itemView.findViewById(R.id.layout_item);
+                mLayoutItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 本地保存tokens
+                        String fileName = getContext().getPackageName() + "_transfer_token";
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("token", tokenName);
+                        editor.apply();
+                        TokenTransferActivity.startTokenTransferActivity(getContext());
+                    }
+                });
                 mImgTokenIcon = itemView.findViewById(R.id.token_icon);
                 mTvTokenName = itemView.findViewById(R.id.token_name);
                 mTvCNY = itemView.findViewById(R.id.tv_balance_cny);
