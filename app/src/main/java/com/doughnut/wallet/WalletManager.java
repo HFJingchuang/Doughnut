@@ -71,7 +71,9 @@ public class WalletManager implements IWallet {
                 }
             }
         }
-        compositeDisposable.clear();
+        if (compositeDisposable != null) {
+            compositeDisposable.clear();
+        }
         return walletManager;
     }
 
