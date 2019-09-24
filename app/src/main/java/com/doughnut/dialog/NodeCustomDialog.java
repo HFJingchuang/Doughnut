@@ -51,6 +51,7 @@ public class NodeCustomDialog extends BaseDialog implements View.OnClickListener
         lp.gravity = Gravity.CENTER;
         getWindow().setAttributes(lp);
         getWindow().setBackgroundDrawableResource(R.color.transparent);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         initView();
     }
 

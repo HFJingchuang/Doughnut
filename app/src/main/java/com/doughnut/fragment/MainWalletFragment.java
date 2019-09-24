@@ -373,6 +373,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             if (!currencies.contains(token)) {
                                 Line line = new Line();
                                 line.setCurrency(token);
+                                line.setBalance("0");
+                                line.setLimit("0");
                                 dataList.add(line);
                             }
                         }

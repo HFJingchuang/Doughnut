@@ -12,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.doughnut.config.AppConfig;
 
 
 public class ViewUtil {
@@ -152,5 +155,23 @@ public class ViewUtil {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         return dm.heightPixels;
+    }
+
+    /**
+     * 隐藏软键盘
+     *
+     * @param view
+     */
+    public static void hideKeyboard(View view) {
+        AppConfig.postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) view.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        });
     }
 }

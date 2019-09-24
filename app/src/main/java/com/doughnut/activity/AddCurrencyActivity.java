@@ -53,7 +53,6 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
     private LinkedList<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
     private String mCurrentWallet;
     private boolean mIsSingle = false;
-    private int mSelectedItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +76,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mIsSingle) {
-                if (mSelectedItem != -1) {
-                    String token = currencys.get(mSelectedItem).getName();
-                    TokenReceiveActivity.startTokenReceiveActivity(this, token);
-                }
-            } else {
+            if (!mIsSingle) {
                 saveSelectToken();
             }
             finish();
@@ -94,12 +88,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
 
     @Override
     public void onLeftClick(View v) {
-        if (mIsSingle) {
-            if (mSelectedItem != -1) {
-                String token = currencys.get(mSelectedItem).getName();
-                TokenReceiveActivity.startTokenReceiveActivity(this, token);
-            }
-        } else {
+        if (!mIsSingle) {
             saveSelectToken();
         }
         finish();
@@ -206,6 +195,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             ImageView mImgIcon;
             TextView mTvTokenName;
             CheckBox chk_select;
+            String token;
 
             public VH(View v) {
                 super(v);
@@ -215,26 +205,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
                     public void onClick(View v) {
                         //单选
                         if (mIsSingle) {
-                            VH vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
-                            int position = getAdapterPosition();
-                            if (position == mSelectedItem) {
-                                return;
-                            } else if (position != mSelectedItem && vh != null) {
-                                vh.chk_select.setChecked(false);
-                                vh.mLayoutItem.setActivated(false);
-                                mSelectedItem = position;
-                                vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
-                                vh.chk_select.setChecked(true);
-                                vh.mLayoutItem.setActivated(true);
-                            } else {
-                                if (mSelectedItem != -1) {
-                                    notifyItemChanged(mSelectedItem);
-                                }
-                                mSelectedItem = position;
-                                vh = (VH) mRecyclerView.findViewHolderForLayoutPosition(position);
-                                vh.chk_select.setChecked(true);
-                                vh.mLayoutItem.setActivated(true);
-                            }
+                            TokenReceiveActivity.startTokenReceiveActivity(AddCurrencyActivity.this, token);
                         } else {
                             chk_select.setChecked(!chk_select.isChecked());
                             Currency currency = currencys.get(getAdapterPosition());
@@ -252,6 +223,9 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
                 mImgIcon = itemView.findViewById(R.id.img_icon);
                 mTvTokenName = itemView.findViewById(R.id.tv_token_name);
                 chk_select = itemView.findViewById(R.id.tv_check);
+                if (mIsSingle) {
+                    chk_select.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -269,9 +243,13 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             Currency tr = currencys.get(position);
             //赋值
             holder.mImgIcon.setImageResource(tr.getImage());
-            holder.mTvTokenName.setText(tr.getName());
+            String tokenName = tr.getName();
+            holder.token = tokenName;
+            holder.mTvTokenName.setText(tokenName);
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
-            holder.chk_select.setChecked(tr.getIsSelect());
+            if (!mIsSingle) {
+                holder.chk_select.setChecked(tr.getIsSelect());
+            }
         }
 
         @Override

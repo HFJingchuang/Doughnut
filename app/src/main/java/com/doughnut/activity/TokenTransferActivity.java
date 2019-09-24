@@ -30,6 +30,7 @@ import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.GsonUtil;
+import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.ICallBack;
@@ -42,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -329,6 +331,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                 }
                             });
                         }
+                        ViewUtil.hideKeyboard(getWindow().getCurrentFocus());
                         mBtnConfirm.setEnabled(true);
                     }
                 }).show();
@@ -440,43 +443,24 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         // 本地保存tokens
         String fileName = getPackageName() + "_contacts";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String contact = sharedPreferences.getString("contacts", "");
-        String contactAddr = sharedPreferences.getString("contactAddr", "");
-        List<String> contactAddrList;
-        if (TextUtils.isEmpty(contactAddr)) {
-            contactAddrList = new ArrayList();
-        } else {
-            if (contactAddr.contains(",")) {
-                List<String> arrList = Arrays.asList(contact.split(","));
-                contactAddrList = new ArrayList(arrList);
-            } else {
-                contactAddrList = new ArrayList();
-                contactAddrList.add(contactAddr);
-            }
-        }
+        String contacts = sharedPreferences.getString("contacts", "");
+        Map<String, String> contactMap;
         String address = mEdtWalletAddress.getText().toString();
-        // 重复联系人不添加
-        if (!contactAddrList.contains(address)) {
-            GsonUtil contacts;
-            if (!TextUtils.isEmpty(contact)) {
-                contacts = new GsonUtil(contact);
-            } else {
-                contacts = new GsonUtil("[]");
-            }
-            GsonUtil newContact = new GsonUtil("{}");
-            newContact.putString("address", address);
-            newContact.putString("amount", mEdtTransferNum.getText().toString());
-            newContact.putString("token", mTvTokenName.getText().toString());
-            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
-            String now = formatter.format(System.currentTimeMillis());
-            newContact.putString("time", now);
-            contacts.put(newContact);
-
-            contactAddrList.add(address);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("contacts", contacts.toString());
-            editor.putString("contactAddr", contactAddrList.toString().replace("[", "").replace("]", "").replace(" ", ""));
-            editor.apply();
+        if (!TextUtils.isEmpty(contacts)) {
+            contactMap = JSON.parseObject(contacts, Map.class);
+        } else {
+            contactMap = new HashMap<>();
         }
+        GsonUtil newContact = new GsonUtil("{}");
+        newContact.putString("address", address);
+        newContact.putString("amount", mEdtTransferNum.getText().toString());
+        newContact.putString("token", mTvTokenName.getText().toString());
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+        String now = formatter.format(System.currentTimeMillis());
+        newContact.putString("time", now);
+        contactMap.put(address, newContact.toString());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("contacts", JSON.toJSONString(contactMap));
+        editor.apply();
     }
 }

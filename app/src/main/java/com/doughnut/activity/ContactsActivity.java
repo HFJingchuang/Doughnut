@@ -15,10 +15,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.doughnut.R;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.nostra13.universalimageloader.utils.L;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 
 public class ContactsActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
@@ -29,7 +41,7 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
     private RecyclerView mLsWallet;
     private ContactsAdapter mAdapter;
 
-    private GsonUtil contacts;
+    private LinkedList<GsonUtil> contactList = new LinkedList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,7 +102,7 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
     class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            RelativeLayout mLayoutItem;
+            LinearLayout mLayoutItem;
             TextView mTvAmount;
             TextView mTvAddress;
             TextView mTvTime;
@@ -124,10 +136,10 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
 
         @Override
         public void onBindViewHolder(VH holder, int position) {
-            if (contacts == null) {
+            if (contactList == null) {
                 return;
             }
-            GsonUtil item = contacts.getObject(contacts.getLength() - 1 - position);
+            GsonUtil item = contactList.get(position);
             holder.address = item.getString("address", "");
             holder.mTvAddress.setText(holder.address);
             ViewUtil.EllipsisTextView(holder.mTvAddress);
@@ -143,7 +155,7 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
 
         @Override
         public int getItemCount() {
-            return contacts.getLength();
+            return contactList.size();
         }
     }
 
@@ -151,13 +163,31 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
         // 本地保存tokens
         String fileName = getPackageName() + "_contacts";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String contact = sharedPreferences.getString("contacts", "");
-        if (TextUtils.isEmpty(contact)) {
-            contacts = new GsonUtil("{}");
+        String contacts = sharedPreferences.getString("contacts", "");
+        Map<String, String> contactMap;
+        if (!TextUtils.isEmpty(contacts)) {
+            contactMap = JSON.parseObject(contacts, Map.class);
+        } else {
+            contactMap = new HashMap<>();
             mLayoutNoWallet.setVisibility(View.VISIBLE);
-            return;
         }
-        contacts = new GsonUtil(contact);
+        for (String value : contactMap.values()) {
+            contactList.add(new GsonUtil(value));
+        }
+        Collections.sort(contactList, new Comparator<GsonUtil>() {
+            @Override
+            public int compare(GsonUtil o1, GsonUtil o2) {
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+                try {
+                    Date d1 = formatter.parse(o1.getString("time", ""));
+                    Date d2 = formatter.parse(o2.getString("time", ""));
+                    return d2.compareTo(d1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
         mAdapter.notifyDataSetChanged();
     }
 }

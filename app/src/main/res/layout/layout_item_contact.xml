@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -7,7 +8,6 @@
     android:paddingVertical="10dp">
 
     <RelativeLayout
-        android:id="@+id/layout_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp">
@@ -50,6 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/tv_token"
+            android:layout_toRightOf="@+id/layout_address"
             android:gravity="right|center"
             android:textColor="@color/color_detail_address"
             android:textSize="15sp"

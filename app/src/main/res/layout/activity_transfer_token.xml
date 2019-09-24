@@ -50,7 +50,7 @@
                     android:layout_toLeftOf="@+id/layout_latest"
                     android:background="@null"
                     android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    android:paddingHorizontal="20dp"
+                    android:paddingLeft="20dp"
                     android:singleLine="true"
                     android:textColor="@color/color_detail_address"
                     android:textSize="17sp" />
