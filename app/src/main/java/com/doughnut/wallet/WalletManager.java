@@ -37,7 +37,10 @@ import java.util.TreeMap;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -48,10 +51,12 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class WalletManager implements IWallet {
 
+    private final static String CONFIG_HOST = "weidex.vip";
+    private final static String COUNTER = "CNT";
+
     private static WalletManager walletManager = null;
     private static Context mContext;
-    final private String CONFIG_HOST = "weidex.vip";
-    final private String COUNTER = "CNT";
+    private static CompositeDisposable compositeDisposable;
 
     private WalletManager() {
     }
@@ -61,10 +66,12 @@ public class WalletManager implements IWallet {
         if (walletManager == null) {
             synchronized (WalletManager.class) {
                 if (walletManager == null) {
+                    compositeDisposable = new CompositeDisposable();
                     walletManager = new WalletManager();
                 }
             }
         }
+        compositeDisposable.clear();
         return walletManager;
     }
 
@@ -314,16 +321,30 @@ public class WalletManager implements IWallet {
     @Override
     public void transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<Boolean>() {
-
             @Override
             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
                 emitter.onNext(transfer(privateKey, from, to, token, issuer, value, fee, memo));
                 emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
             @Override
-            public void accept(Boolean result) throws Exception {
-                callBack.onResponse(result);
+            public void onSubscribe(Disposable d) {
+                compositeDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                callBack.onResponse(aBoolean);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }
@@ -349,7 +370,6 @@ public class WalletManager implements IWallet {
     @Override
     public void getTransferHistory(String address, Integer limit, Marker marker, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<AccountTx>() {
-
             @Override
             public void subscribe(ObservableEmitter<AccountTx> emitter) throws Exception {
                 AccountTx accountTx = getTransferHistory(address, limit, marker);
@@ -359,10 +379,25 @@ public class WalletManager implements IWallet {
                 emitter.onNext(accountTx);
                 emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<AccountTx>() {
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<AccountTx>() {
             @Override
-            public void accept(AccountTx accountTx) throws Exception {
+            public void onSubscribe(Disposable d) {
+                compositeDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(AccountTx accountTx) {
                 callBack.onResponse(accountTx);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }
@@ -399,10 +434,25 @@ public class WalletManager implements IWallet {
                 emitter.onNext(balance);
                 emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
             @Override
-            public void accept(String balance) throws Exception {
+            public void onSubscribe(Disposable d) {
+                compositeDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(String balance) {
                 iCallBack.onResponse(balance);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }
@@ -494,10 +544,25 @@ public class WalletManager implements IWallet {
                 emitter.onNext(accountRelations);
                 emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<AccountRelations>() {
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<AccountRelations>() {
             @Override
-            public void accept(AccountRelations accountRelations) throws Exception {
+            public void onSubscribe(Disposable d) {
+                compositeDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(AccountRelations accountRelations) {
                 callBack.onResponse(accountRelations);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }
