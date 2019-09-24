@@ -81,7 +81,18 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                 mBtnConfirm.setClickable(false);
                 String passWord = mEdtWalletPwd.getText().toString();
                 String passwordConfirm = mEdtWalletPwdConfirm.getText().toString();
-                if (TextUtils.equals(passWord, passwordConfirm)) {
+                boolean isValid = PWDUtils.verifyPasswordFormat(passWord);
+                if (!isValid) {
+                    isErr = true;
+                    mEdtWalletPwd.setText("");
+                    mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_err));
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtWalletPwd.requestFocus();
+                        }
+                    });
+                } else if (TextUtils.equals(passWord, passwordConfirm)) {
                     mBtnConfirm.setClickable(false);
                     LoadDialog loadDialog = new LoadDialog(this, getString(R.string.dialog_loading));
                     loadDialog.show();
@@ -182,9 +193,9 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (isErr) {
-                            mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_tips));
-                        }
+                        isErr = false;
+                        mTvErrPassword.setText(getResources().getString(R.string.tv_pwd_tips));
+                        isCreateWallet();
                     }
 
                     @Override

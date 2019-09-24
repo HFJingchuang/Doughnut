@@ -87,7 +87,28 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
             case R.id.btn_done:
                 String newPwd = mEdtNewPwd.getText().toString();
                 String repPwd = mEdtRepNewPwd.getText().toString();
-                if (TextUtils.equals(newPwd, repPwd)) {
+                boolean isValid = PWDUtils.verifyPasswordFormat(newPwd);
+                if (!isValid) {
+                    isErr = true;
+                    mEdtNewPwd.setText("");
+                    mTvNewTips.setText(getResources().getString(R.string.tv_pwd_err));
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtNewPwd.requestFocus();
+                        }
+                    });
+                } else if (TextUtils.equals(newPwd, mEdtOldPwd.getText().toString())) {
+                    isErr = true;
+                    mEdtNewPwd.setText("");
+                    mTvNewTips.setText(getResources().getString(R.string.tv_err_same));
+                    AppConfig.postOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mEdtNewPwd.requestFocus();
+                        }
+                    });
+                } else if (TextUtils.equals(newPwd, repPwd)) {
                     LoadDialog loadDialog = new LoadDialog(this, getString(R.string.dialog_modify));
                     loadDialog.show();
                     // 修改KeyStore密码，name参数可不传
@@ -213,9 +234,9 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (isErr) {
-                    mTvNewTips.setText(getResources().getString(R.string.tv_pwd_tips));
-                }
+                isErr = false;
+                mTvNewTips.setText(getResources().getString(R.string.tv_pwd_tips));
+                isDone();
             }
 
             @Override
@@ -234,6 +255,16 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
                             isErr = true;
                             mEdtNewPwd.setText("");
                             mTvNewTips.setText(getResources().getString(R.string.tv_pwd_err));
+                            AppConfig.postOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mEdtNewPwd.requestFocus();
+                                }
+                            });
+                        } else if (TextUtils.equals(passWord, mEdtOldPwd.getText().toString())) {
+                            isErr = true;
+                            mEdtNewPwd.setText("");
+                            mTvNewTips.setText(getResources().getString(R.string.tv_err_same));
                             AppConfig.postOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
