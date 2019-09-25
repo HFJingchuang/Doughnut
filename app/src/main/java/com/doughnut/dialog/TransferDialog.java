@@ -20,10 +20,12 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.doughnut.utils.AESUtil;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 
 public class TransferDialog extends Dialog implements View.OnClickListener {
 
@@ -97,8 +99,8 @@ public class TransferDialog extends Dialog implements View.OnClickListener {
             if (TextUtils.isEmpty(input)) {
                 return;
             }
-
-            WalletManager.getInstance(getContext()).getPrivateKey(input, mAddress, new ICallBack() {
+            String keyStore = WalletSp.getInstance(mContext, mAddress).getKeyStore();
+            WalletManager.getInstance(getContext()).getPrivateKey(input, keyStore, new ICallBack() {
                 @Override
                 public void onResponse(Object response) {
                     String oldKey = (String) response;

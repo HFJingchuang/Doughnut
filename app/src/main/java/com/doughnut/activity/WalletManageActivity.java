@@ -120,8 +120,6 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
         mLsWallet.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new WalletRecordAdapter();
         mLsWallet.setAdapter(mAdapter);
-        LinearSnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(mLsWallet);
     }
 
     private void gotoCreateWallet() {

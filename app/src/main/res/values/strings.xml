@@ -215,5 +215,6 @@
     <string name="title_contact">选择转账地址</string>
     <string name="tv_err_same">新旧密码不能一样，请重新输入</string>
     <string name="dialog_no_pwd">15分钟免密转账</string>
+    <string name="tv_doughnut">甜甜圈钱包</string>
 
 </resources>

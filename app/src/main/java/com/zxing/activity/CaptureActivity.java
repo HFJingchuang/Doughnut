@@ -262,6 +262,9 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
 
     @Override
     protected void onDestroy() {
+        if (mProgress != null && mProgress.isShowing()) {
+            mProgress.dismiss();
+        }
         inactivityTimer.shutdown();
         super.onDestroy();
     }

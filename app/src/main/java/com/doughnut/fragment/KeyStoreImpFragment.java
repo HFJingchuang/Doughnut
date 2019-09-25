@@ -109,6 +109,7 @@ public class KeyStoreImpFragment extends BaseFragment implements View.OnClickLis
                         if (isSuccess) {
                             Intent intent = new Intent(getContext(), MainActivity.class);
                             intent.putExtra(Constant.IMPORT_FLAG, true);
+                            intent.putExtra(Constant.PAGE_INDEX, "0");
                             intent.putExtra(Constant.WALLET_NAME, walletName);
                             startActivity(intent);
                         } else {

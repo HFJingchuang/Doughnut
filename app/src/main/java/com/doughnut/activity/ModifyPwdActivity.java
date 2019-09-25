@@ -27,6 +27,7 @@ import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 
 
 public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBarClickListener, View.OnClickListener {
@@ -203,7 +204,8 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
                 if (!hasFocus) {
                     String pwd = mEdtOldPwd.getText().toString();
                     if (!TextUtils.isEmpty(pwd)) {
-                        WalletManager.getInstance(ModifyPwdActivity.this).getPrivateKey(pwd, mWalletAddress, new ICallBack() {
+                        String keyStore = WalletSp.getInstance(ModifyPwdActivity.this, mWalletAddress).getKeyStore();
+                        WalletManager.getInstance(ModifyPwdActivity.this).getPrivateKey(pwd, keyStore, new ICallBack() {
                             @Override
                             public void onResponse(Object response) {
                                 mPrivateKey = (String) response;

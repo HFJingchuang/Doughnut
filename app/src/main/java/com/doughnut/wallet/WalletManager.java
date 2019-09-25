@@ -204,9 +204,9 @@ public class WalletManager implements IWallet {
             KeyStoreFile keyStoreFile = KeyStoreFile.parse(keyStore);
             String address = keyStoreFile.getAddress();
             if (Wallet.isValidAddress(address)) {
-                String privateKey = getPrivateKey(password, address);
+                String privateKey = getPrivateKey(password, keyStore);
                 if (Wallet.isValidSecret(privateKey)) {
-                    WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                    WalletSp.getInstance(mContext, address).createWallet(name, keyStore);
                     return true;
                 }
             }
@@ -242,9 +242,9 @@ public class WalletManager implements IWallet {
         });
     }
 
-    private String getPrivateKey(String password, String address) {
+    private String getPrivateKey(String password, String keyStore) {
         try {
-            KeyStoreFile keyStoreFile = KeyStoreFile.parse(WalletSp.getInstance(mContext, address).getKeyStore());
+            KeyStoreFile keyStoreFile = KeyStoreFile.parse(keyStore);
             Wallet wallet = KeyStore.decrypt(password, keyStoreFile);
             return wallet.getSecret();
         } catch (Exception e) {
@@ -257,15 +257,15 @@ public class WalletManager implements IWallet {
      * 获取私钥
      *
      * @param password
-     * @param address
+     * @param keyStore
      * @return
      */
     @Override
-    public void getPrivateKey(String password, String address, ICallBack callBack) {
+    public void getPrivateKey(String password, String keyStore, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                String privateKey = getPrivateKey(password, address);
+                String privateKey = getPrivateKey(password, keyStore);
                 emitter.onNext(privateKey);
                 emitter.onComplete();
             }

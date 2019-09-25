@@ -111,7 +111,7 @@ public class WalletTest {
         mutex.await();
         final CountDownLatch mutex1 = new CountDownLatch(1);
         final String[] privateKey1 = new String[1];
-        WalletManager.getInstance(appContext).getPrivateKey("123456", address, new ICallBack() {
+        WalletManager.getInstance(appContext).getPrivateKey("123456", WalletSp.getInstance(appContext, address).getKeyStore(), new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 privateKey1[0] = (String) response;

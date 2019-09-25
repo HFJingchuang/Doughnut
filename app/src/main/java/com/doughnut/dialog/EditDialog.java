@@ -18,10 +18,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.activity.TokenTransferActivity;
+import com.doughnut.config.AppConfig;
 import com.doughnut.utils.TLog;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 
 public class EditDialog extends Dialog implements View.OnClickListener {
 
@@ -109,8 +112,8 @@ public class EditDialog extends Dialog implements View.OnClickListener {
                 dismiss();
                 return;
             }
-
-            WalletManager.getInstance(getContext()).getPrivateKey(input, mAddress, new ICallBack() {
+            String keyStore = WalletSp.getInstance(AppConfig.getContext(), mAddress).getKeyStore();
+            WalletManager.getInstance(getContext()).getPrivateKey(input, keyStore, new ICallBack() {
                 @Override
                 public void onResponse(Object response) {
                     String oldKey = (String) response;

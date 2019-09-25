@@ -59,8 +59,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 importSuccessDialog.show();
                 getIntent().removeExtra(Constant.IMPORT_FLAG);
             }
+            if (getIntent().hasExtra(Constant.PAGE_INDEX)) {
+                mMainViewPager.setCurrentItem(getIntent().getIntExtra(Constant.PAGE_INDEX, 0));
+            }
         }
-        mMainViewPager.setCurrentItem(getIntent().getIntExtra(Constant.PAGE_INDEX, 0));
     }
 
     @Override
@@ -78,6 +80,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 ImportSuccessDialog importSuccessDialog = new ImportSuccessDialog(this, walletName);
                 importSuccessDialog.show();
                 getIntent().removeExtra(Constant.IMPORT_FLAG);
+            }
+            if (getIntent().hasExtra(Constant.PAGE_INDEX)) {
+                mMainViewPager.setCurrentItem(getIntent().getIntExtra(Constant.PAGE_INDEX, 0));
+                getIntent().removeExtra(Constant.PAGE_INDEX);
             }
         }
         int index = mMainViewPager.getCurrentItem();

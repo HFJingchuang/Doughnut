@@ -9,13 +9,14 @@
     <com.doughnut.view.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="80dp" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginTop="40dp"
+        android:layout_weight="8"
         android:background="@drawable/shape_dialog_bg"
         android:orientation="vertical">
 
@@ -34,9 +35,14 @@
         <com.doughnut.view.NoScrollViewPager
             android:id="@+id/main_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_dialog_bg"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:overScrollMode="never" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>
 

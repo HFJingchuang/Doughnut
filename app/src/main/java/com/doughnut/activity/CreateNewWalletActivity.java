@@ -31,6 +31,7 @@ import com.doughnut.view.SubCharSequence;
 import com.doughnut.view.TitleBar;
 import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
+import com.doughnut.wallet.WalletSp;
 
 
 public class CreateNewWalletActivity extends BaseActivity implements View.OnClickListener {
@@ -105,7 +106,8 @@ public class CreateNewWalletActivity extends BaseActivity implements View.OnClic
                             String address = (String) response;
                             loadDialog.dismiss();
                             if (Wallet.isValidAddress(address)) {
-                                WalletManager.getInstance(CreateNewWalletActivity.this).getPrivateKey(walletPwd, address, new ICallBack() {
+                                String keyStore = WalletSp.getInstance(CreateNewWalletActivity.this, address).getKeyStore();
+                                WalletManager.getInstance(CreateNewWalletActivity.this).getPrivateKey(walletPwd, keyStore, new ICallBack() {
                                     @Override
                                     public void onResponse(Object response) {
                                         String privateKey = (String) response;

@@ -489,7 +489,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 @Override
                 public void onResponse(Object response) {
                     String pwd = (String) response;
-                    WalletManager.getInstance(TokenTransferActivity.this).getPrivateKey(pwd, mCurrentWallet, new ICallBack() {
+                    String keyStore = WalletSp.getInstance(TokenTransferActivity.this, mCurrentWallet).getKeyStore();
+                    WalletManager.getInstance(TokenTransferActivity.this).getPrivateKey(pwd, keyStore, new ICallBack() {
                         @Override
                         public void onResponse(Object response) {
                             String privateKey = (String) response;

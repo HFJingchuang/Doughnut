@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="甜甜圈钱包"
+            android:text="@string/tv_doughnut"
             android:textColor="@color/color_detail_address"
             android:textSize="24sp"
             android:textStyle="bold" />

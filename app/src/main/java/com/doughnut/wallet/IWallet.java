@@ -17,7 +17,7 @@ public interface IWallet {
 
     void importKeysStore(String keyStore, String password, String name, ICallBack callBack);
 
-    void getPrivateKey(String password, String address, ICallBack callBack);
+    void getPrivateKey(String password, String keyStore, ICallBack callBack);
 
     void transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack);
 
