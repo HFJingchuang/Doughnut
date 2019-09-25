@@ -478,6 +478,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             loadDialog.show();
             String key = sharedPreferences.getString("key", "");
             String encrypt = sharedPreferences.getString("encrypt", "");
+            if (TextUtils.isEmpty(key) || TextUtils.isEmpty(encrypt)) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+                mBtnConfirm.setEnabled(true);
+                return false;
+            }
             AESUtil.decrypt(key, encrypt, new ICallBack() {
                 @Override
                 public void onResponse(Object response) {

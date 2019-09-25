@@ -7,6 +7,7 @@ import com.doughnut.wallet.ICallBack;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
@@ -154,10 +155,10 @@ public class AESUtil {
         try {
             KeyGenerator generator = KeyGenerator.getInstance(AES);
             SecureRandom secureRandom;
-            if (28 >= android.os.Build.VERSION.SDK_INT) {
-                secureRandom = SecureRandom.getInstance(SHA1_PRNG, "Crypto");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                secureRandom = SecureRandom.getInstance(SHA1_PRNG, new CryptoProvider());
             } else {
-                secureRandom = SecureRandom.getInstance(SHA1_PRNG);
+                secureRandom = SecureRandom.getInstance(SHA1_PRNG, "Crypto");
             }
             secureRandom.setSeed(key.getBytes());
             generator.init(128, secureRandom);
@@ -174,5 +175,13 @@ public class AESUtil {
     private static SecretKeySpec deriveKeyInsecurely(String password) {
         byte[] passwordBytes = password.getBytes(StandardCharsets.US_ASCII);
         return new SecretKeySpec(InsecureSHA1PRNGKeyDerivator.deriveInsecureKey(passwordBytes, KEY_SIZE), AES);
+    }
+
+    private static final class CryptoProvider extends Provider {
+        CryptoProvider() {
+            super("Crypto", 1.0, "HARMONY (SHA1 digest; SecureRandom; SHA1withDSA signature)");
+            put("SecureRandom.SHA1PRNG", "org.apache.harmony.security.provider.crypto.SHA1PRNG_SecureRandomImpl");
+            put("SecureRandom.SHA1PRNG ImplementedIn", "Software");
+        }
     }
 }
