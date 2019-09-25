@@ -48,6 +48,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class JtNodeRecordActivity extends BaseActivity implements
         TitleBar.TitleBarClickListener {
@@ -77,9 +86,6 @@ public class JtNodeRecordActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAdapter != null) {
-            mSmartRefreshLayout.autoRefresh();
-        }
     }
 
     @Override
@@ -137,20 +143,11 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(this, 15));
         mSmartRefreshLayout = (SmartRefreshLayout) findViewById(R.id.layout_refresh);
-        mSmartRefreshLayout.autoRefresh();
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 mSelectedItem = -1;
                 refreshlayout.finishRefresh();
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-        mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(RefreshLayout refreshlayout) {
-                mSelectedItem = -1;
-                refreshlayout.finishLoadMore();
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -300,67 +297,74 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 holder.mLayoutItem.setActivated(false);
             }
             holder.mProgressDrawable.start();
-            new Thread(new Runnable() {
+            String[] ws = url.replace("ws://", "").replace("wss://", "").split(":");
+            if (ws.length != 2) {
+                return;
+            }
+            String host = ws[0];
+            String port = ws[1];
+            Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
-                public void run() {
-                    String[] ws = url.replace("ws://", "").replace("wss://", "").split(":");
-                    if (ws.length != 2) {
-                        return;
-                    }
-                    String host = ws[0];
-                    String port = ws[1];
-                    try {
-                        ArrayList<Integer> prots = PortScan.onAddress(host).setMethodTCP().setPort(Integer.valueOf(port)).doScan();
-                        if (prots != null && prots.size() == 1) {
-                            Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
-                                @Override
-                                public void onResult(PingResult pingResult) {
-                                }
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    ArrayList<Integer> prots = PortScan.onAddress(host).setMethodTCP().setPort(Integer.valueOf(port)).doScan();
+                    if (prots != null && prots.size() == 1) {
+                        Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
+                            @Override
+                            public void onResult(PingResult pingResult) {
+                            }
 
-                                @Override
-                                public void onFinished(PingStats pingStats) {
-                                    AppConfig.postOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
-                                            holder.mTvNodePing.setText(ping + "ms");
-                                            BigDecimal pingBig = new BigDecimal(ping);
-                                            if (pingBig.compareTo(PING_QUICK) == -1) {
-                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
-                                            } else if (pingBig.compareTo(PING_LOW) == -1) {
-                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
-                                            } else {
-                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
-                                            }
-                                            holder.mTvNodePing.setVisibility(View.VISIBLE);
-                                            holder.mImgLoad.setVisibility(View.GONE);
-                                            holder.mProgressDrawable.stop();
-                                        }
-                                    });
-                                }
+                            @Override
+                            public void onFinished(PingStats pingStats) {
+                                String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
+                                emitter.onNext(ping);
+                                emitter.onComplete();
+                            }
 
-                                @Override
-                                public void onError(Exception e) {
-                                }
-                            });
-                        } else {
-                            AppConfig.postOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    holder.mLayoutItem.setClickable(false);
-                                    holder.mTvNodePing.setText("---");
-                                    holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
-                                    holder.mTvNodePing.setVisibility(View.VISIBLE);
-                                    holder.mImgLoad.setVisibility(View.GONE);
-                                    holder.mProgressDrawable.stop();
-                                }
-                            });
-                        }
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                            @Override
+                            public void onError(Exception e) {
+                            }
+                        });
+                    } else {
+                        emitter.onError(new Throwable());
                     }
                 }
-            }).start();
+            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(String ping) {
+                    holder.mTvNodePing.setText(ping + "ms");
+                    BigDecimal pingBig = new BigDecimal(ping);
+                    if (pingBig.compareTo(PING_QUICK) == -1) {
+                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
+                    } else if (pingBig.compareTo(PING_LOW) == -1) {
+                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
+                    } else {
+                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                    }
+                    holder.mTvNodePing.setVisibility(View.VISIBLE);
+                    holder.mImgLoad.setVisibility(View.GONE);
+                    holder.mProgressDrawable.stop();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    holder.mLayoutItem.setClickable(false);
+                    holder.mTvNodePing.setText("---");
+                    holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                    holder.mTvNodePing.setVisibility(View.VISIBLE);
+                    holder.mImgLoad.setVisibility(View.GONE);
+                    holder.mProgressDrawable.stop();
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
         }
 
         @Override
@@ -455,67 +459,74 @@ public class JtNodeRecordActivity extends BaseActivity implements
                 holder.mLayoutItem.setActivated(false);
             }
             holder.mProgressDrawable.start();
-            new Thread(new Runnable() {
+            String[] ws = item.replace("ws://", "").replace("wss://", "").split(":");
+            if (ws.length != 2) {
+                return;
+            }
+            String host = ws[0];
+            String port = ws[1];
+            Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
-                public void run() {
-                    String[] ws = item.replace("ws://", "").replace("wss://", "").split(":");
-                    if (ws.length != 2) {
-                        return;
-                    }
-                    String host = ws[0];
-                    String port = ws[1];
-                    try {
-                        ArrayList<Integer> prots = PortScan.onAddress(host).setMethodTCP().setPort(Integer.valueOf(port)).doScan();
-                        if (prots != null && prots.size() == 1) {
-                            Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
-                                @Override
-                                public void onResult(PingResult pingResult) {
-                                }
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    ArrayList<Integer> prots = PortScan.onAddress(host).setMethodTCP().setPort(Integer.valueOf(port)).doScan();
+                    if (prots != null && prots.size() == 1) {
+                        Ping.onAddress(host).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
+                            @Override
+                            public void onResult(PingResult pingResult) {
+                            }
 
-                                @Override
-                                public void onFinished(PingStats pingStats) {
-                                    AppConfig.postOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
-                                            holder.mTvNodePing.setText(ping + "ms");
-                                            BigDecimal pingBig = new BigDecimal(ping);
-                                            if (pingBig.compareTo(PING_QUICK) == -1) {
-                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
-                                            } else if (pingBig.compareTo(PING_LOW) == -1) {
-                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
-                                            } else {
-                                                holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
-                                            }
-                                            holder.mTvNodePing.setVisibility(View.VISIBLE);
-                                            holder.mImgLoad.setVisibility(View.GONE);
-                                            holder.mProgressDrawable.stop();
-                                        }
-                                    });
-                                }
+                            @Override
+                            public void onFinished(PingStats pingStats) {
+                                String ping = String.format("%.2f", pingStats.getAverageTimeTaken());
+                                emitter.onNext(ping);
+                                emitter.onComplete();
+                            }
 
-                                @Override
-                                public void onError(Exception e) {
-                                }
-                            });
-                        } else {
-                            AppConfig.postOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    holder.mLayoutItem.setClickable(false);
-                                    holder.mTvNodePing.setText("---");
-                                    holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
-                                    holder.mTvNodePing.setVisibility(View.VISIBLE);
-                                    holder.mImgLoad.setVisibility(View.GONE);
-                                    holder.mProgressDrawable.stop();
-                                }
-                            });
-                        }
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                            @Override
+                            public void onError(Exception e) {
+                            }
+                        });
+                    } else {
+                        emitter.onError(new Throwable());
                     }
                 }
-            }).start();
+            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(String ping) {
+                    holder.mTvNodePing.setText(ping + "ms");
+                    BigDecimal pingBig = new BigDecimal(ping);
+                    if (pingBig.compareTo(PING_QUICK) == -1) {
+                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_quick));
+                    } else if (pingBig.compareTo(PING_LOW) == -1) {
+                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_normal));
+                    } else {
+                        holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                    }
+                    holder.mTvNodePing.setVisibility(View.VISIBLE);
+                    holder.mImgLoad.setVisibility(View.GONE);
+                    holder.mProgressDrawable.stop();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    holder.mLayoutItem.setClickable(false);
+                    holder.mTvNodePing.setText("---");
+                    holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
+                    holder.mTvNodePing.setVisibility(View.VISIBLE);
+                    holder.mImgLoad.setVisibility(View.GONE);
+                    holder.mProgressDrawable.stop();
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
         }
 
         @Override
