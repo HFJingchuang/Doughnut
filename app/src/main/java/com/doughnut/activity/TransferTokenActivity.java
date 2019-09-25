@@ -262,7 +262,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
      */
     private void getTransferToken() {
         // 取得钱包资产
-        WalletManager.getInstance(this).getBalance(mCurrentWallet, new ICallBack() {
+        WalletManager.getInstance(this).getBalance(mCurrentWallet, true, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 if (response != null) {

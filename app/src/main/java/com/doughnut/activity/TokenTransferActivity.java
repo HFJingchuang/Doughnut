@@ -24,8 +24,10 @@ import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
-import com.doughnut.dialog.EditDialog;
+import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
+import com.doughnut.dialog.TransferDialog;
+import com.doughnut.utils.AESUtil;
 import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ViewUtil;
@@ -46,6 +48,7 @@ import java.util.Map;
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String FEE = "10";
+    private final static long FIFTEEN = 15 * 60 * 1000L;
 
     private TitleBar mTitleBar;
     private TextView mTvTokenName, mTvToken, mTvBalance, mTvErrAddr, mTvErrAmount;
@@ -284,7 +287,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             case R.id.btn_send:
                 mBtnConfirm.setEnabled(false);
                 saveContact();
-                sendTranscation();
+                if (!NoPwdTransfer()) {
+                    sendTranscation();
+                }
                 break;
             case R.id.layout_token:
                 mLayoutToken.setEnabled(false);
@@ -298,10 +303,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
     private void sendTranscation() {
         String currentAddr = WalletSp.getInstance(TokenTransferActivity.this, "").getCurrentWallet();
-        new EditDialog(this, currentAddr)
-                .setDialogConfirmText(R.string.dialog_btn_confirm)
-                .setDialogConfirmColor(R.color.color_dialog_confirm)
-                .setResultListener(new EditDialog.PwdResultListener() {
+        new TransferDialog(this, currentAddr)
+                .setResultListener(new TransferDialog.PwdResultListener() {
                     @Override
                     public void authPwd(boolean result, String key) {
                         if (result) {
@@ -309,12 +312,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String token = mTvTokenName.getText().toString();
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-//                            LoadDialog loadDialog = new LoadDialog(TokenTransferActivity.this, getString(R.string.dialog_tranfer));
-//                            loadDialog.show();
                             WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, FEE, memo, new ICallBack() {
                                 @Override
                                 public void onResponse(Object result) {
-//                                    loadDialog.dismiss();
                                     boolean isSuccess = (boolean) result;
                                     String msg = getString(R.string.dailog_msg_success);
                                     if (!isSuccess) {
@@ -386,7 +386,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private void setBalance(String token) {
         // 取得钱包资产
         mBalance = "0.00";
-        WalletManager.getInstance(this).getBalance(mCurrentWallet, new ICallBack() {
+        WalletManager.getInstance(this).getBalance(mCurrentWallet, true, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 if (response != null) {
@@ -436,6 +436,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         });
     }
 
+    /**
+     * 保存转账联系地址
+     */
     private void saveContact() {
         // 本地保存tokens
         String fileName = getPackageName() + "_contacts";
@@ -459,5 +462,61 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("contacts", JSON.toJSONString(contactMap));
         editor.apply();
+    }
+
+    /**
+     * 免密支付
+     */
+    private boolean NoPwdTransfer() {
+        String fileName = getPackageName() + "_pwd_" + mCurrentWallet;
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        long time = sharedPreferences.getLong("time", 0);
+        long now = System.currentTimeMillis();
+        long diff = now - time;
+        if (diff < FIFTEEN) {
+            LoadDialog loadDialog = new LoadDialog(TokenTransferActivity.this, getString(R.string.dialog_tranfer));
+            loadDialog.show();
+            String key = sharedPreferences.getString("key", "");
+            String encrypt = sharedPreferences.getString("encrypt", "");
+            AESUtil.decrypt(key, encrypt, new ICallBack() {
+                @Override
+                public void onResponse(Object response) {
+                    String pwd = (String) response;
+                    WalletManager.getInstance(TokenTransferActivity.this).getPrivateKey(pwd, mCurrentWallet, new ICallBack() {
+                        @Override
+                        public void onResponse(Object response) {
+                            String privateKey = (String) response;
+                            String to = mEdtWalletAddress.getText().toString();
+                            String token = mTvTokenName.getText().toString();
+                            String value = mEdtTransferNum.getText().toString();
+                            String memo = mEdtMemo.getText().toString();
+                            WalletManager.getInstance(TokenTransferActivity.this).transfer(privateKey, mCurrentWallet, to, token, mIssue, value, FEE, memo, new ICallBack() {
+                                @Override
+                                public void onResponse(Object result) {
+                                    boolean isSuccess = (boolean) result;
+                                    String msg = getString(R.string.dailog_msg_success);
+                                    if (!isSuccess) {
+                                        mBtnConfirm.setEnabled(true);
+                                        msg = getString(R.string.dialog_msg_fail);
+                                    } else {
+                                        mEdtMemo.setText("");
+                                        mEdtTransferNum.setText("");
+                                    }
+                                    new MsgDialog(TokenTransferActivity.this, msg).setIsHook(isSuccess).show();
+                                }
+                            });
+                            loadDialog.dismiss();
+                        }
+                    });
+                }
+            });
+        } else {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
+            mBtnConfirm.setEnabled(true);
+            return false;
+        }
+        return true;
     }
 }

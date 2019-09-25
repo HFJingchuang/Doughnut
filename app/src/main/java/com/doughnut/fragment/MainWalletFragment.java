@@ -345,7 +345,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
             // 取得钱包资产
-            WalletManager.getInstance(getContext()).getBalance(mCurrentWallet, new ICallBack() {
+            WalletManager.getInstance(getContext()).getBalance(mCurrentWallet, true, new ICallBack() {
                 @Override
                 public void onResponse(Object response) {
                     if (response != null) {

@@ -207,7 +207,7 @@ public class WalletTest {
         });
         mutex.await();
         final CountDownLatch mutex1 = new CountDownLatch(1);
-        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+        WalletManager.getInstance(appContext).getBalance(address, true, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 accountRelations[0] = (AccountRelations) response;

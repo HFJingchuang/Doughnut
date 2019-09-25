@@ -201,7 +201,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
             ViewUtil.EllipsisTextView(holder.mTvName);
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
             // 取得钱包资产
-            WalletManager.getInstance(getContext()).getBalance(address, new ICallBack() {
+            WalletManager.getInstance(getContext()).getBalance(address, false, new ICallBack() {
                 @Override
                 public void onResponse(Object response) {
                     if (response != null) {

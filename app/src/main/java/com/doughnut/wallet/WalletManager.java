@@ -531,11 +531,14 @@ public class WalletManager implements IWallet {
     }
 
     /**
+     * 获取余额
+     *
      * @param address
+     * @param isDisposable //是否添加Disposable事件，添加后连续下一次WalletManager的调用会切断本次事件
      * @param callBack
      */
     @Override
-    public void getBalance(String address, ICallBack callBack) {
+    public void getBalance(String address, boolean isDisposable, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<AccountRelations>() {
             @Override
             public void subscribe(ObservableEmitter<AccountRelations> emitter) throws Exception {
@@ -549,7 +552,9 @@ public class WalletManager implements IWallet {
         }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<AccountRelations>() {
             @Override
             public void onSubscribe(Disposable d) {
-                compositeDisposable.add(d);
+                if (isDisposable) {
+                    compositeDisposable.add(d);
+                }
             }
 
             @Override

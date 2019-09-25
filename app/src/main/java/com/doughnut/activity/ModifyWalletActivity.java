@@ -193,7 +193,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvWalletName.setText(mWalletName);
         mTvWalletAddress.setText(mWalletAddress);
         // 取得钱包资产
-        WalletManager.getInstance(getContext()).getBalance(mWalletAddress, new ICallBack() {
+        WalletManager.getInstance(getContext()).getBalance(mWalletAddress, true, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 if (response != null) {

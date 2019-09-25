@@ -23,7 +23,7 @@ public interface IWallet {
 
     void getTransferHistory(String address, Integer limit, Marker marker, ICallBack callBack);
 
-    void getBalance(String address, ICallBack callBack);
+    void getBalance(String address, boolean isDisposable, ICallBack callBack);
 
     void getSWTBalance(String address, ICallBack callBack);
 

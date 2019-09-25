@@ -43,7 +43,7 @@ public class JtServerTest {
         mutex.await();
 
         final CountDownLatch mutex1 = new CountDownLatch(1);
-        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+        WalletManager.getInstance(appContext).getBalance(address, true, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 accountRelations1[0] = (AccountRelations) response;
@@ -56,7 +56,7 @@ public class JtServerTest {
         final CountDownLatch mutex2 = new CountDownLatch(1);
         final AccountRelations[] accountRelations2 = new AccountRelations[1];
         JtServer.getInstance(appContext).changeServer("ws://ts5.jingtum.com:5020", false);
-        WalletManager.getInstance(appContext).getBalance(address, new ICallBack() {
+        WalletManager.getInstance(appContext).getBalance(address, true, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 accountRelations2[0] = (AccountRelations) response;
