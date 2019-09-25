@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialog_bg"
+    android:orientation="vertical"
     android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:orientation="vertical">
+    android:paddingRight="15dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,33 +17,124 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_marginTop="15dp"
             android:text="@string/dialog_title_gas_setting"
-            android:textColor="@color/common_black_fontcolor"
-            android:textSize="16sp"
-            android:layout_marginTop="15dp"/>
+            android:textColor="@color/color_detail_address"
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/img_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_clean"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_clean" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_gascount_intoken"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:textColor="@color/color_detail_address"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_gascount_intoken"
+                android:layout_toRightOf="@+id/tv_gascount_intoken"
+                android:text="SWTC"
+                android:textColor="@color/color_detail_address"
+                android:textSize="10sp" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_gas1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_gas"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="0.0001 SWTC"
+                android:textColor="@color/color_detail_address"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_gas2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_gas"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="0.001 SWTC"
+                android:textColor="@color/color_detail_address"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_gas3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_gas"
+                android:gravity="center"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="5dp"
+                android:text="0.01 SWTC"
+                android:textColor="@color/color_detail_address"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <SeekBar
         android:id="@+id/seekbar_gas"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_marginTop="20dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:maxHeight="5dp"
+        android:progressDrawable="@drawable/po_seekbar"
+        android:secondaryProgress="70"
+        android:thumb="@drawable/seekbar_thumb" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -50,7 +142,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text="@string/content_slow"
-            android:textColor="#808080"
+            android:textColor="@color/color_detail_address"
             android:textSize="15dp" />
 
         <TextView
@@ -59,8 +151,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/content_recommend"
-            android:textColor="#808080"
-            android:textSize="15dp" />
+            android:textColor="@color/color_detail_address"
+            android:textSize="15dp"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="0dp"
@@ -68,36 +161,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text="@string/content_fast"
-            android:textColor="#808080"
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp">
-
-        <TextView
-            android:id="@+id/tv_gascount_intoken"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="4"
-            android:gravity="left"
-            android:textSize="15sp"
-            android:textColor="@color/common_black_fontcolor"/>
-
-        <TextView
-            android:id="@+id/tv_token_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text=""
-            android:textColor="@color/common_black_fontcolor"
+            android:textColor="@color/color_detail_address"
             android:textSize="15dp" />
     </LinearLayout>
 
@@ -105,14 +169,14 @@
         android:id="@+id/tv_ok"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="150dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/shape_splash_createwallet_bg"
+        android:background="@drawable/shape_btn_import"
         android:gravity="center"
         android:text="@string/dialog_btn_confirm"
         android:textColor="@color/white"
-        android:textSize="15sp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

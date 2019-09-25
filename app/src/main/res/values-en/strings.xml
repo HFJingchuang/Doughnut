@@ -49,7 +49,7 @@
     <string name="btn_import_wallet">Import Wallet</string>
     <string name="btn_change_pwd">Change Password</string>
     <string name="btn_delete_wallet">Delete Wallet</string>
-    <string name="content_slow">Slow</string>
+    <string name="content_slow">Normal</string>
     <string name="content_fast">Fast</string>
     <string name="content_splash">Donuts, wrap your SWTC</string>
     <string name="btn_manage_wallet">Wallet Management</string>

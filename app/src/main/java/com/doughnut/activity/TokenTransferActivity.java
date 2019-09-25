@@ -24,6 +24,7 @@ import com.android.jtblk.client.bean.Line;
 import com.doughnut.R;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.EthGasSettignDialog;
 import com.doughnut.dialog.LoadDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.dialog.TransferDialog;
@@ -39,6 +40,7 @@ import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -51,11 +53,10 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private final static long FIFTEEN = 15 * 60 * 1000L;
 
     private TitleBar mTitleBar;
-    private TextView mTvTokenName, mTvToken, mTvBalance, mTvErrAddr, mTvErrAmount;
+    private TextView mTvTokenName, mTvToken, mTvBalance, mTvErrAddr, mTvErrAmount, mTvGas;
     private EditText mEdtWalletAddress, mEdtTransferNum, mEdtMemo;
     private Button mBtnConfirm;
-    private LinearLayout mLayoutToken;
-    private LinearLayout mLayoutLatest;
+    private LinearLayout mLayoutToken, mLayoutLatest, mLayoutGas;
     private String mBalance;
     private String mIssue;
     private String mCurrentWallet;
@@ -242,6 +243,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
             }
         });
+
+        mLayoutGas = findViewById(R.id.layout_gas);
+        mLayoutGas.setOnClickListener(this);
+        mTvGas = findViewById(R.id.tv_gas);
+
         mBtnConfirm = findViewById(R.id.btn_send);
         mBtnConfirm.setOnClickListener(this);
     }
@@ -279,6 +285,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 //                mEdtMemo.setText(memo);
 //            }
         }
+        mTvGas.setText(getFee());
     }
 
     @Override
@@ -298,6 +305,16 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             case R.id.layout_latest:
                 ContactsActivity.startContactsActivity(this);
                 break;
+            case R.id.layout_gas:
+                ViewUtil.hideKeyboard(mEdtMemo);
+                new EthGasSettignDialog(this, new EthGasSettignDialog.OnSettingGasListener() {
+                    @Override
+                    public void onSettingGas(String gasPrice) {
+                        setFee(gasPrice);
+                        mTvGas.setText(gasPrice);
+                    }
+                }, mTvGas.getText().toString()).show();
+                break;
         }
     }
 
@@ -312,7 +329,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String token = mTvTokenName.getText().toString();
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, FEE, memo, new ICallBack() {
+                            String gas = mTvGas.getText().toString();
+                            BigDecimal fee = new BigDecimal(gas).multiply(new BigDecimal(1000000));
+                            WalletManager.getInstance(TokenTransferActivity.this).transfer(key, currentAddr, to, token, mIssue, value, fee.stripTrailingZeros().toPlainString(), memo, new ICallBack() {
                                 @Override
                                 public void onResponse(Object result) {
                                     boolean isSuccess = (boolean) result;
@@ -498,7 +517,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             String token = mTvTokenName.getText().toString();
                             String value = mEdtTransferNum.getText().toString();
                             String memo = mEdtMemo.getText().toString();
-                            WalletManager.getInstance(TokenTransferActivity.this).transfer(privateKey, mCurrentWallet, to, token, mIssue, value, FEE, memo, new ICallBack() {
+                            String gas = mTvGas.getText().toString();
+                            BigDecimal fee = new BigDecimal(gas).multiply(new BigDecimal(1000000));
+                            WalletManager.getInstance(TokenTransferActivity.this).transfer(privateKey, mCurrentWallet, to, token, mIssue, value, fee.stripTrailingZeros().toPlainString(), memo, new ICallBack() {
                                 @Override
                                 public void onResponse(Object result) {
                                     boolean isSuccess = (boolean) result;
@@ -526,5 +547,27 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             return false;
         }
         return true;
+    }
+
+    /**
+     * 保存燃料费用
+     *
+     * @param fee
+     */
+    private void setFee(String fee) {
+        String fileName = getPackageName() + "_fee_" + mCurrentWallet;
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("fee", fee);
+        editor.apply();
+    }
+
+    /**
+     * 获取燃料费用
+     */
+    private String getFee() {
+        String fileName = getPackageName() + "_fee_" + mCurrentWallet;
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        return sharedPreferences.getString("fee", "0.00001");
     }
 }

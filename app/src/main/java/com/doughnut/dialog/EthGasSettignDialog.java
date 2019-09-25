@@ -1,8 +1,11 @@
 package com.doughnut.dialog;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,35 +14,31 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.utils.TLog;
-import com.doughnut.utils.Util;
+
+import java.math.BigDecimal;
 
 
 public class EthGasSettignDialog extends BaseDialog implements View.OnClickListener {
-    private final static String TAG = "EthGasSettignDialog";
+
+    private final static String GAS1 = "0.00001";
+    private final static String GAS2 = "0.001";
+    private final static String GAS3 = "0.01";
 
     public interface OnSettingGasListener {
-        void onSettingGas(double gasPrice, double gasInToken);
+        void onSettingGas(String gasPrice);
     }
 
     private ImageView mImgClose;
     private SeekBar mSeekBarGas;
-    private TextView mTvGas;
-    private TextView mTvToken;
+    private TextView mTvGas, mTvGas1, mTvGas2, mTvGas3;
     private TextView mTvOk;
     private OnSettingGasListener mOnsettingGasListener;
-    private double mGas;
-    private double mGasInToken;
-    private long mBlockChain;
-    private double mGasPrice = 8.0f;
-    private boolean mDefaultToken;
+    private String mGasPrice;
 
-    public EthGasSettignDialog(@NonNull Context context, OnSettingGasListener onSettingGasListener,  double gasPrice, boolean defaultToken) {
+    public EthGasSettignDialog(@NonNull Context context, OnSettingGasListener onSettingGasListener, String gasPrice) {
         super(context, R.style.DialogStyle);
         mOnsettingGasListener = onSettingGasListener;
         mGasPrice = gasPrice;
-        mDefaultToken = defaultToken;
-        mGas = Util.getRecommendGweiGas(mBlockChain, defaultToken);
     }
 
     @Override
@@ -48,12 +47,11 @@ public class EthGasSettignDialog extends BaseDialog implements View.OnClickListe
         setContentView(R.layout.layout_dialog_gas);
         setCanceledOnTouchOutside(true);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = -1;
-        lp.height = -2;
-        lp.x = 0;
-        lp.y = 0;
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;
         getWindow().setAttributes(lp);
+        getWindow().setBackgroundDrawableResource(R.color.transparent);
         initView();
     }
 
@@ -61,29 +59,71 @@ public class EthGasSettignDialog extends BaseDialog implements View.OnClickListe
     public void onClick(View view) {
         if (view == mTvOk) {
             if (mOnsettingGasListener != null) {
-                mGasInToken = Util.parseDouble(mTvGas.getText().toString());
-                mOnsettingGasListener.onSettingGas(mGasPrice, mGasInToken);
+                mOnsettingGasListener.onSettingGas(mTvGas.getText().toString());
                 dismiss();
             }
         } else if (view == mImgClose) {
             dismiss();
+        } else if (view == mTvGas1) {
+            mTvGas1.setActivated(true);
+            mTvGas1.setTextColor(Color.WHITE);
+            mTvGas2.setActivated(false);
+            mTvGas2.setTextColor(Color.BLACK);
+            mTvGas3.setActivated(false);
+            mTvGas3.setTextColor(Color.BLACK);
+            mTvGas.setText(GAS1);
+            mSeekBarGas.setProgress(0);
+        } else if (view == mTvGas2) {
+            mTvGas1.setActivated(false);
+            mTvGas1.setTextColor(Color.BLACK);
+            mTvGas2.setActivated(true);
+            mTvGas2.setTextColor(Color.WHITE);
+            mTvGas3.setActivated(false);
+            mTvGas3.setTextColor(Color.BLACK);
+            mTvGas.setText(GAS2);
+            mSeekBarGas.setProgress(0);
+        } else if (view == mTvGas3) {
+            mTvGas1.setActivated(false);
+            mTvGas1.setTextColor(Color.BLACK);
+            mTvGas2.setActivated(false);
+            mTvGas2.setTextColor(Color.BLACK);
+            mTvGas3.setActivated(true);
+            mTvGas3.setTextColor(Color.WHITE);
+            mTvGas.setText(GAS3);
+            mSeekBarGas.setProgress(1);
         }
     }
 
     private void initView() {
         mImgClose = (ImageView) findViewById(R.id.img_close);
         mImgClose.setOnClickListener(this);
+        mTvGas1 = findViewById(R.id.tv_gas1);
+        mTvGas1.setOnClickListener(this);
+        mTvGas2 = findViewById(R.id.tv_gas2);
+        mTvGas2.setOnClickListener(this);
+        mTvGas3 = findViewById(R.id.tv_gas3);
+        mTvGas3.setOnClickListener(this);
         mTvGas = (TextView) findViewById(R.id.tv_gascount_intoken);
-        double totalGasInWei = Util.fromGweToWei(mBlockChain, mGasPrice) * Util.getRecommendGweiGas(mBlockChain, mDefaultToken);
-        mTvGas.setText(Util.formatDoubleToStr(5, Util.fromWei(mBlockChain, totalGasInWei)));
+        mTvGas.setText(mGasPrice);
         mSeekBarGas = (SeekBar) findViewById(R.id.seekbar_gas);
         mSeekBarGas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                TLog.e(TAG, "progress" + progress);
-                mGasPrice = 8.0f + progress;
-                double totalGasInWei = Util.fromGweToWei(mBlockChain, mGasPrice) * Util.getRecommendGweiGas(mBlockChain, mDefaultToken);
-                mTvGas.setText(Util.formatDoubleToStr(5, Util.fromWei(mBlockChain, totalGasInWei)));
+                Log.v("seekBar", progress + "");
+                if (progress > 1) {
+                    mTvGas1.setActivated(false);
+                    mTvGas1.setTextColor(Color.BLACK);
+                    mTvGas2.setActivated(false);
+                    mTvGas2.setTextColor(Color.BLACK);
+                    mTvGas3.setActivated(false);
+                    mTvGas3.setTextColor(Color.BLACK);
+                    String fee = new BigDecimal(progress).divide(new BigDecimal(100)).stripTrailingZeros().toPlainString();
+                    mTvGas.setText(fee);
+                } else if (progress == 1) {
+                    mTvGas3.setActivated(true);
+                    mTvGas3.setTextColor(Color.WHITE);
+                    mTvGas.setText(GAS3);
+                }
             }
 
             @Override
@@ -96,11 +136,27 @@ public class EthGasSettignDialog extends BaseDialog implements View.OnClickListe
 
             }
         });
-        mTvToken = (TextView) findViewById(R.id.tv_token_name);
-        mTvToken.setText(Util.getSymbolByBlockChain(mBlockChain));
-        mSeekBarGas.setMax(92);
-        mSeekBarGas.setProgress(0);
+        mSeekBarGas.setMax(100);
         mTvOk = (TextView) findViewById(R.id.tv_ok);
         mTvOk.setOnClickListener(this);
+        initGas();
+    }
+
+    private void initGas() {
+        if (TextUtils.equals(GAS1, mGasPrice)) {
+            mTvGas1.setActivated(true);
+            mTvGas1.setTextColor(Color.WHITE);
+            mTvGas.setText(GAS1);
+        } else if (TextUtils.equals(GAS2, mGasPrice)) {
+            mTvGas2.setActivated(true);
+            mTvGas2.setTextColor(Color.WHITE);
+            mTvGas.setText(GAS2);
+        } else if (TextUtils.equals(GAS3, mGasPrice)) {
+            mTvGas3.setActivated(true);
+            mTvGas3.setTextColor(Color.WHITE);
+            mTvGas.setText(GAS3);
+        }
+        int fee = new BigDecimal(mGasPrice).multiply(new BigDecimal(100)).intValue();
+        mSeekBarGas.setProgress(fee);
     }
 }
