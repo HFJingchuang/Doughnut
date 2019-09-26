@@ -53,6 +53,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -75,6 +76,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
     private List<String> publicNodesCustom = new ArrayList<>();
     private int mSelectedItem = -1;
     private int mSelectedCustomItem = -1;
+    private static CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +149,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 mSelectedItem = -1;
+                compositeDisposable.clear();
                 refreshlayout.finishRefresh();
                 mAdapter.notifyDataSetChanged();
             }
@@ -168,7 +171,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
         mRecyclerViewCustom.setLayoutManager(new LinearLayoutManager(this));
         mAdapterCustom = new NodeRecordCustomAdapter();
         mRecyclerViewCustom.setAdapter(mAdapterCustom);
-
+        compositeDisposable = new CompositeDisposable();
         getPublicNode();
         getCustomNode();
     }
@@ -325,13 +328,15 @@ public class JtNodeRecordActivity extends BaseActivity implements
                             }
                         });
                     } else {
-                        emitter.onError(new Throwable());
+                        if (!emitter.isDisposed()) {
+                            emitter.onError(new Throwable());
+                        }
                     }
                 }
-            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
                 @Override
                 public void onSubscribe(Disposable d) {
-
+                    compositeDisposable.add(d);
                 }
 
                 @Override
@@ -490,7 +495,7 @@ public class JtNodeRecordActivity extends BaseActivity implements
                         emitter.onError(new Throwable());
                     }
                 }
-            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
                 @Override
                 public void onSubscribe(Disposable d) {
 

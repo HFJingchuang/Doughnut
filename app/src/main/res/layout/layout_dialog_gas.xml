@@ -43,14 +43,14 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/tv_gascount_intoken"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="3dp"
                 android:layout_weight="1"
                 android:gravity="left|center"
                 android:textColor="@color/color_detail_address"
@@ -78,13 +78,13 @@
                 android:id="@+id/tv_gas1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_gas"
                 android:gravity="center"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="5dp"
                 android:paddingVertical="5dp"
-                android:text="0.0001 SWTC"
+                android:text="0.00001 SWTC"
                 android:textColor="@color/color_detail_address"
                 android:textSize="10sp" />
 
@@ -92,11 +92,11 @@
                 android:id="@+id/tv_gas2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_gas"
                 android:gravity="center"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="5dp"
                 android:paddingVertical="5dp"
                 android:text="0.001 SWTC"
                 android:textColor="@color/color_detail_address"
