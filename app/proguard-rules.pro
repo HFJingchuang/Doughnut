@@ -85,7 +85,7 @@
 
 -dontwarn java.util.concurrent.**
 -keep class java.util.concurrent.**{*;}
--keep class java.util.TimerTask { *; }
+-keep class java.util.TimerTask.**{*;}
 
 -dontwarn android.support.v4.**
 -keep class android.support.v4.**{*;}
