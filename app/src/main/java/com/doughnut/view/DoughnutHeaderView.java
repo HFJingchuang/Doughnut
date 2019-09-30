@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshInternal;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -63,6 +64,17 @@ public class DoughnutHeaderView extends InternalAbstract implements RefreshHeade
     @Override
     public void onStartAnimator(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
         super.onStartAnimator(refreshLayout, height, maxDragHeight);
+        //超时关闭
+        AppConfig.postDelayOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (refreshLayout.getState()) {
+                    case Refreshing:
+                        onFinish(refreshLayout, false);
+                        break;
+                }
+            }
+        }, 15000);
         start();
     }
 

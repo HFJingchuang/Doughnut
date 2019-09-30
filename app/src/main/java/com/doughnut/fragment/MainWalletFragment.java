@@ -135,7 +135,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                mAdapter.refresh();
+                refreshWallet();
             }
         });
 
@@ -163,7 +163,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         clearHideToken();
                         break;
                 }
-                mAdapter.refresh();
+                refreshWallet();
             }
         });
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -279,10 +279,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 } else {
                     mTvOpenEyes.setImageResource(R.drawable.ic_see);
                 }
-                mAdapter.refresh();
+                refreshWallet();
                 break;
             case R.id.swh_show:
-                mAdapter.refresh();
+                refreshWallet();
                 break;
         }
     }
@@ -473,6 +473,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                                 freeze = "0";
                                             }
 
+                                            // 合计
+                                            String sum = CaclUtil.add(balance, freeze);
+                                            if (CaclUtil.compare(sum, "0") == 0) {
+                                                continue;
+                                            }
+
                                             String price = "0";
                                             if (TextUtils.equals(currency, WConstant.CURRENCY_CNY)) {
                                                 price = "1";
@@ -484,7 +490,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                                                 }
                                             }
                                             // 当前币种总价值
-                                            String sum = CaclUtil.add(balance, freeze);
                                             String value = CaclUtil.mul(sum, price);
                                             values = CaclUtil.add(values, value);
                                         }

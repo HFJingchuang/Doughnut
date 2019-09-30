@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.config.AppConfig;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.update.UpdateTask;
 import com.doughnut.utils.DeviceUtil;
@@ -94,7 +93,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 new MsgDialog(this, getResources().getString(R.string.toast_latest_version)).show();
                 break;
             case "UPDATE_FAIL":
-                new MsgDialog(this, getResources().getString(R.string.dialog_update_fail)).show();
+                new MsgDialog(this, getResources().getString(R.string.dialog_update_fail)).setIsHook(false).show();
             case "CHECK_FINISH":
                 mProgressDrawable.stop();
                 mImgLoad.setVisibility(View.GONE);

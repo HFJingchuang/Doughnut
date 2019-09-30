@@ -71,13 +71,13 @@ public class MsgDialog extends BaseDialog {
             mVHook.setVisibility(View.GONE);
         }
 
-        //5秒后关闭
+        //3秒后关闭
         AppConfig.postDelayOnUiThread(new Runnable() {
             @Override
             public void run() {
                 dismiss();
             }
-        }, 5000);
+        }, 3000);
     }
 
     /**

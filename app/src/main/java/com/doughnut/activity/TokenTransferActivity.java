@@ -79,7 +79,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            MainActivity.startMainActivityForIndex(TokenTransferActivity.this, 2);
             finish();
             return true;
         } else {
@@ -96,7 +95,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
-                MainActivity.startMainActivityForIndex(TokenTransferActivity.this, 2);
                 finish();
             }
 

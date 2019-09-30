@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
+import com.doughnut.config.AppConfig;
 import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshInternal;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -64,6 +65,16 @@ public class DoughnutFooterView extends InternalAbstract implements RefreshFoote
     @Override
     public void onStartAnimator(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
         super.onStartAnimator(refreshLayout, height, maxDragHeight);
+        AppConfig.postDelayOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (refreshLayout.getState()) {
+                    case LoadReleased:
+                        onFinish(refreshLayout, false);
+                        break;
+                }
+            }
+        }, 15000);
         start();
     }
 
