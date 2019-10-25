@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 
 import com.doughnut.R;
 
+/**
+ * 网页加载模块
+ */
 @SuppressLint("SetJavaScriptEnabled")
 public class WebViewWrapper extends RelativeLayout {
     private WebView webView;
