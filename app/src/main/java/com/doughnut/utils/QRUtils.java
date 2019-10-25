@@ -83,8 +83,10 @@ public class QRUtils {
         if (TextUtils.isEmpty(path)) {
             return null;
         }
-        Hashtable<DecodeHintType, String> hints = new Hashtable<DecodeHintType, String>();
+        Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
         hints.put(DecodeHintType.CHARACTER_SET, "UTF8");
+        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+//        hints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
