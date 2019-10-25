@@ -246,10 +246,10 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             String tokenName = tr.getName();
             holder.token = tokenName;
 
-            holder.mTvTokenName.setText(TextUtils.isEmpty(tokenName) ? "" : (tokenName.length() <= 12 ? tokenName : new StringBuilder()
-                    .append(tokenName.substring(0, 5))
-                    .append("***")
-                    .append(tokenName.substring(tokenName.length() - 4))
+            holder.mTvTokenName.setText(TextUtils.isEmpty(tokenName) ? ""
+                    : (tokenName.length() <= 12 ? tokenName
+                    : new StringBuilder(tokenName)
+                    .replace(5, tokenName.length() - 4, "***")
                     .toString()));
             //ViewUtil.EllipsisTextView(holder.mTvTokenName);
             if (!mIsSingle) {
