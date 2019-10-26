@@ -76,6 +76,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private String mFrom;
     private String mTo;
     private static final int SCALE = 2;
+    private static final String KEY_CNY = WConstant.CURRENCY_CNY + "_" + WConstant.CURRENCY_ISSUE;
+    private static final String KEY_SWT = WConstant.CURRENCY_SWT + "_" + "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -287,10 +289,10 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             }
 
             if (pays != null && gets != null) {
-                String paysCur = pays.getString("currency");
+                String paysCur = pays.getString("currency") + "_" + pays.getString("issuer");
                 String paysCount = pays.getString("value");
 
-                String getsCur = gets.getString("currency");
+                String getsCur = gets.getString("currency") + "_" + gets.getString("issuer");
                 String getsCount = gets.getString("value");
                 holder.mTvContent.setText(formatHtml(CaclUtil.formatAmount(paysCount, SCALE), paysCur, CaclUtil.formatAmount(getsCount, SCALE), getsCur));
 
@@ -322,15 +324,18 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private void updateData() {
         JSONObject gets;
         JSONObject pays;
-        currentAddr = WalletSp.getInstance(this, "").getCurrentWallet();
+        String currentAddr = WalletSp.getInstance(this, "").getCurrentWallet();
         switch (mTransactions.getType()) {
             case "sent":
                 mLayoutAmount.setVisibility(View.VISIBLE);
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
                 mTvAmount.setText(CaclUtil.formatAmount(mTransactions.getAmount().getValue(), SCALE));
                 String tokenName = mTransactions.getAmount().getCurrency();
+                String tokenIssue = mTransactions.getAmount().getIssuer();
                 if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName)) {
                     tokenName = WConstant.CURRENCY_SWTC;
+                } else if (TextUtils.equals(WConstant.CURRENCY_CNY, tokenName) && TextUtils.equals(WConstant.CURRENCY_ISSUE, tokenIssue)) {
+                    tokenName = WConstant.CURRENCY_CNT;
                 }
                 mTvToken.setText(tokenName);
                 mTo = mTransactions.getCounterparty();
@@ -344,8 +349,11 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mTvType.setText(getResources().getString(R.string.tv_transfer));
                 mTvAmount.setText(CaclUtil.formatAmount(mTransactions.getAmount().getValue(), SCALE));
                 String tokenName1 = mTransactions.getAmount().getCurrency();
+                String tokenIssue1 = mTransactions.getAmount().getIssuer();
                 if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName1)) {
                     tokenName1 = WConstant.CURRENCY_SWTC;
+                } else if (TextUtils.equals(WConstant.CURRENCY_CNY, tokenName1) && TextUtils.equals(WConstant.CURRENCY_ISSUE, tokenIssue1)) {
+                    tokenName1 = WConstant.CURRENCY_CNT;
                 }
                 mTvToken.setText(tokenName1);
                 mFrom = mTransactions.getCounterparty();
@@ -356,8 +364,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 break;
             case "offernew":
                 mTvType.setText(getResources().getString(R.string.tv_offernew));
-                String getsCur = mTransactions.getGets().getCurrency();
-                String paysCur = mTransactions.getPays().getCurrency();
+                String getsCur = mTransactions.getGets().getCurrency() + "_" + mTransactions.getGets().getIssuer();
+                String paysCur = mTransactions.getPays().getCurrency() + "_" + mTransactions.getPays().getIssuer();
                 String getsAmount = "0";
                 String paysAmount = "0";
                 if (mTransactions.getEffects() != null) {
@@ -369,12 +377,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         String effectType = effect.getString("effect");
                         if (!TextUtils.equals(effectType, "offer_cancelled") && !TextUtils.equals(effectType, "offer_created")) {
                             if (pays != null && gets != null) {
-                                String currency = pays.getString("currency");
+                                String currency = pays.getString("currency") + "_" + pays.getString("issuer");
                                 String paysCount = pays.getString("value");
                                 if (TextUtils.equals(currency, paysCur)) {
                                     paysAmount = CaclUtil.add(paysAmount, paysCount);
                                 }
-                                currency = gets.getString("currency");
+                                currency = gets.getString("currency") + "_" + gets.getString("issuer");
                                 String getsCount = gets.getString("value");
                                 if (TextUtils.equals(currency, getsCur)) {
                                     getsAmount = CaclUtil.add(getsAmount, getsCount);
@@ -397,18 +405,18 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         // 成交价格
                         String price;
                         String token;
-                        if (TextUtils.equals(WConstant.CURRENCY_CNY, getsCur)) {
+                        if (TextUtils.equals(KEY_CNY, getsCur)) {
                             price = amountRatio(getsAmount, paysAmount);
-                            token = getsCur;
-                        } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysCur)) {
+                            token = WConstant.CURRENCY_CNT;
+                        } else if (TextUtils.equals(KEY_CNY, paysCur)) {
                             price = amountRatio(paysAmount, getsAmount);
-                            token = paysCur;
-                        } else if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+                            token = WConstant.CURRENCY_CNT;
+                        } else if (TextUtils.equals(KEY_SWT, getsCur)) {
                             price = amountRatio(getsAmount, paysAmount);
-                            token = getsCur;
+                            token = WConstant.CURRENCY_SWTC;
                         } else {
                             price = amountRatio(paysAmount, getsAmount);
-                            token = paysCur;
+                            token = paysCur.split("_")[0];
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
@@ -426,18 +434,18 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     // 委托价格
                     String price;
                     String token;
-                    if (TextUtils.equals(WConstant.CURRENCY_CNY, getsCur)) {
+                    if (TextUtils.equals(KEY_CNY, getsCur)) {
                         price = amountRatio(getsValue, paysValue);
-                        token = getsCur;
-                    } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysCur)) {
+                        token = WConstant.CURRENCY_CNT;
+                    } else if (TextUtils.equals(KEY_CNY, paysCur)) {
                         price = amountRatio(paysValue, getsValue);
-                        token = paysCur;
-                    } else if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+                        token = WConstant.CURRENCY_CNT;
+                    } else if (TextUtils.equals(KEY_SWT, getsCur)) {
                         price = amountRatio(getsValue, paysValue);
-                        token = getsCur;
+                        token = WConstant.CURRENCY_SWTC;
                     } else {
                         price = amountRatio(paysValue, getsValue);
-                        token = paysCur;
+                        token = paysCur.split("_")[0];
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
@@ -455,8 +463,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 if (mTransactions.getGets() != null && mTransactions.getPays() != null) {
                     String getsValue = mTransactions.getGets().getValue();
                     String paysValue = mTransactions.getPays().getValue();
-                    String getsToken = mTransactions.getGets().getCurrency();
-                    String paysToken = mTransactions.getPays().getCurrency();
+                    String getsToken = mTransactions.getGets().getCurrency() + "_" + mTransactions.getGets().getIssuer();
+                    String paysToken = mTransactions.getPays().getCurrency() + "_" + mTransactions.getPays().getIssuer();
                     mTvEntrustContent.setText(formatHtml(CaclUtil.formatAmount(paysValue, SCALE), paysToken, CaclUtil.formatAmount(getsValue, SCALE), getsToken));
 
                     // 委托价格
@@ -483,8 +491,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mTvType.setText(getResources().getString(R.string.tv_offereffect));
                 mFrom = mTransactions.getCounterparty();
                 mTvFrom.setText(mFrom);
-                getsCur = mTransactions.getGets().getCurrency();
-                paysCur = mTransactions.getPays().getCurrency();
+                getsCur = mTransactions.getGets().getCurrency() + "_" + mTransactions.getGets().getIssuer();
+                paysCur = mTransactions.getPays().getCurrency() + "_" + mTransactions.getPays().getIssuer();
                 String getsAmount1 = "0";
                 String paysAmount1 = "0";
                 if (mTransactions.getEffects() != null) {
@@ -513,12 +521,12 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                             pays = effect.getJSONObject("paid");
                             gets = effect.getJSONObject("got");
                             if (pays != null && gets != null) {
-                                String currency = pays.getString("currency");
+                                String currency = pays.getString("currency") + "_" + pays.getString("issuer");
                                 String paysCount = pays.getString("value");
                                 if (TextUtils.equals(currency, paysCur)) {
                                     paysAmount1 = CaclUtil.add(paysAmount1, paysCount);
                                 }
-                                currency = gets.getString("currency");
+                                currency = gets.getString("currency") + "_" + gets.getString("issuer");
                                 String getsCount = gets.getString("value");
                                 if (TextUtils.equals(currency, getsCur)) {
                                     getsAmount1 = CaclUtil.add(getsAmount1, getsCount);
@@ -541,18 +549,18 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         // 成交价格
                         String price;
                         String token;
-                        if (TextUtils.equals(WConstant.CURRENCY_CNY, getsCur)) {
+                        if (TextUtils.equals(KEY_CNY, getsCur)) {
                             price = amountRatio(getsAmount1, paysAmount1);
-                            token = getsCur;
-                        } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysCur)) {
+                            token = WConstant.CURRENCY_CNT;
+                        } else if (TextUtils.equals(KEY_CNY, paysCur)) {
                             price = amountRatio(paysAmount1, getsAmount1);
-                            token = paysCur;
-                        } else if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+                            token = WConstant.CURRENCY_CNT;
+                        } else if (TextUtils.equals(KEY_SWT, getsCur)) {
                             price = amountRatio(getsAmount1, paysAmount1);
-                            token = getsCur;
+                            token = WConstant.CURRENCY_SWTC;
                         } else {
                             price = amountRatio(paysAmount1, getsAmount1);
-                            token = paysCur;
+                            token = paysCur.split("_")[0];
                         }
                         if (!TextUtils.equals("0", price)) {
                             mLayoutTurnoverValue.setVisibility(View.VISIBLE);
@@ -570,18 +578,18 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     // 委托价格
                     String price;
                     String token;
-                    if (TextUtils.equals(WConstant.CURRENCY_CNY, getsCur)) {
+                    if (TextUtils.equals(KEY_CNY, getsCur)) {
                         price = amountRatio(getsValue, paysValue);
-                        token = getsCur;
-                    } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysCur)) {
+                        token = WConstant.CURRENCY_CNT;
+                    } else if (TextUtils.equals(KEY_CNY, paysCur)) {
                         price = amountRatio(paysValue, getsValue);
-                        token = paysCur;
-                    } else if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+                        token = WConstant.CURRENCY_CNT;
+                    } else if (TextUtils.equals(KEY_SWT, getsCur)) {
                         price = amountRatio(getsValue, paysValue);
-                        token = getsCur;
+                        token = WConstant.CURRENCY_SWTC;
                     } else {
                         price = amountRatio(paysValue, getsValue);
-                        token = paysCur;
+                        token = paysCur.split("_")[0];
                     }
                     if (!TextUtils.equals("0", price)) {
                         mLayoutValue.setVisibility(View.VISIBLE);
@@ -647,12 +655,41 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {
-        if (TextUtils.equals(WConstant.CURRENCY_SWT, paysCur)) {
+        String[] paysArr = paysCur.split("_");
+        String paysToken = "";
+        String paysIssue = "";
+        if (paysArr.length == 2) {
+            paysToken = paysArr[0];
+            paysIssue = paysArr[1];
+        } else if (paysArr.length == 1) {
+            paysToken = paysArr[0];
+        }
+
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, paysToken)) {
             paysCur = WConstant.CURRENCY_SWTC;
+        } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysToken) && TextUtils.equals(WConstant.CURRENCY_ISSUE, paysIssue)) {
+            paysCur = WConstant.CURRENCY_CNT;
+        } else {
+            paysCur = paysToken;
         }
-        if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+
+        String[] getsArr = getsCur.split("_");
+        String getsToken = "";
+        String getsIssue = "";
+        if (getsArr.length == 2) {
+            getsToken = getsArr[0];
+            getsIssue = getsArr[1];
+        } else if (getsArr.length == 1) {
+            getsToken = getsArr[0];
+        }
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, getsToken)) {
             getsCur = WConstant.CURRENCY_SWTC;
+        } else if (TextUtils.equals(WConstant.CURRENCY_CNY, getsToken) && TextUtils.equals(WConstant.CURRENCY_ISSUE, getsIssue)) {
+            getsCur = WConstant.CURRENCY_CNT;
+        } else {
+            getsCur = getsToken;
         }
+
         String paysH = "<font color=\"#3B6CA6\">" + paysValue + " </font>";
         String paysCurH = "<font color=\"#021E38\">" + paysCur + " </font>";
         String right = "<font color=\"#A6A9AD\">" + "\u2192" + " </font>";

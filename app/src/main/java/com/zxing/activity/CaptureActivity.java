@@ -23,7 +23,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
@@ -35,7 +34,6 @@ import com.doughnut.config.Constant;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
 import com.google.zxing.BarcodeFormat;

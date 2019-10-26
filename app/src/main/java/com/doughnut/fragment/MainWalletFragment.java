@@ -163,7 +163,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         clearHideToken();
                         break;
                 }
-                refreshWallet();
+//                refreshWallet();
+                mAdapter.refresh();
             }
         });
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -362,18 +363,33 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         // 获取将显示的币种
                         List<String> currencies = new ArrayList<>();
                         for (int i = 0; i < dataList.size(); i++) {
-                            currencies.add(dataList.get(i).getCurrency());
+                            String issue = dataList.get(i).getAccount();
+                            if (TextUtils.isEmpty(issue)) {
+                                issue = dataList.get(i).getIssuer();
+                                if (TextUtils.isEmpty(issue)) {
+                                    issue = "";
+                                }
+                            }
+                            String key = dataList.get(i).getCurrency() + "_" + issue;
+                            currencies.add(key);
                         }
 
                         List<String> selects = getSelectToken();
                         for (int i = 0; i < selects.size(); i++) {
-                            String token = selects.get(i);
-                            if (TextUtils.equals(token, WConstant.CURRENCY_SWTC)) {
-                                token = WConstant.CURRENCY_SWT;
-                            }
-                            if (!currencies.contains(token)) {
+                            String key = selects.get(i);
+                            if (!currencies.contains(key)) {
+                                String[] arr = key.split("_");
+                                String token = arr[0];
+                                if (TextUtils.equals(WConstant.CURRENCY_SWTC, token)) {
+                                    token = WConstant.CURRENCY_SWT;
+                                } else if (TextUtils.equals(WConstant.CURRENCY_CNT, token)) {
+                                    token = WConstant.CURRENCY_CNY;
+                                }
                                 Line line = new Line();
                                 line.setCurrency(token);
+                                if (arr.length == 2) {
+                                    line.setAccount(arr[1]);
+                                }
                                 line.setBalance("0");
                                 line.setLimit("0");
                                 dataList.add(line);
@@ -579,11 +595,20 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
             String currency = data.getString("currency", "");
+            String issue = data.getString("account", "");
+            if (TextUtils.isEmpty(issue)) {
+                issue = data.getString("issuer", "");
+                if (TextUtils.isEmpty(issue)) {
+                    issue = "";
+                }
+            }
+            holder.key = currency + "_" + issue;
             if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
                 currency = WConstant.CURRENCY_SWTC;
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, currency) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issue)) {
+                currency = WConstant.CURRENCY_CNT;
             }
             holder.mTvTokenName.setText(currency);
-            holder.tokenName = currency;
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             if (!isHidden) {
@@ -645,7 +670,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             ImageView mImgTokenIcon;
             TextView mTvTokenName;
             TextView mTvCNY, mTvTokenCount, mTvTokenFreeze;
-            String tokenName;
+            String key;
 
             public TokenViewHolder(View itemView) {
                 super(itemView);
@@ -657,7 +682,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         String fileName = getContext().getPackageName() + "_transfer_token";
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("token", tokenName);
+                        editor.putString("token", key);
                         editor.apply();
                         TokenTransferActivity.startTokenTransferActivity(getContext());
                     }
@@ -693,7 +718,15 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 tokenList.add(tokens);
             }
         }
-        tokenList.add(dataList.get(index).getCurrency());
+        String issue = dataList.get(index).getAccount();
+        if (TextUtils.isEmpty(issue)) {
+            issue = dataList.get(index).getIssuer();
+            if (TextUtils.isEmpty(issue)) {
+                issue = "";
+            }
+        }
+        String key = dataList.get(index).getCurrency() + "_" + issue;
+        tokenList.add(key);
         editor.putString("hide", tokenList.toString().replace("[", "").replace("]", "").replace(" ", ""));
         editor.apply();
     }
@@ -729,8 +762,15 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (tokenList.size() > 0) {
                 isTokenHidden = true;
                 for (int i = dataList.size() - 1; i >= 0; i--) {
-                    String currency = dataList.get(i).getCurrency();
-                    if (tokenList.contains(currency)) {
+                    String issue = dataList.get(i).getAccount();
+                    if (TextUtils.isEmpty(issue)) {
+                        issue = dataList.get(i).getIssuer();
+                        if (TextUtils.isEmpty(issue)) {
+                            issue = "";
+                        }
+                    }
+                    String key = dataList.get(i).getCurrency() + "_" + issue;
+                    if (tokenList.contains(key)) {
                         dataList.remove(i);
                     }
                 }
