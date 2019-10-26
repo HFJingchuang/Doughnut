@@ -408,11 +408,10 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                         List<Line> lines = accountRelations.getLines();
                         // 排除余额为零的token
                         try {
-                            String currency = "";
                             for (int i = 0; i < lines.size(); i++) {
                                 Line line = lines.get(i);
-                                currency = line.getCurrency();
-                                mIssue = line.getAccount();
+                                String currency = line.getCurrency();
+                                String mIssue = line.getAccount();
                                 if (TextUtils.isEmpty(mIssue)) {
                                     mIssue = line.getIssuer();
                                     if (TextUtils.isEmpty(mIssue)) {
@@ -426,17 +425,22 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                 }
                             }
 
-                            if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
-                                currency = WConstant.CURRENCY_SWTC;
-                            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, currency) && TextUtils.equals(WConstant.CURRENCY_ISSUE, mIssue)) {
-                                currency = WConstant.CURRENCY_CNT;
+                            String[] arr = key.split("_");
+                            String token = arr[0];
+                            if (arr.length == 2) {
+                                mIssue = arr[1];
+                            }
+                            if (TextUtils.equals(WConstant.CURRENCY_SWT, token)) {
+                                token = WConstant.CURRENCY_SWTC;
+                            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, token) && TextUtils.equals(WConstant.CURRENCY_ISSUE, mIssue)) {
+                                token = WConstant.CURRENCY_CNT;
                             }
 
                             mTvBalance.setText(mBalance);
-                            mTvTokenName.setText(currency);
-                            mTvToken.setText(currency);
+                            mTvTokenName.setText(token);
+                            mTvToken.setText(token);
                             if (CaclUtil.compare(mBalance, "0") == 0) {
-                                new MsgDialog(TokenTransferActivity.this, String.format(getString(R.string.tv_no_token), currency)).setIsHook(false).show();
+                                new MsgDialog(TokenTransferActivity.this, String.format(getString(R.string.tv_no_token), token)).setIsHook(false).show();
                                 String fileName = getPackageName() + "_transfer_token";
                                 SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
