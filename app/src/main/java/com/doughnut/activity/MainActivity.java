@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.ImportSuccessDialog;
 import com.doughnut.fragment.MainUserFragment;
@@ -24,7 +23,6 @@ import com.doughnut.fragment.MainWalletFragment;
 import com.doughnut.fragment.NoWalletFragment;
 import com.doughnut.update.UpdateTask;
 import com.doughnut.wallet.WalletManager;
-import com.doughnut.wallet.WalletSp;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -48,8 +46,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WalletSp.getInstance(this, "jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6").createWallet("测试大钱包", "");
-        WalletSp.getInstance(this, "jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6").setCurrentWallet("jBvrdYc6G437hipoCiEpTwrWSRBS2ahXN6");
         setContentView(R.layout.activity_main);
         new UpdateTask().execute();
         hasWallet();

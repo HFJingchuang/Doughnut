@@ -285,6 +285,9 @@ public class WalletManager implements IWallet {
             if (TextUtils.equals(WConstant.CURRENCY_SWTC, token)) {
                 amount.setCurrency(WConstant.CURRENCY_SWT);
                 amount.setIssuer("");
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNT, token) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issuer)) {
+                amount.setCurrency(WConstant.CURRENCY_CNY);
+                amount.setIssuer(issuer);
             } else {
                 amount.setCurrency(token);
                 amount.setIssuer(issuer);

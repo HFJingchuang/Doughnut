@@ -80,7 +80,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private List<Line> dataList;
     private String mCurrentWallet;
+    // 小眼睛是否睁开
     private boolean isHidden;
+    // 是否有隐藏币种
     private boolean isTokenHidden;
     private ProgressDrawable mProgressDrawable;
     private ProgressDrawable mProgressDrawableCNY;
@@ -154,15 +156,20 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {
                 menuBridge.closeMenu();
-                int direction = menuBridge.getPosition();
-                switch (direction) {
-                    case 0:
-                        hideToken(adapterPosition);
-                        break;
-                    case 1:
-                        clearHideToken();
-                        break;
+                if (isTokenHidden) {
+                    int direction = menuBridge.getPosition();
+                    switch (direction) {
+                        case 0:
+                            clearHideToken();
+                            break;
+                        case 1:
+                            hideToken(adapterPosition);
+                            break;
+                    }
+                } else {
+                    hideToken(adapterPosition);
                 }
+
 //                refreshWallet();
                 mAdapter.refresh();
             }
@@ -211,14 +218,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
             if (isTokenHidden) {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
-                        .setText(getResources().getString(R.string.tv_hide))
-                        .setTextColor(Color.WHITE)
-                        .setTextSize(16)
-                        .setWidth(width)
-                        .setHeight(height);
-                rightMenu.addMenuItem(deleteItem);
-
                 SwipeMenuItem showItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_show_bg)
                         .setText(getResources().getString(R.string.tv_show))
                         .setTextColor(Color.WHITE)
@@ -226,6 +225,14 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         .setWidth(width)
                         .setHeight(height);
                 rightMenu.addMenuItem(showItem);
+
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
+                        .setText(getResources().getString(R.string.tv_hide))
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(16)
+                        .setWidth(width)
+                        .setHeight(height);
+                rightMenu.addMenuItem(deleteItem);
             } else {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_node_bg)
                         .setText(getResources().getString(R.string.tv_hide))
@@ -616,7 +623,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     String balance = CaclUtil.formatAmount(data.getString("balance", "0"), SCALE);
                     String balanceFreeze = CaclUtil.formatAmount(data.getString("limit", "0"), SCALE);
                     String sum = CaclUtil.add(balance, balanceFreeze, SCALE);
-                    if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
+                    if (TextUtils.equals(WConstant.CURRENCY_CNT, currency)) {
                         holder.mTvCNY.setText(sum);
                     } else {
                         WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {

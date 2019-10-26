@@ -40,6 +40,9 @@ import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -571,5 +574,25 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         String fileName = getPackageName() + "_fee_" + mCurrentWallet;
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         return sharedPreferences.getString("fee", "0.00001");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(String str) {
+        switch (str) {
+            case "EVENT_CONTACT":
+                getContact();
+                break;
+        }
+    }
+
+    /**
+     * 获取选中的转账地址
+     */
+    private void getContact() {
+        // 本地保存tokens
+        String fileName = getPackageName() + "_contacts";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String address = sharedPreferences.getString("select", "");
+        mEdtWalletAddress.setText(address);
     }
 }
