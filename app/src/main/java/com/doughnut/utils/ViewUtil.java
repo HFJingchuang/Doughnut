@@ -64,8 +64,8 @@ public class ViewUtil {
             @Override
             public boolean onPreDraw() {
                 int cut = 2;
-                Layout layout = textView.getLayout();
-                if (textView != null && layout != null) {
+                Layout layout;
+                if (textView != null && (layout = textView.getLayout()) != null) {
                     int lines = layout.getLineCount();
                     int ellipsisCount = layout.getEllipsisCount(lines - 1);
                     String showText = textView.getText().toString();
