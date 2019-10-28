@@ -245,13 +245,8 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             holder.mImgIcon.setImageResource(tr.getImage());
             String tokenName = tr.getName();
             holder.token = tokenName;
-
-            holder.mTvTokenName.setText(TextUtils.isEmpty(tokenName) ? ""
-                    : (tokenName.length() <= 12 ? tokenName
-                    : new StringBuilder(tokenName)
-                    .replace(5, tokenName.length() - 4, "***")
-                    .toString()));
-            //ViewUtil.EllipsisTextView(holder.mTvTokenName);
+            holder.mTvTokenName.setText(tokenName);
+            ViewUtil.EllipsisTextView(holder.mTvTokenName);
             if (!mIsSingle) {
                 holder.chk_select.setChecked(tr.getIsSelect());
             }
