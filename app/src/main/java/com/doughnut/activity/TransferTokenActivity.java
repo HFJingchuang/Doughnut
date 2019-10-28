@@ -121,7 +121,11 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                 Pattern p = Pattern.compile(s.toString().toUpperCase());
                 for (int i = 0; i < dataListCopy.size(); i++) {
                     Line line = dataListCopy.get(i);
-                    Matcher matcher = p.matcher(line.getCurrency().toUpperCase());
+                    String currency = line.getCurrency().toUpperCase();
+                    if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
+                        currency = WConstant.CURRENCY_SWTC;
+                    }
+                    Matcher matcher = p.matcher(currency);
                     if (matcher.find()) {
                         dataList.add(line);
                     }
