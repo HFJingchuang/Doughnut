@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.TestyWebViewActivity">
+        <activity android:name=".web.WebActivity">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
