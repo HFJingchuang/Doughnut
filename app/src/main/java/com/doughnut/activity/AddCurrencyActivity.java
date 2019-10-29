@@ -233,6 +233,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
                 mImgIcon = itemView.findViewById(R.id.img_icon);
                 mTvTokenName = itemView.findViewById(R.id.tv_token_name);
                 mTvTokenIssue = itemView.findViewById(R.id.tv_token_issue);
+                ViewUtil.EllipsisTextView(mTvTokenName);
                 chk_select = itemView.findViewById(R.id.tv_check);
                 if (mIsSingle) {
                     chk_select.setVisibility(View.GONE);
@@ -269,6 +270,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             }
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             ViewUtil.EllipsisTextView(holder.mTvTokenIssue);
+            //ViewUtil.EllipsisTextView(holder.mTvTokenName);
             if (!mIsSingle) {
                 holder.chk_select.setChecked(tr.getIsSelect());
             }

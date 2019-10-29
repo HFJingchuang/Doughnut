@@ -60,28 +60,25 @@ public class ViewUtil {
      */
     public static void EllipsisTextView(TextView textView) {
         ViewTreeObserver observer = textView.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            boolean isfirstRunning = true;
-            int cut = 2;
-
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
-            public void onGlobalLayout() {
-                if (isfirstRunning == false) return;
-                Layout layout = textView.getLayout();
-                if (textView != null && layout != null) {
+            public boolean onPreDraw() {
+                int cut = 2;
+                Layout layout;
+                if (textView != null && (layout = textView.getLayout()) != null) {
                     int lines = layout.getLineCount();
                     int ellipsisCount = layout.getEllipsisCount(lines - 1);
                     String showText = textView.getText().toString();
                     if (ellipsisCount == 0) {
-                        return;
+                        return true;
                     } else if (ellipsisCount < 3 && (showText.length() - ellipsisCount) / 2 > 4) {
                         cut = 4;
                     }
                     String startStr = showText.substring(0, layout.getEllipsisStart(lines - 1) - cut);
                     String endStr = showText.substring(layout.getEllipsisStart(lines - 1) + ellipsisCount + cut);
                     textView.setText(startStr + "***" + endStr);
-                    isfirstRunning = false;
                 }
+                return true;
             }
         });
     }
