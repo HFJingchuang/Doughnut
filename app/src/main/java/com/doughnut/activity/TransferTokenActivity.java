@@ -184,6 +184,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                 });
                 mImgTokenIcon = itemView.findViewById(R.id.token_icon);
                 mTvTokenName = itemView.findViewById(R.id.token_name);
+                ViewUtil.EllipsisTextView(mTvTokenName);
                 mTvCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvTokenCount = itemView.findViewById(R.id.token_count);
                 mTvTokenFreeze = itemView.findViewById(R.id.token_freeze);
@@ -214,7 +215,6 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                 currency = WConstant.CURRENCY_CNT;
             }
             holder.mTvTokenName.setText(currency);
-            ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             try {
                 String sum = CaclUtil.add(item.getBalance(), item.getLimit(), SCALE);

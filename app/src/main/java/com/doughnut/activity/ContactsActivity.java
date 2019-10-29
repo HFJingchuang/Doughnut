@@ -119,7 +119,7 @@ public class ContactsActivity extends BaseActivity implements TitleBar.TitleBarC
                 super(v);
                 mTvAmount = itemView.findViewById(R.id.tv_amount);
                 mTvAddress = itemView.findViewById(R.id.tv_address);
-
+                ViewUtil.EllipsisTextView(mTvAddress);
                 mTvTime = itemView.findViewById(R.id.tv_time);
                 mTvToken = itemView.findViewById(R.id.tv_token);
                 mLayoutItem = itemView.findViewById(R.id.layout_item);
@@ -149,7 +149,6 @@ public class ContactsActivity extends BaseActivity implements TitleBar.TitleBarC
             GsonUtil item = contactList.get(position);
             holder.address = item.getString("address", "");
             holder.mTvAddress.setText(holder.address);
-            ViewUtil.EllipsisTextView(holder.mTvAddress);
             holder.mTvTime.setText(item.getString("time", ""));
             holder.mTvToken.setText(item.getString("token", ""));
             holder.mTvAmount.setText(item.getString("amount", ""));

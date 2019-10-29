@@ -16,18 +16,20 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/img_icon"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_token_name"
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/img_icon"
             android:ellipsize="middle"
-            android:gravity="center_vertical"
+            android:gravity="left|top"
+            android:maxWidth="120dp"
             android:singleLine="true"
             android:textColor="@color/color_detail_address"
             android:textSize="14sp"

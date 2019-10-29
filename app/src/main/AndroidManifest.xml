@@ -27,13 +27,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".web.WebActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
 
         <meta-data
             android:name="design_width_in_dp"
@@ -141,6 +134,7 @@
         <activity
             android:name=".activity.ContactsActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".web.WebActivity" />
     </application>
 
 </manifest>

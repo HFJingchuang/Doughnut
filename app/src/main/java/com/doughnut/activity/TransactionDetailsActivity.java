@@ -215,6 +215,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         new MsgDialog(TransactionDetailsActivity.this, getString(R.string.toast_to_cp)).show();
                     }
                 });
+                ViewUtil.EllipsisTextView(mTvTo);
                 mLayoutType = itemView.findViewById(R.id.layout_type);
                 mTvType = itemView.findViewById(R.id.tv_type);
                 mImgType = itemView.findViewById(R.id.img_type);
@@ -278,7 +279,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                         String addr = counterparty.getString("account");
                         holder.mTo = addr;
                         holder.mTvTo.setText(addr);
-                        ViewUtil.EllipsisTextView(holder.mTvTo);
                     }
                 }
                 if (TextUtils.equals(currentAddr, holder.mTo)) {
