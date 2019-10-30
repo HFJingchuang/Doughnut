@@ -40,13 +40,12 @@ public class JsNativeBridge {
 
     @JavascriptInterface
     public void deleteWallet(String address) {
-        Log.d("JackHuaBin", "address: " + address);
-        /*mHandler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mWalletManager.deleteWallet(address);
             }
-        });*/
+        });
     }
 
     //TODO 后续需要定义如何传递Bitmap给js
