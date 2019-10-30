@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
@@ -41,7 +41,14 @@ public class WebActivity extends AppCompatActivity {
                 .ready()
                 .go(getUrl());
 
-        mAgentWeb.getJsInterfaceHolder().addJavaObject("JsNativeBridge", new JsNativeBridge(mAgentWeb, this));
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JsNativeBridge(mAgentWeb, this));
+
+        findViewById(R.id.btn_check).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAgentWeb.getJsAccessEntrace().quickCallJs("deleteWallet", "hello JackChen");
+            }
+        });
     }
 
     private com.just.agentweb.WebViewClient mWebViewClient = new WebViewClient() {
@@ -70,6 +77,8 @@ public class WebActivity extends AppCompatActivity {
         if (intent != null) {
             load_url = intent.getStringExtra(LOAD_URL);
         }
+
+        load_url = "file:///android_asset/js_interaction/hello.html";
         return load_url;
     }
 
@@ -96,11 +105,9 @@ public class WebActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Log.i("Info", "onResult:" + requestCode + " onResult:" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
-    }
 
+    }
 
     @Override
     protected void onDestroy() {

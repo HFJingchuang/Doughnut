@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.android.jtblk.client.bean.Marker;
@@ -39,12 +40,13 @@ public class JsNativeBridge {
 
     @JavascriptInterface
     public void deleteWallet(String address) {
-        mHandler.post(new Runnable() {
+        Log.d("JackHuaBin", "address: " + address);
+        /*mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mWalletManager.deleteWallet(address);
             }
-        });
+        });*/
     }
 
     //TODO 后续需要定义如何传递Bitmap给js
