@@ -216,5 +216,6 @@
     <string name="tv_err_same">新旧密码不能一样，请重新输入</string>
     <string name="dialog_no_pwd">15分钟免密转账</string>
     <string name="tv_doughnut">甜甜圈钱包</string>
+    <string name="btn_Dapp">Dapp</string>
 
 </resources>
