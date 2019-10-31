@@ -42,6 +42,7 @@ import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.doughnut.web.WebActivity;
 import com.jccdex.rpc.base.JCallback;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -80,7 +81,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private List<Line> dataList;
     private String mCurrentWallet;
+    // 小眼睛是否睁开
     private boolean isHidden;
+    // 是否有隐藏币种
     private boolean isTokenHidden;
     private ProgressDrawable mProgressDrawable;
     private ProgressDrawable mProgressDrawableCNY;
@@ -154,16 +157,22 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {
                 menuBridge.closeMenu();
-                int direction = menuBridge.getPosition();
-                switch (direction) {
-                    case 0:
-                        hideToken(adapterPosition);
-                        break;
-                    case 1:
-                        clearHideToken();
-                        break;
+                if (isTokenHidden) {
+                    int direction = menuBridge.getPosition();
+                    switch (direction) {
+                        case 0:
+                            clearHideToken();
+                            break;
+                        case 1:
+                            hideToken(adapterPosition);
+                            break;
+                    }
+                } else {
+                    hideToken(adapterPosition);
                 }
-                refreshWallet();
+
+//                refreshWallet();
+                mAdapter.refresh();
             }
         });
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -210,14 +219,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
             if (isTokenHidden) {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
-                        .setText(getResources().getString(R.string.tv_hide))
-                        .setTextColor(Color.WHITE)
-                        .setTextSize(16)
-                        .setWidth(width)
-                        .setHeight(height);
-                rightMenu.addMenuItem(deleteItem);
-
                 SwipeMenuItem showItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_show_bg)
                         .setText(getResources().getString(R.string.tv_show))
                         .setTextColor(Color.WHITE)
@@ -225,6 +226,14 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         .setWidth(width)
                         .setHeight(height);
                 rightMenu.addMenuItem(showItem);
+
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_bg)
+                        .setText(getResources().getString(R.string.tv_hide))
+                        .setTextColor(Color.WHITE)
+                        .setTextSize(16)
+                        .setWidth(width)
+                        .setHeight(height);
+                rightMenu.addMenuItem(deleteItem);
             } else {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.drawable.shape_delete_node_bg)
                         .setText(getResources().getString(R.string.tv_hide))
@@ -261,7 +270,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 WalletManageActivity.startModifyWalletActivity(getContext(), true);
                 break;
             case R.id.layout_scan:
-                CaptureActivity.startCaptureActivity(getContext());
+                CaptureActivity.startCaptureActivity(getContext(), false);
                 break;
             case R.id.add_asset:
                 AddCurrencyActivity.startActivity(getContext(), false);
@@ -282,7 +291,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 refreshWallet();
                 break;
             case R.id.swh_show:
-                refreshWallet();
+                WebActivity.startActivity(getContext(), "file:///android_asset/hello.html");
+//                refreshWallet();
                 break;
         }
     }
@@ -362,18 +372,33 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         // 获取将显示的币种
                         List<String> currencies = new ArrayList<>();
                         for (int i = 0; i < dataList.size(); i++) {
-                            currencies.add(dataList.get(i).getCurrency());
+                            String issue = dataList.get(i).getAccount();
+                            if (TextUtils.isEmpty(issue)) {
+                                issue = dataList.get(i).getIssuer();
+                                if (TextUtils.isEmpty(issue)) {
+                                    issue = "";
+                                }
+                            }
+                            String key = dataList.get(i).getCurrency() + "_" + issue;
+                            currencies.add(key);
                         }
 
                         List<String> selects = getSelectToken();
                         for (int i = 0; i < selects.size(); i++) {
-                            String token = selects.get(i);
-                            if (TextUtils.equals(token, WConstant.CURRENCY_SWTC)) {
-                                token = WConstant.CURRENCY_SWT;
-                            }
-                            if (!currencies.contains(token)) {
+                            String key = selects.get(i);
+                            if (!currencies.contains(key)) {
+                                String[] arr = key.split("_");
+                                String token = arr[0];
+                                if (TextUtils.equals(WConstant.CURRENCY_SWTC, token)) {
+                                    token = WConstant.CURRENCY_SWT;
+                                } else if (TextUtils.equals(WConstant.CURRENCY_CNT, token)) {
+                                    token = WConstant.CURRENCY_CNY;
+                                }
                                 Line line = new Line();
                                 line.setCurrency(token);
+                                if (arr.length == 2) {
+                                    line.setAccount(arr[1]);
+                                }
                                 line.setBalance("0");
                                 line.setLimit("0");
                                 dataList.add(line);
@@ -579,11 +604,20 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
             String currency = data.getString("currency", "");
+            String issue = data.getString("account", "");
+            if (TextUtils.isEmpty(issue)) {
+                issue = data.getString("issuer", "");
+                if (TextUtils.isEmpty(issue)) {
+                    issue = "";
+                }
+            }
+            holder.key = currency + "_" + issue;
             if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
                 currency = WConstant.CURRENCY_SWTC;
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, currency) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issue)) {
+                currency = WConstant.CURRENCY_CNT;
             }
             holder.mTvTokenName.setText(currency);
-            holder.tokenName = currency;
             ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             if (!isHidden) {
@@ -591,7 +625,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     String balance = CaclUtil.formatAmount(data.getString("balance", "0"), SCALE);
                     String balanceFreeze = CaclUtil.formatAmount(data.getString("limit", "0"), SCALE);
                     String sum = CaclUtil.add(balance, balanceFreeze, SCALE);
-                    if (TextUtils.equals(WConstant.CURRENCY_CNY, currency)) {
+                    if (TextUtils.equals(WConstant.CURRENCY_CNT, currency)) {
                         holder.mTvCNY.setText(sum);
                     } else {
                         WalletManager.getInstance(getContext()).getTokenPrice(currency, new JCallback() {
@@ -645,7 +679,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             ImageView mImgTokenIcon;
             TextView mTvTokenName;
             TextView mTvCNY, mTvTokenCount, mTvTokenFreeze;
-            String tokenName;
+            String key;
 
             public TokenViewHolder(View itemView) {
                 super(itemView);
@@ -657,7 +691,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                         String fileName = getContext().getPackageName() + "_transfer_token";
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("token", tokenName);
+                        editor.putString("token", key);
                         editor.apply();
                         TokenTransferActivity.startTokenTransferActivity(getContext());
                     }
@@ -693,7 +727,15 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 tokenList.add(tokens);
             }
         }
-        tokenList.add(dataList.get(index).getCurrency());
+        String issue = dataList.get(index).getAccount();
+        if (TextUtils.isEmpty(issue)) {
+            issue = dataList.get(index).getIssuer();
+            if (TextUtils.isEmpty(issue)) {
+                issue = "";
+            }
+        }
+        String key = dataList.get(index).getCurrency() + "_" + issue;
+        tokenList.add(key);
         editor.putString("hide", tokenList.toString().replace("[", "").replace("]", "").replace(" ", ""));
         editor.apply();
     }
@@ -729,8 +771,15 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (tokenList.size() > 0) {
                 isTokenHidden = true;
                 for (int i = dataList.size() - 1; i >= 0; i--) {
-                    String currency = dataList.get(i).getCurrency();
-                    if (tokenList.contains(currency)) {
+                    String issue = dataList.get(i).getAccount();
+                    if (TextUtils.isEmpty(issue)) {
+                        issue = dataList.get(i).getIssuer();
+                        if (TextUtils.isEmpty(issue)) {
+                            issue = "";
+                        }
+                    }
+                    String key = dataList.get(i).getCurrency() + "_" + issue;
+                    if (tokenList.contains(key)) {
                         dataList.remove(i);
                     }
                 }

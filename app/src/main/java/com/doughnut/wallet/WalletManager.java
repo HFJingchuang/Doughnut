@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
@@ -23,6 +24,7 @@ import com.android.jtblk.qrCode.QRGenerator;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
 import com.doughnut.utils.CaclUtil;
+import com.doughnut.utils.Currency;
 import com.doughnut.utils.GsonUtil;
 import com.jccdex.rpc.api.JccConfig;
 import com.jccdex.rpc.api.JccdexInfo;
@@ -62,7 +64,7 @@ public class WalletManager implements IWallet {
     }
 
     public static WalletManager getInstance(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         if (walletManager == null) {
             synchronized (WalletManager.class) {
                 if (walletManager == null) {
@@ -133,7 +135,8 @@ public class WalletManager implements IWallet {
      */
     @Override
     public void deleteWallet(String address) {
-        WalletSp.getInstance(mContext, address).delete();
+        Log.v("deleteWallet", address);
+//        WalletSp.getInstance(mContext, address).delete();
     }
 
     /**
@@ -284,6 +287,9 @@ public class WalletManager implements IWallet {
             if (TextUtils.equals(WConstant.CURRENCY_SWTC, token)) {
                 amount.setCurrency(WConstant.CURRENCY_SWT);
                 amount.setIssuer("");
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNT, token) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issuer)) {
+                amount.setCurrency(WConstant.CURRENCY_CNY);
+                amount.setIssuer(issuer);
             } else {
                 amount.setCurrency(token);
                 amount.setIssuer(issuer);
@@ -667,21 +673,23 @@ public class WalletManager implements IWallet {
                 String code = json.getString("code", "");
                 if (TextUtils.equals(code, "0")) {
                     GsonUtil data = json.getArray("data");
-                    Map<String, String> tokenMap = new TreeMap<>();
+                    Map<String, Currency> tokenMap = new TreeMap<>();
                     for (int i = 0; i < data.getLength(); i++) {
                         GsonUtil tokenPair = data.getObject(i);
                         List<String> keys = tokenPair.getKey();
                         GsonUtil tokens = tokenPair.getArray(keys.get(0));
                         for (int j = 0; j < tokens.getLength(); j++) {
-                            String[] token = tokens.getString(j, "").split("_");
-                            if (TextUtils.equals(token[0], "CNY")) {
-                                tokenMap.put(token[0], "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or");
-                                break;
-                            }
-                            if (token.length == 2) {
-                                tokenMap.put(token[0], token[1]);
-                            } else if (token.length == 1) {
-                                tokenMap.put(token[0], "");
+                            Currency currency = new Currency();
+                            String token = tokens.getString(j, "");
+                            String[] tokenArr = token.split("_");
+                            if (tokenArr.length == 2) {
+                                currency.setName(tokenArr[0]);
+                                currency.setIssue(tokenArr[1]);
+                                tokenMap.put(token, currency);
+                            } else if (tokenArr.length == 1) {
+                                currency.setName(tokenArr[0]);
+                                currency.setIssue("");
+                                tokenMap.put(token, currency);
                             }
                         }
                     }

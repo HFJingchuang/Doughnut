@@ -23,7 +23,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.android.jtblk.client.Wallet;
 import com.doughnut.R;
@@ -32,12 +31,13 @@ import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.WalletImportActivity;
 import com.doughnut.config.AppConfig;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.EditDialog;
 import com.doughnut.dialog.MsgDialog;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.QRUtils;
-import com.doughnut.utils.ToastUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
+import com.doughnut.web.JsEvent;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.luck.picture.lib.PictureSelector;
@@ -48,6 +48,8 @@ import com.zxing.camera.CameraManager;
 import com.zxing.decoding.CaptureActivityHandler;
 import com.zxing.decoding.InactivityTimer;
 import com.zxing.view.ViewfinderView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.List;
@@ -76,6 +78,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
     private ProgressDialog mProgress;
     private String photo_path;
     private boolean isLight = false;
+    private boolean isJs = false;
 
     public static void navToActivity(Activity context, int requestCode) {
         Intent intent = new Intent(context, CaptureActivity.class);
@@ -83,8 +86,9 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
         context.startActivityForResult(intent, requestCode);
     }
 
-    public static void startCaptureActivity(Context context) {
+    public static void startCaptureActivity(Context context, boolean isJs) {
         Intent intent = new Intent(context, CaptureActivity.class);
+        intent.putExtra("isJs", isJs);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -98,6 +102,9 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
         setContentView(R.layout.activity_capture);
         CameraManager.init(getApplication());
 
+        if (getIntent() != null) {
+            isJs = getIntent().getBooleanExtra("isJs", false);
+        }
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
 
@@ -140,6 +147,13 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             mProgress.dismiss();
             switch (msg.what) {
                 case PARSE_BARCODE_SUC:
+                    if (isJs) {
+                        JsEvent jsEvent = new JsEvent();
+                        jsEvent.setMsg((String) msg.obj);
+                        EventBus.getDefault().post(jsEvent);
+                        finish();
+                        return;
+                    }
                     onResultHandler((String) msg.obj);
                     break;
                 case PARSE_BARCODE_FAIL:

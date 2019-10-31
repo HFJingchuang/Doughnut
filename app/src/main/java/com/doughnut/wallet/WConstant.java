@@ -14,6 +14,11 @@ public class WConstant {
     // CNY
     public final static String CURRENCY_CNY = "CNY";
 
+    // CNT
+    public final static String CURRENCY_CNT = "CNT";
+
+    public final static String CURRENCY_ISSUE = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
+
     // 关系类型：信任
     public final static String RELATION_TRUST = "trust";
 

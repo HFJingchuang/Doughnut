@@ -57,7 +57,7 @@ public class NoWalletFragment extends BaseFragment implements View.OnClickListen
 
         switch (view.getId()) {
             case R.id.img_scan:
-                CaptureActivity.startCaptureActivity(getContext());
+                CaptureActivity.startCaptureActivity(getContext(), false);
                 break;
             case R.id.layout_create_wallet:
                 mLayoutCreate.setClickable(false);

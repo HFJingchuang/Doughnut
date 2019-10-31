@@ -29,6 +29,7 @@ import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.CashierInputFilter;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletSp;
 
 import java.math.BigDecimal;
@@ -40,7 +41,8 @@ public class TokenReceiveActivity extends BaseActivity {
     private TitleBar mTitleBar;
 
     private final static String TOKEN = "Token";
-    private String mToken;
+    private String mToken = "";
+    private String mIssue = "";
 
     private ImageView mImgQr;
     private ImageView mImgQrShadow;
@@ -58,7 +60,16 @@ public class TokenReceiveActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.token_receive_activity);
         if (getIntent() != null) {
-            mToken = getIntent().getStringExtra(TOKEN);
+            String key = getIntent().getStringExtra(TOKEN);
+            if (!TextUtils.isEmpty(key)) {
+                String[] arr = key.split("_");
+                if (arr.length == 2) {
+                    mToken = arr[0];
+                    mIssue = arr[1];
+                } else if (arr.length == 1) {
+                    mToken = arr[0];
+                }
+            }
         }
         initView();
         initData();
@@ -149,7 +160,14 @@ public class TokenReceiveActivity extends BaseActivity {
         mAddress = WalletSp.getInstance(this, "").getCurrentWallet();
         mTvAddress.setText(mAddress);
         if (!TextUtils.isEmpty(mToken)) {
-            mTvTokenName.setText(mToken);
+            if (TextUtils.equals(WConstant.CURRENCY_SWT, mToken)) {
+                mTvTokenName.setText(WConstant.CURRENCY_SWTC);
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, mToken) && TextUtils.equals(WConstant.CURRENCY_ISSUE, mIssue)) {
+                mTvTokenName.setText(WConstant.CURRENCY_CNT);
+            } else {
+                mTvTokenName.setText(mToken);
+            }
+
         }
         ViewUtil.EllipsisTextView(mTvAddress);
         mTvWalletName.setText(WalletSp.getInstance(this, mAddress).getName());
@@ -168,7 +186,7 @@ public class TokenReceiveActivity extends BaseActivity {
                 BigDecimal amount = new BigDecimal(amountStr);
                 gsonUtil.putString(Constant.TOEKN_AMOUNT, amount.stripTrailingZeros().toPlainString());
             }
-            gsonUtil.putString(Constant.TOEKN_NAME, mTvTokenName.getText().toString());
+            gsonUtil.putString(Constant.TOEKN_NAME, mToken + "_" + mIssue);
             Bitmap bitmap = QRUtils.createQRCode(gsonUtil.toString(), getResources().getDimensionPixelSize(R.dimen.dimen_qr_width));
             mImgQr.setImageBitmap(bitmap);
         } catch (Exception e) {

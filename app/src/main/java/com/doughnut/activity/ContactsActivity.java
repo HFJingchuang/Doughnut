@@ -9,10 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -20,7 +20,8 @@ import com.doughnut.R;
 import com.doughnut.utils.GsonUtil;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.TitleBar;
-import com.nostra13.universalimageloader.utils.L;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,12 +29,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
 
-public class ContactsActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
+public class ContactsActivity extends BaseActivity implements TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;
 
@@ -57,7 +57,13 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onClick(View v) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
     @Override
@@ -113,14 +119,15 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
                 super(v);
                 mTvAmount = itemView.findViewById(R.id.tv_amount);
                 mTvAddress = itemView.findViewById(R.id.tv_address);
-
+                ViewUtil.EllipsisTextView(mTvAddress);
                 mTvTime = itemView.findViewById(R.id.tv_time);
                 mTvToken = itemView.findViewById(R.id.tv_token);
                 mLayoutItem = itemView.findViewById(R.id.layout_item);
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TokenTransferActivity.startTokenTransferActivity(ContactsActivity.this, address, "");
+                        saveContact(address);
+                        EventBus.getDefault().post("EVENT_CONTACT");
                         finish();
                     }
                 });
@@ -142,7 +149,6 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
             GsonUtil item = contactList.get(position);
             holder.address = item.getString("address", "");
             holder.mTvAddress.setText(holder.address);
-            ViewUtil.EllipsisTextView(holder.mTvAddress);
             holder.mTvTime.setText(item.getString("time", ""));
             holder.mTvToken.setText(item.getString("token", ""));
             holder.mTvAmount.setText(item.getString("amount", ""));
@@ -189,5 +195,19 @@ public class ContactsActivity extends BaseActivity implements View.OnClickListen
             }
         });
         mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 保存选中的转账地址
+     *
+     * @param address
+     */
+    private void saveContact(String address) {
+        // 本地保存tokens
+        String fileName = getPackageName() + "_contacts";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("select", address);
+        editor.apply();
     }
 }

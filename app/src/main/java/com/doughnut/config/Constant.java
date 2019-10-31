@@ -72,4 +72,6 @@ public class Constant {
     // 更新信息
     public final static String UPDATE_URL = "https://raw.githubusercontent.com/gwang74/note/master/versionInfo";
 
+    public static final String LOAD_URL = "load_url";
+
 }

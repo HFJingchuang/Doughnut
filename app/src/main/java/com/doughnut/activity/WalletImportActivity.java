@@ -114,7 +114,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onRightClick(View view) {
-                CaptureActivity.startCaptureActivity(WalletImportActivity.this);
+                CaptureActivity.startCaptureActivity(WalletImportActivity.this, false);
             }
 
             @Override

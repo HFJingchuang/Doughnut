@@ -182,8 +182,11 @@ public class TransactionRecordActivity extends BaseActivity implements
 
                     String paysH = "<font color=\"#F55758\">" + "-" + CaclUtil.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
                     String tokenName = tr.getAmount().getCurrency();
+                    String tokenIssue = tr.getAmount().getIssuer();
                     if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName)) {
                         tokenName = WConstant.CURRENCY_SWTC;
+                    } else if (TextUtils.equals(WConstant.CURRENCY_CNY, tokenName) && TextUtils.equals(WConstant.CURRENCY_ISSUE, tokenIssue)) {
+                        tokenName = WConstant.CURRENCY_CNT;
                     }
                     String paysCurH = "<font color=\"#021E38\">" + tokenName + "</font>";
                     holder.mTvTransactionCount.setText(Html.fromHtml(paysH.concat(paysCurH)));
@@ -194,8 +197,11 @@ public class TransactionRecordActivity extends BaseActivity implements
 
                     String paysH1 = "<font color=\"#27B498\">" + "+" + CaclUtil.formatAmount(tr.getAmount().getValue(), SCALE) + " </font>";
                     String tokenName1 = tr.getAmount().getCurrency();
+                    String tokenIssue1 = tr.getAmount().getIssuer();
                     if (TextUtils.equals(WConstant.CURRENCY_SWT, tokenName1)) {
                         tokenName1 = WConstant.CURRENCY_SWTC;
+                    } else if (TextUtils.equals(WConstant.CURRENCY_CNY, tokenName1) && TextUtils.equals(WConstant.CURRENCY_ISSUE, tokenIssue1)) {
+                        tokenName1 = WConstant.CURRENCY_CNT;
                     }
                     String paysCurH1 = "<font color=\"#021E38\">" + tokenName1 + "</font>";
                     holder.mTvTransactionCount.setText(Html.fromHtml(paysH1.concat(paysCurH1)));
@@ -204,8 +210,8 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mImgIcon.setImageResource(R.drawable.ic_offer_new);
                     holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offernew));
 
-                    String getsCur = tr.getGets().getCurrency();
-                    String paysCur = tr.getPays().getCurrency();
+                    String getsCur = tr.getGets().getCurrency() + "_" + tr.getGets().getIssuer();
+                    String paysCur = tr.getPays().getCurrency() + "_" + tr.getPays().getIssuer();
                     String getsAmount = "0";
                     String paysAmount = "0";
                     if (tr.getEffects() != null) {
@@ -214,11 +220,11 @@ public class TransactionRecordActivity extends BaseActivity implements
                             pays = effect.getJSONObject("paid");
                             gets = effect.getJSONObject("got");
                             if (pays != null && gets != null) {
-                                String currency = pays.getString("currency");
+                                String currency = pays.getString("currency") + "_" + pays.getString("issuer");
                                 if (TextUtils.equals(currency, paysCur)) {
                                     paysAmount = CaclUtil.add(paysAmount, pays.getString("value"));
                                 }
-                                currency = gets.getString("currency");
+                                currency = gets.getString("currency") + "_" + gets.getString("issuer");
                                 if (TextUtils.equals(currency, getsCur)) {
                                     getsAmount = CaclUtil.add(getsAmount, gets.getString("value"));
                                 }
@@ -240,9 +246,9 @@ public class TransactionRecordActivity extends BaseActivity implements
                     holder.mTvTransactionAddress.setText(getResources().getString(R.string.tv_offercancel));
                     if (tr.getGets() != null && tr.getPays() != null) {
                         String entrustAmount = CaclUtil.formatAmount(tr.getGets().getValue(), SCALE);
-                        String entrustToken = tr.getGets().getCurrency();
+                        String entrustToken = tr.getGets().getCurrency() + "_" + tr.getGets().getIssuer();
                         String payAmount = CaclUtil.formatAmount(tr.getPays().getValue(), SCALE);
-                        String payToken = tr.getPays().getCurrency();
+                        String payToken = tr.getPays().getCurrency() + "_" + tr.getPays().getIssuer();
                         holder.mTvTransactionCount.setText(formatHtml(payAmount, payToken, entrustAmount, entrustToken));
                     } else {
                         holder.mTvTransactionCount.setText("---");
@@ -267,15 +273,15 @@ public class TransactionRecordActivity extends BaseActivity implements
                                     if (pays != null && gets != null) {
                                         if (TextUtils.isEmpty(getsCur1) && TextUtils.isEmpty(paysCur1)) {
                                             getsAmount1 = CaclUtil.add(getsAmount1, gets.getString("value"));
-                                            getsCur1 = gets.getString("currency");
+                                            getsCur1 = gets.getString("currency") + "_" + gets.getString("issuer");
                                             paysAmount1 = CaclUtil.add(paysAmount1, pays.getString("value"));
-                                            paysCur1 = pays.getString("currency");
+                                            paysCur1 = pays.getString("currency") + "_" + pays.getString("issuer");
                                         } else {
-                                            String currency = pays.getString("currency");
+                                            String currency = pays.getString("currency") + "_" + pays.getString("issuer");
                                             if (TextUtils.equals(currency, paysCur1)) {
                                                 paysAmount1 = CaclUtil.add(paysAmount1, pays.getString("value"));
                                             }
-                                            currency = gets.getString("currency");
+                                            currency = gets.getString("currency") + "_" + gets.getString("issuer");
                                             if (TextUtils.equals(currency, getsCur1)) {
                                                 getsAmount1 = CaclUtil.add(getsAmount1, gets.getString("value"));
                                             }
@@ -376,12 +382,40 @@ public class TransactionRecordActivity extends BaseActivity implements
     }
 
     private Spanned formatHtml(String paysValue, String paysCur, String getsValue, String getsCur) {
-        if (TextUtils.equals(WConstant.CURRENCY_SWT, paysCur)) {
+        String[] paysArr = paysCur.split("_");
+        String paysToken = "";
+        String paysIssue = "";
+        if (paysArr.length == 2) {
+            paysToken = paysArr[0];
+            paysIssue = paysArr[1];
+        } else if (paysArr.length == 1) {
+            paysToken = paysArr[0];
+        }
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, paysToken)) {
             paysCur = WConstant.CURRENCY_SWTC;
+        } else if (TextUtils.equals(WConstant.CURRENCY_CNY, paysToken) && TextUtils.equals(WConstant.CURRENCY_ISSUE, paysIssue)) {
+            paysCur = WConstant.CURRENCY_CNT;
+        } else {
+            paysCur = paysToken;
         }
-        if (TextUtils.equals(WConstant.CURRENCY_SWT, getsCur)) {
+
+        String[] getsArr = getsCur.split("_");
+        String getsToken = "";
+        String getsIssue = "";
+        if (getsArr.length == 2) {
+            getsToken = getsArr[0];
+            getsIssue = getsArr[1];
+        } else if (getsArr.length == 1) {
+            getsToken = getsArr[0];
+        }
+        if (TextUtils.equals(WConstant.CURRENCY_SWT, getsToken)) {
             getsCur = WConstant.CURRENCY_SWTC;
+        } else if (TextUtils.equals(WConstant.CURRENCY_CNY, getsToken) && TextUtils.equals(WConstant.CURRENCY_ISSUE, getsIssue)) {
+            getsCur = WConstant.CURRENCY_CNT;
+        } else {
+            getsCur = getsToken;
         }
+
         String paysH = "<font color=\"#3B6CA6\">" + paysValue + " </font>";
         String paysCurH = "<font color=\"#021E38\">" + paysCur + " </font>";
         String right = "<font color=\"#A6A9AD\">" + "\u2192" + " </font>";

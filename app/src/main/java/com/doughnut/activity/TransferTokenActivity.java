@@ -122,8 +122,17 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                 for (int i = 0; i < dataListCopy.size(); i++) {
                     Line line = dataListCopy.get(i);
                     String currency = line.getCurrency().toUpperCase();
+                    String issue = line.getAccount();
+                    if (TextUtils.isEmpty(issue)) {
+                        issue = line.getIssuer();
+                        if (TextUtils.isEmpty(issue)) {
+                            issue = "";
+                        }
+                    }
                     if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
                         currency = WConstant.CURRENCY_SWTC;
+                    } else if (TextUtils.equals(WConstant.CURRENCY_CNY, currency) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issue)) {
+                        currency = WConstant.CURRENCY_CNT;
                     }
                     Matcher matcher = p.matcher(currency);
                     if (matcher.find()) {
@@ -161,7 +170,7 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
             ImageView mImgTokenIcon;
             TextView mTvTokenName;
             TextView mTvCNY, mTvTokenCount, mTvTokenFreeze;
-            String tokenName;
+            String key;
 
             public VH(View itemView) {
                 super(itemView);
@@ -169,12 +178,13 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        setTransferToken(tokenName);
+                        setTransferToken(key);
                         TransferTokenActivity.this.finish();
                     }
                 });
                 mImgTokenIcon = itemView.findViewById(R.id.token_icon);
                 mTvTokenName = itemView.findViewById(R.id.token_name);
+                ViewUtil.EllipsisTextView(mTvTokenName);
                 mTvCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvTokenCount = itemView.findViewById(R.id.token_count);
                 mTvTokenFreeze = itemView.findViewById(R.id.token_freeze);
@@ -191,12 +201,20 @@ public class TransferTokenActivity extends BaseActivity implements TitleBar.Titl
         public void onBindViewHolder(VH holder, int position) {
             Line item = dataList.get(position);
             String currency = item.getCurrency();
+            String issue = item.getAccount();
+            if (TextUtils.isEmpty(issue)) {
+                issue = item.getIssuer();
+                if (TextUtils.isEmpty(issue)) {
+                    issue = "";
+                }
+            }
+            holder.key = currency + "_" + issue;
             if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
                 currency = WConstant.CURRENCY_SWTC;
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, currency) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issue)) {
+                currency = WConstant.CURRENCY_CNT;
             }
             holder.mTvTokenName.setText(currency);
-            holder.tokenName = currency;
-            ViewUtil.EllipsisTextView(holder.mTvTokenName);
             holder.mImgTokenIcon.setImageResource(Util.getTokenIcon(currency));
             try {
                 String sum = CaclUtil.add(item.getBalance(), item.getLimit(), SCALE);

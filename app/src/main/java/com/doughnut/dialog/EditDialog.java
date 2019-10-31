@@ -139,8 +139,9 @@ public class EditDialog extends Dialog implements View.OnClickListener {
         mEdtPw = (EditText) findViewById(R.id.edt_pwd);
         mEdtPw.requestFocus();
         if (mIsVerifyPwd) {
-            mEdtPw.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mEdtPw.setTransformationMethod(transformationMethod);
+        } else {
+            mEdtPw.setInputType(InputType.TYPE_CLASS_TEXT);
         }
         mEdtPw.addTextChangedListener(new TextWatcher() {
             @Override

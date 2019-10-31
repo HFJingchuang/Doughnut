@@ -40,6 +40,9 @@ import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
 import com.zxing.activity.CaptureActivity;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -389,18 +392,14 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private void getTransferToken() {
         String fileName = getPackageName() + "_transfer_token";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", "");
-        if (TextUtils.isEmpty(token)) {
-            token = WConstant.CURRENCY_SWTC;
-            mIssue = "";
-        }
-        setBalance(token);
+        String key = sharedPreferences.getString("token", "");
+        setBalance(key);
     }
 
     /**
-     * @param token
+     * @param key
      */
-    private void setBalance(String token) {
+    private void setBalance(String key) {
         // 取得钱包资产
         mBalance = "0.00";
         WalletManager.getInstance(this).getBalance(mCurrentWallet, true, new ICallBack() {
@@ -415,12 +414,29 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                             for (int i = 0; i < lines.size(); i++) {
                                 Line line = lines.get(i);
                                 String currency = line.getCurrency();
-                                if (TextUtils.equals(WConstant.CURRENCY_SWT, currency)) {
-                                    currency = WConstant.CURRENCY_SWTC;
+                                String mIssue = line.getAccount();
+                                if (TextUtils.isEmpty(mIssue)) {
+                                    mIssue = line.getIssuer();
+                                    if (TextUtils.isEmpty(mIssue)) {
+                                        mIssue = "";
+                                    }
                                 }
-                                if (TextUtils.equals(token, currency)) {
+                                String tmpKey = currency + "_" + mIssue;
+                                if (TextUtils.equals(key, tmpKey)) {
                                     mBalance = CaclUtil.formatAmount(line.getBalance(), 4);
+                                    break;
                                 }
+                            }
+
+                            String[] arr = key.split("_");
+                            String token = arr[0];
+                            if (arr.length == 2) {
+                                mIssue = arr[1];
+                            }
+                            if (TextUtils.equals(WConstant.CURRENCY_SWT, token)) {
+                                token = WConstant.CURRENCY_SWTC;
+                            } else if (TextUtils.equals(WConstant.CURRENCY_CNY, token) && TextUtils.equals(WConstant.CURRENCY_ISSUE, mIssue)) {
+                                token = WConstant.CURRENCY_CNT;
                             }
 
                             mTvBalance.setText(mBalance);
@@ -431,18 +447,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                 String fileName = getPackageName() + "_transfer_token";
                                 SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("token", WConstant.CURRENCY_SWTC);
+                                editor.putString("token", WConstant.CURRENCY_SWT + "_" + "");
                                 editor.apply();
                                 return;
-                            }
-
-                            // 获取issue
-                            String fileName = getPackageName() + "_tokens";
-                            SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-                            String tokens = sharedPreferences.getString("tokens", "");
-                            if (!TextUtils.isEmpty(tokens)) {
-                                Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
-                                mIssue = tokenMap.get(token);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -567,5 +574,25 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         String fileName = getPackageName() + "_fee_" + mCurrentWallet;
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         return sharedPreferences.getString("fee", "0.00001");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(String str) {
+        switch (str) {
+            case "EVENT_CONTACT":
+                getContact();
+                break;
+        }
+    }
+
+    /**
+     * 获取选中的转账地址
+     */
+    private void getContact() {
+        // 本地保存tokens
+        String fileName = getPackageName() + "_contacts";
+        SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        String address = sharedPreferences.getString("select", "");
+        mEdtWalletAddress.setText(address);
     }
 }

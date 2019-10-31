@@ -149,6 +149,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 mTvBalance = itemView.findViewById(R.id.tv_balance);
                 mTvBalanceCNY = itemView.findViewById(R.id.tv_balance_cny);
                 mTvAddress = itemView.findViewById(R.id.tv_wallet_address);
+                ViewUtil.EllipsisTextView(mTvAddress);
                 mImgQR = itemView.findViewById(R.id.img_qr);
                 mImgQR.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -194,9 +195,7 @@ public class WalletManageActivity extends BaseActivity implements View.OnClickLi
                 holder.mTvLabel.setVisibility(View.VISIBLE);
             }
             holder.mTvAddress.setText(address);
-            ViewUtil.EllipsisTextView(holder.mTvAddress);
             holder.mTvName.setText(WalletSp.getInstance(WalletManageActivity.this, address).getName());
-            ViewUtil.EllipsisTextView(holder.mTvName);
             holder.mTvTime.setText(WalletSp.getInstance(WalletManageActivity.this, address).getCreateTime());
             // 取得钱包资产
             WalletManager.getInstance(getContext()).getBalance(address, false, new ICallBack() {

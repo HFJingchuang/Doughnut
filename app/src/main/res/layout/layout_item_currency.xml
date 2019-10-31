@@ -14,19 +14,41 @@
         android:layout_marginLeft="20dp"
         android:background="@drawable/shape_icon_bg" />
 
-    <TextView
-        android:id="@+id/tv_token_name"
-        android:layout_width="120dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/img_icon"
-        android:gravity="center_vertical"
-        android:ellipsize="middle"
-        android:singleLine="true"
-        android:textColor="@color/color_detail_address"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_token_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/img_icon"
+            android:ellipsize="middle"
+            android:gravity="left|top"
+            android:maxWidth="120dp"
+            android:singleLine="true"
+            android:textColor="@color/color_detail_address"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_token_issue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_token_name"
+            android:layout_toRightOf="@+id/img_icon"
+            android:ellipsize="middle"
+            android:gravity="left|bottom"
+            android:maxWidth="160dp"
+            android:singleLine="true"
+            android:textColor="@color/color_receive_hint"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <CheckBox
         android:id="@+id/tv_check"

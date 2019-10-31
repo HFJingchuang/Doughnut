@@ -78,8 +78,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/ic_see" />
+                    android:layout_marginHorizontal="20dp" />
 
                 <TextView
                     android:id="@+id/tv_balance"
@@ -137,8 +136,7 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_gravity="center"
-                    android:layout_marginHorizontal="20dp"
-                    android:src="@drawable/ic_see" />
+                    android:layout_marginHorizontal="20dp" />
 
                 <TextView
                     android:id="@+id/tv_balance_cny"

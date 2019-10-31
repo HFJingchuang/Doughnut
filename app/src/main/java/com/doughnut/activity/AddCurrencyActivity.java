@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.doughnut.R;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.Currency;
@@ -30,6 +31,7 @@ import com.doughnut.utils.Util;
 import com.doughnut.utils.ViewUtil;
 import com.doughnut.view.RecyclerViewSpacesItemDecoration;
 import com.doughnut.view.TitleBar;
+import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletSp;
 
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
     private AddCurrencyAdapter mAdapter;
     private LinkedList<Currency> currencys;
     private LinkedList<Currency> currencysCopy;
-    private LinkedList<String> selectTokens; //替换成币别的实体类，并且里面增加boolen字段，记录是否选中
+    private LinkedList<String> selectTokens;
     private String mCurrentWallet;
     private boolean mIsSingle = false;
 
@@ -134,7 +136,14 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
                 Pattern p = Pattern.compile(s.toString().toUpperCase());
                 for (int i = 0; i < currencysCopy.size(); i++) {
                     Currency currency = currencysCopy.get(i);
-                    Matcher matcher = p.matcher(currency.getName().toUpperCase());
+                    String name = currency.getName().toUpperCase();
+                    if (TextUtils.equals(WConstant.CURRENCY_CNY, name)) {
+                        String issue = currency.getIssue();
+                        if (TextUtils.equals(WConstant.CURRENCY_ISSUE, issue)) {
+                            name = WConstant.CURRENCY_CNT;
+                        }
+                    }
+                    Matcher matcher = p.matcher(name);
                     if (matcher.find()) {
                         currencys.add(currency);
                     }
@@ -170,11 +179,11 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
         if (TextUtils.isEmpty(tokens)) {
             return;
         }
-        Map<String, String> tokenMap = JSON.parseObject(tokens, Map.class);
-        for (Map.Entry<String, String> entry : tokenMap.entrySet()) {
-            Currency currency = new Currency();
-            currency.setName(entry.getKey());
-            currency.setImage(Util.getTokenIcon(entry.getKey()));
+        Map<String, Currency> tokenMap = JSON.parseObject(tokens, new TypeReference<Map<String, Currency>>() {
+        });
+        for (Map.Entry<String, Currency> entry : tokenMap.entrySet()) {
+            Currency currency = entry.getValue();
+            currency.setImage(Util.getTokenIcon(currency.getName()));
             currencys.add(currency);
         }
         Collections.sort(currencys);
@@ -194,8 +203,9 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             RelativeLayout mLayoutItem;
             ImageView mImgIcon;
             TextView mTvTokenName;
+            TextView mTvTokenIssue;
             CheckBox chk_select;
-            String token;
+            String key;
 
             public VH(View v) {
                 super(v);
@@ -205,15 +215,15 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
                     public void onClick(View v) {
                         //单选
                         if (mIsSingle) {
-                            TokenReceiveActivity.startTokenReceiveActivity(AddCurrencyActivity.this, token);
+                            TokenReceiveActivity.startTokenReceiveActivity(AddCurrencyActivity.this, key);
                         } else {
                             chk_select.setChecked(!chk_select.isChecked());
                             Currency currency = currencys.get(getAdapterPosition());
                             if (chk_select.isChecked()) {
-                                selectTokens.add(currency.getName());
+                                selectTokens.add(key);
                                 currency.setSelect(true);
                             } else {
-                                selectTokens.remove(currency.getName());
+                                selectTokens.remove(key);
                                 currency.setSelect(false);
                             }
                         }
@@ -222,7 +232,9 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
                 });
                 mImgIcon = itemView.findViewById(R.id.img_icon);
                 mTvTokenName = itemView.findViewById(R.id.tv_token_name);
+                mTvTokenIssue = itemView.findViewById(R.id.tv_token_issue);
                 ViewUtil.EllipsisTextView(mTvTokenName);
+                ViewUtil.EllipsisTextView(mTvTokenIssue);
                 chk_select = itemView.findViewById(R.id.tv_check);
                 if (mIsSingle) {
                     chk_select.setVisibility(View.GONE);
@@ -245,9 +257,18 @@ public class AddCurrencyActivity extends BaseActivity implements TitleBar.TitleB
             //赋值
             holder.mImgIcon.setImageResource(tr.getImage());
             String tokenName = tr.getName();
-            holder.token = tokenName;
+            String tokenIssue = tr.getIssue();
+            holder.key = tokenName + "_" + tokenIssue;
+            if (TextUtils.equals(WConstant.CURRENCY_CNY, tokenName) && TextUtils.equals(WConstant.CURRENCY_ISSUE, tokenIssue)) {
+                tokenName = WConstant.CURRENCY_CNT;
+            }
             holder.mTvTokenName.setText(tokenName);
-            //ViewUtil.EllipsisTextView(holder.mTvTokenName);
+            if (TextUtils.isEmpty(tokenIssue)) {
+                holder.mTvTokenIssue.setVisibility(View.GONE);
+            } else {
+                holder.mTvTokenIssue.setText(tokenIssue);
+                holder.mTvTokenIssue.setVisibility(View.VISIBLE);
+            }
             if (!mIsSingle) {
                 holder.chk_select.setChecked(tr.getIsSelect());
             }
