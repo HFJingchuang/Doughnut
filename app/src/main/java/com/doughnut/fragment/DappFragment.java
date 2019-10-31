@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.doughnut.R;
+import com.doughnut.config.Constant;
 import com.doughnut.web.WebActivity;
 
 public class DappFragment extends BaseFragment {
@@ -30,13 +31,12 @@ public class DappFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 String searchUrl = mEt_url.getText().toString().trim();
+                //searchUrl = "https://www.baidu.com/";
                 if (TextUtils.isEmpty(searchUrl)) {
                     Toast.makeText(getActivity(), "输入地址为空", Toast.LENGTH_SHORT).show();
                 } else {
                     startActivity(new Intent(getActivity(), WebActivity.class)
-                            .putExtra(WebActivity.LOAD_URL, searchUrl));
-
-                    //https://www.baidu.com/
+                            .putExtra(Constant.LOAD_URL, searchUrl));
                 }
             }
         });
