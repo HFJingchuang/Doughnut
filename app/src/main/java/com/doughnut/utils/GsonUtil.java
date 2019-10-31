@@ -75,6 +75,7 @@ public class GsonUtil implements Serializable {
                 arrayobj = new JSONArray(jsonStr);
             } catch (Throwable e1) {
             }
+
         }
     }
 
@@ -430,6 +431,18 @@ public class GsonUtil implements Serializable {
 
 
     public GsonUtil putInt(String key, int value) {
+        if (obj != null) {
+            try {
+                obj.put(key, value);
+            } catch (Throwable e) {
+            }
+        }
+
+        return this;
+    }
+
+
+    public GsonUtil putBoolean(String key, boolean value) {
         if (obj != null) {
             try {
                 obj.put(key, value);

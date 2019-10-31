@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
@@ -134,7 +135,8 @@ public class WalletManager implements IWallet {
      */
     @Override
     public void deleteWallet(String address) {
-        WalletSp.getInstance(mContext, address).delete();
+        Log.v("deleteWallet",address);
+//        WalletSp.getInstance(mContext, address).delete();
     }
 
     /**

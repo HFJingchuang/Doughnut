@@ -1,5 +1,6 @@
 package com.doughnut.web;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -11,14 +12,24 @@ import android.webkit.WebView;
 import android.widget.LinearLayout;
 
 import com.doughnut.R;
+import com.doughnut.activity.AddCurrencyActivity;
+import com.doughnut.activity.BaseActivity;
+import com.doughnut.activity.LanguageActivity;
+import com.doughnut.config.Constant;
+import com.doughnut.utils.GsonUtil;
+import com.doughnut.utils.LanguageUtil;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebViewClient;
 
-public class WebActivity extends AppCompatActivity {
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-    public static final String LOAD_URL = "load_url";
+import java.util.Locale;
+
+public class WebActivity extends BaseActivity {
+
     protected AgentWeb mAgentWeb;
     private LinearLayout mLinearLayout;
 
@@ -40,7 +51,6 @@ public class WebActivity extends AppCompatActivity {
                 .createAgentWeb()
                 .ready()
                 .go(getUrl());
-
         mAgentWeb.getJsInterfaceHolder().addJavaObject("JsNativeBridge", new JsNativeBridge(mAgentWeb, this));
     }
 
@@ -68,7 +78,7 @@ public class WebActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String load_url = "";
         if (intent != null) {
-            load_url = intent.getStringExtra(LOAD_URL);
+            load_url = intent.getStringExtra(Constant.LOAD_URL);
         }
         return load_url;
     }
@@ -107,4 +117,26 @@ public class WebActivity extends AppCompatActivity {
         super.onDestroy();
         mAgentWeb.getWebLifeCycle().onDestroy();
     }
+
+    public static void startActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebActivity.class);
+        intent.putExtra(Constant.LOAD_URL, url);
+        intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(JsEvent jsEvent) {
+        String msg = jsEvent.getMsg();
+        Log.v("onEvent", msg);
+        String callbackId = JsNativeBridge.getCallBackId();
+        Log.v("onEvent", callbackId);
+        GsonUtil msgJson = new GsonUtil(msg);
+        if (msgJson.isValid()) {
+            mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + msg + "')");
+        } else {
+            mAgentWeb.getJsAccessEntrace().quickCallJs(callbackId, msg);
+        }
+    }
+
 }
