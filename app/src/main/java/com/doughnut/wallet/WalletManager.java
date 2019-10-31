@@ -64,7 +64,7 @@ public class WalletManager implements IWallet {
     }
 
     public static WalletManager getInstance(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         if (walletManager == null) {
             synchronized (WalletManager.class) {
                 if (walletManager == null) {
@@ -135,7 +135,7 @@ public class WalletManager implements IWallet {
      */
     @Override
     public void deleteWallet(String address) {
-        Log.v("deleteWallet",address);
+        Log.v("deleteWallet", address);
 //        WalletSp.getInstance(mContext, address).delete();
     }
 

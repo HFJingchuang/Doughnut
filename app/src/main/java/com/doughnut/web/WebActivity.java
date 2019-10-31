@@ -4,20 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 
 import com.doughnut.R;
-import com.doughnut.activity.AddCurrencyActivity;
 import com.doughnut.activity.BaseActivity;
-import com.doughnut.activity.LanguageActivity;
 import com.doughnut.config.Constant;
 import com.doughnut.utils.GsonUtil;
-import com.doughnut.utils.LanguageUtil;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.WebChromeClient;
@@ -26,12 +24,11 @@ import com.just.agentweb.WebViewClient;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Locale;
-
-public class WebActivity extends BaseActivity {
+public class WebActivity extends BaseActivity implements IWebCallBack {
 
     protected AgentWeb mAgentWeb;
     private LinearLayout mLinearLayout;
+    private JsNativeBridge mJsNativeBridge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +48,8 @@ public class WebActivity extends BaseActivity {
                 .createAgentWeb()
                 .ready()
                 .go(getUrl());
-        mAgentWeb.getJsInterfaceHolder().addJavaObject("JsNativeBridge", new JsNativeBridge(mAgentWeb, this));
+        mJsNativeBridge = new JsNativeBridge(mAgentWeb, this, this);
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("JsNativeBridge", mJsNativeBridge);
     }
 
     private com.just.agentweb.WebViewClient mWebViewClient = new WebViewClient() {
@@ -85,7 +83,6 @@ public class WebActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-
         if (mAgentWeb.handleKeyEvent(keyCode, event)) {
             return true;
         }
@@ -106,7 +103,6 @@ public class WebActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         Log.i("Info", "onResult:" + requestCode + " onResult:" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -129,7 +125,7 @@ public class WebActivity extends BaseActivity {
     public void onEvent(JsEvent jsEvent) {
         String msg = jsEvent.getMsg();
         Log.v("onEvent", msg);
-        String callbackId = JsNativeBridge.getCallBackId();
+        String callbackId = mJsNativeBridge.getCallBackId();
         Log.v("onEvent", callbackId);
         GsonUtil msgJson = new GsonUtil(msg);
         if (msgJson.isValid()) {
@@ -139,4 +135,32 @@ public class WebActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onBack() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onClose() {
+        finish();
+    }
+
+    private static final String STATUS_FULLSCREEN = "1";
+
+    @Override
+    public void switchFullScreen(String status) {
+        if (TextUtils.equals(status, STATUS_FULLSCREEN)) {
+            //设置为全屏
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            getWindow().setAttributes(lp);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        } else {
+            //设置为非全屏
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setAttributes(lp);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+    }
 }

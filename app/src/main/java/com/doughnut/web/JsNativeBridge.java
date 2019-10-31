@@ -1,17 +1,16 @@
 package com.doughnut.web;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.webkit.JavascriptInterface;
 
-import com.android.jtblk.client.bean.Marker;
 import com.doughnut.utils.GsonUtil;
-import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
-import com.jccdex.rpc.base.JCallback;
 import com.just.agentweb.AgentWeb;
 import com.zxing.activity.CaptureActivity;
 
@@ -27,11 +26,13 @@ public class JsNativeBridge {
     private WalletManager mWalletManager;
     private WalletSp mWalletSp;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private static String mCallBackId;
+    private String mCallBackId;
+    private IWebCallBack mWebCallBack;
 
-    public JsNativeBridge(AgentWeb agent, Context context) {
+    public JsNativeBridge(AgentWeb agent, Context context, IWebCallBack callback) {
         this.agent = agent;
         this.context = context;
+        this.mWebCallBack = callback;
         this.mWalletManager = WalletManager.getInstance(context);
     }
 
@@ -42,7 +43,30 @@ public class JsNativeBridge {
         this.mCallBackId = callbackId;
         switch (methodName) {
             case "getAppInfo":
-                // todo
+                String version = "";
+                String name = "";
+                PackageManager packageManager = context.getPackageManager();
+                PackageInfo packageInfo = null;
+                try {
+                    packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+                    if (packageInfo != null) {
+                        version = packageInfo.versionName;
+                        name = context.getResources().getString(packageInfo.applicationInfo.labelRes);
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                GsonUtil infoData = new GsonUtil("{}");
+                infoData.putString("name", name);
+                infoData.putString("system", "android");
+                infoData.putString("version", version);
+                infoData.putString("sys_version", Build.VERSION.SDK_INT + "");
+
+                result.putBoolean("result", true);
+                result.put("data", infoData);
+                result.putString("msg", MSG_SUCCESS);
+                this.agent.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
             case "getDeviceId":
                 // todo
@@ -68,20 +92,25 @@ public class JsNativeBridge {
                 CaptureActivity.startCaptureActivity(context, true);
                 break;
             case "back":
-                // todo
+                if (mWebCallBack != null) {
+                    mWebCallBack.onBack();
+                }
                 break;
             case "fullScreen":
-                // todo
+                if (mWebCallBack != null) {
+                    mWebCallBack.switchFullScreen(params);
+                }
                 break;
             case "close":
-                // todo
+                if (mWebCallBack != null) {
+                    mWebCallBack.onClose();
+                }
                 break;
             default:
         }
-
     }
 
-    public static String getCallBackId() {
+    public String getCallBackId() {
         return mCallBackId;
     }
 }
