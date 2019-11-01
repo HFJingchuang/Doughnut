@@ -21,6 +21,8 @@ public interface IWallet {
 
     void transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack);
 
+    void transferForHash(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack);
+
     void getTransferHistory(String address, Integer limit, Marker marker, ICallBack callBack);
 
     void getBalance(String address, boolean isDisposable, ICallBack callBack);

@@ -241,15 +241,25 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edt_memo"
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="20dp"
+                android:layout_height="100dp"
                 android:background="@drawable/shape_dialog_edt"
-                android:paddingHorizontal="20dp"
-                android:textColor="@color/color_detail_address"
-                android:textSize="17sp" />
+                android:overScrollMode="never">
+
+                <EditText
+                    android:id="@+id/edt_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:minHeight="100dp"
+                    android:paddingHorizontal="15dp"
+                    android:paddingTop="10dp"
+                    android:text=""
+                    android:textColor="@color/color_detail_address"
+                    android:textSize="17sp" />
+            </android.support.v4.widget.NestedScrollView>
 
             <Button
                 android:id="@+id/btn_send"
