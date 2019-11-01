@@ -533,10 +533,11 @@
                                 android:textStyle="bold" />
                         </RelativeLayout>
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp">
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/tv_memo_tmp"
@@ -546,18 +547,26 @@
                                 android:textColor="@color/color_receive_hint"
                                 android:textSize="15sp" />
 
-                            <TextView
-                                android:id="@+id/tv_memo"
+                            <android.support.v4.widget.NestedScrollView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/tv_memo_tmp"
+                                android:layout_height="80dp"
                                 android:layout_marginTop="5dp"
-                                android:ellipsize="end"
-                                android:maxLines="3"
-                                android:textColor="@color/color_detail_address"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
-                        </RelativeLayout>
+                                android:overScrollMode="never">
+
+                                <TextView
+                                    android:id="@+id/tv_memo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:gravity="top"
+                                    android:minHeight="80dp"
+                                    android:paddingHorizontal="5dp"
+                                    android:paddingTop="5dp"
+                                    android:textColor="@color/common_black_fontcolor"
+                                    android:textColorHint="@color/color_decoration_inactive"
+                                    android:textSize="12sp" />
+                            </android.support.v4.widget.NestedScrollView>
+                        </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
             </RelativeLayout>

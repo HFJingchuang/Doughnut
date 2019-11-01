@@ -124,9 +124,7 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(JsEvent jsEvent) {
         String msg = jsEvent.getMsg();
-        Log.v("onEvent", msg);
         String callbackId = mJsNativeBridge.getCallBackId();
-        Log.v("onEvent", callbackId);
         GsonUtil msgJson = new GsonUtil(msg);
         if (msgJson.isValid()) {
             mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + msg + "')");

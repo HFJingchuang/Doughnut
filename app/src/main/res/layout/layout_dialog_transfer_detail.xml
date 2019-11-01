@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialog_bg"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="15dp"
+            android:text="交易详情"
+            android:textColor="@color/color_detail_address"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_clean" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/img_close"
+            android:layout_marginTop="10dp"
+            android:background="@color/split_color" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/tv_from_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="交易发起者"
+            android:textColor="@color/color_detail_address"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_from_tmp"
+            android:ellipsize="middle"
+            android:gravity="right|center"
+            android:maxWidth="80dp"
+            android:textColor="@color/color_keyStore_tips"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp">
+
+        <TextView
+            android:id="@+id/tv_value_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="交易金额"
+            android:textColor="@color/color_detail_address"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_value_tmp"
+            android:gravity="right|center"
+            android:textColor="@color/color_keyStore_tips"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp">
+
+        <TextView
+            android:id="@+id/tv_to_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="交易对家"
+            android:textColor="@color/color_detail_address"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_to_tmp"
+            android:ellipsize="middle"
+            android:gravity="right|center"
+            android:maxWidth="80dp"
+            android:textColor="@color/color_keyStore_tips"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp">
+
+        <TextView
+            android:id="@+id/tv_gas_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="燃料费"
+            android:textColor="@color/color_detail_address"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_gas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_gas_tmp"
+            android:gravity="right|center"
+            android:textColor="@color/color_keyStore_tips"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_memo_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="交易备注"
+            android:textColor="@color/color_detail_address"
+            android:textSize="13sp" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_dialog_edt"
+            android:overScrollMode="never">
+
+            <TextView
+                android:id="@+id/tv_memo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="top"
+                android:minHeight="80dp"
+                android:paddingHorizontal="15dp"
+                android:paddingTop="10dp"
+                android:text=""
+                android:textColor="@color/common_black_fontcolor"
+                android:textColorHint="@color/color_decoration_inactive"
+                android:textSize="10sp" />
+        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_ok"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/shape_btn_import"
+        android:gravity="center"
+        android:text="@string/dialog_btn_confirm"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

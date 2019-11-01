@@ -280,6 +280,93 @@ public class WalletManager implements IWallet {
         });
     }
 
+    private GsonUtil transferForHash(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo) {
+        GsonUtil res = new GsonUtil("{}");
+        try {
+            AmountInfo amount;
+            amount = new AmountInfo();
+            if (TextUtils.equals(WConstant.CURRENCY_SWTC, token)) {
+                amount.setCurrency(WConstant.CURRENCY_SWT);
+                amount.setIssuer("");
+            } else if (TextUtils.equals(WConstant.CURRENCY_CNT, token) && TextUtils.equals(WConstant.CURRENCY_ISSUE, issuer)) {
+                amount.setCurrency(WConstant.CURRENCY_CNY);
+                amount.setIssuer(issuer);
+            } else {
+                amount.setCurrency(token);
+                amount.setIssuer(issuer);
+            }
+            amount.setValue(value);
+            Transaction tx = JtServer.getInstance(mContext).getRemote().buildPaymentTx(from, to, amount);
+            tx.setSecret(privateKey);
+            List<String> memos = new ArrayList<String>();
+            memos.add(memo);
+            tx.addMemo(memos);
+            if (!TextUtils.isEmpty(fee)) {
+                tx.setFee(fee);
+            }
+            TransactionInfo bean = tx.submit();
+            if (WConstant.RESULT_OK.equals(bean.getEngineResultCode())) {
+                res.putBoolean("result", true);
+                res.putString("txHash", bean.getTxJson().getHash());
+                res.putString("msg", "success");
+            } else {
+                res.putBoolean("result", false);
+                res.putString("msg", bean.getEngineResult());
+                return res;
+            }
+        } catch (Exception e) {
+            res.putBoolean("result", false);
+            res.putString("msg", e.getMessage());
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    /**
+     * 转账，返回交易HASH
+     *
+     * @param privateKey
+     * @param from
+     * @param to
+     * @param token
+     * @param issuer
+     * @param value
+     * @param fee
+     * @param memo
+     * @param callBack
+     * @return
+     */
+    @Override
+    public void transferForHash(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<GsonUtil>() {
+            @Override
+            public void subscribe(ObservableEmitter<GsonUtil> emitter) throws Exception {
+                emitter.onNext(transferForHash(privateKey, from, to, token, issuer, value, fee, memo));
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<GsonUtil>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                compositeDisposable.add(d);
+            }
+
+            @Override
+            public void onNext(GsonUtil hash) {
+                callBack.onResponse(hash);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
     private boolean transfer(String privateKey, String from, String to, String token, String issuer, String value, String fee, String memo) {
         try {
             AmountInfo amount;
