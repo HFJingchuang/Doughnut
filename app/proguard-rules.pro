@@ -222,3 +222,10 @@
 }
 
 -keep class com.android.jtblk.** { *;}
+
+-keep class com.just.agentweb.** {
+    *;
+}
+-dontwarn com.just.agentweb.**
+
+-keepclassmembers class com.doughnut.web.JsNativeBridge{ *; }
