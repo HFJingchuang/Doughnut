@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.config.Constant;
 import com.doughnut.dialog.ImportSuccessDialog;
+import com.doughnut.fragment.DappFragment;
 import com.doughnut.fragment.MainUserFragment;
 import com.doughnut.fragment.MainWalletFragment;
 import com.doughnut.fragment.NoWalletFragment;
@@ -28,7 +29,8 @@ import com.doughnut.wallet.WalletManager;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private final static int WALLET_INDEX = 0;
-    private final static int MINE_INDEX = 1;
+    private final static int DAPP_INDEX = 1;
+    private final static int MINE_INDEX = 2;
     private ViewPager mMainViewPager;
 
     //tab
@@ -41,7 +43,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ImageView mImgMine;
     private TextView mTvMine;
 
+    private ImageView mIvDapp;
+    private TextView mTvDapp;
+
     private Fragment[] mFragments;
+    private LinearLayout mLl_tab_dapp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,10 +99,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (view == mLayoutTabWallet) {
+        int id = view.getId();
+        if (id == R.id.layout_tab_wallet) {
             mMainViewPager.setCurrentItem(WALLET_INDEX);
-        } else if (view == mLayoutTabMine) {
+        } else if (id == R.id.layout_tab_mine) {
             mMainViewPager.setCurrentItem(MINE_INDEX);
+        } else if (id == R.id.layout_tab_dapp) {
+            mMainViewPager.setCurrentItem(DAPP_INDEX);
         }
     }
 
@@ -142,6 +151,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //tab
         mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
         mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
+        mLl_tab_dapp = findViewById(R.id.layout_tab_dapp);
+        mLl_tab_dapp.setOnClickListener(this);
         mLayoutTabWallet.setOnClickListener(this);
         mLayoutTabMine.setOnClickListener(this);
 
@@ -150,6 +161,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTvWallet = (TextView) findViewById(R.id.tv_tab_wallet);
         mImgMine = (ImageView) findViewById(R.id.img_tab_mine);
         mTvMine = (TextView) findViewById(R.id.tv_tab_mine);
+        mIvDapp = (ImageView) findViewById(R.id.img_tab_dapp);
+        mTvDapp = (TextView) findViewById(R.id.tv_tab_dapp);
 
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mMainViewPager.setOffscreenPageLimit(2);
@@ -186,6 +199,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mImgMine.setImageResource(R.drawable.ic_myself_click);
                 mTvMine.setSelected(true);
                 break;
+            case DAPP_INDEX:
+                mIvDapp.setImageResource(R.drawable.ic_wallet_click);
+                mTvDapp.setSelected(true);
+                break;
         }
     }
 
@@ -195,6 +212,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         mImgMine.setImageResource(R.drawable.ic_myself_noclick);
         mTvMine.setSelected(false);
+
+        mIvDapp.setImageResource(R.drawable.ic_wallet_noclick);
+        mTvDapp.setSelected(false);
     }
 
     class MainViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -219,11 +239,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (!WalletManager.getInstance(this).hasWallet()) {
             mFragments = new Fragment[]{
                     NoWalletFragment.newInstance(),
+                    DappFragment.newInstance(),
                     MainUserFragment.newInstance()
             };
         } else {
             mFragments = new Fragment[]{
                     MainWalletFragment.newInstance(),
+                    DappFragment.newInstance(),
                     MainUserFragment.newInstance()
             };
         }

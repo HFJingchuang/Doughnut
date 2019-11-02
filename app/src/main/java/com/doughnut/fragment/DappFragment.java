@@ -1,60 +1,56 @@
-
 package com.doughnut.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doughnut.R;
-import com.doughnut.utils.NetUtil;
-import com.doughnut.utils.ToastUtil;
-import com.doughnut.utils.ViewUtil;
+import com.doughnut.config.Constant;
+import com.doughnut.web.WebActivity;
 
+public class DappFragment extends BaseFragment {
 
-public class DappFragment extends BaseFragment implements View.OnClickListener {
-
-    public static DappFragment newInstance() {
-        Bundle args = new Bundle();
-        DappFragment fragment = new DappFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private EditText mEt_url;
+    private TextView mTv_search;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return ViewUtil.inflatView(inflater, container, R.layout.fragment_main_wallet_new, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_dapp, container, false);
+        mEt_url = view.findViewById(R.id.et_url);
+        mTv_search = view.findViewById(R.id.tv_search);
+        mTv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchUrl = mEt_url.getText().toString().trim();
+                //searchUrl = "https://www.baidu.com/";
+                if (TextUtils.isEmpty(searchUrl)) {
+                    Toast.makeText(getActivity(), "输入地址为空", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(getActivity(), WebActivity.class)
+                            .putExtra(Constant.LOAD_URL, searchUrl));
+                }
+            }
+        });
+
+        return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        initView(view);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
-    private void initView(View view) {
+    public static DappFragment newInstance() {
+        DappFragment dappFragment = new DappFragment();
+        return dappFragment;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (!NetUtil.isNetworkAvailable(getActivity())) {
-            ToastUtil.toast(getContext(), getString(R.string.toast_no_network));
-            return;
-        }
-        switch (view.getId()) {
-        }
-    }
-
 }

@@ -217,5 +217,6 @@
     <string name="tv_err_same">The old and new passwords cannot be the same. Please re-enter them.</string>
     <string name="dialog_no_pwd">No password transfer in 15 minutes.</string>
     <string name="tv_doughnut">Doughnut Wallet</string>
+    <string name="btn_Dapp">Dapp</string>
 
 </resources>
