@@ -52,14 +52,13 @@
         "gas": "0.0001"
       }
 
-      // donut.transfer(tx).then(res => {
-      //   showElement(JSON.stringify(res));
-      // });
-
-       donut.sign(tx).then(res => {
-       alert(JSON.stringify(res));
+       donut.transfer(tx).then(res => {
          showElement(JSON.stringify(res));
        });
+
+     // donut.sign(tx).then(res => {
+     //   showElement(JSON.stringify(res));
+     // });
 
       donut.getWallets().then(res => {
         showElement(JSON.stringify(res));

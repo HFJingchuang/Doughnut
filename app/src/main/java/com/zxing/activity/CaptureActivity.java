@@ -78,7 +78,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
     private ProgressDialog mProgress;
     private String photo_path;
     private boolean isLight = false;
-    private boolean isJs = false;
+    private String mCallBackId;
 
     public static void navToActivity(Activity context, int requestCode) {
         Intent intent = new Intent(context, CaptureActivity.class);
@@ -86,9 +86,9 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
         context.startActivityForResult(intent, requestCode);
     }
 
-    public static void startCaptureActivity(Context context, boolean isJs) {
+    public static void startCaptureActivity(Context context, String callBackId) {
         Intent intent = new Intent(context, CaptureActivity.class);
-        intent.putExtra("isJs", isJs);
+        intent.putExtra("callBackId", callBackId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -103,7 +103,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
         CameraManager.init(getApplication());
 
         if (getIntent() != null) {
-            isJs = getIntent().getBooleanExtra("isJs", false);
+            mCallBackId = getIntent().getStringExtra("callBackId");
         }
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -147,9 +147,10 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             mProgress.dismiss();
             switch (msg.what) {
                 case PARSE_BARCODE_SUC:
-                    if (isJs) {
+                    if (TextUtils.isEmpty(mCallBackId)) {
                         JsEvent jsEvent = new JsEvent();
                         jsEvent.setMsg((String) msg.obj);
+                        jsEvent.setCallBackId(mCallBackId);
                         EventBus.getDefault().post(jsEvent);
                         finish();
                         return;

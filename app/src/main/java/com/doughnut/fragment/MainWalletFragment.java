@@ -42,7 +42,6 @@ import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
-import com.doughnut.web.WebActivity;
 import com.jccdex.rpc.base.JCallback;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -270,7 +269,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 WalletManageActivity.startModifyWalletActivity(getContext(), true);
                 break;
             case R.id.layout_scan:
-                CaptureActivity.startCaptureActivity(getContext(), false);
+                CaptureActivity.startCaptureActivity(getContext(), null);
                 break;
             case R.id.add_asset:
                 AddCurrencyActivity.startActivity(getContext(), false);
@@ -291,8 +290,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 refreshWallet();
                 break;
             case R.id.swh_show:
-                WebActivity.startActivity(getContext(), "file:///android_asset/hello.html");
-//                refreshWallet();
+//                WebActivity.startActivity(getContext(), "file:///android_asset/hello.html");
+                refreshWallet();
                 break;
         }
     }

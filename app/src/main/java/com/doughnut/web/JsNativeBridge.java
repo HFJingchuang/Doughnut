@@ -46,7 +46,7 @@ public class JsNativeBridge {
     private Context mContext;
     private WalletManager mWalletManager;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private String mCallBackId, mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo;
+    private String mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo;
     private IWebCallBack mWebCallBack;
     private String mCurrentWallet;
 
@@ -61,7 +61,6 @@ public class JsNativeBridge {
     public void callHandler(String methodName, String params, String callbackId) {
         mCurrentWallet = WalletSp.getInstance(mContext, "").getCurrentWallet();
         GsonUtil result = new GsonUtil("{}");
-        this.mCallBackId = callbackId;
         switch (methodName) {
             case "getAppInfo":
                 String version = "";
@@ -146,7 +145,7 @@ public class JsNativeBridge {
                             new TransferDetailDialog(mContext, new TransferDetailDialog.OnListener() {
                                 @Override
                                 public void onBack() {
-                                    if (!WithNoPwd(transaction)) {
+                                    if (!WithNoPwd(transaction, callbackId)) {
                                         new TransferDialog(mContext, mCurrentWallet)
                                                 .setResultListener(new TransferDialog.PwdResultListener() {
                                                     @Override
@@ -177,7 +176,6 @@ public class JsNativeBridge {
                     result.putString("msg", e.getMessage());
                     mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 }
-
                 break;
             case "transfer":
                 try {
@@ -196,7 +194,7 @@ public class JsNativeBridge {
                             new TransferDetailDialog(mContext, new TransferDetailDialog.OnListener() {
                                 @Override
                                 public void onBack() {
-                                    if (!WithNoPwd(null)) {
+                                    if (!WithNoPwd(null, callbackId)) {
                                         new TransferDialog(mContext, mCurrentWallet)
                                                 .setResultListener(new TransferDialog.PwdResultListener() {
                                                     @Override
@@ -225,7 +223,7 @@ public class JsNativeBridge {
                 }
                 break;
             case "invokeQRScanner":
-                CaptureActivity.startCaptureActivity(mContext, true);
+                CaptureActivity.startCaptureActivity(mContext, callbackId);
                 break;
             case "back":
                 if (mWebCallBack != null) {
@@ -248,17 +246,13 @@ public class JsNativeBridge {
 
     }
 
-    public String getCallBackId() {
-        return mCallBackId;
-    }
-
     /**
      * 免密支付
      *
      * @param transaction
      * @return
      */
-    private boolean WithNoPwd(Transaction transaction) {
+    private boolean WithNoPwd(Transaction transaction, String callBackId) {
         String fileName = mContext.getPackageName() + "_pwd_" + mCurrentWallet;
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         long time = sharedPreferences.getLong("time", 0);
@@ -290,36 +284,32 @@ public class JsNativeBridge {
                         @Override
                         public void onResponse(Object response) {
                             String privateKey = (String) response;
-                            AppConfig.postOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    BigDecimal fee = new BigDecimal(mGas).multiply(new BigDecimal(1000000));
-                                    if (transaction != null) {
-                                        GsonUtil result = new GsonUtil("{}");
-                                        try {
-                                            String signedTx = transaction.sign(privateKey);
-                                            result.putBoolean("result", true);
-                                            result.putString("signedTx", signedTx);
-                                            result.putString("msg", MSG_SUCCESS);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                            result.putBoolean("result", false);
-                                            result.putString("msg", e.getMessage());
-                                        }
-//                                        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + mCallBackId + "('" + result.toString() + "')");
-                                        mAgentWeb.getJsAccessEntrace().quickCallJs(mCallBackId,"hahahah");
-                                    } else {
-                                        mWalletManager.transferForHash(privateKey, mCurrentWallet, mTo, mToken, mIssuer, mValue, fee.stripTrailingZeros().toPlainString(), mMemo, new ICallBack() {
-                                            @Override
-                                            public void onResponse(Object object) {
-                                                GsonUtil res = (GsonUtil) object;
-                                                mAgentWeb.getJsAccessEntrace().callJs("javascript:" + mCallBackId + "('" + res.toString() + "')");
-                                            }
-                                        });
-                                    }
-                                    loadDialog.dismiss();
+                            BigDecimal fee = new BigDecimal(mGas).multiply(new BigDecimal(1000000));
+                            if (transaction != null) {
+                                GsonUtil result = new GsonUtil("{}");
+                                try {
+                                    String signedTx = transaction.sign(privateKey);
+                                    result.putBoolean("result", true);
+                                    result.putString("signedTx", signedTx);
+                                    result.putString("msg", MSG_SUCCESS);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    result.putBoolean("result", false);
+                                    result.putString("msg", e.getMessage());
                                 }
-                            });
+//                                        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + mCallBackId + "('" + result.toString() + "')");
+                                mAgentWeb.getUrlLoader().loadUrl("javascript:" + callBackId + "('" + result.toString() + "')");
+//                                        mAgentWeb.getJsAccessEntrace().quickCallJs(mCallBackId, "hahahah");
+                            } else {
+                                mWalletManager.transferForHash(privateKey, mCurrentWallet, mTo, mToken, mIssuer, mValue, fee.stripTrailingZeros().toPlainString(), mMemo, new ICallBack() {
+                                    @Override
+                                    public void onResponse(Object object) {
+                                        GsonUtil res = (GsonUtil) object;
+                                        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callBackId + "('" + res.toString() + "')");
+                                    }
+                                });
+                            }
+                            loadDialog.dismiss();
                         }
                     });
                 }

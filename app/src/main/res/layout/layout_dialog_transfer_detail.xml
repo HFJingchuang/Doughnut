@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="15dp"
-            android:text="交易详情"
+            android:text="@string/titleBar_transaction_details"
             android:textColor="@color/color_detail_address"
             android:textSize="16sp" />
 
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="交易发起者"
+            android:text="@string/tv_transfer_from"
             android:textColor="@color/color_detail_address"
             android:textSize="13sp" />
 
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="交易金额"
+            android:text="@string/tv_transfer_content"
             android:textColor="@color/color_detail_address"
             android:textSize="13sp" />
 
@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="交易对家"
+            android:text="@string/tv_transfer_to"
             android:textColor="@color/color_detail_address"
             android:textSize="13sp" />
 
@@ -130,7 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="燃料费"
+            android:text="@string/tv_gas"
             android:textColor="@color/color_detail_address"
             android:textSize="13sp" />
 
@@ -157,7 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="交易备注"
+            android:text="@string/tv_transfer_memo"
             android:textColor="@color/color_detail_address"
             android:textSize="13sp" />
 
