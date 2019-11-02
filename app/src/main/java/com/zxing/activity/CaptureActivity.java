@@ -147,7 +147,7 @@ public class CaptureActivity extends BaseActivity implements Callback, View.OnCl
             mProgress.dismiss();
             switch (msg.what) {
                 case PARSE_BARCODE_SUC:
-                    if (TextUtils.isEmpty(mCallBackId)) {
+                    if (!TextUtils.isEmpty(mCallBackId)) {
                         JsEvent jsEvent = new JsEvent();
                         jsEvent.setMsg((String) msg.obj);
                         jsEvent.setCallBackId(mCallBackId);

@@ -276,6 +276,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (!state && isHasWallet) {
             mFragments = new Fragment[]{
                     MainWalletFragment.newInstance(),
+                    DappFragment.newInstance(),
                     MainUserFragment.newInstance()
             };
             saveWalletState(isHasWallet);
@@ -285,6 +286,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (state && !isHasWallet) {
             mFragments = new Fragment[]{
                     NoWalletFragment.newInstance(),
+                    DappFragment.newInstance(),
                     MainUserFragment.newInstance()
             };
             saveWalletState(isHasWallet);
