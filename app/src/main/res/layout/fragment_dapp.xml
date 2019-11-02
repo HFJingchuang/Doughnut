@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/img_tmp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="100dp"
         android:gravity="center_vertical">
 
         <EditText
@@ -16,9 +16,14 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="5"
-            android:background="@drawable/bg_input_url"
-            android:hint="请输入地址"
-            android:paddingLeft="10dp" />
+            android:background="@drawable/shape_search"
+            android:hint="@string/edt_dapp"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:textColor="@color/color_detail_address"
+            android:textColorHint="@color/color_receive_hint"
+            android:textSize="@dimen/text_size_15" />
 
         <TextView
             android:id="@+id/tv_search"
@@ -26,8 +31,16 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="搜索"
-            android:textSize="25sp" />
+            android:text="@string/tv_search"
+            android:textColor="@color/color_detail_address"
+            android:textSize="20sp" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_tmp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_ok" />
 </RelativeLayout>

@@ -5,15 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.doughnut.R;
 import com.doughnut.config.Constant;
+import com.doughnut.dialog.MsgDialog;
 import com.doughnut.web.WebActivity;
 
 public class DappFragment extends BaseFragment {
@@ -26,20 +28,23 @@ public class DappFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dapp, container, false);
         mEt_url = view.findViewById(R.id.et_url);
+        mEt_url.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search();
+                }
+                return false;
+            }
+        });
         mTv_search = view.findViewById(R.id.tv_search);
         mTv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String searchUrl = mEt_url.getText().toString().trim();
-                //searchUrl = "https://www.baidu.com/";
-                if (TextUtils.isEmpty(searchUrl)) {
-                    Toast.makeText(getActivity(), "输入地址为空", Toast.LENGTH_SHORT).show();
-                } else {
-                    startActivity(new Intent(getActivity(), WebActivity.class)
-                            .putExtra(Constant.LOAD_URL, searchUrl));
-                }
+                search();
             }
         });
+
 
         return view;
     }
@@ -52,5 +57,17 @@ public class DappFragment extends BaseFragment {
     public static DappFragment newInstance() {
         DappFragment dappFragment = new DappFragment();
         return dappFragment;
+    }
+
+    private void search() {
+        String searchUrl = mEt_url.getText().toString().trim();
+        if (!TextUtils.isEmpty(searchUrl)) {
+            if (searchUrl.startsWith("http://") || searchUrl.startsWith("https://")) {
+                startActivity(new Intent(getActivity(), WebActivity.class)
+                        .putExtra(Constant.LOAD_URL, searchUrl));
+            } else {
+                new MsgDialog(getContext(), getString(R.string.msg_err_url)).setIsHook(false).show();
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
@@ -47,7 +48,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private TextView mTvDapp;
 
     private Fragment[] mFragments;
-    private LinearLayout mLl_tab_dapp;
+    private RelativeLayout mLl_tab_dapp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,7 +201,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mTvMine.setSelected(true);
                 break;
             case DAPP_INDEX:
-                mIvDapp.setImageResource(R.drawable.ic_wallet_click);
+                mIvDapp.setImageResource(R.drawable.ic_ok);
                 mTvDapp.setSelected(true);
                 break;
         }
@@ -213,7 +214,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mImgMine.setImageResource(R.drawable.ic_myself_noclick);
         mTvMine.setSelected(false);
 
-        mIvDapp.setImageResource(R.drawable.ic_wallet_noclick);
+        mIvDapp.setImageResource(R.drawable.ic_ok);
         mTvDapp.setSelected(false);
     }
 

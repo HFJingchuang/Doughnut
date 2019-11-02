@@ -297,9 +297,7 @@ public class JsNativeBridge {
                                     result.putBoolean("result", false);
                                     result.putString("msg", e.getMessage());
                                 }
-//                                        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + mCallBackId + "('" + result.toString() + "')");
                                 mAgentWeb.getUrlLoader().loadUrl("javascript:" + callBackId + "('" + result.toString() + "')");
-//                                        mAgentWeb.getJsAccessEntrace().quickCallJs(mCallBackId, "hahahah");
                             } else {
                                 mWalletManager.transferForHash(privateKey, mCurrentWallet, mTo, mToken, mIssuer, mValue, fee.stripTrailingZeros().toPlainString(), mMemo, new ICallBack() {
                                     @Override

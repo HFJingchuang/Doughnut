@@ -213,10 +213,13 @@
     <string name="tv_show_zero">显示非零资产</string>
     <string name="dialog_tranfer">转账中...</string>
     <string name="dialog_sign">签名中...</string>
-    <string name="title_contact">选择转账地址</string>
+    <string name="title_contact">联系地址</string>
     <string name="tv_err_same">新旧密码不能一样，请重新输入</string>
     <string name="dialog_no_pwd">15分钟免密转账</string>
     <string name="tv_doughnut">甜甜圈钱包</string>
     <string name="btn_Dapp">Dapp</string>
+    <string name="msg_err_url">错误的链接</string>
+    <string name="edt_dapp">请输入DAPP链接</string>
+    <string name="tv_search">搜索</string>
 
 </resources>
