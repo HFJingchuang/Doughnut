@@ -31,6 +31,7 @@ public class DappFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 String searchUrl = mEt_url.getText().toString().trim();
+                //以下未测试数据
                 //searchUrl = "https://www.baidu.com/";
                 if (TextUtils.isEmpty(searchUrl)) {
                     Toast.makeText(getActivity(), "输入地址为空", Toast.LENGTH_SHORT).show();
@@ -40,7 +41,6 @@ public class DappFragment extends BaseFragment {
                 }
             }
         });
-
         return view;
     }
 

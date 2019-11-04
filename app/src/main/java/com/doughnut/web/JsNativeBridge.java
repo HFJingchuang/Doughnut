@@ -38,7 +38,7 @@ import java.util.List;
  * JS调用原生接口类
  */
 public class JsNativeBridge {
-
+    public static final String TAG = JsNativeBridge.class.getSimpleName();
     private final static String MSG_SUCCESS = "success";
     private final static long FIFTEEN = 15 * 60 * 1000L;
 
@@ -307,7 +307,7 @@ public class JsNativeBridge {
                                             result.putString("msg", e.getMessage());
                                         }
 //                                        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + mCallBackId + "('" + result.toString() + "')");
-                                        mAgentWeb.getJsAccessEntrace().quickCallJs(mCallBackId,"hahahah");
+                                        mAgentWeb.getJsAccessEntrace().quickCallJs(mCallBackId, "hahahah");
                                     } else {
                                         mWalletManager.transferForHash(privateKey, mCurrentWallet, mTo, mToken, mIssuer, mValue, fee.stripTrailingZeros().toPlainString(), mMemo, new ICallBack() {
                                             @Override
