@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.android.jtblk.client.Transaction;
@@ -110,15 +109,15 @@ public class WalletManager implements IWallet {
      * 创建钱包
      *
      * @param password
-     * @param nam
+     * @param name
      * @param callBack
      */
     @Override
-    public void createWallet(String password, String nam, ICallBack callBack) {
+    public void createWallet(String password, String name, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                String address = createWallet(password, nam);
+                String address = createWallet(password, name);
                 emitter.onNext(address);
                 emitter.onComplete();
             }
@@ -135,8 +134,7 @@ public class WalletManager implements IWallet {
      */
     @Override
     public void deleteWallet(String address) {
-        Log.v("deleteWallet", address);
-//        WalletSp.getInstance(mContext, address).delete();
+        WalletSp.getInstance(mContext, address).delete();
     }
 
     /**
