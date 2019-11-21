@@ -136,6 +136,20 @@
             android:name=".activity.ContactsActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".web.WebActivity" />
+        <activity
+            android:name=".activity.IntentParseActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.SplashActivity" />
+            <intent-filter>
+                <data android:scheme="doughnut" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

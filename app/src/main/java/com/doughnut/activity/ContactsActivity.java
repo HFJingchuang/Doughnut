@@ -166,6 +166,7 @@ public class ContactsActivity extends BaseActivity implements TitleBar.TitleBarC
     }
 
     private void getContacts() {
+        contactList.clear();
         // 本地保存tokens
         String fileName = getPackageName() + "_contacts";
         SharedPreferences sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);

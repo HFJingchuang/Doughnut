@@ -1,0 +1,44 @@
+apply plugin: 'com.mob.sdk'
+
+MobSDK {
+    appKey "2d2d3976448fa"
+    appSecret "69c741bdf70f4fadc35477bf8c9e62eb"
+
+    ShareSDK {
+        devInfo {
+            Wechat {
+                id 1
+                appId "wx9a525a2f78aa90d3"
+                appSecret "ba351a36bde9f763b26626320c27d0e1"
+                bypassApproval false
+                shareByAppClient true
+                enable true
+            }
+
+            WechatMoments {
+                id 2
+                appId "wx9a525a2f78aa90d3"
+                appSecret "ba351a36bde9f763b26626320c27d0e1"
+                bypassApproval false
+                shareByAppClient true
+                enable true
+            }
+
+            QQ {
+                id 3
+                appId "101550044"
+                appKey "e8d1e2fd70a57001e0ba9e5e6c71d7d3"
+                shareByAppClient true
+                bypassApproval false
+                enable true
+            }
+
+            ShortMessage {
+                id 4
+                enable true
+            }
+        }
+        version "3.6.3"
+        gui false
+    }
+}

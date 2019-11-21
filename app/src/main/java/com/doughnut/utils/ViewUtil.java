@@ -1,9 +1,12 @@
 package com.doughnut.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.text.Layout;
@@ -17,6 +20,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.doughnut.config.AppConfig;
+
+import java.util.List;
 
 
 public class ViewUtil {
@@ -170,5 +175,32 @@ public class ViewUtil {
                 }
             }
         });
+    }
+
+    /**
+     * 检测是否启动
+     *
+     * @param context
+     * @param clazz
+     * @return
+     */
+    public static boolean isLaunchedActivity(Context context, Class<?> clazz) {
+        try {
+            Intent intent = new Intent(context, clazz);
+            ComponentName cmpName = intent.resolveActivity(context.getPackageManager());
+            if (cmpName != null) { // 说明系统中存在这个activity
+                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningTaskInfo> taskInfoList = am.getRunningTasks(10);
+                for (ActivityManager.RunningTaskInfo taskInfo : taskInfoList) {
+                    if (taskInfo.baseActivity.equals(cmpName)) { // 说明它已经启动了
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
