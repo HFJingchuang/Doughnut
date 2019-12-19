@@ -42,6 +42,7 @@ import com.doughnut.wallet.ICallBack;
 import com.doughnut.wallet.WConstant;
 import com.doughnut.wallet.WalletManager;
 import com.doughnut.wallet.WalletSp;
+import com.doughnut.web.WebActivity;
 import com.jccdex.rpc.base.JCallback;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;

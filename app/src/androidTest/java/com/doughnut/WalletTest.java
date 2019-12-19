@@ -34,8 +34,8 @@ public class WalletTest {
 
     @Before
     public void changeServer() throws Exception {
-        JtServer.getInstance(appContext).changeServer("ws://ts5.jingtum.com:5020");
-//        JtServer.getInstance(appContext).changeServer("ws://s.jingtum.com:5020");
+//        JtServer.getInstance(appContext).changeServer("ws://ts5.jingtum.com:5020");
+        JtServer.getInstance(appContext).changeServer("ws://s.jingtum.com:5020");
     }
 
     @Test

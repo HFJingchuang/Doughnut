@@ -34,6 +34,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.sharesdk.onekeyshare.OnekeyShare;
+
 /**
  * JS调用原生接口类
  */
@@ -239,6 +241,27 @@ public class JsNativeBridge {
                 if (mWebCallBack != null) {
                     mWebCallBack.onClose();
                 }
+                break;
+            case "shareToSNS":
+                GsonUtil tx = new GsonUtil(params);
+                String mTitle = tx.getString("title", "");
+                String mUrl = tx.getString("url", "").toUpperCase();
+                String mText = tx.getString("text", "");
+                String mImgUrl = tx.getString("imgUrl", "");
+                OnekeyShare oks = new OnekeyShare();
+                // title标题，微信、QQ和QQ空间等平台使用
+                oks.setTitle(mTitle);
+                // titleUrl QQ和QQ空间跳转链接
+                oks.setTitleUrl(mUrl);
+                // text是分享文本，所有平台都需要这个字段
+                oks.setText(mText);
+                // imagePath是图片的本地路径，确保SDcard下面存在此张图片
+//                oks.setImagePath(mImgUrl);
+                oks.setImageUrl(mImgUrl);
+                // url在微信、Facebook等平台中使用
+                oks.setUrl(mUrl);
+                // 启动分享GUI
+                oks.show(mContext);
                 break;
             default:
                 break;

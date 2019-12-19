@@ -44,6 +44,17 @@
       });
 
       var tx = {
+        "title": "js分享测试",
+        "url": "https://www.baidu.com/",
+        "text": "测试时似乎丝毫死是丝毫死试试丝毫死",
+        "imgUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574401209680&di=d14e80b8cab1506ec4d5e5e470abc75c&imgtype=0&src=http%3A%2F%2Fs08.lmbang.com%2FM00%2FDA%2FA3%2FDpgiA1vvGGCAakp2AACgZPF7RjQ970.jpg"
+      }
+
+      donut.shareToSNS(tx).then(res => {
+        showElement(JSON.stringify(res));
+      });
+
+      var tx = {
         "to": "jKBCwv4EcyvYtD4PafP17PLpnnZ16szQsC",
         "currency": "swt",
         "issuer": "",
@@ -56,13 +67,13 @@
       //   showElement(JSON.stringify(res));
       // });
 
-      donut.sign(tx).then(res => {
-        showElement(JSON.stringify(res));
-      });
+      // donut.sign(tx).then(res => {
+      //  showElement(JSON.stringify(res));
+      // });
 
-      donut.getWallets().then(res => {
-        showElement(JSON.stringify(res));
-      });
+      // donut.getWallets().then(res => {
+      //   showElement(JSON.stringify(res));
+      //});
     }
 
     function showElement(msg) {
