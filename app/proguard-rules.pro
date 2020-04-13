@@ -124,7 +124,8 @@
 -keep class com.google.gson.examples.android.model.** { *; }
 
 
--keep class doughnut.base.** { *; }
+-keep class com.doughnut.base.** { *; }
+-keep class com.doughnut.utils.** { *; }
 
 -keepattributes *JavascriptInterface*
 

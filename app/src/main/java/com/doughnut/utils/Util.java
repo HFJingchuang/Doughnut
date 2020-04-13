@@ -304,6 +304,7 @@ public class Util {
                 break;
             case "JEOS":
                 icon = R.drawable.eos;
+                break;
             case "JETH":
                 icon = R.drawable.eth;
                 break;
@@ -376,6 +377,7 @@ public class Util {
                 break;
             default:
                 icon = R.drawable.icon_default;
+                break;
         }
         return icon;
     }
