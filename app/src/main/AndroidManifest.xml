@@ -104,6 +104,9 @@
             android:name=".activity.AboutActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.ShareActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.ModifyWalletActivity"
             android:screenOrientation="portrait" />
         <activity

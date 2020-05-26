@@ -15,6 +15,7 @@ import com.doughnut.activity.AboutActivity;
 import com.doughnut.activity.JtNodeRecordActivity;
 import com.doughnut.activity.LanguageActivity;
 import com.doughnut.activity.ModifyWalletActivity;
+import com.doughnut.activity.ShareActivity;
 import com.doughnut.activity.TokenReceiveActivity;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.activity.TransactionRecordActivity;
@@ -34,6 +35,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout mLayoutNode;
     private RelativeLayout mLayoutHelp;
     private RelativeLayout mLayoutAbout;
+    private RelativeLayout mLayoutShare;
     private RelativeLayout mLayoutLanguage;
     private LinearLayout mLayoutRight;
     private LinearLayout mLayoutReceive;
@@ -72,6 +74,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRecordTransaction.setClickable(true);
         mLayoutHelp.setClickable(true);
         mLayoutAbout.setClickable(true);
+        mLayoutShare.setClickable(true);
         mLayoutLanguage.setClickable(true);
         mLayoutNode.setClickable(true);
         mLayoutRight.setClickable(true);
@@ -87,6 +90,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutRecordTransaction.setClickable(true);
         mLayoutHelp.setClickable(true);
         mLayoutAbout.setClickable(true);
+        mLayoutShare.setClickable(true);
         mLayoutLanguage.setClickable(true);
         mLayoutNode.setClickable(true);
         mLayoutRight.setClickable(true);
@@ -112,6 +116,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutAbout) {
             mLayoutAbout.setClickable(false);
             AboutActivity.startAboutActivity(getActivity());
+        } else if (view == mLayoutShare) {
+            mLayoutAbout.setClickable(false);
+            ShareActivity.startAboutActivity(getActivity());
         } else if (view == mLayoutLanguage) {
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
@@ -138,6 +145,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutNode = view.findViewById(R.id.layout_node);
         mLayoutHelp = view.findViewById(R.id.layout_help);
         mLayoutAbout = view.findViewById(R.id.layout_about);
+        mLayoutShare = view.findViewById(R.id.layout_share);
         mLayoutLanguage = view.findViewById(R.id.layout_language);
 
         mLayoutRight = view.findViewById(R.id.layout_right);
@@ -155,6 +163,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutNode.setOnClickListener(this);
         mLayoutHelp.setOnClickListener(this);
         mLayoutAbout.setOnClickListener(this);
+        mLayoutShare.setOnClickListener(this);
         mLayoutLanguage.setOnClickListener(this);
         mLayoutRight.setOnClickListener(this);
         mLayoutReceive.setOnClickListener(this);

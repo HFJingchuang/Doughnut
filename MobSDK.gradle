@@ -29,7 +29,7 @@ MobSDK {
                 appId "101828527"
                 appKey "5d103e8cd309bdccdfb20157ebfc2f42"
                 shareByAppClient true
-                bypassApproval false
+                bypassApproval true
                 enable true
             }
 

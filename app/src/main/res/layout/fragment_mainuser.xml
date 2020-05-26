@@ -181,6 +181,44 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/layout_share"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:drawableLeft="@drawable/ic_share"
+                    android:drawablePadding="13dp"
+                    android:gravity="center_vertical"
+                    android:text="邀请分享"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/color_detail_time"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_go2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/layout_about"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
