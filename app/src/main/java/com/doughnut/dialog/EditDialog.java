@@ -97,6 +97,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
             dismiss();
             mPwdResultListener.authPwd(false, "", "");
         } else if (view == mTvOk) {
+            mTvOk.setClickable(false);
             if (mPwdResultListener == null) {
                 TLog.e(TAG, "回掉接口空");
                 dismiss();

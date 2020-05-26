@@ -52,10 +52,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                         <EditText
@@ -66,10 +65,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
 
@@ -81,10 +79,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                         <EditText
@@ -95,10 +92,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                     </LinearLayout>
@@ -116,10 +112,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                         <EditText
@@ -130,10 +125,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
 
@@ -145,10 +139,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                         <EditText
@@ -159,10 +152,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
                     </LinearLayout>
 
@@ -179,10 +171,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                         <EditText
@@ -193,10 +184,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
 
@@ -208,10 +198,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                         <EditText
@@ -222,10 +211,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:maxLength="1"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text=""
                             android:textColor="@color/common_black_fontcolor"
-                            android:textColorHint="@color/color_decoration_inactive"
                             android:textSize="17sp" />
 
                     </LinearLayout>
@@ -356,10 +344,25 @@
                         android:visibility="gone" />
 
                     <Switch
-                        android:id="@+id/swh_mode"
+                        android:id="@+id/swh_ed25519"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:switchPadding="5dp"
+                        android:text="@string/ed25519"
+                        android:textColor="@color/color_detail_address"
+                        android:textSelectHandleLeft="@color/white"
+                        android:textSize="10sp"
+                        android:thumb="@drawable/switch_ios_thumb"
+                        android:track="@drawable/switch_custom_track_selector" />
+
+                    <Switch
+                        android:id="@+id/swh_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_marginLeft="10dp"
                         android:background="@null"
@@ -384,31 +387,13 @@
                         android:id="@+id/edt_path"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/swh_ed25519"
                         android:background="@drawable/shape_dialog_edt"
                         android:lines="1"
                         android:paddingVertical="5dp"
                         android:paddingLeft="15dp"
-                        android:text="m/44'/315'/0'/0/0/"
+                        android:text="m/44'/315'/0'/0/0"
                         android:textColor="@color/color_detail_address"
                         android:textSize="15sp" />
-
-                    <Switch
-                        android:id="@+id/swh_ed25519"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:switchPadding="5dp"
-                        android:text="@string/ed25519"
-                        android:textColor="@color/color_detail_address"
-                        android:textSelectHandleLeft="@color/white"
-                        android:textSize="10sp"
-                        android:thumb="@drawable/switch_ios_thumb"
-                        android:track="@drawable/switch_custom_track_selector" />
-
 
                 </RelativeLayout>
 

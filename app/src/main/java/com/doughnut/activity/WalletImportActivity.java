@@ -24,9 +24,10 @@ import com.zxing.activity.CaptureActivity;
 
 public class WalletImportActivity extends BaseActivity implements View.OnClickListener {
 
-    private final static int PRIVATEKEY_INDEX = 0;
-    private final static int KEYSTORE_INDEX = 1;
-    private final static int MNEMONIC_INDEX = 2;
+    private final static int MNEMONIC_INDEX = 0;
+    private final static int PRIVATEKEY_INDEX = 1;
+    private final static int KEYSTORE_INDEX = 2;
+
     private ViewPager mMainViewPager;
     private LinearLayout mLayoutTabPrivateKey;
     private LinearLayout mLayoutTabKeyStore;
@@ -37,9 +38,10 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
     private TitleBar mTitleBar;
 
     private Fragment[] mFragments = new Fragment[]{
+            MnemonicImpFragment.newInstance(),
             PrivateKeyImpFragment.newInstance(""),
-            KeyStoreImpFragment.newInstance(""),
-            MnemonicImpFragment.newInstance()
+            KeyStoreImpFragment.newInstance("")
+
     };
 
     @Override
@@ -52,17 +54,15 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             String importKey = getIntent().getStringExtra(Constant.IMPORT_KEY);
             if (index == 0) {
                 mFragments = new Fragment[]{
+                        MnemonicImpFragment.newInstance(),
                         PrivateKeyImpFragment.newInstance(importKey),
-                        KeyStoreImpFragment.newInstance(""),
-                        MnemonicImpFragment.newInstance()
-
+                        KeyStoreImpFragment.newInstance("")
                 };
             } else {
                 mFragments = new Fragment[]{
+                        MnemonicImpFragment.newInstance(),
                         PrivateKeyImpFragment.newInstance(""),
-                        KeyStoreImpFragment.newInstance(importKey),
-                        MnemonicImpFragment.newInstance()
-
+                        KeyStoreImpFragment.newInstance(importKey)
                 };
             }
             mMainViewPager.getAdapter().notifyDataSetChanged();
@@ -163,7 +163,7 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
         });
 
         mMainViewPager.setAdapter(new WalletImportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
-        pageSelected(PRIVATEKEY_INDEX);
+        pageSelected(MNEMONIC_INDEX);
     }
 
     private void pageSelected(int position) {

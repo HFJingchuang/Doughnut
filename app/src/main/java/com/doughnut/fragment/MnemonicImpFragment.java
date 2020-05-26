@@ -52,7 +52,7 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
     private Button mBtnConfirm;
     private Switch mSwhMode, mSwhED25519;
     private boolean isED25519 = false;
-    private static final String DEFAULTPAHT = "m/44'/315'/0'/0/0/";
+    private static final String DEFAULTPAHT = "m/44'/315'/0'/0/0";
 
     private boolean isErr;
     private TransformationMethod transformationMethod = new TransformationMethod() {
@@ -114,10 +114,12 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
                     } catch (NonSupportException e) {
                         mEdtPath.setText(DEFAULTPAHT);
                         new MsgDialog(getContext(), getString(R.string.path_err)).setIsHook(false).show();
+                        loadDialog.dismiss();
                         return;
                     } catch (CoinNotFindException e) {
                         mEdtPath.setText(DEFAULTPAHT);
                         new MsgDialog(getContext(), getString(R.string.path_err)).setIsHook(false).show();
+                        loadDialog.dismiss();
                         return;
                     }
                     WalletManager.getInstance(getContext()).importMnemonicsWithPath(mnemonics, walletPwd, walletName, addressIndex, isED25519, new ICallBack() {
@@ -182,8 +184,6 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
                     mLayoutMode.setVisibility(View.VISIBLE);
                 } else {
                     mLayoutMode.setVisibility(View.GONE);
-                    mSwhED25519.setChecked(false);
-                    isED25519 = mSwhED25519.isChecked();
                     mEdtPath.setText(DEFAULTPAHT);
                 }
                 break;
@@ -198,6 +198,7 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
      */
     private void initView(View view) {
         mEdtWord1 = view.findViewById(R.id.word1);
+        mEdtWord1.requestFocus();
         mEdtWord1.addTextChangedListener(
                 new TextWatcher() {
                     @Override
@@ -244,11 +245,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord2.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("2");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord2.getText().length() == 0) {
                     mEdtWord1.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -277,11 +275,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord3.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("3");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord3.getText().length() == 0) {
                     mEdtWord2.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -310,11 +305,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord4.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("4");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord4.getText().length() == 0) {
                     mEdtWord3.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -343,11 +335,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord5.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("5");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord5.getText().length() == 0) {
                     mEdtWord4.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -376,11 +365,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord6.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("6");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord6.getText().length() == 0) {
                     mEdtWord5.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -409,11 +395,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord7.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("7");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord7.getText().length() == 0) {
                     mEdtWord6.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -442,11 +425,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord8.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("8");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord8.getText().length() == 0) {
                     mEdtWord7.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -475,11 +455,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord9.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("9");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord9.getText().length() == 0) {
                     mEdtWord8.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -508,11 +485,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord10.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println("10");
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord10.getText().length() == 0) {
                     mEdtWord9.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -541,11 +515,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord11.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                System.out.println(KeyEvent.KEYCODE_DEL);
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord11.getText().length() == 0) {
                     mEdtWord10.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -574,11 +545,8 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
         mEdtWord12.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                //You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
-                System.out.println("12");
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && mEdtWord12.getText().length() == 0) {
                     mEdtWord11.requestFocus();
-                    event = null;
                 }
                 return false;
             }
@@ -754,10 +722,13 @@ public class MnemonicImpFragment extends BaseFragment implements View.OnClickLis
      */
     private void isImportWallet() {
         String walletName = mEdtWalletName.getText().toString();
+        String privateKey = mEdtWalletPwd.getText().toString();
         String passWord = mEdtWalletPwd.getText().toString();
+        String passwordConfim = mEdtWalletPwdConfirm.getText().toString();
         boolean isRead = mRadioRead.isChecked();
 
-        if (isFullMne() && !TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && isRead) {
+        if (isFullMne() && !TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && !TextUtils.isEmpty(passWord) && !isErr
+                && !TextUtils.isEmpty(passwordConfim) && !mTvErrPasswordRep.isShown() && isRead) {
             mBtnConfirm.setEnabled(true);
             mBtnConfirm.setClickable(true);
         } else {
