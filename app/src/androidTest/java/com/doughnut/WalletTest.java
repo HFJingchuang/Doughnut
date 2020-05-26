@@ -42,7 +42,7 @@ public class WalletTest {
     public void createWalletTest() throws Exception {
         final CountDownLatch mutex = new CountDownLatch(1);
         final String[] addr = new String[1];
-        WalletManager.getInstance(appContext).createWallet("123456", "测试", new ICallBack() {
+        WalletManager.getInstance(appContext).createWallet("123456", "测试", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 addr[0] = (String) response;
@@ -69,7 +69,7 @@ public class WalletTest {
         final CountDownLatch mutex = new CountDownLatch(1);
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         final boolean[] res = new boolean[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 res[0] = (boolean) response;
@@ -85,7 +85,7 @@ public class WalletTest {
         final CountDownLatch mutex = new CountDownLatch(1);
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 mutex.countDown();
@@ -102,7 +102,7 @@ public class WalletTest {
         // 导入钱包
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 mutex.countDown();
@@ -147,7 +147,7 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final AccountTx[] bean = new AccountTx[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
 
@@ -172,7 +172,7 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final String[] balance = new String[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 mutex.countDown();
@@ -199,7 +199,7 @@ public class WalletTest {
         String privateKey = "ssWiEpky7Bgj5GFrexxpKexYkeuUv";
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final AccountRelations[] accountRelations = new AccountRelations[1];
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 mutex.countDown();

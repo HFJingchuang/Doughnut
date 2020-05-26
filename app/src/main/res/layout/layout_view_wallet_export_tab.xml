@@ -11,13 +11,30 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/layout_tab_mnemonic"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_tab_mnemonic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_mnemonic"
+                android:textColor="@color/selector_maintab_item_textcolor"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout_tab_privatekey"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="50dp"
             android:layout_weight="1"
-            android:gravity="right|center_vertical"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -35,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="left|center_vertical"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView

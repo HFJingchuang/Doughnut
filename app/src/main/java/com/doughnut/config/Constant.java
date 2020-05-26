@@ -18,6 +18,7 @@ public class Constant {
     public final static String IMPORT_KEY = "importKey";
     public final static String PAGE_INDEX = "pageIndex";
     public final static String PRIVATE_KEY = "privateKey";
+    public final static String MNEMONICS = "mnemonics";
     public final static String WALLET_ADDRESS = "walletAddress";
     public final static String WALLET_NAME = "walletName";
     public final static String IMPORT_FLAG = "isImportWallet";

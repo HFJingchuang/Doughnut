@@ -113,7 +113,7 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
                     LoadDialog loadDialog = new LoadDialog(this, getString(R.string.dialog_modify));
                     loadDialog.show();
                     // 修改KeyStore密码，name参数可不传
-                    WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "", new ICallBack() {
+                    WalletManager.getInstance(this).importWalletWithKey(mEdtNewPwd.getText().toString(), mPrivateKey, "", false, new ICallBack() {
                         @Override
                         public void onResponse(Object response) {
                             boolean isSuccess = (boolean) response;

@@ -51,7 +51,8 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
                 if (getIntent() != null) {
                     String address = getIntent().getStringExtra(Constant.WALLET_ADDRESS);
                     String privateKey = getIntent().getStringExtra(Constant.PRIVATE_KEY);
-                    WalletExportActivity.startExportWalletActivity(this, address, privateKey);
+                    String mnemonics = getIntent().getStringExtra(Constant.MNEMONICS);
+                    WalletExportActivity.startExportWalletActivity(this, address, privateKey, mnemonics);
                     finish();
                 }
                 break;
@@ -71,10 +72,11 @@ public class CreateSuccessActivity extends BaseActivity implements View.OnClickL
         mTvSkip.setOnClickListener(this);
     }
 
-    public static void startCreateSuccessActivity(Context context, String address, String privateKey) {
+    public static void startCreateSuccessActivity(Context context, String address, String privateKey, String mnemonics) {
         Intent intent = new Intent(context, CreateSuccessActivity.class);
         intent.putExtra(Constant.WALLET_ADDRESS, address);
         intent.putExtra(Constant.PRIVATE_KEY, privateKey);
+        intent.putExtra(Constant.MNEMONICS, mnemonics);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

@@ -48,6 +48,7 @@
     <string name="btn_create_wallet">Create Wallet</string>
     <string name="btn_import_wallet">Import Wallet</string>
     <string name="btn_change_pwd">Change Password</string>
+    <string name="btn_export_mnemonic">Verify backup</string>
     <string name="btn_delete_wallet">Delete Wallet</string>
     <string name="content_slow">Normal</string>
     <string name="content_fast">Fast</string>
@@ -76,6 +77,7 @@
     <string name="content_keyStore">KeyStore Text content</string>
     <string name="tab_keyStore">keyStore</string>
     <string name="tab_privateKey">Private Key</string>
+    <string name="tab_mnemonic">Mnemonics</string>
     <string name="tv_no_transfer">No transfer record</string>
     <string name="content_exchange_RMB">Exchange of RMB (&#165;)</string>
     <string name="content_add_asset">Add Asset</string>
@@ -171,6 +173,8 @@
     <string name="tv_pwd_tips">8-64 lowercase letters and numeric combination passwords</string>
     <string name="tv_pwd_err">The password format is incorrect. Please retype it</string>
     <string name="toast_qr_create_fail">QR code generation failure</string>
+    <string name="toast_mnemonic_backup">The mnemonic order is correct and the backup is successful.</string>
+    <string name="toast_mnemonic_backup_fail">The mnemonic order is wrong, please confirm it carefully.</string>
     <string name="btn_export">EXPORT QR CODE</string>
     <string name="btn_copy_keystore">Copy KeyStore</string>
     <string name="btn_copy_privatekey">Copy PrivateKey</string>
@@ -195,6 +199,8 @@
     <string name="tv_swtc_tips">Wallet Based on SWTC Block Chain</string>
     <string name="title_token_choose">Currency Choice</string>
     <string name="tv_import_key_tips">Copy and paste the contents of the wallet Keystore file into the input box, or click on QR code to scan the Keystore content.</string>
+    <string name="tv_import_mnemonic">Please input mnemonics in order.</string>
+    <string name="tv_export_mnemonic">Please copy the mnemonics in order to make sure the backup is correct.</string>
     <string name="dialog_import_fail">Import Failed</string>
     <string name="dailog_modify_fail">Modification failed</string>
     <string name="tv_scan_fail">Scanning failed!</string>
@@ -210,7 +216,7 @@
     <string name="dialog_modify">Modifying</string>
     <string name="dialog_import">Importing</string>
     <string name="tv_unkown">UNKOWN</string>
-    <string name="tv_show_zero">Display non zero assets</string>
+    <string name="tv_show_zero">Display All assets</string>
     <string name="dialog_tranfer">Transferring</string>
     <string name="dialog_sign">Signature</string>
     <string name="title_contact">Contacts</string>
@@ -221,5 +227,9 @@
     <string name="msg_err_url">Bad link</string>
     <string name="edt_dapp">Please enter the DAPP link</string>
     <string name="tv_search">Search</string>
+    <string name="ed25519">ED25519 mode</string>
+    <string name="swh_mode">Advanced mode</string>
+    <string name="path_err">Custom path format error, restored</string>
+    <string name="tv_mnemonic_select">Please select the mnemonics in correct order.</string>
 
 </resources>

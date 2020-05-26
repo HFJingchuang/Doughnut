@@ -10,13 +10,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doughnut.R;
 import com.doughnut.config.Constant;
 import com.doughnut.fragment.KeyStoreImpFragment;
+import com.doughnut.fragment.MnemonicImpFragment;
 import com.doughnut.fragment.PrivateKeyImpFragment;
 import com.doughnut.view.TitleBar;
 import com.zxing.activity.CaptureActivity;
@@ -26,16 +26,20 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
     private final static int PRIVATEKEY_INDEX = 0;
     private final static int KEYSTORE_INDEX = 1;
+    private final static int MNEMONIC_INDEX = 2;
     private ViewPager mMainViewPager;
     private LinearLayout mLayoutTabPrivateKey;
     private LinearLayout mLayoutTabKeyStore;
+    private LinearLayout mLayoutTabMnemonic;
     private TextView mTvPrivateKey;
     private TextView mTvKeyStore;
+    private TextView mTvMnemonic;
     private TitleBar mTitleBar;
 
     private Fragment[] mFragments = new Fragment[]{
             PrivateKeyImpFragment.newInstance(""),
-            KeyStoreImpFragment.newInstance("")
+            KeyStoreImpFragment.newInstance(""),
+            MnemonicImpFragment.newInstance()
     };
 
     @Override
@@ -49,13 +53,15 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             if (index == 0) {
                 mFragments = new Fragment[]{
                         PrivateKeyImpFragment.newInstance(importKey),
-                        KeyStoreImpFragment.newInstance("")
+                        KeyStoreImpFragment.newInstance(""),
+                        MnemonicImpFragment.newInstance()
 
                 };
             } else {
                 mFragments = new Fragment[]{
                         PrivateKeyImpFragment.newInstance(""),
-                        KeyStoreImpFragment.newInstance(importKey)
+                        KeyStoreImpFragment.newInstance(importKey),
+                        MnemonicImpFragment.newInstance()
 
                 };
             }
@@ -86,6 +92,8 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             mMainViewPager.setCurrentItem(PRIVATEKEY_INDEX);
         } else if (view == mLayoutTabKeyStore) {
             mMainViewPager.setCurrentItem(KEYSTORE_INDEX);
+        } else if (view == mLayoutTabMnemonic) {
+            mMainViewPager.setCurrentItem(MNEMONIC_INDEX);
         }
 
     }
@@ -126,11 +134,14 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
 
         mLayoutTabPrivateKey = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
         mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
+        mLayoutTabMnemonic = (LinearLayout) findViewById(R.id.layout_tab_mnemonic);
         mLayoutTabPrivateKey.setOnClickListener(this);
         mLayoutTabKeyStore.setOnClickListener(this);
+        mLayoutTabMnemonic.setOnClickListener(this);
 
         mTvPrivateKey = (TextView) findViewById(R.id.tv_tab_privatekey);
         mTvKeyStore = (TextView) findViewById(R.id.tv_tab_keystore);
+        mTvMnemonic = (TextView) findViewById(R.id.tv_tab_mnemonic);
 
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mMainViewPager.setOffscreenPageLimit(3);
@@ -164,12 +175,16 @@ public class WalletImportActivity extends BaseActivity implements View.OnClickLi
             case KEYSTORE_INDEX:
                 mTvKeyStore.setSelected(true);
                 break;
+            case MNEMONIC_INDEX:
+                mTvMnemonic.setSelected(true);
+                break;
         }
     }
 
     private void resetTab() {
         mTvPrivateKey.setSelected(false);
         mTvKeyStore.setSelected(false);
+        mTvMnemonic.setSelected(false);
     }
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {

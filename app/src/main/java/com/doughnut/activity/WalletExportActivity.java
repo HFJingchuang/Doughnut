@@ -15,26 +15,34 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.config.Constant;
 import com.doughnut.fragment.KeyStoreExpFragment;
+import com.doughnut.fragment.MnemonicExpFragment;
+import com.doughnut.fragment.MnemonicVerFragment;
 import com.doughnut.fragment.PrivateKeyExpFragment;
 import com.doughnut.view.TitleBar;
 
 public class WalletExportActivity extends BaseActivity implements View.OnClickListener {
 
-    private final static int PRIVATEKEY_INDEX = 0;
-    private final static int KEYSTORE_INDEX = 1;
+    private final static int MNEMONICS_VER_INDEX = 0;
+    private final static int MNEMONICS_INDEX = 1;
+    private final static int PRIVATEKEY_INDEX = 2;
+    private final static int KEYSTORE_INDEX = 3;
+
     private ViewPager mMainViewPager;
 
     //tab
     private LinearLayout mLayoutTabPrivate;
     private LinearLayout mLayoutTabKeyStore;
+    private LinearLayout mLayoutTabMnemonics;
 
 
     private TextView mTvPrivateKey;
-
     private TextView mTvKeyStore;
+    private TextView mTvMnemonics;
     private TitleBar mTitleBar;
 
     private Fragment[] mFragments = new Fragment[]{
+            MnemonicVerFragment.newInstance(""),
+            MnemonicExpFragment.newInstance(""),
             PrivateKeyExpFragment.newInstance("", ""),
             KeyStoreExpFragment.newInstance("")
     };
@@ -46,10 +54,23 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
         if (getIntent() != null) {
             String walletAddress = getIntent().getStringExtra(Constant.WALLET_ADDRESS);
             String privateKey = getIntent().getStringExtra(Constant.PRIVATE_KEY);
+            String mnemonics = getIntent().getStringExtra(Constant.MNEMONICS);
+            MnemonicExpFragment mnemonicExpFragment = MnemonicExpFragment.newInstance(mnemonics);
+            mnemonicExpFragment.setOnButtonClick(new MnemonicExpFragment.OnButtonClick() {
+                @Override
+                public void onClick(View view) {
+                    mMainViewPager.setCurrentItem(MNEMONICS_VER_INDEX);
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.main_viewpager, MnemonicVerFragment.newInstance(mnemonics), null)
+//                            .commit();
+                }
+            });
             mFragments = new Fragment[]{
+                    MnemonicVerFragment.newInstance(mnemonics),
+                    mnemonicExpFragment,
                     PrivateKeyExpFragment.newInstance(walletAddress, privateKey),
                     KeyStoreExpFragment.newInstance(walletAddress)
-
             };
         }
         initView();
@@ -66,14 +87,17 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
             mMainViewPager.setCurrentItem(PRIVATEKEY_INDEX);
         } else if (view == mLayoutTabKeyStore) {
             mMainViewPager.setCurrentItem(KEYSTORE_INDEX);
+        } else if (view == mLayoutTabMnemonics) {
+            mMainViewPager.setCurrentItem(MNEMONICS_INDEX);
         }
 
     }
 
-    public static void startExportWalletActivity(Context from, String address, String key) {
+    public static void startExportWalletActivity(Context from, String address, String key, String mnemonics) {
         Intent intent = new Intent(from, WalletExportActivity.class);
         intent.putExtra(Constant.WALLET_ADDRESS, address);
         intent.putExtra(Constant.PRIVATE_KEY, key);
+        intent.putExtra(Constant.MNEMONICS, mnemonics);
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         from.startActivity(intent);
     }
@@ -93,15 +117,18 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
         //tab
         mLayoutTabPrivate = (LinearLayout) findViewById(R.id.layout_tab_privatekey);
         mLayoutTabKeyStore = (LinearLayout) findViewById(R.id.layout_tab_keystore);
+        mLayoutTabMnemonics = (LinearLayout) findViewById(R.id.layout_tab_mnemonic);
         mLayoutTabPrivate.setOnClickListener(this);
         mLayoutTabKeyStore.setOnClickListener(this);
+        mLayoutTabMnemonics.setOnClickListener(this);
 
 
         mTvPrivateKey = (TextView) findViewById(R.id.tv_tab_privatekey);
         mTvKeyStore = (TextView) findViewById(R.id.tv_tab_keystore);
+        mTvMnemonics = (TextView) findViewById(R.id.tv_tab_mnemonic);
 
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        mMainViewPager.setOffscreenPageLimit(3);
+        mMainViewPager.setOffscreenPageLimit(4);
         mMainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -120,7 +147,8 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
         });
 
         mMainViewPager.setAdapter(new WalletExportActivity.MainViewPagerAdapter(getSupportFragmentManager()));
-        pageSelected(PRIVATEKEY_INDEX);
+        mMainViewPager.setCurrentItem(MNEMONICS_INDEX);
+        pageSelected(MNEMONICS_INDEX);
     }
 
     private void pageSelected(int position) {
@@ -132,13 +160,17 @@ public class WalletExportActivity extends BaseActivity implements View.OnClickLi
             case KEYSTORE_INDEX:
                 mTvKeyStore.setSelected(true);
                 break;
+            case MNEMONICS_INDEX:
+            case MNEMONICS_VER_INDEX:
+                mTvMnemonics.setSelected(true);
+                break;
         }
     }
 
     private void resetTab() {
         mTvPrivateKey.setSelected(false);
-
         mTvKeyStore.setSelected(false);
+        mTvMnemonics.setSelected(false);
     }
 
     class MainViewPagerAdapter extends FragmentPagerAdapter {

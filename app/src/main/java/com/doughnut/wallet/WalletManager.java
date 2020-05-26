@@ -6,6 +6,9 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.android.jtblk.BIP39.WordCount;
+import com.android.jtblk.BIP39.wordlists.Chinese_simplified;
+import com.android.jtblk.BIP44.AddressIndex;
 import com.android.jtblk.client.Transaction;
 import com.android.jtblk.client.Wallet;
 import com.android.jtblk.client.bean.AccountInfo;
@@ -22,6 +25,7 @@ import com.android.jtblk.keyStore.KeyStoreFile;
 import com.android.jtblk.qrCode.QRGenerator;
 import com.doughnut.net.api.GetAllTokenList;
 import com.doughnut.net.load.RequestPresenter;
+import com.doughnut.utils.AESUtil;
 import com.doughnut.utils.CaclUtil;
 import com.doughnut.utils.Currency;
 import com.doughnut.utils.GsonUtil;
@@ -48,7 +52,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * 钱包管理类
  * <p>
- * 创建钱包、删除钱包、导出二维码图片、导入私钥、导入KeyStore、获取私钥、转账、获取交易记录、获取余额
+ * 创建钱包、删除钱包、导出二维码图片、导入私钥、导入KeyStore、导入助记词、获取私钥、转账、获取交易记录、获取余额
  */
 public class WalletManager implements IWallet {
 
@@ -92,17 +96,21 @@ public class WalletManager implements IWallet {
         return false;
     }
 
-    private String createWallet(String password, String name) {
+    private List<String> createWallet(String password, String name, boolean isED25519) {
+        List<String> list = new ArrayList<>();
         try {
-            Wallet wallet = Wallet.generate();
+            Wallet wallet = Wallet.generate(Chinese_simplified.INSTANCE, WordCount.TWELVE, isED25519);
             KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
             String address = keyStoreFile.getAddress();
-            WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
-            return address;
+            String mnemonics = wallet.getMnemonics();
+            String enMnemonics = AESUtil.encrypt(password, mnemonics);
+            WalletSp.getInstance(mContext, address).createWallet(name, enMnemonics, keyStoreFile.toString());
+            list.add(address);
+            list.add(mnemonics);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return list;
     }
 
     /**
@@ -110,21 +118,22 @@ public class WalletManager implements IWallet {
      *
      * @param password
      * @param name
+     * @param isED25519
      * @param callBack
      */
     @Override
-    public void createWallet(String password, String name, ICallBack callBack) {
-        Observable.create(new ObservableOnSubscribe<String>() {
+    public void createWallet(String password, String name, boolean isED25519, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<List<String>>() {
             @Override
-            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                String address = createWallet(password, name);
-                emitter.onNext(address);
+            public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
+                List<String> list = createWallet(password, name, isED25519);
+                emitter.onNext(list);
                 emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<String>>() {
             @Override
-            public void accept(String address) throws Exception {
-                callBack.onResponse(address);
+            public void accept(List<String> list) throws Exception {
+                callBack.onResponse(list);
             }
         });
     }
@@ -157,14 +166,15 @@ public class WalletManager implements IWallet {
         return null;
     }
 
-    private boolean importWalletWithKey(String password, String privateKey, String name) {
+    private boolean importWalletWithKey(String password, String privateKey, String name, boolean isED25519) {
         try {
             if (Wallet.isValidSecret(privateKey)) {
-                Wallet wallet = Wallet.fromSecret(privateKey);
+                Wallet wallet = Wallet.fromSecret(privateKey, isED25519);
                 KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
                 String address = keyStoreFile.getAddress();
                 if (Wallet.isValidAddress(address)) {
-                    WalletSp.getInstance(mContext, address).createWallet(name, keyStoreFile.toString());
+                    String enMnemonics = AESUtil.encrypt(password, wallet.getMnemonics());
+                    WalletSp.getInstance(mContext, address).createWallet(name, enMnemonics, keyStoreFile.toString());
                     return true;
                 }
             }
@@ -183,12 +193,12 @@ public class WalletManager implements IWallet {
      * @param callBack
      */
     @Override
-    public void importWalletWithKey(String password, String privateKey, String name, ICallBack callBack) {
+    public void importWalletWithKey(String password, String privateKey, String name, boolean isED25519, ICallBack callBack) {
         Observable.create(new ObservableOnSubscribe<Boolean>() {
 
             @Override
             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                boolean isSuccess = importWalletWithKey(password, privateKey, name);
+                boolean isSuccess = importWalletWithKey(password, privateKey, name, isED25519);
                 emitter.onNext(isSuccess);
                 emitter.onComplete();
             }
@@ -207,7 +217,7 @@ public class WalletManager implements IWallet {
             if (Wallet.isValidAddress(address)) {
                 String privateKey = getPrivateKey(password, keyStore);
                 if (Wallet.isValidSecret(privateKey)) {
-                    WalletSp.getInstance(mContext, address).createWallet(name, keyStore);
+                    WalletSp.getInstance(mContext, address).createWallet(name, null, keyStore);
                     return true;
                 }
             }
@@ -232,6 +242,93 @@ public class WalletManager implements IWallet {
             @Override
             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
                 boolean isSuccess = importKeysStore(keyStore, password, name);
+                emitter.onNext(isSuccess);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean isSuccess) throws Exception {
+                callBack.onResponse(isSuccess);
+            }
+        });
+    }
+
+    private boolean importMnemonics(String mnemonics, String password, String name, boolean isED25519) {
+        try {
+            Wallet wallet = Wallet.fromMnemonics(mnemonics, isED25519);
+            KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
+            String address = keyStoreFile.getAddress();
+            if (Wallet.isValidAddress(address)) {
+                String enMnemonics = AESUtil.encrypt(password, wallet.getMnemonics());
+                WalletSp.getInstance(mContext, address).createWallet(name, enMnemonics, keyStoreFile.toString());
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 导入助记词
+     *
+     * @param mnemonics
+     * @param password
+     * @param name
+     * @param isED25519
+     * @param callBack
+     */
+    @Override
+    public void importMnemonics(String mnemonics, String password, String name, boolean isED25519, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                boolean isSuccess = importMnemonics(mnemonics, password, name, isED25519);
+                emitter.onNext(isSuccess);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean isSuccess) throws Exception {
+                callBack.onResponse(isSuccess);
+            }
+        });
+    }
+
+    private boolean importMnemonicsWithPath(String mnemonics, String password, String name, AddressIndex addressIndex, boolean isED25519) {
+        try {
+            Wallet wallet = Wallet.fromMnemonicWithPath(mnemonics, addressIndex, isED25519);
+            KeyStoreFile keyStoreFile = KeyStore.createLight(password, wallet);
+            String address = keyStoreFile.getAddress();
+            if (Wallet.isValidAddress(address)) {
+                String enMnemonics = AESUtil.encrypt(password, wallet.getMnemonics());
+                WalletSp.getInstance(mContext, address).createWallet(name, enMnemonics, keyStoreFile.toString());
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 导入助记词
+     *
+     * @param mnemonics
+     * @param password
+     * @param name
+     * @param addressIndex
+     * @param isED25519
+     * @param callBack
+     */
+    @Override
+    public void importMnemonicsWithPath(String mnemonics, String password, String name, AddressIndex addressIndex, boolean isED25519, ICallBack callBack) {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                boolean isSuccess = importMnemonicsWithPath(mnemonics, password, name, addressIndex, isED25519);
                 emitter.onNext(isSuccess);
                 emitter.onComplete();
             }

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.jtblk.client.Wallet;
@@ -42,6 +43,8 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
     private ImageView mImgShowRepPwd, mImgShowPwd;
     private LinearLayout mTvShowPwd, mTvShowPwdRep, mLayoutRead;
     private Button mBtnConfirm;
+    private Switch mSwhED25519;
+    private boolean isED25519 = false;
 
     private boolean isErr;
     private TransformationMethod transformationMethod = new TransformationMethod() {
@@ -276,7 +279,8 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
 
         mImgShowPwd = view.findViewById(R.id.img_show_pwd);
         mImgShowRepPwd = view.findViewById(R.id.img_show_pwd_rep);
-
+        mSwhED25519 = view.findViewById(R.id.swh_ed25519);
+        mSwhED25519.setOnClickListener(this);
         mBtnConfirm.setOnClickListener(this);
     }
 
@@ -345,7 +349,7 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                 String walletPwd = mEdtWalletPwd.getText().toString();
                 LoadDialog loadDialog = new LoadDialog(getContext(), getString(R.string.dialog_import));
                 loadDialog.show();
-                WalletManager.getInstance(getContext()).importWalletWithKey(walletPwd, privateKey, walletName, new ICallBack() {
+                WalletManager.getInstance(getContext()).importWalletWithKey(walletPwd, privateKey, walletName, isED25519, new ICallBack() {
                     @Override
                     public void onResponse(Object response) {
                         boolean isSuccess = (boolean) response;
@@ -389,6 +393,9 @@ public class PrivateKeyImpFragment extends BaseFragment implements View.OnClickL
                     mEdtWalletPwdConfirm.setTransformationMethod(transformationMethod);
                 }
                 mEdtWalletPwdConfirm.setSelection(mEdtWalletPwdConfirm.getText().length());
+                break;
+            case R.id.swh_ed25519:
+                isED25519 = mSwhED25519.isChecked();
                 break;
         }
     }

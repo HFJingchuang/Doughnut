@@ -2,20 +2,25 @@ package com.doughnut.wallet;
 
 import android.graphics.Bitmap;
 
+import com.android.jtblk.BIP44.AddressIndex;
 import com.android.jtblk.client.bean.Marker;
 import com.jccdex.rpc.base.JCallback;
 
 public interface IWallet {
 
-    void createWallet(String password, String name, ICallBack callBack);
+    void createWallet(String password, String name, boolean isED25519, ICallBack callBack);
 
     void deleteWallet(String address);
 
     Bitmap exportWalletWithQR(String address, int widthAndHeight, int color);
 
-    void importWalletWithKey(String password, String privateKey, String name, ICallBack callBack);
+    void importWalletWithKey(String password, String privateKey, String name, boolean isED25519, ICallBack callBack);
 
     void importKeysStore(String keyStore, String password, String name, ICallBack callBack);
+
+    void importMnemonics(String password, String privateKey, String name, boolean isED25519, ICallBack callBack);
+
+    void importMnemonicsWithPath(String mnemonics, String password, String name, AddressIndex addressIndex, boolean isED25519, ICallBack callBack);
 
     void getPrivateKey(String password, String keyStore, ICallBack callBack);
 

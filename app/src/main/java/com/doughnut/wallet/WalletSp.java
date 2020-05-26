@@ -80,6 +80,25 @@ public class WalletSp {
     }
 
     /**
+     * 保存助记词(加密后)
+     *
+     * @param mnemonics
+     */
+    private void setMnemonics(String mnemonics) {
+        mEditor.putString("mnemonics", mnemonics);
+        mEditor.apply();
+    }
+
+    /**
+     * 获取获取助记词（加密后）
+     *
+     * @return
+     */
+    public String getMnemonics() {
+        return mSharedPreferences.getString("mnemonics", null);
+    }
+
+    /**
      * 保存钱包KeyStore的JSON字符串
      *
      * @param keyStore
@@ -123,9 +142,10 @@ public class WalletSp {
      * 保存钱包信息,格式：0x...,0x...
      *
      * @param name
+     * @param mnemonics
      * @param keyStore
      */
-    public void createWallet(String name, String keyStore) {
+    public void createWallet(String name, String mnemonics, String keyStore) {
         String fileName = mContext.getPackageName() + "_wallets";
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -152,6 +172,7 @@ public class WalletSp {
             setName(name);
         }
         setCreateTime();
+        setMnemonics(mnemonics);
         setKeyStore(keyStore);
         setCurrentWallet(mAddress);
     }

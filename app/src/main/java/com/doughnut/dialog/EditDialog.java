@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.doughnut.R;
 import com.doughnut.activity.TokenTransferActivity;
 import com.doughnut.config.AppConfig;
+import com.doughnut.utils.AESUtil;
 import com.doughnut.utils.TLog;
 import com.doughnut.view.SubCharSequence;
 import com.doughnut.wallet.ICallBack;
@@ -61,7 +62,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
 
 
     public interface PwdResultListener {
-        void authPwd(boolean result, String key);
+        void authPwd(boolean result, String key, String mnemonics);
     }
 
     public EditDialog(@NonNull Context context, String address) {
@@ -94,7 +95,7 @@ public class EditDialog extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         if (view == mTvCancel) {
             dismiss();
-            mPwdResultListener.authPwd(false, "");
+            mPwdResultListener.authPwd(false, "", "");
         } else if (view == mTvOk) {
             if (mPwdResultListener == null) {
                 TLog.e(TAG, "回掉接口空");
@@ -108,21 +109,23 @@ public class EditDialog extends Dialog implements View.OnClickListener {
             }
 
             if (!mIsVerifyPwd) {
-                mPwdResultListener.authPwd(true, input);
+                mPwdResultListener.authPwd(true, input, "");
                 dismiss();
                 return;
             }
             String keyStore = WalletSp.getInstance(AppConfig.getContext(), mAddress).getKeyStore();
+            String enMnemonics = WalletSp.getInstance(AppConfig.getContext(), mAddress).getMnemonics();
             WalletManager.getInstance(getContext()).getPrivateKey(input, keyStore, new ICallBack() {
                 @Override
                 public void onResponse(Object response) {
                     String oldKey = (String) response;
                     if (TextUtils.isEmpty(oldKey)) {
-                        mPwdResultListener.authPwd(false, "");
+                        mPwdResultListener.authPwd(false, "", "");
                         mEdtPw.setText("");
                         mTvErr.setVisibility(View.VISIBLE);
                     } else {
-                        mPwdResultListener.authPwd(true, oldKey);
+                        String mnemonics = AESUtil.decrypt(input, enMnemonics);
+                        mPwdResultListener.authPwd(true, oldKey, mnemonics);
                         dismiss();
                     }
                 }

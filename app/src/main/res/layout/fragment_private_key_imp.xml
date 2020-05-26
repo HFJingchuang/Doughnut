@@ -155,6 +155,22 @@
                         android:textSize="@dimen/text_size_8"
                         android:textStyle="bold"
                         android:visibility="gone" />
+
+                    <Switch
+                        android:id="@+id/swh_ed25519"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:switchPadding="5dp"
+                        android:text="@string/ed25519"
+                        android:textColor="@color/color_detail_address"
+                        android:textSelectHandleLeft="@color/white"
+                        android:textSize="8sp"
+                        android:thumb="@drawable/switch_ios_thumb"
+                        android:track="@drawable/switch_custom_track_selector" />
                 </RelativeLayout>
 
                 <Button

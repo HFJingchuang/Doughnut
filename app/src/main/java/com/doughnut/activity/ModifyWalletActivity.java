@@ -146,7 +146,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                 .setIsDeleteWallet(true)
                 .setResultListener(new EditDialog.PwdResultListener() {
                     @Override
-                    public void authPwd(boolean result, String key) {
+                    public void authPwd(boolean result, String key, String mnemonics) {
                         if (result) {
                             WalletManager.getInstance(ModifyWalletActivity.this).deleteWallet(mWalletAddress);
                             finish();
@@ -161,9 +161,9 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                 .setDialogConfirmColor(R.color.color_dialog_confirm)
                 .setResultListener(new EditDialog.PwdResultListener() {
                     @Override
-                    public void authPwd(boolean result, String key) {
+                    public void authPwd(boolean result, String key, String menmonics) {
                         if (result) {
-                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, mWalletAddress, key);
+                            WalletExportActivity.startExportWalletActivity(ModifyWalletActivity.this, mWalletAddress, key, menmonics);
                         }
                     }
                 }).show();
@@ -178,7 +178,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
                 .setDialogConfirmColor(R.color.color_dialog_confirm)
                 .setResultListener(new EditDialog.PwdResultListener() {
                     @Override
-                    public void authPwd(boolean result, String key) {
+                    public void authPwd(boolean result, String key, String mnemonics) {
                         if (result) {
                             WalletSp.getInstance(ModifyWalletActivity.this, mWalletAddress).setName(key);
                             mTvWalletName.setText(key);

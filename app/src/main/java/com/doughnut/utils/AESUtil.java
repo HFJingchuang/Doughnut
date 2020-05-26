@@ -46,7 +46,7 @@ public class AESUtil {
     }
 
 
-    private static String encrypt(String key, String content) {
+    public static String encrypt(String key, String content) {
         try {
             SecretKeySpec secretKeySpec;
             if (Build.VERSION.SDK_INT >= 28) {
@@ -87,7 +87,7 @@ public class AESUtil {
         });
     }
 
-    private static String decrypt(String key, String encrypted) {
+    public static String decrypt(String key, String encrypted) {
         try {
             SecretKeySpec secretKeySpec;
             if (Build.VERSION.SDK_INT >= 28) {
