@@ -7,20 +7,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.doughnut.R;
-import com.doughnut.dialog.MsgDialog;
-import com.doughnut.update.UpdateTask;
-import com.doughnut.utils.DeviceUtil;
-import com.doughnut.utils.GsonUtil;
 import com.doughnut.view.TitleBar;
-import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
@@ -58,7 +47,7 @@ public class ShareActivity extends BaseActivity implements View.OnClickListener,
 
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(getString(R.string.titleBar_about));
+        mTitleBar.setTitle(getString(R.string.titleBar_share));
         mTitleBar.setTitleTextColor(R.color.color_detail_address);
         mTitleBar.setRightTextColor(R.color.white);
         mTitleBar.setTitleBarClickListener(this);
