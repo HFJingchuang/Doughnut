@@ -90,4 +90,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'me.jessyan:autosize:1.1.2'
     implementation 'com.just.agentweb:agentweb:4.1.2'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    implementation 'io.github.moacchain:core:0.1.0'
+//    implementation 'org.web3j:core:4.6.0-android'
 }

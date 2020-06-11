@@ -34,7 +34,7 @@ public class JtServerTest {
         String address = "j3UcBBbes7HFgmTLmGkEQQShM2jdHbdGAe";
         final AccountRelations[] accountRelations1 = new AccountRelations[1];
         JtServer.getInstance(appContext).changeServer("wss://s.jingtum.com:5020", true);
-        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", new ICallBack() {
+        WalletManager.getInstance(appContext).importWalletWithKey("123456", privateKey, "test", false, new ICallBack() {
             @Override
             public void onResponse(Object response) {
                 mutex.countDown();

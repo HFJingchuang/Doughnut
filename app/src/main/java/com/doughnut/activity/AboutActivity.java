@@ -15,6 +15,9 @@ import com.doughnut.update.UpdateTask;
 import com.doughnut.utils.DeviceUtil;
 import com.doughnut.view.TitleBar;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
+import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -37,6 +40,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         if (view == mLayoutCheckUpdate) {
+//            String appId = "wxe56d3277ffedce24"; // 填应用AppId
+//            IWXAPI api = WXAPIFactory.createWXAPI(this, appId);
+//
+//            WXLaunchMiniProgram.Req req = new WXLaunchMiniProgram.Req();
+//            req.userName = "gh_0a250eabeb78"; // 填小程序原始id
+//            req.path = "pages/home/home?coinName=SWTC";                  ////拉起小程序页面的可带参路径，不填默认拉起小程序首页，对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"。
+//            req.miniprogramType = WXLaunchMiniProgram.Req.MINIPROGRAM_TYPE_PREVIEW;// 可选打开 开发版，体验版和正式版
+//            api.sendReq(req);
             mProgressDrawable.start();
             mImgLoad.setVisibility(View.VISIBLE);
             new UpdateTask().execute();
