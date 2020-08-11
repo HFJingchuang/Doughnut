@@ -166,10 +166,10 @@
 -dontwarn org.apache.harmony.**
 -keep class org.bouncycastle.jce.** { *; }
 -dontwarn org.bouncycastle.jce.**
--keep class org.spongycastle.jce.** { *; }
--dontwarn org.spongycastle.jce.**
--keep class org.spongycastle.x509.** { *; }
--dontwarn org.spongycastle.x509.**
+#-keep class org.spongycastle.jce.** { *; }
+#-dontwarn org.spongycastle.jce.**
+#-keep class org.spongycastle.x509.** { *; }
+#-dontwarn org.spongycastle.x509.**
 -keep class org.bouncycastle.x509.** { *; }
 -dontwarn org.bouncycastle.x509.**
 -keep class net.i2p.crypto.x509.** { *; }
@@ -242,3 +242,6 @@
 -dontwarn com.sina.**
 -dontwarn com.mob.**
 -dontwarn **.R$*
+
+-keep class org.bouncycastle.** {*;}
+-dontwarn org.bouncycastle.**

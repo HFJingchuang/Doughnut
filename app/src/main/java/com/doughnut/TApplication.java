@@ -3,16 +3,10 @@ package com.doughnut;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.support.multidex.MultiDex;
 
 import com.doughnut.activity.BaseActivity;
-import com.doughnut.base.BlockChainData;
-import com.doughnut.base.JSUtil;
-import com.doughnut.base.WalletInfoManager;
-import com.doughnut.base.TBController;
 import com.doughnut.config.AppConfig;
-import com.doughnut.utils.LanguageUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -21,7 +15,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import me.jessyan.autosize.AutoSize;
 import me.jessyan.autosize.AutoSizeConfig;
