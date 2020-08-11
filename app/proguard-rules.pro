@@ -26,7 +26,7 @@
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.preference.Preference
--keep public class com.android.vending.licensing.ILicensingService
+#-keep public class com.android.vending.licensing.ILicensingService
 
 -keepclasseswithmembernames class * {                                           # 保持 native 方法不被混淆
     native <methods>;
@@ -62,30 +62,30 @@
 }
 
 #引入各个jar包
--library libs/gson-2.3.1.jar(!META-INF/MANIFEST.MF)
+-libraryjars libs/gson-2.3.1.jar(!META-INF/MANIFEST.MF)
 
--library libs/universal-image-loader-1.9.3.jar(!META-INF/MANIFEST.MF)
+-libraryjars libs/universal-image-loader-1.9.3.jar(!META-INF/MANIFEST.MF)
 
 
 -dontwarn com.xiaomi.**
--keep class com.xiaomi.**{*;}
+#-keep class com.xiaomi.**{*;}
 
 -dontwarn com.w3c.dom.**
--keep class com.w3c.dom.**{*;}
+#-keep class com.w3c.dom.**{*;}
 
 -dontwarn org.w3c.dom.**
--keep class org.w3c.dom.**{*;}
+#-keep class org.w3c.dom.**{*;}
 
 -dontwarn com.google.appengine.**
--keep class com.google.appengine.**{*;}
+#-keep class com.google.appengine.** {*;}
 
 
 -dontwarn sun.misc.**
--keep class sun.misc.**{*;}
+#-keep class sun.misc.**{*;}
 
 -dontwarn java.util.concurrent.**
--keep class java.util.concurrent.**{*;}
--keep class java.util.TimerTask.**{*;}
+-keep class java.util.concurrent.** {*;}
+-keep class java.util.TimerTask.** {*;}
 
 -dontwarn android.support.v4.**
 -keep class android.support.v4.**{*;}
@@ -216,7 +216,7 @@
 
 #glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.AppGlideModule
+-keep public class * extends com.bumptech.glide.GeneratedAppGlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
   **[] $VALUES;
   public *;
